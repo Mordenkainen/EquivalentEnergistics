@@ -1,0 +1,8 @@
+# Creative Tab
+itemGroup.equivalentenergistics=Equivalent Energistics
+
+# Item Names
+item.equivalentenergistics:EMCCrystal.name=EMC Crystal
+
+# Block Names
+tile.equivalentenergistics:EMCCondenser.name=EMC Condenser
