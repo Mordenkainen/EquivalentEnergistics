@@ -51,9 +51,7 @@ public class BlockEMCCrafter extends BlockContainer {
 			if(tileCrafter instanceof TileEMCCrafter) {
 				ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
 				if(existingTome != null) {
-					if(!world.isRemote) {
-						world.spawnEntityInWorld(new EntityItem(world, x, y, z, existingTome));
-					}
+					world.spawnEntityInWorld(new EntityItem(world, x, y, z, existingTome));
 				}
 				((TileEMCCrafter)tileCrafter).onBreak();
 			}
@@ -89,7 +87,7 @@ public class BlockEMCCrafter extends BlockContainer {
 					return true;
 				}
 			} else if (player.getHeldItem().getItem() == GameRegistry.findItem("EE3", "alchemicalTome") && ((TileEMCCrafter)tileCrafter).getCurrentTome() == null) {
-				((TileEMCCrafter)tileCrafter).setCurrentTome(player.getHeldItem());
+				((TileEMCCrafter)tileCrafter).setCurrentTome(player.getHeldItem().copy());
 				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
 					player.inventory.mainInventory[player.inventory.currentItem];
 				return true;

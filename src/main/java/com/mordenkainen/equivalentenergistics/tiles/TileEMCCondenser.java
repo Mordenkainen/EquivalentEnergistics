@@ -57,33 +57,32 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	private boolean isActive;
 	
 	public TileEMCCondenser() {
-		mySource = new MachineSource( this );
+		mySource = new MachineSource(this);
 		internalInventory = new CondenserInventory();
-		setupCondenserTile();
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			this.gridProxy.setIdlePowerUsage(TileEMCCondenser.IDLE_POWER);
+			this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+		}
 	}
 	
-	public TileEMCCondenser setupCondenserTile() {
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			this.gridProxy.setIdlePowerUsage( TileEMCCondenser.IDLE_POWER );
-			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		}
-
-		return this;
-	}
-
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection arg0) {
+	public AECableType getCableConnectionType(ForgeDirection dir) {
 		return AECableType.SMART;
 	}
 
 	@Override
 	public DimensionalCoord getLocation() {
-		return new DimensionalCoord( this );
+		return new DimensionalCoord(this);
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection arg0) {
+	public int[] getAccessibleSlotsBySide(ForgeDirection dir) {
 		return new int[] {0,1,2,3};
+	}
+	
+	@Override
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side) {
+		return false;
 	}
 
 	@Override
@@ -96,38 +95,41 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	
 	@TileEvent(TileEventType.TICK)
 	public void onTick() {
-		if(!isActive()) {
-			return;
-		}
-		try	{
-			for(int i = 0; i < 3; i++) {
-				if(internalInventory.getStackInSlot(i) != null){
-					float itemEMC = EnergyValueRegistryProxy.getEnergyValue(internalInventory.getStackInSlot(i).getItem()).getValue();
-					if(currentEMC + itemEMC <= Float.MAX_VALUE) {
-						IEnergyGrid eGrid = gridProxy.getEnergy();
-						double powerRequired = itemEMC * 0.01d;
-						double powerExtracted = eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-						if(powerExtracted - powerRequired <= 0.0d) {
-							eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
-							internalInventory.decrStackSize(i, 1);
-							currentEMC += itemEMC;
-							break;
+		if(!worldObj.isRemote) {
+			if(!isActive()) {
+				return;
+			}
+			try	{
+				for(int i = 0; i < SLOT_COUNT; i++) {
+					if(internalInventory.getStackInSlot(i) != null){
+						float itemEMC = EnergyValueRegistryProxy.getEnergyValue(internalInventory.getStackInSlot(i).getItem()).getValue();
+						if(currentEMC + itemEMC <= Float.MAX_VALUE) {
+							IEnergyGrid eGrid = gridProxy.getEnergy();
+							double powerRequired = itemEMC * 0.01d;
+							if(eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) >= powerRequired) {
+								eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
+								internalInventory.decrStackSize(i, 1);
+								currentEMC += itemEMC;
+								break;
+							}
 						}
 					}
 				}
-			}
-			
-			if(currentEMC >= EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.EMCCrystal).getValue()) {
-				IStorageGrid storageGrid = this.gridProxy.getStorage();
-	
-				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.EMCCrystal)), Actionable.SIMULATE, this.mySource);
-	
-				if((rejected == null) || (rejected.getStackSize() == 0)) {
-					storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.EMCCrystal)), Actionable.MODULATE, this.mySource);
-					currentEMC -= EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.EMCCrystal).getValue();
+				
+				float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.EMCCrystal).getValue();
+				if(currentEMC >= crystalEMC) {
+					IAEItemStack crystal = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.EMCCrystal));
+					IStorageGrid storageGrid = this.gridProxy.getStorage();
+		
+					IAEItemStack rejected = storageGrid.getItemInventory().injectItems(crystal, Actionable.SIMULATE, this.mySource);
+		
+					if(rejected == null || rejected.getStackSize() == 0) {
+						storageGrid.getItemInventory().injectItems(crystal, Actionable.MODULATE, this.mySource);
+						currentEMC -= crystalEMC;
+					}
 				}
-			}
-		} catch(GridAccessException e) {}
+			} catch(GridAccessException e) {}
+		}
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
@@ -150,7 +152,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	
 	@Override
 	public void getDrops(final World world, final int x, final int y, final int z, final ArrayList<ItemStack> drops) {		
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < SLOT_COUNT; i++) {
 			ItemStack item = this.internalInventory.slots[i];
 
 			if(item != null) {
@@ -172,15 +174,6 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	public void onBreak() {
 		gridProxy.invalidate();
 	}
-	
-	/*@Override
-	public void onReady() {
-		try {
-			gridProxy.onReady();
-		} catch(GridException e) {
-			isActive = false;
-		}
-	}*/
 	
 	@TileEvent(TileEventType.NETWORK_READ)
 	@SideOnly(Side.CLIENT)

@@ -40,6 +40,7 @@ public class EquivalentEnergistics {
 	public static Logger logger;
 
 	public static Item EMCCrystal;
+	
 	public static Block EMCCondenser;
 	public static Block EMCCrafter;
 	

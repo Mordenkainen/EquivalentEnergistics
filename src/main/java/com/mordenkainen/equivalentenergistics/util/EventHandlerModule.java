@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 public class EventHandlerModule {
-	public EventHandlerModule(){
+	public EventHandlerModule() {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	

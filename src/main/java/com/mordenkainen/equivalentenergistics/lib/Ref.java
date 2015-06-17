@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.lib;
 
-public class Ref {
+public final class Ref {
 	public static final String MOD_ID = "equivalentenergistics";
 	public static final String MOD_VERSION = "0.1";
 	public static final String MOD_NAME = "Equivalent Energistics";
@@ -8,7 +8,9 @@ public class Ref {
 	
 	public static final String TEXTURE_PREFIX = MOD_ID + ":";
 	
-	public static String getId(String str) {
+	private Ref () {}
+	
+	public static String getId(final String str) {
 		return MOD_ID + ":" + str;
 	}
 }

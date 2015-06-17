@@ -13,8 +13,7 @@ public class InternalInventory implements IInventory {
 	public String customName;
 	private int stackLimit;
 	
-	public InternalInventory(final String customName, final int size, final int stackLimit)
-	{
+	public InternalInventory(final String customName, final int size, final int stackLimit)	{
 		this.slots = new ItemStack[size];
 		this.customName = customName;
 		this.stackLimit = stackLimit;
@@ -26,8 +25,7 @@ public class InternalInventory implements IInventory {
 	}
 
 	@Override
-	public ItemStack getStackInSlot(final int index)
-	{
+	public ItemStack getStackInSlot(final int index) {
 		return slots[index];
 	}
 
@@ -60,14 +58,12 @@ public class InternalInventory implements IInventory {
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(final int slotId)
-	{
+	public ItemStack getStackInSlotOnClosing(final int slotId) {
 		return slots[slotId];
 	}
 
 	@Override
-	public void setInventorySlotContents(final int slotId, final ItemStack itemStack)
-	{
+	public void setInventorySlotContents(final int slotId, final ItemStack itemStack) {
 		if((itemStack != null) && (itemStack.stackSize > getInventoryStackLimit())) {
 			itemStack.stackSize = getInventoryStackLimit();
 		}
@@ -111,8 +107,7 @@ public class InternalInventory implements IInventory {
 		return false;
 	}
 
-	public final void loadFromNBT(final NBTTagCompound data, final String tagName)
-	{
+	public final void loadFromNBT(final NBTTagCompound data, final String tagName) {
 		if(data == null) {
 			return;
 		}
@@ -134,8 +129,7 @@ public class InternalInventory implements IInventory {
 		}
 	}
 	
-	public final void saveToNBT(final NBTTagCompound data, final String tagName)
-	{
+	public final void saveToNBT(final NBTTagCompound data, final String tagName) {
 		if(data == null) {
 			return;
 		}

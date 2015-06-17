@@ -8,6 +8,8 @@ public class ConfigManager {
 	public static Configuration config;
 	public static int EMCValue;
 	
+	private ConfigManager() {}
+	
     public static void init(File file) {
     	config = new Configuration(file);
 
