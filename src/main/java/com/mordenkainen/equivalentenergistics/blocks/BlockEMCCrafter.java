@@ -1,11 +1,13 @@
 package com.mordenkainen.equivalentenergistics.blocks;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.pahimar.ee3.util.ItemHelper;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -77,7 +79,7 @@ public class BlockEMCCrafter extends BlockContainer {
 		TileEntity tileCrafter = world.getTileEntity(x, y, z);
 
 		if(tileCrafter instanceof TileEMCCrafter) {
-			if(player.getHeldItem() == null) {
+			if(player.getHeldItem() == null && ((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
 				ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
 				if(existingTome != null) {
 					if(!world.isRemote) {
@@ -86,7 +88,7 @@ public class BlockEMCCrafter extends BlockContainer {
 					((TileEMCCrafter)tileCrafter).setCurrentTome(null);
 					return true;
 				}
-			} else if (player.getHeldItem().getItem() == GameRegistry.findItem("EE3", "alchemicalTome") && ((TileEMCCrafter)tileCrafter).getCurrentTome() == null) {
+			} else if (player.getHeldItem() != null && player.getHeldItem().getItem() == GameRegistry.findItem("EE3", "alchemicalTome") && ItemHelper.hasOwnerUUID(player.getHeldItem()) && ((TileEMCCrafter)tileCrafter).getCurrentTome() == null) {
 				((TileEMCCrafter)tileCrafter).setCurrentTome(player.getHeldItem().copy());
 				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
 					player.inventory.mainInventory[player.inventory.currentItem];

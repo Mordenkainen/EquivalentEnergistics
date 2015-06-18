@@ -21,13 +21,8 @@ public class EventHandlerModule {
 	@SubscribeEvent
 	public void onPlayerKnowledgeChange(PlayerKnowledgeEvent event) {
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			for(int i = 0; i<MinecraftServer.getServer().worldServers.length; i++) {
-				List tes = MinecraftServer.getServer().worldServers[i].loadedTileEntityList;
-				for(Object te :tes.toArray()) {
-					if(te instanceof TileEMCCrafter) {
-						((TileEMCCrafter)te).playerKnowledgeChange(event.playerUUID);
-					}
-				}
+			for(TileEMCCrafter crafter : TileEMCCrafter.crafterTiles) {
+				crafter.playerKnowledgeChange(event.playerUUID);
 			}
 		}
 	}
@@ -35,13 +30,8 @@ public class EventHandlerModule {
 	@SubscribeEvent
 	public void onEnergyValueChange(EnergyValueEvent event) {
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			for(int i = 0; i<MinecraftServer.getServer().worldServers.length; i++) {
-				List tes = MinecraftServer.getServer().worldServers[i].loadedTileEntityList;
-				for(Object te :tes.toArray()) {
-					if(te instanceof TileEMCCrafter) {
-						((TileEMCCrafter)te).energyValueEvent();
-					}
-				}
+			for(TileEMCCrafter crafter : TileEMCCrafter.crafterTiles) {
+				crafter.energyValueEvent();
 			}
 		}
 	}
