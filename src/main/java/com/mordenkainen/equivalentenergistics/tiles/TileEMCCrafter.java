@@ -124,7 +124,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 
 	@Override
 	protected ItemStack getItemFromTile(final Object obj) {
-		return new ItemStack(Item.getItemFromBlock(EquivalentEnergistics.EMCCondenser));
+		return new ItemStack(Item.getItemFromBlock(EquivalentEnergistics.blockEMCCondenser));
 	}
 	
 	public void onBreak() {
@@ -168,11 +168,11 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		
 		
 		try {
-			float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.EMCCrystal).getValue();
+			float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.itemEMCCrystal).getValue();
 			if(currentEMC >= crystalEMC) {
 				int numCrystals = (int)(currentEMC/crystalEMC);
 				IStorageGrid storageGrid = gridProxy.getStorage();
-				IAEItemStack crystals = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.EMCCrystal, numCrystals));
+				IAEItemStack crystals = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, numCrystals));
 	
 				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(crystals, Actionable.SIMULATE, mySource);
 	

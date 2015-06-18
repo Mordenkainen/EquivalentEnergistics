@@ -39,10 +39,10 @@ public class EquivalentEnergistics {
 	
 	public static Logger logger;
 
-	public static Item EMCCrystal;
+	public static Item itemEMCCrystal;
 	
-	public static Block EMCCondenser;
-	public static Block EMCCrafter;
+	public static Block blockEMCCondenser;
+	public static Block blockEMCCrafter;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -52,22 +52,22 @@ public class EquivalentEnergistics {
 	
     @EventHandler
     public void init(FMLInitializationEvent event) {
-    	EMCCrystal = new ItemEMCCrystal();
-    	GameRegistry.registerItem(EMCCrystal, "EMCCrystal");
+    	itemEMCCrystal = new ItemEMCCrystal();
+    	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
     	
-    	EMCCondenser = new BlockEMCCondenser();
-    	GameRegistry.registerBlock(EMCCondenser, "EMCCondenser");
+    	blockEMCCondenser = new BlockEMCCondenser();
+    	GameRegistry.registerBlock(blockEMCCondenser, "EMCCondenser");
     	GameRegistry.registerTileEntity(TileEMCCondenser.class, Ref.MOD_ID + "TileEMCCondenser");
     	
-    	EMCCrafter = new BlockEMCCrafter();
-    	GameRegistry.registerBlock(EMCCrafter, "EMCCrafter");
+    	blockEMCCrafter = new BlockEMCCrafter();
+    	GameRegistry.registerBlock(blockEMCCrafter, "EMCCrafter");
     	GameRegistry.registerTileEntity(TileEMCCrafter.class, Ref.MOD_ID + "TileEMCCrafter");
     	new EventHandlerModule();
     }
     
     @EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-    	EnergyValueRegistryProxy.addPreAssignedEnergyValue(EMCCrystal, ConfigManager.EMCValue);
-    	AbilityRegistryProxy.setAsNotLearnable(EMCCrystal);
+    	EnergyValueRegistryProxy.addPreAssignedEnergyValue(itemEMCCrystal, ConfigManager.crystalEMCValue);
+    	AbilityRegistryProxy.setAsNotLearnable(itemEMCCrystal);
     }
 }

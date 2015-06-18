@@ -23,7 +23,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 
 	private void calculateContent(ItemStack craftingResult) {
 		float outputEMC = EnergyValueRegistryProxy.getEnergyValue(craftingResult).getValue();
-		float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.EMCCrystal).getValue();
+		float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.itemEMCCrystal).getValue();
 		int crystalCount, itemCount;
 		if(outputEMC <= crystalEMC) {
 			crystalCount = 1;
@@ -38,10 +38,10 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 		ingredients = new IAEItemStack[(int)Math.ceil(crystalCount/64.0D)];
 		int lastItem = 0;
 		while(crystalCount > 64) {
-			ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.EMCCrystal, 64));
+			ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 64));
 			crystalCount -= 64;
 		}
-		ingredients[lastItem] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.EMCCrystal, crystalCount));
+		ingredients[lastItem] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, crystalCount));
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 		IAEItemStack ingStack = ingredients[slotIndex];
 
 		if((ingStack == null) || (ingStack.getItem() == null) || (repStack == null) || (repStack.getItem() == null) || 
-				repStack.getItem() != EquivalentEnergistics.EMCCrystal || repStack.stackSize < ingStack.getItemStack().stackSize) {
+				repStack.getItem() != EquivalentEnergistics.itemEMCCrystal || repStack.stackSize < ingStack.getItemStack().stackSize) {
 			return false;
 		}
 		

@@ -6,7 +6,11 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ConfigManager {
 	public static Configuration config;
-	public static int EMCValue;
+	public static float crystalEMCValue;
+	public static int itemsPerTick;
+	public static int crystalsPerTick;
+	public static double condenserIdlePower;
+	public static double condenserActivePower;
 	
 	private ConfigManager() {}
 	
@@ -14,7 +18,11 @@ public class ConfigManager {
     	config = new Configuration(file);
 
         config.load();
-        EMCValue = config.get("General", "CrystalEMC", 256).getInt(256);
+        crystalEMCValue = (float)config.get("General", "CrystalEMC", 256).getDouble(256);
+        itemsPerTick = config.get("Condenser", "ItemsCondensedPerTick", 8).getInt(8);
+        crystalsPerTick = config.get("Condenser", "CrystalsProducedPerTick", 16).getInt(16);
+        condenserIdlePower = config.get("Condenser", "IdlePowerDrain", 0).getDouble(0);
+        condenserActivePower = config.get("Condenser", "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
         
         if (config.hasChanged()) {
        		config.save();

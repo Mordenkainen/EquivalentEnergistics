@@ -19,10 +19,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class BlockEMCCondenser extends BlockContainer {
 
+	@SideOnly(Side.CLIENT)
+	IIcon[] icons;
+	
 	public BlockEMCCondenser() {
 		super(Material.rock);
 		setHardness(1.5f);
@@ -39,7 +43,18 @@ public class BlockEMCCondenser extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public final void registerBlockIcons(final IIconRegister register) {
-		blockIcon = Blocks.stone.getIcon(0, 0);
+		icons = new IIcon[2];
+		icons[0] = register.registerIcon(Ref.getId("EMCCondenserTop"));
+		icons[1] = register.registerIcon(Ref.getId("EMCCondenserSide"));
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public IIcon getIcon(int side, int meta) {
+		if(side == 0 || side == 1) {
+			return icons[0];
+		}
+		return icons[1];
 	}
 
 	@Override

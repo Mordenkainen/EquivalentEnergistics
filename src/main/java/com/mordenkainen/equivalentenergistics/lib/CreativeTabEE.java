@@ -13,7 +13,7 @@ public class CreativeTabEE extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-		return EquivalentEnergistics.EMCCrystal;
+		return EquivalentEnergistics.itemEMCCrystal;
 	}
 
 }
