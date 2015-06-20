@@ -7,6 +7,7 @@ public final class Ref {
 	public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2;required-after:EE3";
 	
 	public static final String TEXTURE_PREFIX = MOD_ID + ":";
+	public static final String PROXY_LOC = "com.mordenkainen.equivalentenergistics.proxy.";
 	
 	private Ref () {}
 	

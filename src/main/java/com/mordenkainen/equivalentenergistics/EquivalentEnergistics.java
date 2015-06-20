@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -23,6 +24,7 @@ import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.EventHandlerModule;
@@ -34,6 +36,9 @@ public class EquivalentEnergistics {
     
 	@Instance(Ref.MOD_ID)
 	public static EquivalentEnergistics instance;
+	
+	@SidedProxy(clientSide = Ref.PROXY_LOC + "ClientProxy", serverSide = Ref.PROXY_LOC + "CommonProxy")
+	public static CommonProxy proxy;
 	
 	public static CreativeTabs tabEE = new CreativeTabEE(CreativeTabs.getNextID(), Ref.MOD_ID);
 	
@@ -63,6 +68,7 @@ public class EquivalentEnergistics {
     	GameRegistry.registerBlock(blockEMCCrafter, "EMCCrafter");
     	GameRegistry.registerTileEntity(TileEMCCrafter.class, Ref.MOD_ID + "TileEMCCrafter");
     	new EventHandlerModule();
+    	proxy.initRenderers();
     }
     
     @EventHandler

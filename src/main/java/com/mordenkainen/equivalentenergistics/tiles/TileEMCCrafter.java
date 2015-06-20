@@ -315,4 +315,10 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		}
 		return false;
 	}
+
+	public AECableType getCableConnectionType(ForgeDirection dir)
+	{
+	     return AECableType.COVERED;
+	}
 }
+

@@ -148,7 +148,7 @@ public class InternalInventory implements IInventory {
 			}
 		}
 
-		if(invList.tagCount() > 0)	{
+		if(invList.tagCount() > 0) {
 			data.setTag(tagName, invList);
 		}
 	}

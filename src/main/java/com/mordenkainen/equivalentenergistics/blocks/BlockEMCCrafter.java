@@ -35,15 +35,28 @@ public class BlockEMCCrafter extends BlockContainer {
 	}
 
 	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
+	
+	@Override
+	public int getRenderType() {
+		return EquivalentEnergistics.proxy.EMCCrafterRenderer;
+	}
+	
+	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEMCCrafter();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public final void registerBlockIcons(final IIconRegister register) {
-		blockIcon = Blocks.stone.getIcon(0, 0);
-	}
+	public final void registerBlockIcons(final IIconRegister register) {}
 	
 	@Override
 	public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
