@@ -21,6 +21,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
@@ -69,6 +70,7 @@ public class EquivalentEnergistics {
     	GameRegistry.registerTileEntity(TileEMCCrafter.class, Ref.MOD_ID + "TileEMCCrafter");
     	new EventHandlerModule();
     	proxy.initRenderers();
+    	CraftingManager.initRecipes();
     }
     
     @EventHandler
