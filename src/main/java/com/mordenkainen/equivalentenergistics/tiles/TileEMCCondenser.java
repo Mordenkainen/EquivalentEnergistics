@@ -105,14 +105,16 @@ public class TileEMCCondenser extends AENetworkInvTile {
 						if(EnergyValueRegistryProxy.hasEnergyValue(internalInventory.getStackInSlot(i))) {
 							float itemEMC = EnergyValueRegistryProxy.getEnergyValue(internalInventory.getStackInSlot(i).getItem()).getValue();
 							int itemAvail = Math.min(ConfigManager.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
-							if(itemAvail > 0) {
-								IEnergyGrid eGrid = gridProxy.getEnergy();
+							IEnergyGrid eGrid = gridProxy.getEnergy();
+							while(itemAvail > 0) {
 								double powerRequired = itemEMC * itemAvail * ConfigManager.condenserActivePower;
 								if(eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) >= powerRequired) {
 									eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
 									internalInventory.decrStackSize(i, itemAvail);
 									currentEMC += itemEMC * itemAvail;
 									break;
+								} else {
+									itemAvail--;
 								}
 							}
 						} else {
