@@ -57,27 +57,21 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 		}
 	}
 	
-	boolean isCableConnected(IBlockAccess world, int x, int y, int z, ForgeDirection side)
-	{
-     int tileYPos = y + side.offsetY;
-     if ((-1 < tileYPos) && (tileYPos < 256))
-     {
-       TileEntity ne = world.getTileEntity(x + side.offsetX, tileYPos, z + side.offsetZ);
-       if (((ne instanceof IGridHost)) && ((ne instanceof IPartHost)))
-       {
-         IPartHost ph = (IPartHost)ne;
-         IPart pcx = ph.getPart(ForgeDirection.UNKNOWN);
-         if ((pcx instanceof PartCable))
-         {
-           PartCable pc = (PartCable)pcx;
-           if (pc.isConnected(side.getOpposite()))
-           {
-             return true;
-           }
-         }
-       }
-     }
-     return false;
-   }
-
+	boolean isCableConnected(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		int tileYPos = y + side.offsetY;
+		if ((-1 < tileYPos) && (tileYPos < 256)) {
+			TileEntity ne = world.getTileEntity(x + side.offsetX, tileYPos, z + side.offsetZ);
+			if (((ne instanceof IGridHost)) && ((ne instanceof IPartHost))) {
+				IPartHost ph = (IPartHost)ne;
+				IPart pcx = ph.getPart(ForgeDirection.UNKNOWN);
+				if ((pcx instanceof PartCable)) {
+					PartCable pc = (PartCable)pcx;
+					if (pc.isConnected(side.getOpposite())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 }

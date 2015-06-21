@@ -9,7 +9,7 @@ public final class Ref {
 	public static final String TEXTURE_PREFIX = MOD_ID + ":";
 	public static final String PROXY_LOC = "com.mordenkainen.equivalentenergistics.proxy.";
 	
-	private Ref () {}
+	private Ref() {}
 	
 	public static String getId(final String str) {
 		return MOD_ID + ":" + str;

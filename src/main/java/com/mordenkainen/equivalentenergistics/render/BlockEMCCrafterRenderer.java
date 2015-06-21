@@ -33,8 +33,6 @@ public class BlockEMCCrafterRenderer implements ISimpleBlockRenderingHandler {
 
 	@Override
 	public int getRenderId() {
-		// TODO Auto-generated method stub
 		return EquivalentEnergistics.proxy.EMCCrafterRenderer;
 	}
-
 }

@@ -51,7 +51,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	
 	private MachineSource mySource;
 	private CondenserInventory internalInventory;
-	public static final int SLOT_COUNT = 1;
+	public static final int SLOT_COUNT = 4;
 	private static final String INVSLOTS = "items";
 	private float currentEMC = 0.0f;
 	private boolean isActive;
@@ -77,8 +77,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection dir) {
-		//return new int[] {0,1,2,3};
-		return new int[] {0};
+		return new int[] {0,1,2,3};
 	}
 	
 	@Override
@@ -103,7 +102,6 @@ public class TileEMCCondenser extends AENetworkInvTile {
 			try	{
 				for(int i = 0; i < SLOT_COUNT; i++) {
 					if(internalInventory.getStackInSlot(i) != null){
-						System.out.println("Items: " + internalInventory.getStackInSlot(i).stackSize);
 						if(EnergyValueRegistryProxy.hasEnergyValue(internalInventory.getStackInSlot(i))) {
 							float itemEMC = EnergyValueRegistryProxy.getEnergyValue(internalInventory.getStackInSlot(i).getItem()).getValue();
 							int itemAvail = Math.min(ConfigManager.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
@@ -141,7 +139,6 @@ public class TileEMCCondenser extends AENetworkInvTile {
 					if(rejected == null || rejected.getStackSize() == 0) {
 						storageGrid.getItemInventory().injectItems(crystal, Actionable.MODULATE, this.mySource);
 						currentEMC -= crystalEMC * numCrystals;
-						System.out.println("Crystals: " + numCrystals);
 					}
 				}
 			} catch(GridAccessException e) {}

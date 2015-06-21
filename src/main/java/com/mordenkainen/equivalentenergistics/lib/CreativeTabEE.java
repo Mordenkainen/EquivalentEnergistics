@@ -15,5 +15,4 @@ public class CreativeTabEE extends CreativeTabs {
 	public Item getTabIconItem() {
 		return EquivalentEnergistics.itemEMCCrystal;
 	}
-
 }

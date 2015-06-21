@@ -91,7 +91,7 @@ public class BlockEMCCrafter extends BlockContainer {
 											final float hitX, final float hitY, final float hitZ) {
 		TileEntity tileCrafter = world.getTileEntity(x, y, z);
 
-		if(tileCrafter instanceof TileEMCCrafter) {
+		if(tileCrafter instanceof TileEMCCrafter && !((TileEMCCrafter)tileCrafter).isCrafting()) {
 			if(player.getHeldItem() == null && ((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
 				ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
 				if(existingTome != null) {
@@ -101,7 +101,7 @@ public class BlockEMCCrafter extends BlockContainer {
 					((TileEMCCrafter)tileCrafter).setCurrentTome(null);
 					return true;
 				}
-			} else if (player.getHeldItem() != null && player.getHeldItem().getItem() == GameRegistry.findItem("EE3", "alchemicalTome") && ItemHelper.hasOwnerUUID(player.getHeldItem()) && ((TileEMCCrafter)tileCrafter).getCurrentTome() == null) {
+			} else if (player.getHeldItem() != null && player.getHeldItem().getItem() == GameRegistry.findItem("EE3", "alchemicalTome") && ItemHelper.hasOwnerUUID(player.getHeldItem()) && ((TileEMCCrafter)tileCrafter).getCurrentTome() == null && ((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
 				((TileEMCCrafter)tileCrafter).setCurrentTome(player.getHeldItem().copy());
 				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
 					player.inventory.mainInventory[player.inventory.currentItem];
