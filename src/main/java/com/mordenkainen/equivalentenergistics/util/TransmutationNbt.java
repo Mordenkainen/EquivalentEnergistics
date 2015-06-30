@@ -20,12 +20,12 @@ public class TransmutationNbt extends WorldSavedData {
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		int playerCount = comp.getInteger("NumRecords");
-		for(int i = 0; i < playerCount; i++) {
+		for(int playerNum = 0; playerNum < playerCount; playerNum++) {
 			ArrayList<ItemStack> playerData = new ArrayList<ItemStack>();
-			NBTTagCompound playerNBT = (NBTTagCompound) comp.getTag("Player-" + i);
+			NBTTagCompound playerNBT = (NBTTagCompound) comp.getTag("Player-" + playerNum);
 			int stackCount = playerNBT.getInteger("StackCount");
-			for(int s = 0; s < stackCount; s ++) {
-				ItemStack newStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) playerNBT.getTag("Stack" + s));
+			for(int currentStack = 0; currentStack < stackCount; currentStack++) {
+				ItemStack newStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) playerNBT.getTag("Stack" + currentStack));
 				playerData.add(newStack);
 			}
 			transmutations.put(playerNBT.getString("UUID"), playerData);

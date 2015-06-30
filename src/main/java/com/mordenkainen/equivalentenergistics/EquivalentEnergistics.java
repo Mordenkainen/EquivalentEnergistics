@@ -64,7 +64,7 @@ public class EquivalentEnergistics {
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		WorldServer worldServer = server.worldServers[0];
 
-		transmutations = (TransmutationNbt) worldServer.mapStorage.loadData(TransmutationNbt.class, "PETransmutations");
+		transmutations = (TransmutationNbt)worldServer.mapStorage.loadData(TransmutationNbt.class, "PETransmutations");
 		if (transmutations == null) {
 			transmutations = new TransmutationNbt("PETransmutations");
 			worldServer.mapStorage.setData("PETransmutations", transmutations);
@@ -82,11 +82,6 @@ public class EquivalentEnergistics {
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
     	
-    	if(Loader.isModLoaded("ProjectE")) {
-	    	itemEMCBook = new ItemEMCBook();
-	    	GameRegistry.registerItem(itemEMCBook, "EMCBook");
-    	}
-    	
     	blockEMCCondenser = new BlockEMCCondenser();
     	GameRegistry.registerBlock(blockEMCCondenser, "EMCCondenser");
     	GameRegistry.registerTileEntity(TileEMCCondenser.class, Ref.MOD_ID + "TileEMCCondenser");
@@ -94,6 +89,12 @@ public class EquivalentEnergistics {
     	blockEMCCrafter = new BlockEMCCrafter();
     	GameRegistry.registerBlock(blockEMCCrafter, "EMCCrafter");
     	GameRegistry.registerTileEntity(TileEMCCrafter.class, Ref.MOD_ID + "TileEMCCrafter");
+    	
+    	if(Loader.isModLoaded("ProjectE")) {
+	    	itemEMCBook = new ItemEMCBook();
+	    	GameRegistry.registerItem(itemEMCBook, "EMCBook");
+    	}
+    	
     	new EventHandlerModule();
     	proxy.initRenderers();
     	CraftingManager.initRecipes();

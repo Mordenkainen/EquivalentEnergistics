@@ -20,9 +20,6 @@ public class ConfigManager {
 	private ConfigManager() {}
 	
     public static void init(File file) {
-    	if(Loader.isModLoaded("EE3")) {
-    		useEE3 = true;
-    	}
     	config = new Configuration(file);
 
         config.load();
@@ -34,6 +31,10 @@ public class ConfigManager {
         crafterIdlePower = config.get("Crafter", "IdlePowerDrain", 0.0).getDouble(0.0);
         crafterActivePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
         craftingTime = config.get("Crafter", "TicksPerCrafting", 7).getInt(7);
+        
+        if(Loader.isModLoaded("EE3")) {
+    		useEE3 = true;
+    	}
         useEE3 = config.get("General", "UseEE3", useEE3).getBoolean(useEE3);
         
         if (config.hasChanged()) {

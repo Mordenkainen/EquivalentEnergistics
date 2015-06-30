@@ -22,7 +22,7 @@ public class EMCCraftingPattern extends EECraftingPattern {
 			float outputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult);
 			float crystalEMC = EMCUtils.getInstance().getCrystalEMC();
 			int tier0CrystalCount, tier1CrystalCount, tier2CrystalCount, itemCount;
-			tier0CrystalCount = tier1CrystalCount = tier2CrystalCount = 0;
+			tier1CrystalCount = tier2CrystalCount = 0;
 			if(outputEMC <= crystalEMC) {
 				tier0CrystalCount = 1;
 				itemCount = (int)Math.min(crystalEMC/outputEMC, 64);

@@ -14,5 +14,5 @@ tile.equivalentenergistics:EMCCrafter.name=EMC Assembler
 # Messages
 message.book.clear=Owner Cleared!
 message.book.wrongowner=You are not the owner of this Tome.
-message.book.linked=Tome linked!
+message.book.link=Tome linked!
 
