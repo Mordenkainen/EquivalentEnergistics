@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 import com.mordenkainen.equivalentenergistics.util.InternalInventory;
-import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -45,7 +45,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	
 		@Override
 		public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-			return EnergyValueRegistryProxy.hasEnergyValue(itemStack);
+			return EMCUtils.getInstance().hasEMC(itemStack);
 		}
 	}
 	
@@ -102,8 +102,10 @@ public class TileEMCCondenser extends AENetworkInvTile {
 			try	{
 				for(int i = 0; i < SLOT_COUNT; i++) {
 					if(internalInventory.getStackInSlot(i) != null){
-						if(EnergyValueRegistryProxy.hasEnergyValue(internalInventory.getStackInSlot(i))) {
-							float itemEMC = EnergyValueRegistryProxy.getEnergyValue(internalInventory.getStackInSlot(i).getItem()).getValue();
+						if(EMCUtils.getInstance().hasEMC(internalInventory.getStackInSlot(i))) {
+							ItemStack testItem = internalInventory.getStackInSlot(i).copy();
+							testItem.stackSize = 1;
+							float itemEMC = EMCUtils.getInstance().getEnergyValue(testItem);
 							int itemAvail = Math.min(ConfigManager.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
 							IEnergyGrid eGrid = gridProxy.getEnergy();
 							while(itemAvail > 0) {
@@ -130,7 +132,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 					}
 				}
 				
-				float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.itemEMCCrystal).getValue();
+				float crystalEMC = EMCUtils.getInstance().getCrystalEMC();
 				if(currentEMC >= crystalEMC) {
 					int numCrystals = Math.min(ConfigManager.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
 					IAEItemStack crystal = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, numCrystals));

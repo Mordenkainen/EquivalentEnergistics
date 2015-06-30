@@ -6,9 +6,13 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
 
 import org.apache.logging.log4j.Logger;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -16,21 +20,23 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 import com.mordenkainen.equivalentenergistics.util.EventHandlerModule;
-import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
-import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
+import com.mordenkainen.equivalentenergistics.util.TransmutationNbt;
 
 @Mod(modid = Ref.MOD_ID, name = Ref.MOD_NAME, version = Ref.MOD_VERSION, dependencies = Ref.MOD_DEPENDENCIES)
 public class EquivalentEnergistics {
@@ -46,9 +52,24 @@ public class EquivalentEnergistics {
 	public static Logger logger;
 
 	public static Item itemEMCCrystal;
+	public static Item itemEMCBook;
 	
 	public static Block blockEMCCondenser;
 	public static Block blockEMCCrafter;
+
+	public static TransmutationNbt transmutations;
+	
+	@EventHandler
+	public void onServerStarting(FMLServerStartingEvent event) {
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		WorldServer worldServer = server.worldServers[0];
+
+		transmutations = (TransmutationNbt) worldServer.mapStorage.loadData(TransmutationNbt.class, "PETransmutations");
+		if (transmutations == null) {
+			transmutations = new TransmutationNbt("PETransmutations");
+			worldServer.mapStorage.setData("PETransmutations", transmutations);
+		}
+	}
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -60,6 +81,11 @@ public class EquivalentEnergistics {
     public void init(FMLInitializationEvent event) {
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
+    	
+    	if(Loader.isModLoaded("ProjectE")) {
+	    	itemEMCBook = new ItemEMCBook();
+	    	GameRegistry.registerItem(itemEMCBook, "EMCBook");
+    	}
     	
     	blockEMCCondenser = new BlockEMCCondenser();
     	GameRegistry.registerBlock(blockEMCCondenser, "EMCCondenser");
@@ -75,7 +101,6 @@ public class EquivalentEnergistics {
     
     @EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-    	EnergyValueRegistryProxy.addPreAssignedEnergyValue(itemEMCCrystal, ConfigManager.crystalEMCValue);
-    	AbilityRegistryProxy.setAsNotLearnable(itemEMCCrystal);
+    	EMCUtils.getInstance().setCrystalEMC(ConfigManager.crystalEMCValue);
     }
 }

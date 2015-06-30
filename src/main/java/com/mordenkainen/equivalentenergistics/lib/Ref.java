@@ -4,7 +4,7 @@ public final class Ref {
 	public static final String MOD_ID = "equivalentenergistics";
 	public static final String MOD_VERSION = "0.1";
 	public static final String MOD_NAME = "Equivalent Energistics";
-	public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2;required-after:EE3";
+	public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2;after:EE3;after:ProjectE";
 	
 	public static final String TEXTURE_PREFIX = MOD_ID + ":";
 	public static final String PROXY_LOC = "com.mordenkainen.equivalentenergistics.proxy.";

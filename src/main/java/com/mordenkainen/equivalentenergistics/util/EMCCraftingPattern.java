@@ -1,119 +1,78 @@
 package com.mordenkainen.equivalentenergistics.util;
 
-import java.util.ArrayList;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
 
-public class EMCCraftingPattern implements ICraftingPatternDetails {
-	private ItemStack book;
-	private IAEItemStack[] ingredients;
-	private IAEItemStack result;
-	public float outputEMC, inputEMC;
+import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+
+public class EMCCraftingPattern extends EECraftingPattern {
+	public boolean valid = true;
 	
-	public EMCCraftingPattern(final ItemStack book, final ItemStack craftingResult) {
-		this.book = book;
+	public EMCCraftingPattern(final ItemStack craftingResult) {
 		calculateContent(craftingResult);
 	}
 
 	private void calculateContent(ItemStack craftingResult) {
-		float outputEMC = EnergyValueRegistryProxy.getEnergyValue(craftingResult).getValue();
-		float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.itemEMCCrystal).getValue();
-		int crystalCount, itemCount;
-		if(outputEMC <= crystalEMC) {
-			crystalCount = 1;
-			itemCount = (int)Math.min(crystalEMC/outputEMC, 64);
+		if(!EMCUtils.getInstance().hasEMC(craftingResult)) {
+			valid = false;
 		} else {
-			itemCount = 1;
-			crystalCount = (int)Math.ceil(outputEMC/crystalEMC);
-		}
-		inputEMC = crystalEMC * crystalCount;
-		this.outputEMC = outputEMC * itemCount;
-		result = AEApi.instance().storage().createItemStack(new ItemStack(craftingResult.getItem(), itemCount, craftingResult.getItemDamage()));
-		ingredients = new IAEItemStack[(int)Math.ceil(crystalCount/64.0D)];
-		int lastItem = 0;
-		while(crystalCount > 64) {
-			ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 64));
-			crystalCount -= 64;
-		}
-		ingredients[lastItem] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, crystalCount));
-	}
-
-	@Override
-	public ItemStack getPattern() {
-		return book;
-	}
-
-	@Override
-	public boolean isValidItemForSlot(final int slotIndex, final ItemStack repStack, final World world) {
-		IAEItemStack ingStack = ingredients[slotIndex];
-
-		if((ingStack == null) || (ingStack.getItem() == null) || (repStack == null) || (repStack.getItem() == null) || 
-				repStack.getItem() != EquivalentEnergistics.itemEMCCrystal || repStack.stackSize < ingStack.getItemStack().stackSize) {
-			return false;
-		}
-		
-		return true;
-	}
-
-	@Override
-	public boolean isCraftable() {
-		return false;
-	}
-
-	@Override
-	public IAEItemStack[] getInputs() {
-		return ingredients;
-	}
-
-	@Override
-	public IAEItemStack[] getCondensedInputs() {
-		ArrayList<IAEItemStack> cond = new ArrayList<IAEItemStack>();
-
-		for(int index = 0; index < this.ingredients.length; index++) {
-			if(ingredients[index] != null) {
-				cond.add(ingredients[index]);
+			float outputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult);
+			float crystalEMC = EMCUtils.getInstance().getCrystalEMC();
+			int tier0CrystalCount, tier1CrystalCount, tier2CrystalCount, itemCount;
+			tier0CrystalCount = tier1CrystalCount = tier2CrystalCount = 0;
+			if(outputEMC <= crystalEMC) {
+				tier0CrystalCount = 1;
+				itemCount = (int)Math.min(crystalEMC/outputEMC, 64);
+			} else {
+				itemCount = 1;
+				tier0CrystalCount = (int)Math.ceil(outputEMC/crystalEMC);
+			}
+			this.outputEMC = outputEMC * itemCount;
+			ItemStack outputStack = craftingResult.copy();
+			outputStack.stackSize = itemCount;
+			result = AEApi.instance().storage().createItemStack(outputStack);
+			
+			if(tier0CrystalCount >= Math.pow(576, 2)) {
+				int numCrystals = (int)Math.floor(tier0CrystalCount/Math.pow(576, 2));
+				tier2CrystalCount = numCrystals;
+				tier0CrystalCount -= numCrystals * Math.pow(576, 2);
+			}
+			if(tier0CrystalCount >= 576) {
+				int numCrystals = (int)Math.floor(tier0CrystalCount/576);
+				tier1CrystalCount = numCrystals;
+				tier0CrystalCount -= numCrystals * 576;
+			}
+			if(getStackCount(tier0CrystalCount) + getStackCount(tier1CrystalCount) + getStackCount(tier2CrystalCount) > 9) {
+				tier1CrystalCount++;
+				tier0CrystalCount=0;
+			}
+			inputEMC = crystalEMC * tier0CrystalCount + EMCUtils.getInstance().getCrystalEMC(1) * tier1CrystalCount + EMCUtils.getInstance().getCrystalEMC(2) * tier2CrystalCount;
+				
+			int lastItem = 0;
+			while(tier0CrystalCount > 0) {
+				ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, tier0CrystalCount), 0));
+				tier0CrystalCount -= Math.min(64, tier0CrystalCount);
+			}
+			while(tier1CrystalCount > 0) {
+				ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, tier1CrystalCount), 1));
+				tier1CrystalCount -= Math.min(64, tier1CrystalCount);
+			}
+			while(tier2CrystalCount > 0) {
+				ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, tier2CrystalCount), 2));
+				tier2CrystalCount -= Math.min(64, tier2CrystalCount);
 			}
 		}
-
-		return cond.toArray(new IAEItemStack[cond.size()]);
 	}
 
-	@Override
-	public IAEItemStack[] getCondensedOutputs() {
-		if(result == null) {
-			return new IAEItemStack[0];
+	private int getStackCount(int numCrystals) {
+		if(numCrystals > 0 && numCrystals < 64) {
+			return 1;
+		} else if (numCrystals > 0) {
+			return (int)Math.ceil(numCrystals/64D);
 		}
-
-		return new IAEItemStack[] {result};
-	}
-
-	@Override
-	public IAEItemStack[] getOutputs() {
-		return new IAEItemStack[] {result};
-	}
-
-	@Override
-	public boolean canSubstitute() {
-		return false;
-	}
-
-	@Override
-	public ItemStack getOutput(InventoryCrafting paramInventoryCrafting, World paramWorld) {
-		return result.getItemStack();
-	}
-
-	@Override
-	public int getPriority() {
 		return 0;
 	}
-
-	@Override
-	public void setPriority(int paramInt) {}
-
 }

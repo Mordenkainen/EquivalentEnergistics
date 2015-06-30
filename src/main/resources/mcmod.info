@@ -12,8 +12,8 @@
     "credits": "",
     "logoFile": "",
     "screenshots": [],
-    "requiredMods": ["appliedenergistics2" , "EE3"],
-    "dependencies": ["appliedenergistics2" , "EE3"],
+    "requiredMods": ["appliedenergistics2"],
+    "dependencies": ["appliedenergistics2" , "EE3" , "ProjectE"],
     "useDependencyInformation": "true"
   }]
 }

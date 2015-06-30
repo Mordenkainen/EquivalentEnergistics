@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
-import com.pahimar.ee3.util.ItemHelper;
+import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -90,22 +91,25 @@ public class BlockEMCCrafter extends BlockContainer {
 	public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side,
 											final float hitX, final float hitY, final float hitZ) {
 		TileEntity tileCrafter = world.getTileEntity(x, y, z);
-
-		if(tileCrafter instanceof TileEMCCrafter && !((TileEMCCrafter)tileCrafter).isCrafting()) {
-			if(player.getHeldItem() == null && ((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
-				ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
-				if(existingTome != null) {
-					if(!world.isRemote) {
-						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
+		if(((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
+			if(tileCrafter instanceof TileEMCCrafter && !((TileEMCCrafter)tileCrafter).isCrafting()) {
+				if(player.getHeldItem() == null && ((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
+					ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
+					if(existingTome != null) {
+						if(!world.isRemote) {
+							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
+						}
+						((TileEMCCrafter)tileCrafter).setCurrentTome(null);
+						return true;
 					}
-					((TileEMCCrafter)tileCrafter).setCurrentTome(null);
-					return true;
+				} else if (EMCUtils.getInstance().isValidItem(player.getHeldItem())) {
+					if(((TileEMCCrafter)tileCrafter).getCurrentTome() == null) {
+						((TileEMCCrafter)tileCrafter).setCurrentTome(player.getHeldItem().copy());
+						player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
+							player.inventory.mainInventory[player.inventory.currentItem];
+						return true;
+					}
 				}
-			} else if (player.getHeldItem() != null && player.getHeldItem().getItem() == GameRegistry.findItem("EE3", "alchemicalTome") && ItemHelper.hasOwnerUUID(player.getHeldItem()) && ((TileEMCCrafter)tileCrafter).getCurrentTome() == null && ((TileEMCCrafter)tileCrafter).checkPermissions(player)) {
-				((TileEMCCrafter)tileCrafter).setCurrentTome(player.getHeldItem().copy());
-				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
-					player.inventory.mainInventory[player.inventory.currentItem];
-				return true;
 			}
 		}
 		return false;

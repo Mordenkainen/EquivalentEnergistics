@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.pahimar.ee3.api.event.EnergyValueEvent;
 import com.pahimar.ee3.api.event.PlayerKnowledgeEvent;
@@ -15,7 +16,9 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class EventHandlerModule {
 	public EventHandlerModule() {
-		MinecraftForge.EVENT_BUS.register(this);
+		if(ConfigManager.useEE3) {
+			MinecraftForge.EVENT_BUS.register(this);
+		}
 	}
 	
 	@SubscribeEvent
