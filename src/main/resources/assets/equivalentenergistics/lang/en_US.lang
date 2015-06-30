@@ -2,8 +2,17 @@
 itemGroup.equivalentenergistics=Equivalent Energistics
 
 # Item Names
-item.equivalentenergistics:EMCCrystal.name=EMC Crystal
+item.equivalentenergistics:EMCCrystal.0.name=EMC Crystal
+item.equivalentenergistics:EMCCrystal.1.name=Dense EMC Crystal
+item.equivalentenergistics:EMCCrystal.2.name=Super Dense EMC Crystal
+item.equivalentenergistics:EMCBook.name=Alchemical Tome
 
 # Block Names
 tile.equivalentenergistics:EMCCondenser.name=EMC Condenser
 tile.equivalentenergistics:EMCCrafter.name=EMC Assembler
+
+# Messages
+message.book.clear=Owner Cleared!
+message.book.wrongowner=You are not the owner of this Tome.
+message.book.link=Tome linked!
+

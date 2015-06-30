@@ -44,8 +44,8 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 			}
 			GL11.glPopMatrix();
 			
-			float ticks = Minecraft.getMinecraft().renderViewEntity.ticksExisted + t;
 			if(((TileEMCCrafter)te).getCurrentTome() != null) {
+				float ticks = (float) (Minecraft.getMinecraft().renderViewEntity.ticksExisted + t + x);
 				GL11.glPushMatrix();
 				GL11.glTranslatef((float)x + 0.5f, (float)y + 0.3f, (float)z + 0.5f);
 				GL11.glRotatef(ticks % 360.0F, 0.0F, 1.0F, 0.0F);

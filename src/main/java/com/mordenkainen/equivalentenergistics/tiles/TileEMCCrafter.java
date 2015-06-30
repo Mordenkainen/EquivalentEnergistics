@@ -10,9 +10,10 @@ import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.util.CrystalCraftingPattern;
+import com.mordenkainen.equivalentenergistics.util.EECraftingPattern;
 import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
-import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
+import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 import com.pahimar.ee3.util.ItemHelper;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -46,6 +47,7 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.item.AEItemStack;
 
 public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	public static Set<TileEMCCrafter> crafterTiles = new LinkedHashSet<TileEMCCrafter>();
@@ -53,7 +55,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	private MachineSource mySource;
 	private boolean isActive, isCrafting, stalePatterns = true;
 	private ItemStack currentTome, outputStack;
-	private int craftTickCounter;
+	private int craftTickCounter, staleCounter;
 	private float currentEMC;
 	
 	public TileEMCCrafter() {
@@ -67,7 +69,9 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	@Override
 	public void validate() {
 		super.validate();
-		crafterTiles.add(this);
+		if(!crafterTiles.contains(this)) {
+			crafterTiles.add(this);
+		}
 	}
 	
 	@Override
@@ -84,11 +88,11 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 	@Override
 	public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
-		if((!isCrafting) && (patternDetails instanceof EMCCraftingPattern)) {
+		if((!isCrafting) && (patternDetails instanceof EECraftingPattern)) {
 			isCrafting = true;
-			craftTickCounter = 0;
-			outputStack = ((EMCCraftingPattern)patternDetails).getOutputs()[0].getItemStack();
-			currentEMC += ((EMCCraftingPattern)patternDetails).inputEMC - ((EMCCraftingPattern)patternDetails).outputEMC;
+			craftTickCounter = staleCounter = 0;
+			outputStack = ((EECraftingPattern)patternDetails).getOutputs()[0].getItemStack();
+			currentEMC += ((EECraftingPattern)patternDetails).inputEMC - ((EECraftingPattern)patternDetails).outputEMC;
 			return true;
 		}
 		return false;
@@ -102,20 +106,24 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 
 	@Override
 	public void provideCrafting(ICraftingProviderHelper craftingTracker) {
-		if(currentTome != null && ItemHelper.getOwnerUUID(currentTome) != null) {
+		if(EMCUtils.getInstance().isValidItem(currentTome)) {
 			ArrayList<EMCCraftingPattern> bookPatterns = getPatterns();
 
 			for(EMCCraftingPattern pattern : bookPatterns) {
-				craftingTracker.addCraftingOption(this, pattern);
+				if(pattern.valid) {
+					craftingTracker.addCraftingOption(this, pattern);
+				}
 			}
 		}
+		craftingTracker.addCraftingOption(this, new CrystalCraftingPattern(1));
+		craftingTracker.addCraftingOption(this, new CrystalCraftingPattern(2));
 	}
 	
 	private ArrayList<EMCCraftingPattern> getPatterns() {
 		ArrayList<EMCCraftingPattern> patterns = new ArrayList<EMCCraftingPattern>();
-		Set<ItemStack> transmutations = TransmutationKnowledgeRegistryProxy.getPlayerKnownTransmutations(ItemHelper.getOwnerUUID(currentTome));
+		ArrayList<ItemStack> transmutations = EMCUtils.getInstance().getTransmutations(this);
 		for(ItemStack curItem : transmutations) {
-			patterns.add(new EMCCraftingPattern(currentTome, curItem));
+			patterns.add(new EMCCraftingPattern(curItem));
 		}
 		return patterns;
 	}
@@ -171,10 +179,19 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		}
 	}
 	
+	public void playerKnowledgeChange(String playerUUID) {
+		if(currentTome != null) {
+			String tomeUUID = currentTome.getTagCompound().getString("OwnerUUID");
+			if(tomeUUID.equals(playerUUID)) {
+				stalePatterns = true;
+			}
+		}
+	}
+	
 	@TileEvent(TileEventType.TICK)
 	public void onTick() {
 		if(worldObj.isRemote) {
-			if(isCrafting && craftTickCounter < ConfigManager.craftingTime) {
+			if(isCrafting && craftTickCounter < (outputStack.getItem() == EquivalentEnergistics.itemEMCCrystal ? -1 : ConfigManager.craftingTime)) {
 				craftTickCounter++;
 			}
 			return;
@@ -185,7 +202,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		}
 		
 		try {
-			float crystalEMC = EnergyValueRegistryProxy.getEnergyValue(EquivalentEnergistics.itemEMCCrystal).getValue();
+			float crystalEMC = EMCUtils.getInstance().getCrystalEMC();
 			if(currentEMC >= crystalEMC) {
 				int numCrystals = (int)Math.floor(currentEMC/crystalEMC);
 				IStorageGrid storageGrid = gridProxy.getStorage();
@@ -200,13 +217,18 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			}
 			
 			if(stalePatterns && gridProxy.isReady()) {
-				gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
-				stalePatterns = false;
+				if(staleCounter > 9) {
+					gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
+					stalePatterns = false;
+				} else {
+					staleCounter++;
+				}
 			}
 		} catch(GridAccessException e) {}
 		
 		if(isCrafting) {
 			craftingTick();
+			staleCounter = 0;
 		}
 	}
 
@@ -216,7 +238,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		}
 		
 		try	{
-			if(this.craftTickCounter >= ConfigManager.craftingTime) {
+			if(this.craftTickCounter >= (outputStack.getItem() == EquivalentEnergistics.itemEMCCrystal ? -1 : ConfigManager.craftingTime)) {
 				IStorageGrid storageGrid = gridProxy.getStorage();
 	
 				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource );
@@ -259,11 +281,15 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 	@TileEvent(TileEventType.NETWORK_READ)
 	@SideOnly(Side.CLIENT)
-	public boolean onReceiveNetworkData(final ByteBuf stream)	{
+	public boolean onReceiveNetworkData(final ByteBuf stream) throws IOException {
 		isActive = stream.readBoolean();
 		isCrafting = stream.readBoolean();
 		if(isCrafting) {
 			craftTickCounter = stream.readInt();
+		}
+		boolean hasTome = stream.readBoolean();
+		if(hasTome){
+			currentTome = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
 		return true;
 	}
@@ -290,6 +316,10 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		stream.writeBoolean(isCrafting);
 		if(isCrafting) {
 			stream.writeInt(craftTickCounter);
+		}
+		stream.writeBoolean(currentTome != null);
+		if(currentTome != null) {
+			AEApi.instance().storage().createItemStack(currentTome).writeToPacket(stream);
 		}
 	}
 	
