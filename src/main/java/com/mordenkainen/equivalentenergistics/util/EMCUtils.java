@@ -64,11 +64,20 @@ public class EMCUtils {
 	}
 
 	public ArrayList<ItemStack> getTransmutations(TileEMCCrafter tile) {
+		List<ItemStack> tmpTransmutations = new ArrayList<ItemStack>();
 		ArrayList<ItemStack> transmutations = new ArrayList<ItemStack>();
 		if(ConfigManager.useEE3) {
-			transmutations.addAll(TransmutationKnowledgeRegistryProxy.getPlayerKnownTransmutations(ItemHelper.getOwnerUUID(tile.getCurrentTome())));
+			tmpTransmutations.addAll(TransmutationKnowledgeRegistryProxy.getPlayerKnownTransmutations(ItemHelper.getOwnerUUID(tile.getCurrentTome())));
 		} else {
-			transmutations.addAll(TransmutationNbt.getPlayerKnowledge(tile.getCurrentTome().getTagCompound().getString("OwnerUUID")));
+			tmpTransmutations.addAll(TransmutationNbt.getPlayerKnowledge(tile.getCurrentTome().getTagCompound().getString("OwnerUUID")));
+		}
+		
+		if(tmpTransmutations != null) {
+			for(ItemStack currentItem : tmpTransmutations) {
+				if(currentItem.getItem() != EquivalentEnergistics.itemEMCCrystal) {
+					transmutations.add(currentItem);
+				}
+			}
 		}
 		return transmutations;
 	}
@@ -89,7 +98,6 @@ public class EMCUtils {
 			EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 0), emc);
 			EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 1), emc * 576);
 			EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 2), (float)(emc * Math.pow(576, 2)));
-	    	AbilityRegistryProxy.setAsNotLearnable(EquivalentEnergistics.itemEMCCrystal);
 		} else {
 			ProjectEAPI.registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 0), (int)emc);
 			ProjectEAPI.registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 1), (int)emc * 576);
