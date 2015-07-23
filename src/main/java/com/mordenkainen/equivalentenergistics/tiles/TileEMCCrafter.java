@@ -93,6 +93,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			craftTickCounter = staleCounter = 0;
 			outputStack = ((EECraftingPattern)patternDetails).getOutputs()[0].getItemStack();
 			currentEMC += ((EECraftingPattern)patternDetails).inputEMC - ((EECraftingPattern)patternDetails).outputEMC;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
 		}
 		return false;
@@ -248,6 +249,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 					this.isCrafting = false;
 					this.outputStack = null;
+					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 			} else {
 				IEnergyGrid eGrid = gridProxy.getEnergy();
@@ -286,6 +288,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		isCrafting = stream.readBoolean();
 		if(isCrafting) {
 			craftTickCounter = stream.readInt();
+			outputStack = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
 		boolean hasTome = stream.readBoolean();
 		if(hasTome){
@@ -316,6 +319,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		stream.writeBoolean(isCrafting);
 		if(isCrafting) {
 			stream.writeInt(craftTickCounter);
+			AEApi.instance().storage().createItemStack(outputStack).writeToPacket(stream);
 		}
 		stream.writeBoolean(currentTome != null);
 		if(currentTome != null) {
@@ -348,6 +352,10 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 	public boolean isCrafting() {
 		return isCrafting;
+	}
+
+	public ItemStack getCurrentOutput() {
+		return outputStack;
 	}
 }
 
