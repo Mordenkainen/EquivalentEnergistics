@@ -29,6 +29,7 @@ import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
+import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
@@ -53,6 +54,7 @@ public class EquivalentEnergistics {
 
 	public static Item itemEMCCrystal;
 	public static Item itemEMCBook;
+	public static Item itemPattern;
 	
 	public static Block blockEMCCondenser;
 	public static Block blockEMCCrafter;
@@ -81,6 +83,9 @@ public class EquivalentEnergistics {
     public void init(FMLInitializationEvent event) {
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
+    	
+    	itemPattern = new ItemPattern();
+    	GameRegistry.registerItem(itemPattern, "EMCPattern");
     	
     	blockEMCCondenser = new BlockEMCCondenser();
     	GameRegistry.registerBlock(blockEMCCondenser, "EMCCondenser");

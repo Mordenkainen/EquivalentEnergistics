@@ -242,7 +242,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			if(this.craftTickCounter >= (outputStack.getItem() == EquivalentEnergistics.itemEMCCrystal ? -1 : ConfigManager.craftingTime)) {
 				IStorageGrid storageGrid = gridProxy.getStorage();
 	
-				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource );
+				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource);
 	
 				if(rejected == null || rejected.getStackSize() == 0) {
 					storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.MODULATE, mySource);

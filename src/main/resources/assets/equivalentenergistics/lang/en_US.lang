@@ -6,6 +6,7 @@ item.equivalentenergistics:EMCCrystal.0.name=EMC Crystal
 item.equivalentenergistics:EMCCrystal.1.name=Dense EMC Crystal
 item.equivalentenergistics:EMCCrystal.2.name=Super Dense EMC Crystal
 item.equivalentenergistics:EMCBook.name=Alchemical Tome
+item.equivalentenergistics:EMCPattern.name=EMC Pattern
 
 # Block Names
 tile.equivalentenergistics:EMCCondenser.name=EMC Condenser
