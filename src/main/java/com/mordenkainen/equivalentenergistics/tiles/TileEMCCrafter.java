@@ -56,7 +56,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	private boolean isActive, isCrafting, stalePatterns = true;
 	private ItemStack currentTome, outputStack;
 	private int craftTickCounter, staleCounter;
-	private float currentEMC;
+	public float currentEMC;
 	
 	public TileEMCCrafter() {
 		mySource = new MachineSource(this);
@@ -294,6 +294,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		if(hasTome){
 			currentTome = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
+		currentEMC = stream.readFloat();
 		return true;
 	}
 	
@@ -325,6 +326,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		if(currentTome != null) {
 			AEApi.instance().storage().createItemStack(currentTome).writeToPacket(stream);
 		}
+		stream.writeFloat(currentEMC);
 	}
 	
 	private static final long HASH_A = 0x1387D;

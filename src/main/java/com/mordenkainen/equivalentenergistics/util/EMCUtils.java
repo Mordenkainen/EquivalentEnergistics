@@ -104,4 +104,12 @@ public class EMCUtils {
 			ProjectEAPI.registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 2), (int)(emc * Math.pow(576, 2)));
 		}
 	}
+
+	public String getTomeOwner(ItemStack currentTome) {
+		if(ConfigManager.useEE3) {
+			return ItemHelper.getOwnerName(currentTome);
+		} else {
+			return currentTome.getTagCompound().getString("Owner");
+		}
+	}
 }

@@ -53,7 +53,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	private CondenserInventory internalInventory;
 	public static final int SLOT_COUNT = 4;
 	private static final String INVSLOTS = "items";
-	private float currentEMC = 0.0f;
+	public float currentEMC = 0.0f;
 	private boolean isActive;
 	
 	public TileEMCCondenser() {
@@ -147,6 +147,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 					}
 				}
 			} catch(GridAccessException e) {}
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 	}
 
@@ -196,12 +197,14 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	@SideOnly(Side.CLIENT)
 	public boolean onReceiveNetworkData(final ByteBuf stream)	{
 		isActive = stream.readBoolean();
+		currentEMC = stream.readFloat();
 		return true;
 	}
 	
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void onSendNetworkData(final ByteBuf stream) throws IOException {
 		stream.writeBoolean(isActive());
+		stream.writeFloat(currentEMC);
 	}
 	
 	public void setOwner(final EntityPlayer player) {
