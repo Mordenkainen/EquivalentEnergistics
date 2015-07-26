@@ -53,7 +53,7 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	private CondenserInventory internalInventory;
 	public static final int SLOT_COUNT = 4;
 	private static final String INVSLOTS = "items";
-	private float currentEMC = 0.0f;
+	public float currentEMC = 0.0f;
 	private boolean isActive;
 	
 	public TileEMCCondenser() {
@@ -107,18 +107,8 @@ public class TileEMCCondenser extends AENetworkInvTile {
 							testItem.stackSize = 1;
 							float itemEMC = EMCUtils.getInstance().getEnergyValue(testItem);
 							int itemAvail = Math.min(ConfigManager.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
-							IEnergyGrid eGrid = gridProxy.getEnergy();
-							while(itemAvail > 0) {
-								double powerRequired = itemEMC * itemAvail * ConfigManager.condenserActivePower;
-								if(eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) >= powerRequired) {
-									eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
-									internalInventory.decrStackSize(i, itemAvail);
-									currentEMC += itemEMC * itemAvail;
-									break;
-								} else {
-									itemAvail--;
-								}
-							}
+							internalInventory.decrStackSize(i, itemAvail);
+							currentEMC += itemEMC * itemAvail;
 						} else {
 							IStorageGrid storageGrid = this.gridProxy.getStorage();
 							
@@ -135,6 +125,16 @@ public class TileEMCCondenser extends AENetworkInvTile {
 				float crystalEMC = EMCUtils.getInstance().getCrystalEMC();
 				if(currentEMC >= crystalEMC) {
 					int numCrystals = Math.min(ConfigManager.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
+					IEnergyGrid eGrid = gridProxy.getEnergy();
+					double powerRequired = crystalEMC * numCrystals * ConfigManager.condenserActivePower;
+					while(numCrystals > 0) {
+						if(eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) >= powerRequired) {
+							break;
+						} else {
+							numCrystals--;
+						}
+					}
+					
 					IAEItemStack crystal = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, numCrystals));
 					IStorageGrid storageGrid = this.gridProxy.getStorage();
 		
@@ -142,10 +142,12 @@ public class TileEMCCondenser extends AENetworkInvTile {
 		
 					if(rejected == null || rejected.getStackSize() == 0) {
 						storageGrid.getItemInventory().injectItems(crystal, Actionable.MODULATE, this.mySource);
+						eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
 						currentEMC -= crystalEMC * numCrystals;
 					}
 				}
 			} catch(GridAccessException e) {}
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 	}
 
@@ -195,12 +197,14 @@ public class TileEMCCondenser extends AENetworkInvTile {
 	@SideOnly(Side.CLIENT)
 	public boolean onReceiveNetworkData(final ByteBuf stream)	{
 		isActive = stream.readBoolean();
+		currentEMC = stream.readFloat();
 		return true;
 	}
 	
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void onSendNetworkData(final ByteBuf stream) throws IOException {
 		stream.writeBoolean(isActive());
+		stream.writeFloat(currentEMC);
 	}
 	
 	public void setOwner(final EntityPlayer player) {

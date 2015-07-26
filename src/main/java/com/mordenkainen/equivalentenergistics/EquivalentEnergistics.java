@@ -18,6 +18,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -29,6 +30,7 @@ import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
+import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
@@ -53,6 +55,7 @@ public class EquivalentEnergistics {
 
 	public static Item itemEMCCrystal;
 	public static Item itemEMCBook;
+	public static Item itemPattern;
 	
 	public static Block blockEMCCondenser;
 	public static Block blockEMCCrafter;
@@ -82,6 +85,9 @@ public class EquivalentEnergistics {
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
     	
+    	itemPattern = new ItemPattern();
+    	GameRegistry.registerItem(itemPattern, "EMCPattern");
+    	
     	blockEMCCondenser = new BlockEMCCondenser();
     	GameRegistry.registerBlock(blockEMCCondenser, "EMCCondenser");
     	GameRegistry.registerTileEntity(TileEMCCondenser.class, Ref.MOD_ID + "TileEMCCondenser");
@@ -98,6 +104,7 @@ public class EquivalentEnergistics {
     	new EventHandlerModule();
     	proxy.initRenderers();
     	CraftingManager.initRecipes();
+    	FMLInterModComms.sendMessage("Waila", "register", "com.mordenkainen.equivalentenergistics.waila.WailaProvider.callbackRegister");
     }
     
     @EventHandler

@@ -55,8 +55,8 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	private MachineSource mySource;
 	private boolean isActive, isCrafting, stalePatterns = true;
 	private ItemStack currentTome, outputStack;
-	private int craftTickCounter, staleCounter;
-	private float currentEMC;
+	private int craftTickCounter;
+	public float currentEMC;
 	
 	public TileEMCCrafter() {
 		mySource = new MachineSource(this);
@@ -90,9 +90,10 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
 		if((!isCrafting) && (patternDetails instanceof EECraftingPattern)) {
 			isCrafting = true;
-			craftTickCounter = staleCounter = 0;
+			craftTickCounter = 0;
 			outputStack = ((EECraftingPattern)patternDetails).getOutputs()[0].getItemStack();
 			currentEMC += ((EECraftingPattern)patternDetails).inputEMC - ((EECraftingPattern)patternDetails).outputEMC;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
 		}
 		return false;
@@ -217,18 +218,13 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			}
 			
 			if(stalePatterns && gridProxy.isReady()) {
-				if(staleCounter > 9) {
 					gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
 					stalePatterns = false;
-				} else {
-					staleCounter++;
-				}
 			}
 		} catch(GridAccessException e) {}
 		
 		if(isCrafting) {
 			craftingTick();
-			staleCounter = 0;
 		}
 	}
 
@@ -241,13 +237,14 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			if(this.craftTickCounter >= (outputStack.getItem() == EquivalentEnergistics.itemEMCCrystal ? -1 : ConfigManager.craftingTime)) {
 				IStorageGrid storageGrid = gridProxy.getStorage();
 	
-				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource );
+				IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource);
 	
 				if(rejected == null || rejected.getStackSize() == 0) {
 					storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.MODULATE, mySource);
 	
 					this.isCrafting = false;
 					this.outputStack = null;
+					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 			} else {
 				IEnergyGrid eGrid = gridProxy.getEnergy();
@@ -286,11 +283,13 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		isCrafting = stream.readBoolean();
 		if(isCrafting) {
 			craftTickCounter = stream.readInt();
+			outputStack = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
 		boolean hasTome = stream.readBoolean();
 		if(hasTome){
 			currentTome = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
+		currentEMC = stream.readFloat();
 		return true;
 	}
 	
@@ -316,11 +315,13 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 		stream.writeBoolean(isCrafting);
 		if(isCrafting) {
 			stream.writeInt(craftTickCounter);
+			AEApi.instance().storage().createItemStack(outputStack).writeToPacket(stream);
 		}
 		stream.writeBoolean(currentTome != null);
 		if(currentTome != null) {
 			AEApi.instance().storage().createItemStack(currentTome).writeToPacket(stream);
 		}
+		stream.writeFloat(currentEMC);
 	}
 	
 	private static final long HASH_A = 0x1387D;
@@ -348,6 +349,10 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 	public boolean isCrafting() {
 		return isCrafting;
+	}
+
+	public ItemStack getCurrentOutput() {
+		return outputStack;
 	}
 }
 

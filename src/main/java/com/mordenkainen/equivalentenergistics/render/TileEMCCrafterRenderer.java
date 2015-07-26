@@ -44,12 +44,18 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 			}
 			GL11.glPopMatrix();
 			
-			if(((TileEMCCrafter)te).getCurrentTome() != null) {
+			EntityItem entityitem = null;
+			if(((TileEMCCrafter)te).isCrafting() && ((TileEMCCrafter)te).getCurrentOutput() != null) {
+				entityitem = new EntityItem(te.getWorldObj(), 0.0D, 0.0D, 0.0D, ((TileEMCCrafter)te).getCurrentOutput());
+			} else if(((TileEMCCrafter)te).getCurrentTome() != null) {
+				entityitem = new EntityItem(te.getWorldObj(), 0.0D, 0.0D, 0.0D, ((TileEMCCrafter)te).getCurrentTome());
+			}
+			
+			if(entityitem != null) {
 				float ticks = (float) (Minecraft.getMinecraft().renderViewEntity.ticksExisted + t + x);
 				GL11.glPushMatrix();
 				GL11.glTranslatef((float)x + 0.5f, (float)y + 0.3f, (float)z + 0.5f);
 				GL11.glRotatef(ticks % 360.0F, 0.0F, 1.0F, 0.0F);
-				EntityItem entityitem = new EntityItem(te.getWorldObj(), 0.0D, 0.0D, 0.0D, ((TileEMCCrafter)te).getCurrentTome());
 				entityitem.hoverStart = 0.0F;
 			    RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
 			    GL11.glPopMatrix();

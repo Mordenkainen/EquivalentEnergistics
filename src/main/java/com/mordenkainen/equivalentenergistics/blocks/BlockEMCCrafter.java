@@ -26,7 +26,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class BlockEMCCrafter extends BlockContainer {
-
 	public BlockEMCCrafter() {
 		super(Material.rock);
 		setHardness(1.5f);
