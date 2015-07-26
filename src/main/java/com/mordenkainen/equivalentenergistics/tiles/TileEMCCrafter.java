@@ -283,7 +283,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 	@TileEvent(TileEventType.NETWORK_READ)
 	@SideOnly(Side.CLIENT)
-	public boolean onReceiveNetworkData(final ByteBuf stream) throws IOException {
+	public void onReceiveNetworkData(final ByteBuf stream) throws IOException {
 		isActive = stream.readBoolean();
 		isCrafting = stream.readBoolean();
 		if(isCrafting) {
@@ -295,7 +295,6 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			currentTome = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
 		currentEMC = stream.readFloat();
-		return true;
 	}
 	
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
