@@ -55,7 +55,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	private MachineSource mySource;
 	private boolean isActive, isCrafting, stalePatterns = true;
 	private ItemStack currentTome, outputStack;
-	private int craftTickCounter, staleCounter;
+	private int craftTickCounter;
 	public float currentEMC;
 	
 	public TileEMCCrafter() {
@@ -90,7 +90,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
 		if((!isCrafting) && (patternDetails instanceof EECraftingPattern)) {
 			isCrafting = true;
-			craftTickCounter = staleCounter = 0;
+			craftTickCounter = 0;
 			outputStack = ((EECraftingPattern)patternDetails).getOutputs()[0].getItemStack();
 			currentEMC += ((EECraftingPattern)patternDetails).inputEMC - ((EECraftingPattern)patternDetails).outputEMC;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -218,18 +218,13 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			}
 			
 			if(stalePatterns && gridProxy.isReady()) {
-				if(staleCounter > 9) {
 					gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
 					stalePatterns = false;
-				} else {
-					staleCounter++;
-				}
 			}
 		} catch(GridAccessException e) {}
 		
 		if(isCrafting) {
 			craftingTick();
-			staleCounter = 0;
 		}
 	}
 
@@ -283,7 +278,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 	
 	@TileEvent(TileEventType.NETWORK_READ)
 	@SideOnly(Side.CLIENT)
-	public void onReceiveNetworkData(final ByteBuf stream) throws IOException {
+	public boolean onReceiveNetworkData(final ByteBuf stream) throws IOException {
 		isActive = stream.readBoolean();
 		isCrafting = stream.readBoolean();
 		if(isCrafting) {
@@ -295,6 +290,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 			currentTome = AEItemStack.loadItemStackFromPacket(stream).getItemStack();
 		}
 		currentEMC = stream.readFloat();
+		return true;
 	}
 	
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
