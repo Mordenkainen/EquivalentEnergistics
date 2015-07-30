@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.pahimar.ee3.api.exchange.EnergyValue;
 import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
 import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
 import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
@@ -45,7 +46,8 @@ public class EMCUtils {
 
 	public float getEnergyValue(ItemStack itemStack) {
 		if(ConfigManager.useEE3) {
-			return EnergyValueRegistryProxy.getEnergyValue(itemStack).getValue();
+			EnergyValue val = EnergyValueRegistryProxy.getEnergyValue(itemStack);
+			return val == null ? 0 : val.getValue();
 		} else {
 			return EMCHelper.getEmcValue(itemStack);
 		}
@@ -74,7 +76,7 @@ public class EMCUtils {
 		
 		if(tmpTransmutations != null) {
 			for(ItemStack currentItem : tmpTransmutations) {
-				if(currentItem.getItem() != EquivalentEnergistics.itemEMCCrystal) {
+				if(currentItem != null && currentItem.getItem() != EquivalentEnergistics.itemEMCCrystal) {
 					transmutations.add(currentItem);
 				}
 			}

@@ -16,7 +16,7 @@ public class EMCCraftingPattern extends EECraftingPattern {
 	}
 
 	private void calculateContent(ItemStack craftingResult) {
-		if(!EMCUtils.getInstance().hasEMC(craftingResult)) {
+		if(!EMCUtils.getInstance().hasEMC(craftingResult) || EMCUtils.getInstance().getEnergyValue(craftingResult) <= 0) {
 			valid = false;
 		} else {
 			float outputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult);
