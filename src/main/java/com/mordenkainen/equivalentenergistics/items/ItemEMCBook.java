@@ -8,10 +8,10 @@ import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
-import com.mordenkainen.equivalentenergistics.util.TransmutationNbt;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.playerData.Transmutation;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -65,55 +65,10 @@ public class ItemEMCBook extends Item {
 			}
 			stackNBT.setString("Owner", player.getCommandSenderName());
 			stackNBT.setString("OwnerUUID", playerUUID);
-			ArrayList<ItemStack> currentTransmutations = TransmutationNbt.getPlayerKnowledge(stackNBT.getString("OwnerUUID"));
-			ArrayList<ItemStack> newTransmutations = getPlayerKnowledge(player);
-			boolean result = new HashSet(currentTransmutations).equals(new HashSet(newTransmutations));
-			if(!result) {
-				TransmutationNbt.setPlayerKnowledge(playerUUID, newTransmutations);
-				EquivalentEnergistics.transmutations.markDirty();
-			}
 			player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.link")));
 		}
         return stack;
     }
-
-	private ArrayList<ItemStack> getPlayerKnowledge(EntityPlayer player) {
-		int methodType = 2;
-		Method gkMethod = null;
-		List<ItemStack> tmpTransmutations = null;
-		ArrayList<ItemStack> transmutations = new ArrayList<ItemStack>();
-
-		try {
-			gkMethod = Transmutation.class.getDeclaredMethod("getKnowledge", new Class[] {String.class});
-			methodType = 0;
-		} catch (Exception e) {
-			try {
-				gkMethod = Transmutation.class.getDeclaredMethod("getKnowledge", new Class[] {EntityPlayer.class});
-				methodType = 1;
-			} catch (Exception e1) {} 			
-		}
-		
-		try {
-			switch(methodType){
-				case 0:
-					tmpTransmutations = (List<ItemStack>) gkMethod.invoke(null, new Object[] {player.getCommandSenderName()});
-					break;
-				case 1:
-					tmpTransmutations = (List<ItemStack>) gkMethod.invoke(null, new Object[] {player});
-					break;
-			}
-		} catch (Exception e) {}
-		
-		if(tmpTransmutations != null) {
-			for(ItemStack currentItem : tmpTransmutations) {
-				if(currentItem.getItem() != EquivalentEnergistics.itemEMCCrystal) {
-					transmutations.add(currentItem);
-				}
-			}
-		}
-		
-		return transmutations;
-	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override

@@ -102,9 +102,9 @@ public class TileEMCCondenser extends AENetworkInvTile {
 			try	{
 				for(int i = 0; i < SLOT_COUNT; i++) {
 					if(internalInventory.getStackInSlot(i) != null){
-						if(EMCUtils.getInstance().hasEMC(internalInventory.getStackInSlot(i))) {
-							ItemStack testItem = internalInventory.getStackInSlot(i).copy();
-							testItem.stackSize = 1;
+						ItemStack testItem = internalInventory.getStackInSlot(i).copy();
+						testItem.stackSize = 1;
+						if(EMCUtils.getInstance().hasEMC(testItem) && EMCUtils.getInstance().getEnergyValue(testItem) > 0) {
 							float itemEMC = EMCUtils.getInstance().getEnergyValue(testItem);
 							int itemAvail = Math.min(ConfigManager.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
 							internalInventory.decrStackSize(i, itemAvail);

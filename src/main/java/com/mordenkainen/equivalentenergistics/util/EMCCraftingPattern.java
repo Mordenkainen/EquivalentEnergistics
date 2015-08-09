@@ -16,55 +16,92 @@ public class EMCCraftingPattern extends EECraftingPattern {
 	}
 
 	private void calculateContent(ItemStack craftingResult) {
-		if(!EMCUtils.getInstance().hasEMC(craftingResult)) {
+		if(!EMCUtils.getInstance().hasEMC(craftingResult) || EMCUtils.getInstance().getEnergyValue(craftingResult) <= 0) {
 			valid = false;
 		} else {
 			float outputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult);
-			float crystalEMC = EMCUtils.getInstance().getCrystalEMC();
-			int tier0CrystalCount, tier1CrystalCount, tier2CrystalCount, itemCount;
-			tier1CrystalCount = tier2CrystalCount = 0;
-			if(outputEMC <= crystalEMC) {
-				tier0CrystalCount = 1;
-				itemCount = (int)Math.min(crystalEMC/outputEMC, 64);
+			float inputEMC = 0;
+			int numItems = 1;
+			int[] crystals = new int[] {0, 0, 0};
+			if(outputEMC <= EMCUtils.getInstance().getCrystalEMC()) {
+				crystals[0] = 1;
+				numItems = (int)Math.min(EMCUtils.getInstance().getCrystalEMC()/outputEMC, 64);
+				outputEMC *= numItems;
+				inputEMC = EMCUtils.getInstance().getCrystalEMC();
 			} else {
-				itemCount = 1;
-				tier0CrystalCount = (int)Math.ceil(outputEMC/crystalEMC);
+				int maxTier = calcStartingTier(outputEMC);
+				float remainingEMC = outputEMC;
+				for(int i = maxTier; i >= 0; i--) {
+					crystals[i] = calcCrystals(remainingEMC, i);
+					remainingEMC = getOverflow(outputEMC, crystals);
+					if(remainingEMC <= 0) {
+						break;
+					}
+					if(i != 0 ) {
+						crystals[i]--;
+						remainingEMC = Math.abs(remainingEMC - EMCUtils.getInstance().getCrystalEMC(i));
+					}
+				}
+				int pass = 0;
+				while(getTotalStacks(crystals) > 9 && pass < 2) {
+					if(crystals[pass] > 0) {
+						crystals[pass] = 0;
+						crystals[pass + 1]++;
+					}
+					pass++;
+				}
+				if(getTotalStacks(crystals) > 9) {
+					valid = false;
+					return;
+				}
+				for(int i = 0; i <= 2; i++) {
+					inputEMC += EMCUtils.getInstance().getCrystalEMC(i) * crystals[i];
+				}
 			}
-			this.outputEMC = outputEMC * itemCount;
+			
 			ItemStack outputStack = craftingResult.copy();
-			outputStack.stackSize = itemCount;
+			outputStack.stackSize = numItems;
 			result = AEApi.instance().storage().createItemStack(outputStack);
 			
-			if(tier0CrystalCount >= Math.pow(576, 2)) {
-				int numCrystals = (int)Math.floor(tier0CrystalCount/Math.pow(576, 2));
-				tier2CrystalCount = numCrystals;
-				tier0CrystalCount -= numCrystals * Math.pow(576, 2);
-			}
-			if(tier0CrystalCount >= 576) {
-				int numCrystals = (int)Math.floor(tier0CrystalCount/576);
-				tier1CrystalCount = numCrystals;
-				tier0CrystalCount -= numCrystals * 576;
-			}
-			if(getStackCount(tier0CrystalCount) + getStackCount(tier1CrystalCount) + getStackCount(tier2CrystalCount) > 9) {
-				tier1CrystalCount++;
-				tier0CrystalCount=0;
-			}
-			inputEMC = crystalEMC * tier0CrystalCount + EMCUtils.getInstance().getCrystalEMC(1) * tier1CrystalCount + EMCUtils.getInstance().getCrystalEMC(2) * tier2CrystalCount;
-				
-			int lastItem = 0;
-			while(tier0CrystalCount > 0) {
-				ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, tier0CrystalCount), 0));
-				tier0CrystalCount -= Math.min(64, tier0CrystalCount);
-			}
-			while(tier1CrystalCount > 0) {
-				ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, tier1CrystalCount), 1));
-				tier1CrystalCount -= Math.min(64, tier1CrystalCount);
-			}
-			while(tier2CrystalCount > 0) {
-				ingredients[lastItem++] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, tier2CrystalCount), 2));
-				tier2CrystalCount -= Math.min(64, tier2CrystalCount);
+			int tier = 0;
+			for (int i = 0; i <= 8 && tier <= 2 && (crystals[0] > 0 || crystals[1] > 0 || crystals[2] > 0); i++) {
+				while (crystals[tier] <= 0) {
+					tier++;
+				}
+				ingredients[i] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, crystals[tier]), tier));
+				crystals[tier] -= ingredients[i].getItemStack().stackSize;				
 			}
 		}
+	}
+	
+	private int calcStartingTier(float emcValue) {
+		if(emcValue > EMCUtils.getInstance().getCrystalEMC(2)) {
+			return 2;
+		}
+		if(emcValue > EMCUtils.getInstance().getCrystalEMC(1)) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	private int calcCrystals(float emcValue, int tier) {
+		return (int)Math.ceil(emcValue / EMCUtils.getInstance().getCrystalEMC(tier));
+	}
+	
+	private float getOverflow(float targetEMC, int[]crystals) {
+		float crystalEMC = 0;
+		for(int i = 0; i <= 2; i++) {
+			crystalEMC += EMCUtils.getInstance().getCrystalEMC(i) * crystals[i];
+		}
+		return crystalEMC - targetEMC;
+	}
+	
+	private int getTotalStacks(int[]crystals) {
+		int totalStacks = 0;
+		for(int i = 0; i <= 2; i++) {
+			totalStacks += getStackCount(crystals[i]);
+		}
+		return totalStacks;
 	}
 
 	private int getStackCount(int numCrystals) {

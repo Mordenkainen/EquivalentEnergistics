@@ -173,16 +173,7 @@ public class TileEMCCrafter extends AENetworkTile implements ICraftingProvider {
 
 	public void playerKnowledgeChange(UUID playerUUID) {
 		if(currentTome != null) {
-			UUID tomeUUID = ItemHelper.getOwnerUUID(currentTome);
-			if(tomeUUID.equals(playerUUID)) {
-				stalePatterns = true;
-			}
-		}
-	}
-	
-	public void playerKnowledgeChange(String playerUUID) {
-		if(currentTome != null) {
-			String tomeUUID = currentTome.getTagCompound().getString("OwnerUUID");
+			UUID tomeUUID = EMCUtils.getInstance().getTomeUUID(currentTome);
 			if(tomeUUID.equals(playerUUID)) {
 				stalePatterns = true;
 			}

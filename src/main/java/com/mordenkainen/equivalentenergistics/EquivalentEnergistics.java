@@ -21,7 +21,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
@@ -38,7 +37,6 @@ import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 import com.mordenkainen.equivalentenergistics.util.EventHandlerModule;
-import com.mordenkainen.equivalentenergistics.util.TransmutationNbt;
 
 @Mod(modid = Ref.MOD_ID, name = Ref.MOD_NAME, version = Ref.MOD_VERSION, dependencies = Ref.MOD_DEPENDENCIES)
 public class EquivalentEnergistics {
@@ -59,20 +57,6 @@ public class EquivalentEnergistics {
 	
 	public static Block blockEMCCondenser;
 	public static Block blockEMCCrafter;
-
-	public static TransmutationNbt transmutations;
-	
-	@EventHandler
-	public void onServerStarting(FMLServerStartingEvent event) {
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		WorldServer worldServer = server.worldServers[0];
-
-		transmutations = (TransmutationNbt)worldServer.mapStorage.loadData(TransmutationNbt.class, "PETransmutations");
-		if (transmutations == null) {
-			transmutations = new TransmutationNbt("PETransmutations");
-			worldServer.mapStorage.setData("PETransmutations", transmutations);
-		}
-	}
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -82,6 +66,10 @@ public class EquivalentEnergistics {
 	
     @EventHandler
     public void init(FMLInitializationEvent event) {
+    	//if(!Loader.isModLoaded("ProjectE") && !Loader.isModLoaded("EE3")) {
+    		proxy.unmetDependency();
+    	//}
+    	
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
     	
