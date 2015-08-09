@@ -66,9 +66,9 @@ public class EquivalentEnergistics {
 	
     @EventHandler
     public void init(FMLInitializationEvent event) {
-    	//if(!Loader.isModLoaded("ProjectE") && !Loader.isModLoaded("EE3")) {
+    	if(!Loader.isModLoaded("ProjectE") && !Loader.isModLoaded("EE3")) {
     		proxy.unmetDependency();
-    	//}
+    	}
     	
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
