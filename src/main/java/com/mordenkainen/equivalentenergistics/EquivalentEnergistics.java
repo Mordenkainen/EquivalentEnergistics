@@ -38,7 +38,6 @@ import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 import com.mordenkainen.equivalentenergistics.util.EventHandlerModule;
-import com.mordenkainen.equivalentenergistics.util.TransmutationNbt;
 
 @Mod(modid = Ref.MOD_ID, name = Ref.MOD_NAME, version = Ref.MOD_VERSION, dependencies = Ref.MOD_DEPENDENCIES)
 public class EquivalentEnergistics {
@@ -59,19 +58,11 @@ public class EquivalentEnergistics {
 	
 	public static Block blockEMCCondenser;
 	public static Block blockEMCCrafter;
-
-	public static TransmutationNbt transmutations;
 	
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event) {
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		WorldServer worldServer = server.worldServers[0];
-
-		transmutations = (TransmutationNbt)worldServer.mapStorage.loadData(TransmutationNbt.class, "PETransmutations");
-		if (transmutations == null) {
-			transmutations = new TransmutationNbt("PETransmutations");
-			worldServer.mapStorage.setData("PETransmutations", transmutations);
-		}
 	}
 	
 	@EventHandler

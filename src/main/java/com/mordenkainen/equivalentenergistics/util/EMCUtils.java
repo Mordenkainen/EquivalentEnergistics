@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
@@ -17,9 +18,6 @@ import com.pahimar.ee3.util.ItemHelper;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -40,7 +38,7 @@ public class EMCUtils {
 		if(ConfigManager.useEE3) {
 			return EnergyValueRegistryProxy.hasEnergyValue(itemStack);
 		} else {
-			return EMCHelper.doesItemHaveEmc(itemStack);
+			return ProjectEAPI.getEMCProxy().hasValue(itemStack);
 		}
 	}
 
@@ -49,7 +47,7 @@ public class EMCUtils {
 			EnergyValue val = EnergyValueRegistryProxy.getEnergyValue(itemStack);
 			return val == null ? 0 : val.getValue();
 		} else {
-			return EMCHelper.getEmcValue(itemStack);
+			return ProjectEAPI.getEMCProxy().getValue(itemStack);
 		}
 	}
 
@@ -61,7 +59,7 @@ public class EMCUtils {
 		if(ConfigManager.useEE3) {
 			return EnergyValueRegistryProxy.getEnergyValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, tier)).getValue();
 		} else {
-			return EMCHelper.getEmcValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, tier));
+			return ProjectEAPI.getEMCProxy().getValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, tier));
 		}
 	}
 
@@ -71,7 +69,7 @@ public class EMCUtils {
 		if(ConfigManager.useEE3) {
 			tmpTransmutations.addAll(TransmutationKnowledgeRegistryProxy.getPlayerKnownTransmutations(ItemHelper.getOwnerUUID(tile.getCurrentTome())));
 		} else {
-			tmpTransmutations.addAll(TransmutationNbt.getPlayerKnowledge(tile.getCurrentTome().getTagCompound().getString("OwnerUUID")));
+			tmpTransmutations.addAll(ProjectEAPI.getTransmutationProxy().getKnowledge(UUID.fromString(tile.getCurrentTome().getTagCompound().getString("OwnerUUID"))));
 		}
 		
 		if(tmpTransmutations != null) {
@@ -101,9 +99,17 @@ public class EMCUtils {
 			EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 1), emc * 576);
 			EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 2), (float)(emc * Math.pow(576, 2)));
 		} else {
-			ProjectEAPI.registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 0), (int)emc);
-			ProjectEAPI.registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 1), (int)emc * 576);
-			ProjectEAPI.registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 2), (int)(emc * Math.pow(576, 2)));
+			ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 0), (int)emc);
+			ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 1), (int)emc * 576);
+			ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(EquivalentEnergistics.itemEMCCrystal, 1, 2), (int)(emc * Math.pow(576, 2)));
+		}
+	}
+
+	public UUID getTomeUUID(ItemStack currentTome) {
+		if(ConfigManager.useEE3) {
+			return ItemHelper.getOwnerUUID(currentTome);
+		} else {
+			return UUID.fromString(currentTome.getTagCompound().getString("OwnerUUID"));
 		}
 	}
 
