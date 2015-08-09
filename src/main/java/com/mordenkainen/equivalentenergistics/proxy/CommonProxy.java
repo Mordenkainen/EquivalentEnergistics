@@ -4,4 +4,6 @@ public class CommonProxy {
 	public int EMCCrafterRenderer;
 
 	public void initRenderers() {}
+	
+	public void unmetDependency() {}
 }

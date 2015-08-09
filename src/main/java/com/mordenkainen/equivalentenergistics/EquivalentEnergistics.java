@@ -21,7 +21,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
@@ -60,12 +59,6 @@ public class EquivalentEnergistics {
 	public static Block blockEMCCrafter;
 	
 	@EventHandler
-	public void onServerStarting(FMLServerStartingEvent event) {
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		WorldServer worldServer = server.worldServers[0];
-	}
-	
-	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		ConfigManager.init(new File(event.getModConfigurationDirectory(), Ref.MOD_ID + ".cfg"));
@@ -73,6 +66,10 @@ public class EquivalentEnergistics {
 	
     @EventHandler
     public void init(FMLInitializationEvent event) {
+    	if(!Loader.isModLoaded("ProjectE") && !Loader.isModLoaded("EE3")) {
+    		proxy.unmetDependency();
+    	}
+    	
     	itemEMCCrystal = new ItemEMCCrystal();
     	GameRegistry.registerItem(itemEMCCrystal, "EMCCrystal");
     	
