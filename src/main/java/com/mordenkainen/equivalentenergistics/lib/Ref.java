@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.lib;
 
 public final class Ref {
 	public static final String MOD_ID = "equivalentenergistics";
-	public static final String MOD_VERSION = "0.4";
+	public static final String MOD_VERSION = "0.5";
 	public static final String MOD_NAME = "Equivalent Energistics";
 	public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2;after:EE3;after:ProjectE";
 	

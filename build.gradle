@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.4"
+version = "0.5"
 group= "com.mordenkainen.equivalentenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "EquivalentEnergistics"
 

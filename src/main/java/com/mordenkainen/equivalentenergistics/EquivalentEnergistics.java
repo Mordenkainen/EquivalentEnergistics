@@ -36,7 +36,8 @@ import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.EMCUtils;
-import com.mordenkainen.equivalentenergistics.util.EventHandlerModule;
+import com.mordenkainen.equivalentenergistics.util.EventHandlerEE3;
+import com.mordenkainen.equivalentenergistics.util.EventHandlerPE;
 
 @Mod(modid = Ref.MOD_ID, name = Ref.MOD_NAME, version = Ref.MOD_VERSION, dependencies = Ref.MOD_DEPENDENCIES)
 public class EquivalentEnergistics {
@@ -89,7 +90,11 @@ public class EquivalentEnergistics {
 	    	GameRegistry.registerItem(itemEMCBook, "EMCBook");
     	}
     	
-    	new EventHandlerModule();
+    	if(ConfigManager.useEE3) {
+    		new EventHandlerEE3();
+    	} else {
+    		new EventHandlerPE();
+    	}
     	proxy.initRenderers();
     	CraftingManager.initRecipes();
     	FMLInterModComms.sendMessage("Waila", "register", "com.mordenkainen.equivalentenergistics.waila.WailaProvider.callbackRegister");

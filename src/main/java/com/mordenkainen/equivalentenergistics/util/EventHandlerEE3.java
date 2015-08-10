@@ -16,8 +16,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-public class EventHandlerModule {
-	public EventHandlerModule() {
+public class EventHandlerEE3 {
+	public EventHandlerEE3() {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
@@ -31,25 +31,7 @@ public class EventHandlerModule {
 	}
 	
 	@SubscribeEvent
-	public void onPlayerKnowledgeChange(PlayerKnowledgeChangeEvent event) {
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			for(TileEMCCrafter crafter : TileEMCCrafter.crafterTiles) {
-				crafter.playerKnowledgeChange(event.playerUUID);
-			}
-		}
-	}
-	
-	@SubscribeEvent
 	public void onEnergyValueChange(EnergyValueEvent event) {
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			for(TileEMCCrafter crafter : TileEMCCrafter.crafterTiles) {
-				crafter.energyValueEvent();
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void onEnergyValueChange(EMCRemapEvent event) {
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
 			for(TileEMCCrafter crafter : TileEMCCrafter.crafterTiles) {
 				crafter.energyValueEvent();
