@@ -1,115 +1,215 @@
 package com.mordenkainen.equivalentenergistics.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.google.common.base.Equivalence;
 
-public class EMCCraftingPattern extends EECraftingPattern {
+import com.mordenkainen.equivalentenergistics.items.ItemPattern;
+import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+public class EMCCraftingPattern implements ICraftingPatternDetails {
+	private static Equivalence<ItemStack> eq = new CompItemStack();
+	private static Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
+	protected IAEItemStack[] ingredients = new IAEItemStack[9];
+	protected IAEItemStack result;
+	public float outputEMC;
+	public float inputEMC;
 	public boolean valid = true;
-	
-	public EMCCraftingPattern(final ItemStack craftingResult) {
-		calculateContent(craftingResult);
+
+	private EMCCraftingPattern(ItemStack craftingResult) {
+		buildPattern(craftingResult);
+	}
+
+	private void buildPattern(ItemStack craftingResult)	{
+		if (craftingResult.getItem() == ItemEnum.EMCCRYSTAL.getItem()) {
+			outputEMC = (inputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult));
+			result = AEApi.instance().storage().createItemStack(craftingResult);
+			ItemStack ingredient = new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 64, craftingResult.getItemDamage() - 1);
+			for (int i = 0; i < 9; i++) {
+				ingredients[i] = AEApi.instance().storage().createItemStack(ingredient);
+			}
+		} else {
+			calculateContent(craftingResult);
+		}
+	}
+
+	public static EMCCraftingPattern get(ItemStack result) {
+		if (patterns.containsKey(eq.wrap(result))) {
+			return (EMCCraftingPattern)patterns.get(eq.wrap(result));
+		}
+		EMCCraftingPattern newPattern = new EMCCraftingPattern(result);
+		patterns.put(eq.wrap(result), newPattern);
+		return newPattern;
+	}
+
+	public ItemStack getPattern() {
+		ItemStack pattern = new ItemStack(ItemEnum.EMCPATTERN.getItem());
+		((ItemPattern)pattern.getItem()).setTargetItem(pattern, result.getItemStack());
+		return pattern;
+	}
+
+	public boolean isCraftable() {
+		return false;
+	}
+
+	public IAEItemStack[] getInputs() {
+		return ingredients;
+	}
+
+	public IAEItemStack[] getCondensedInputs() {
+		ArrayList<IAEItemStack> cond = new ArrayList<IAEItemStack>();
+		for (int index = 0; index < ingredients.length; index++) {
+			if (ingredients[index] != null) {
+				cond.add(ingredients[index]);
+			}
+		}
+		return (IAEItemStack[])cond.toArray(new IAEItemStack[cond.size()]);
+	}
+
+	public IAEItemStack[] getCondensedOutputs() {
+		if (result == null) {
+			return new IAEItemStack[0];
+		}
+		return new IAEItemStack[] {result};
+	}
+
+	public IAEItemStack[] getOutputs() {
+		return getCondensedOutputs();
+	}
+
+	public boolean canSubstitute() {
+		return false;
+	}
+
+	public ItemStack getOutput(InventoryCrafting paramInventoryCrafting, World paramWorld) {
+		return result.getItemStack();
+	}
+
+	public int getPriority() {
+		return 0;
+	}
+
+	public void setPriority(int paramInt) {}
+
+	public boolean isValidItemForSlot(int slotIndex, ItemStack repStack, World world) {
+		IAEItemStack ingStack = ingredients[slotIndex];
+		if ((ingStack == null) || (ingStack.getItem() == null) || (repStack == null) || (repStack.getItem() == null) || (repStack.getItem() != ItemEnum.EMCCRYSTAL.getItem()) || (repStack.getItemDamage() != ingStack.getItemDamage()) || (repStack.stackSize < ingStack.getItemStack().stackSize)) {
+			return false;
+		}
+		return true;
 	}
 
 	private void calculateContent(ItemStack craftingResult) {
-		if(!EMCUtils.getInstance().hasEMC(craftingResult) || EMCUtils.getInstance().getEnergyValue(craftingResult) <= 0) {
+		if ((!EMCUtils.getInstance().hasEMC(craftingResult)) || (EMCUtils.getInstance().getEnergyValue(craftingResult) <= 0.0F)) {
 			valid = false;
 		} else {
-			float outputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult);
-			float inputEMC = 0;
+			outputEMC = EMCUtils.getInstance().getEnergyValue(craftingResult);
+			inputEMC = 0.0F;
 			int numItems = 1;
-			int[] crystals = new int[] {0, 0, 0};
-			if(outputEMC <= EMCUtils.getInstance().getCrystalEMC()) {
+			int[] crystals = {0, 0, 0};
+			if (outputEMC <= EMCUtils.getInstance().getCrystalEMC()) {
 				crystals[0] = 1;
-				numItems = (int)Math.min(EMCUtils.getInstance().getCrystalEMC()/outputEMC, 64);
+				numItems = (int)Math.min(EMCUtils.getInstance().getCrystalEMC() / outputEMC, 64.0F);
 				outputEMC *= numItems;
 				inputEMC = EMCUtils.getInstance().getCrystalEMC();
 			} else {
 				int maxTier = calcStartingTier(outputEMC);
 				float remainingEMC = outputEMC;
-				for(int i = maxTier; i >= 0; i--) {
+				for (int i = maxTier; i >= 0; i--) {
 					crystals[i] = calcCrystals(remainingEMC, i);
 					remainingEMC = getOverflow(outputEMC, crystals);
-					if(remainingEMC <= 0) {
+					if (remainingEMC <= 0.0F) {
 						break;
 					}
-					if(i != 0 ) {
-						crystals[i]--;
+					if (i != 0) {
+						crystals[i] -= 1;
 						remainingEMC = Math.abs(remainingEMC - EMCUtils.getInstance().getCrystalEMC(i));
 					}
 				}
 				int pass = 0;
-				while(getTotalStacks(crystals) > 9 && pass < 2) {
-					if(crystals[pass] > 0) {
+				while ((getTotalStacks(crystals) > 9) && (pass < 2)) {
+					if (crystals[pass] > 0) {
 						crystals[pass] = 0;
-						crystals[pass + 1]++;
+						crystals[(pass + 1)] += 1;
 					}
 					pass++;
 				}
-				if(getTotalStacks(crystals) > 9) {
+				if (getTotalStacks(crystals) > 9) {
 					valid = false;
 					return;
 				}
-				for(int i = 0; i <= 2; i++) {
+				for (int i = 0; i <= 2; i++) {
 					inputEMC += EMCUtils.getInstance().getCrystalEMC(i) * crystals[i];
 				}
 			}
-			
 			ItemStack outputStack = craftingResult.copy();
 			outputStack.stackSize = numItems;
 			result = AEApi.instance().storage().createItemStack(outputStack);
-			
+
 			int tier = 0;
-			for (int i = 0; i <= 8 && tier <= 2 && (crystals[0] > 0 || crystals[1] > 0 || crystals[2] > 0); i++) {
+			for (int i = 0; (i <= 8) && (tier <= 2) && ((crystals[0] > 0) || (crystals[1] > 0) || (crystals[2] > 0)); i++) {
 				while (crystals[tier] <= 0) {
 					tier++;
 				}
-				ingredients[i] = AEApi.instance().storage().createItemStack(new ItemStack(EquivalentEnergistics.itemEMCCrystal, Math.min(64, crystals[tier]), tier));
-				crystals[tier] -= ingredients[i].getItemStack().stackSize;				
+				ingredients[i] = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), Math.min(64, crystals[tier]), tier));
+				crystals[tier] -= ingredients[i].getItemStack().stackSize;
 			}
 		}
 	}
-	
+
 	private int calcStartingTier(float emcValue) {
-		if(emcValue > EMCUtils.getInstance().getCrystalEMC(2)) {
+		if (emcValue > EMCUtils.getInstance().getCrystalEMC(2)) {
 			return 2;
 		}
-		if(emcValue > EMCUtils.getInstance().getCrystalEMC(1)) {
+		if (emcValue > EMCUtils.getInstance().getCrystalEMC(1)) {
 			return 1;
 		}
 		return 0;
 	}
-	
+
 	private int calcCrystals(float emcValue, int tier) {
 		return (int)Math.ceil(emcValue / EMCUtils.getInstance().getCrystalEMC(tier));
 	}
-	
-	private float getOverflow(float targetEMC, int[]crystals) {
-		float crystalEMC = 0;
-		for(int i = 0; i <= 2; i++) {
+
+	private float getOverflow(float targetEMC, int[] crystals) {
+		float crystalEMC = 0.0F;
+		for (int i = 0; i <= 2; i++) {
 			crystalEMC += EMCUtils.getInstance().getCrystalEMC(i) * crystals[i];
 		}
 		return crystalEMC - targetEMC;
 	}
-	
-	private int getTotalStacks(int[]crystals) {
+
+	private int getTotalStacks(int[] crystals) {
 		int totalStacks = 0;
-		for(int i = 0; i <= 2; i++) {
+		for (int i = 0; i <= 2; i++) {
 			totalStacks += getStackCount(crystals[i]);
 		}
 		return totalStacks;
 	}
 
 	private int getStackCount(int numCrystals) {
-		if(numCrystals > 0 && numCrystals < 64) {
+		if ((numCrystals > 0) && (numCrystals < 64)) {
 			return 1;
-		} else if (numCrystals > 0) {
-			return (int)Math.ceil(numCrystals/64D);
+		}
+		if (numCrystals > 0) {
+			return (int)Math.ceil(numCrystals / 64.0D);
 		}
 		return 0;
+	}
+
+	public static void relearnPatterns() {
+		for (Equivalence.Wrapper<ItemStack> wrappedStack : patterns.keySet()) {
+			((EMCCraftingPattern)patterns.get(wrappedStack)).buildPattern((ItemStack)wrappedStack.get());
+		}
 	}
 }

@@ -1,22 +1,15 @@
 package com.mordenkainen.equivalentenergistics.items;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.ProjectEAPI;
-import moze_intel.projecte.playerData.Transmutation;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,13 +22,11 @@ public class ItemEMCBook extends Item {
 	public ItemEMCBook() {
 		super();
 		setMaxStackSize(1);
-		setCreativeTab(EquivalentEnergistics.tabEE);
-		setUnlocalizedName(Ref.getId("EMCBook"));
 	}
 	
 	@Override
 	public void registerIcons(IIconRegister reg) {
-		itemIcon = Items.book.getIconFromDamage(0);
+		itemIcon = reg.registerIcon(Ref.getId("EMCBook"));
 	}
 	
 	@Override

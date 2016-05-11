@@ -9,3 +9,5 @@ conf
 eclipse
 gradle
 libs
+/.minecraft
+/.pmd

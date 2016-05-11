@@ -2,13 +2,16 @@ package com.mordenkainen.equivalentenergistics.util;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
+
 import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
 
 public class UnmetDependencyException extends CustomModLoadingErrorDisplayException {
+	
+	private static final long serialVersionUID = 3959069021401895129L;
 	private final String[] errorMessage;
 	
 	public UnmetDependencyException() {
-		errorMessage = "Equivilant Energistics has stopped Minecraft Loading.\nA required dependency was not found.\nEither Equivalent Exchange 3 or ProjectE must be installed!".split("\n");
+		errorMessage = "Equivalent Energistics has stopped Minecraft Loading.\nA required dependency was not found.\nEither Equivalent Exchange 3 or ProjectE must be installed and enabled!".split("\n");
 	}
 
 	@Override

@@ -2,10 +2,10 @@ package com.mordenkainen.equivalentenergistics.render;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.parts.networking.PartCable;
 
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 import com.mordenkainen.equivalentenergistics.models.ModelEMCCrafter;
@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
@@ -31,7 +31,7 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 		if (te instanceof TileEMCCrafter) {
 			GL11.glPushMatrix();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			GL11.glScalef(-1F, -1F, 1f);
+			GL11.glScalef(-1F, -1F, 1F);
 			GL11.glTranslatef(-.5F, -1.5F, .5F);
 			bindTexture(modelTexture);
 			model.render();
@@ -45,10 +45,9 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 			GL11.glPopMatrix();
 			
 			EntityItem entityitem = null;
-			if(((TileEMCCrafter)te).isCrafting() && ((TileEMCCrafter)te).getCurrentOutput() != null) {
-				entityitem = new EntityItem(te.getWorldObj(), 0.0D, 0.0D, 0.0D, ((TileEMCCrafter)te).getCurrentOutput());
-			} else if(((TileEMCCrafter)te).getCurrentTome() != null) {
-				entityitem = new EntityItem(te.getWorldObj(), 0.0D, 0.0D, 0.0D, ((TileEMCCrafter)te).getCurrentTome());
+			
+			if(((TileEMCCrafter)te).displayStack != null) {
+				 entityitem = new EntityItem(te.getWorldObj(), 0.0D, 0.0D, 0.0D, ((TileEMCCrafter)te).displayStack);
 			}
 			
 			if(entityitem != null) {
@@ -70,8 +69,8 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 			if (((ne instanceof IGridHost)) && ((ne instanceof IPartHost))) {
 				IPartHost ph = (IPartHost)ne;
 				IPart pcx = ph.getPart(ForgeDirection.UNKNOWN);
-				if ((pcx instanceof PartCable)) {
-					PartCable pc = (PartCable)pcx;
+				if ((pcx instanceof IPartCable)) {
+					IPartCable pc = (IPartCable)pcx;
 					if (pc.isConnected(side.getOpposite())) {
 						return true;
 					}

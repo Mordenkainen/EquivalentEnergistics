@@ -1,0 +1,57 @@
+package com.mordenkainen.equivalentenergistics.util;
+
+import java.util.ArrayList;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+public final class CommonUtils {
+	private CommonUtils() {}
+
+	public static boolean destroyAndDrop(final World world, final int x, final int y, final int z) {
+		final Block block = world.getBlock(x, y, z);
+		if(block != null && block.getBlockHardness(world, x, y, z) >= 0) {
+			if(!world.isRemote){
+				block.breakBlock(world, x, y, z, block, world.getBlockMetadata(x, y, z));
+				final ArrayList<ItemStack> drops = block.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+				for(final ItemStack stack : drops) {
+					spawnEntItem(world, x, y, z, stack);
+				}
+			}
+			world.setBlockToAir(x, y, z);
+				
+			return true;
+		}
+		return false;
+	}
+	
+	public static void spawnEntItem(final World world, final double x, final double y, final double z, final ItemStack item) {
+		if (item != null && item.stackSize > 0) {
+			final float rx = world.rand.nextFloat() * 0.8F + 0.1F;
+			final float ry = world.rand.nextFloat() * 0.8F + 0.1F;
+			final float rz = world.rand.nextFloat() * 0.8F + 0.1F;
+
+			final EntityItem entityItem = new EntityItem(world, x + rx, y + ry, z + rz, new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
+
+			if (item.hasTagCompound()) {
+				entityItem.getEntityItem().setTagCompound((NBTTagCompound)item.getTagCompound().copy());
+			}
+
+			entityItem.motionX = world.rand.nextGaussian() * 0.05F;
+			entityItem.motionY = world.rand.nextGaussian() * 0.05F + 0.2000000029802322D;
+			entityItem.motionZ = world.rand.nextGaussian() * 0.05F;
+			world.spawnEntityInWorld(entityItem);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T getTE(Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
+		final TileEntity tile = world.getTileEntity(x, y, z);
+		return type.isInstance(tile) ? (T)tile : null;
+	}
+}

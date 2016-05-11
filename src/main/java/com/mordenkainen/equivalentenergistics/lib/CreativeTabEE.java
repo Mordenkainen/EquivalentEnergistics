@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.lib;
 
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -13,6 +13,6 @@ public class CreativeTabEE extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-		return EquivalentEnergistics.itemEMCCrystal;
+		return ItemEnum.EMCCRYSTAL.getItem();
 	}
 }

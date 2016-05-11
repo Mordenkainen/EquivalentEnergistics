@@ -9,12 +9,25 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
+	
+	@Override
+	public boolean isClient() {
+		return true;
+	}
+
+	@Override
+	public boolean isServer() {
+		return false;
+	}
+	
+	@Override
 	public void initRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new TileEMCCrafterRenderer());
 		EMCCrafterRenderer = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(new BlockEMCCrafterRenderer());
     }
 	
+	@Override
 	public void unmetDependency() {
 		throw new UnmetDependencyException();
 	}

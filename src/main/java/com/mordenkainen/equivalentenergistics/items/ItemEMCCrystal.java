@@ -2,11 +2,11 @@ package com.mordenkainen.equivalentenergistics.items;
 
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.lib.Ref;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -17,7 +17,6 @@ public class ItemEMCCrystal extends Item {
 	public ItemEMCCrystal() {
 		super();
 		setMaxStackSize(64);
-		setCreativeTab(EquivalentEnergistics.tabEE);
 		setHasSubtypes(true);
 	}
 	
