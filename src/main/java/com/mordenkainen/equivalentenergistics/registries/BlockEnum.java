@@ -6,7 +6,7 @@ import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
@@ -16,8 +16,8 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum BlockEnum {
 
-	EMCCONDENSER("EMCCondenser", new BlockEMCCondenser()),
-	EMCCRAFTER("EMCCrafter", new BlockEMCCrafter());
+	EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), "EMCCondenser"),
+	EMCCRAFTER("EMCCrafter", new BlockEMCCrafter(), "EMCCrafter");
 
 	private final String internalName;
 	
@@ -27,7 +27,7 @@ public enum BlockEnum {
 
 	private boolean enabled = true;
 	
-	private boolean hidden = false;
+	private boolean hidden;
 	
 	private String configKey;
 	
@@ -60,7 +60,7 @@ public enum BlockEnum {
 	BlockEnum(final String _internalName, final Block _block, final Class<? extends ItemBlock> _itemBlockClass, final Integration.Mods _mod, final String _configKey, final boolean _hidden) {
 		internalName = _internalName;
 		block = _block;
-		block.setBlockName(Ref.MOD_ID + ":" + internalName);
+		block.setBlockName(Reference.MOD_ID + ":" + internalName);
 		itemBlockClass = _itemBlockClass;
 		mod = _mod;
 		configKey = _configKey;

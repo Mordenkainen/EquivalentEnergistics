@@ -7,8 +7,8 @@ import net.minecraft.item.Item;
 
 public class CreativeTabEE extends CreativeTabs {
 
-	public CreativeTabEE(final int id, final String label) {
-		super(id, label);
+	public CreativeTabEE(final int tabID, final String label) {
+		super(tabID, label);
 	}
 
 	@Override

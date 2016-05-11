@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.items;
 
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,22 +21,22 @@ public class ItemEMCCrystal extends Item {
 	}
 	
 	@Override
-	public void registerIcons(IIconRegister reg) {
-		itemIcon = reg.registerIcon(Ref.TEXTURE_PREFIX + "EMCCrystal");
+	public void registerIcons(final IIconRegister reg) {
+		itemIcon = reg.registerIcon(Reference.TEXTURE_PREFIX + "EMCCrystal");
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item id, CreativeTabs tab, List list) {
+	public void getSubItems(final Item id, final CreativeTabs tab, final List list) {
 		for (int i = 0; i < 3; i++) {
-			ItemStack stack  = new ItemStack(id, 1, i);
+			final ItemStack stack  = new ItemStack(id, 1, i);
 			list.add(stack);
 		}
 	}
 	
 	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		return "item." + Ref.getId("EMCCrystal") + "." + stack.getItemDamage();
+	public String getUnlocalizedName(final ItemStack stack) {
+		return "item." + Reference.getId("EMCCrystal") + "." + stack.getItemDamage();
 	}
 }

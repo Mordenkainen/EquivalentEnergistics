@@ -9,7 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class Integration {
+public final class Integration {
 
 	public enum Mods {
 		WAILA("Waila"),
@@ -72,19 +72,21 @@ public class Integration {
 		}
 	}
 	
-	public void loadConfig(final Configuration config) {
+	private Integration() {}
+	
+	public static void loadConfig(final Configuration config) {
 		for (final Mods mod : Mods.values()) {
 			mod.loadConfig(config);
 		}
 	}
 	
-	public void preInit() {}
+	public static void preInit() {}
 	
-	public void init() {
+	public static void init() {
 		if (Mods.WAILA.isEnabled()) {
 			Waila.init();
 		}
 	}
 	
-	public void postInit() {}
+	public static void postInit() {}
 }

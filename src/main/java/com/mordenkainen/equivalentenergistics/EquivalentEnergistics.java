@@ -18,53 +18,44 @@ import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
-import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 import com.mordenkainen.equivalentenergistics.util.EMCEventHandler;
 
-@Mod(modid = Ref.MOD_ID, name = Ref.MOD_NAME, version = Ref.MOD_VERSION, dependencies = Ref.MOD_DEPENDENCIES)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.MOD_DEPENDENCIES)
 public class EquivalentEnergistics {
     
-	@Instance(Ref.MOD_ID)
+	@Instance(Reference.MOD_ID)
 	public static EquivalentEnergistics instance;
 	
-	@SidedProxy(clientSide = Ref.PROXY_LOC + "ClientProxy", serverSide = Ref.PROXY_LOC + "CommonProxy")
+	@SidedProxy(clientSide = Reference.PROXY_LOC + "ClientProxy", serverSide = Reference.PROXY_LOC + "CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static Integration integration = new Integration();
-	
-	public static CreativeTabs tabEE = new CreativeTabEE(CreativeTabs.getNextID(), Ref.MOD_ID);
+	public static CreativeTabs tabEE = new CreativeTabEE(CreativeTabs.getNextID(), Reference.MOD_ID);
 	
 	public static Logger logger;
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
+	public void preInit(final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
-		ConfigManager.init(new File(event.getModConfigurationDirectory(), Ref.MOD_ID + ".cfg"));
-		integration.preInit();
-		proxy.registerBlocks();
+		ConfigManager.init(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
+		proxy.preInit();
 	}
 	
     @EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(final FMLInitializationEvent event) {
     	if(!Integration.Mods.PROJECTE.isEnabled() && !Integration.Mods.EE3.isEnabled()) {
     		proxy.unmetDependency();
     	}
     	
-    	proxy.registerTileEntities();
-    	
-    	proxy.registerItems();
+    	proxy.init();
     	
     	new EMCEventHandler();
-    	proxy.initRenderers();
-    	integration.init();
     	CraftingManager.initRecipes();
     }
     
     @EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-    	EMCUtils.getInstance().setCrystalEMC(ConfigManager.crystalEMCValue);
-    	integration.postInit();
+	public void postInit(final FMLPostInitializationEvent event) {
+    	proxy.postInit();
     }
 }

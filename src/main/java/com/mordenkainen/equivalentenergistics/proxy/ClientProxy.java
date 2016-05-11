@@ -23,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void initRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new TileEMCCrafterRenderer());
-		EMCCrafterRenderer = RenderingRegistry.getNextAvailableRenderId();
+		crafterRenderer = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(new BlockEMCCrafterRenderer());
     }
 	

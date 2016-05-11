@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class CraftingManager {
+public final class CraftingManager {
 	private CraftingManager() {}
 	
 	public static void initRecipes() {

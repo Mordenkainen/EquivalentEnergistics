@@ -25,18 +25,16 @@ public class EMCEventHandler {
 
 	@Optional.Method(modid="ProjectE")
 	@SubscribeEvent
-	public void onPlayerKnowledgeChange(PlayerKnowledgeChangeEvent event) {
-		if (!ConfigManager.useEE3) {
-			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-				Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-				while (iter.hasNext()) {
-					DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-					TileEntity crafter = currentLoc.getTE();
-					if ((crafter == null) || (!(crafter instanceof TileEMCCrafter))) {
-						iter.remove();
-					} else {
-						((TileEMCCrafter)crafter).playerKnowledgeChange(event.playerUUID);
-					}
+	public void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
+		if (!ConfigManager.useEE3 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
+			while (iter.hasNext()) {
+				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
+				final TileEntity crafter = currentLoc.getTE();
+				if (crafter instanceof TileEMCCrafter) {
+					((TileEMCCrafter)crafter).playerKnowledgeChange(event.playerUUID);
+				} else {
+					iter.remove();
 				}
 			}
 		}
@@ -44,20 +42,18 @@ public class EMCEventHandler {
 
 	@Optional.Method(modid="ProjectE")
 	@SubscribeEvent
-	public void onEnergyValueChange(EMCRemapEvent event) {
-		if (!ConfigManager.useEE3) {
-			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-				EMCUtils.getInstance().relearnCrystals();
-				EMCCraftingPattern.relearnPatterns();
-				Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-				while (iter.hasNext()) {
-					DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-					TileEntity crafter = currentLoc.getTE();
-					if ((crafter == null) || (!(crafter instanceof TileEMCCrafter))) {
-						iter.remove();
-					} else {
-						((TileEMCCrafter)crafter).energyValueEvent();
-					}
+	public void onEnergyValueChange(final EMCRemapEvent event) {
+		if (!ConfigManager.useEE3 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			EMCUtils.getInstance().relearnCrystals();
+			EMCCraftingPattern.relearnPatterns();
+			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
+			while (iter.hasNext()) {
+				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
+				final TileEntity crafter = currentLoc.getTE();
+				if (crafter instanceof TileEMCCrafter) {
+					((TileEMCCrafter)crafter).energyValueEvent();
+				} else {
+					iter.remove();
 				}
 			}
 		}
@@ -65,18 +61,16 @@ public class EMCEventHandler {
 
 	@Optional.Method(modid="EE3")
 	@SubscribeEvent
-	public void onPlayerKnowledgeChange(PlayerKnowledgeEvent event)	{
-		if (ConfigManager.useEE3) {
-			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-				Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-				while (iter.hasNext()) {
-					DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-					TileEntity crafter = currentLoc.getTE();
-					if ((crafter == null) || (!(crafter instanceof TileEMCCrafter))) {
-						iter.remove();
-					} else {
-						((TileEMCCrafter)crafter).playerKnowledgeChange(event.playerUUID);
-					}
+	public void onPlayerKnowledgeChange(final PlayerKnowledgeEvent event)	{
+		if (ConfigManager.useEE3 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
+			while (iter.hasNext()) {
+				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
+				final TileEntity crafter = currentLoc.getTE();
+				if (crafter instanceof TileEMCCrafter) {
+					((TileEMCCrafter)crafter).playerKnowledgeChange(event.playerUUID);
+				} else {
+					iter.remove();
 				}
 			}
 		}
@@ -84,20 +78,18 @@ public class EMCEventHandler {
 
 	@Optional.Method(modid="EE3")
 	@SubscribeEvent
-	public void onEnergyValueChange(EnergyValueEvent event)	{
-		if (!ConfigManager.useEE3) {
-			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-				EMCUtils.getInstance().relearnCrystals();
-				EMCCraftingPattern.relearnPatterns();
-				Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-				while (iter.hasNext()) {
-					DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-					TileEntity crafter = currentLoc.getTE();
-					if ((crafter == null) || (!(crafter instanceof TileEMCCrafter))) {
-						iter.remove();
-					} else {
-						((TileEMCCrafter)crafter).energyValueEvent();
-					}
+	public void onEnergyValueChange(final EnergyValueEvent event)	{
+		if (!ConfigManager.useEE3 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			EMCUtils.getInstance().relearnCrystals();
+			EMCCraftingPattern.relearnPatterns();
+			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
+			while (iter.hasNext()) {
+				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
+				final TileEntity crafter = currentLoc.getTE();
+				if (crafter instanceof TileEMCCrafter) {
+					((TileEMCCrafter)crafter).energyValueEvent();
+				} else {
+					iter.remove();
 				}
 			}
 		}

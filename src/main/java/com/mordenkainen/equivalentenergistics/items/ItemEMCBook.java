@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.items;
 
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,7 +26,7 @@ public class ItemEMCBook extends Item {
 	
 	@Override
 	public void registerIcons(IIconRegister reg) {
-		itemIcon = reg.registerIcon(Ref.getId("EMCBook"));
+		itemIcon = reg.registerIcon(Reference.getId("EMCBook"));
 	}
 	
 	@Override

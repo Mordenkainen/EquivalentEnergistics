@@ -48,7 +48,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	
 	public TileEMCCrafter() {
 		super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCRAFTER.getBlock())));
-		gridProxy.setIdlePowerUsage(BlockEMCCrafter.crafterIdlePower);
+		gridProxy.setIdlePowerUsage(BlockEMCCrafter.idlePower);
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
 	}
 	
@@ -120,10 +120,10 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 				}
 			} else {
 				IEnergyGrid eGrid = gridProxy.getEnergy();
-				double powerExtracted = eGrid.extractAEPower(BlockEMCCrafter.crafterActivePower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+				double powerExtracted = eGrid.extractAEPower(BlockEMCCrafter.activePower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 	
-				if(powerExtracted - BlockEMCCrafter.crafterActivePower >= 0.0D) {
-					eGrid.extractAEPower(BlockEMCCrafter.crafterActivePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
+				if(powerExtracted - BlockEMCCrafter.activePower >= 0.0D) {
+					eGrid.extractAEPower(BlockEMCCrafter.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
 					craftTickCounter++ ;
 				}
 			}

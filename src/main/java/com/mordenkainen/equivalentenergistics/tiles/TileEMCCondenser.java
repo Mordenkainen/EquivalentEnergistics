@@ -47,7 +47,7 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 		super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock())));
 		internalInventory = new CondenserInventory();
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-		gridProxy.setIdlePowerUsage(BlockEMCCondenser.condenserIdlePower);
+		gridProxy.setIdlePowerUsage(BlockEMCCondenser.idlePower);
 	}
 	
 	public void getDrops(final World world, final int x, final int y, final int z, final ArrayList<ItemStack> drops) {		
@@ -115,7 +115,7 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 			if(currentEMC >= crystalEMC) {
 				int numCrystals = Math.min(BlockEMCCondenser.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
 				IEnergyGrid eGrid = gridProxy.getEnergy();
-				double powerRequired = crystalEMC * numCrystals * BlockEMCCondenser.condenserActivePower;
+				double powerRequired = crystalEMC * numCrystals * BlockEMCCondenser.activePower;
 				while (numCrystals > 0 && eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) < powerRequired) {
 					numCrystals--;
 				}

@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.config;
 
 import java.io.File;
 
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
@@ -10,7 +10,7 @@ import cpw.mods.fml.common.Loader;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class ConfigManager {
+public final class ConfigManager {
 	public static Configuration config;
 	public static float crystalEMCValue;
 	public static boolean useEE3;
@@ -22,7 +22,7 @@ public class ConfigManager {
 
         config.load();
         
-        EquivalentEnergistics.integration.loadConfig(config);
+        Integration.loadConfig(config);
         
         for (final BlockEnum current : BlockEnum.values()) {
         	current.loadConfig(config);

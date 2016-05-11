@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public abstract class TileNetworkInv extends TileNetworkBase implements IInventory {
 
-	public TileNetworkInv(ItemStack repItem) {
+	public TileNetworkInv(final ItemStack repItem) {
 		super(repItem);
 	}
 
@@ -18,22 +18,22 @@ public abstract class TileNetworkInv extends TileNetworkBase implements IInvento
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot) {
+	public ItemStack getStackInSlot(final int slot) {
 		return getInventory().getStackInSlot(slot);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int amount) {
+	public ItemStack decrStackSize(final int slot, final int amount) {
 		return getInventory().decrStackSize(slot, amount);
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) {
+	public ItemStack getStackInSlotOnClosing(final int slot) {
 		return getInventory().getStackInSlotOnClosing(slot);
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
+	public void setInventorySlotContents(final int slot, final ItemStack stack) {
 		getInventory().setInventorySlotContents(slot, stack);
 	}
 
@@ -53,7 +53,7 @@ public abstract class TileNetworkInv extends TileNetworkBase implements IInvento
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUseableByPlayer(final EntityPlayer player) {
 		return getInventory().isUseableByPlayer(player);
 	}
 
@@ -68,7 +68,7 @@ public abstract class TileNetworkInv extends TileNetworkBase implements IInvento
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+	public boolean isItemValidForSlot(final int slot, final ItemStack stack) {
 		return getInventory().isItemValidForSlot(slot, stack);
 	}
 }

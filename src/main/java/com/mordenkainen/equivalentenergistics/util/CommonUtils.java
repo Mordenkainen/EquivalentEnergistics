@@ -50,7 +50,7 @@ public final class CommonUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T getTE(Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
+	public static <T> T getTE(final Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
 		final TileEntity tile = world.getTileEntity(x, y, z);
 		return type.isInstance(tile) ? (T)tile : null;
 	}

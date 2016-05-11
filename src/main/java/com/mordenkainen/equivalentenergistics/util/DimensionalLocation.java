@@ -4,12 +4,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class DimensionalLocation {
+	private static final int PRIME = 31;
+	
 	public int x;
 	public int y;
 	public int z;
 	public World world;
 
-	public DimensionalLocation(int x, int y, int z, World world) {
+	public DimensionalLocation(final int x, final int y, final int z, final World world) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -21,16 +23,15 @@ public class DimensionalLocation {
 	}
 
 	public int hashCode() {
-		int prime = 31;
 		int result = 1;
-		result = prime * result + (world == null ? 0 : world.hashCode());
-		result = prime * result + x;
-		result = prime * result + y;
-		result = prime * result + z;
+		result = PRIME * result + (world == null ? 0 : world.hashCode());
+		result = PRIME * result + x;
+		result = PRIME * result + y;
+		result = PRIME * result + z;
 		return result;
 	}
 
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -40,18 +41,15 @@ public class DimensionalLocation {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		DimensionalLocation other = (DimensionalLocation)obj;
+		final DimensionalLocation other = (DimensionalLocation)obj;
 		if (world == null) {
 			if (other.world != null) {
 				return false;
 			}
-		}
-		else if (!world.equals(other.world)) {
+		} else if (!world.equals(other.world)) {
 			return false;
 		}
-		if ((x != other.x) || (y != other.y) || (z != other.z)) {
-			return false;
-		}
-		return true;
+		
+		return x == other.x && y == other.y && z == other.z;
 	}
 }

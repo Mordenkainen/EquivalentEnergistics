@@ -7,7 +7,7 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public enum ItemEnum {
 	
 	private boolean enabled = true;
 
-	private boolean hidden = false;
+	private boolean hidden;
 	
 	private String configKey;
 
@@ -64,7 +64,7 @@ public enum ItemEnum {
 	ItemEnum(final String _internalName, final Item _item, final String _configKey, final boolean _hidden, final Integration.Mods _mod) {
 		internalName = _internalName;
 		item = _item;
-		item.setUnlocalizedName(Ref.MOD_ID + ":" + internalName);
+		item.setUnlocalizedName(Reference.MOD_ID + ":" + internalName);
 		configKey = _configKey;
 		hidden = _hidden;
 		mod = _mod;

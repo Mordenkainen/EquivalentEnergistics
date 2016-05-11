@@ -4,6 +4,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface IWailaNBTProvider {
 	
-	public NBTTagCompound getWailaTag(NBTTagCompound tag);
+	NBTTagCompound getWailaTag(NBTTagCompound tag);
 	
 }

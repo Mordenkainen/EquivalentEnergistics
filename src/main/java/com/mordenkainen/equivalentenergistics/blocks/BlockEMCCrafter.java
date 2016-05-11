@@ -20,13 +20,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 
 public class BlockEMCCrafter extends BlockContainer {
-	public static double crafterIdlePower;
-	public static double crafterActivePower;
+	public static double idlePower;
+	public static double activePower;
 	public static double craftingTime;
 	
-	public static void loadfConfig(Configuration config) {
-		crafterIdlePower = config.get("Crafter", "IdlePowerDrain", 0.0).getDouble(0.0);
-        crafterActivePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
+	public static void loadfConfig(final Configuration config) {
+		idlePower = config.get("Crafter", "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
         craftingTime = config.get("Crafter", "TicksPerCrafting", 7).getInt(7);
 	}
 	
@@ -48,11 +48,11 @@ public class BlockEMCCrafter extends BlockContainer {
 	
 	@Override
 	public int getRenderType() {
-		return EquivalentEnergistics.proxy.EMCCrafterRenderer;
+		return EquivalentEnergistics.proxy.crafterRenderer;
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createNewTileEntity(final World world, final int meta) {
 		return new TileEMCCrafter();
 	}
 	
@@ -63,10 +63,10 @@ public class BlockEMCCrafter extends BlockContainer {
 	@Override
 	public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
 		if(!world.isRemote) {
-			TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
+			final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 
 			if(tileCrafter != null) {
-				ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
+				final ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
 				if(existingTome != null) {
 					world.spawnEntityInWorld(new EntityItem(world, x, y, z, existingTome));
 				}
@@ -78,7 +78,7 @@ public class BlockEMCCrafter extends BlockContainer {
 
 	@Override
 	public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack) {
-		TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
+		final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 
 		if(tileCrafter != null && player instanceof EntityPlayer) {
 			tileCrafter.setOwner((EntityPlayer)player);
@@ -87,11 +87,11 @@ public class BlockEMCCrafter extends BlockContainer {
 	
 	@Override
 	public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
-		TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
+		final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 		
 		if(tileCrafter != null && tileCrafter.checkPermissions(player) && !tileCrafter.isCrafting()) {
 			if(player.getHeldItem() == null) {
-				ItemStack existingTome = tileCrafter.getCurrentTome();
+				final ItemStack existingTome = tileCrafter.getCurrentTome();
 				if(existingTome != null) {
 					if(!world.isRemote) {
 						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
@@ -99,13 +99,11 @@ public class BlockEMCCrafter extends BlockContainer {
 					tileCrafter.setCurrentTome(null);
 					return true;
 				}
-			} else if (EMCUtils.getInstance().isValidTome(player.getHeldItem())) {
-				if(tileCrafter.getCurrentTome() == null) {
-					tileCrafter.setCurrentTome(player.getHeldItem().copy());
-					player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
-						player.inventory.mainInventory[player.inventory.currentItem];
-					return true;
-				}
+			} else if (EMCUtils.getInstance().isValidTome(player.getHeldItem()) && tileCrafter.getCurrentTome() == null) {
+				tileCrafter.setCurrentTome(player.getHeldItem().copy());
+				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
+					player.inventory.mainInventory[player.inventory.currentItem];
+				return true;
 			}
 		}
 		return false;

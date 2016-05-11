@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.blocks;
 
 import java.util.ArrayList;
 
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -25,18 +25,18 @@ import net.minecraftforge.common.config.Configuration;
 public class BlockEMCCondenser extends BlockContainer {
 	public static int itemsPerTick;
 	public static int crystalsPerTick;
-	public static double condenserIdlePower;
-	public static double condenserActivePower;
-	
-	public static void loadfConfig(Configuration config) {
-		itemsPerTick = config.get("Condenser", "ItemsCondensedPerTick", 8).getInt(8);
-        crystalsPerTick = config.get("Condenser", "CrystalsProducedPerTick", 16).getInt(16);
-        condenserIdlePower = config.get("Condenser", "IdlePowerDrain", 0.0).getDouble(0.0);
-        condenserActivePower = config.get("Condenser", "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
-	}
+	public static double idlePower;
+	public static double activePower;
 	
 	@SideOnly(Side.CLIENT)
-	IIcon[] icons;
+	private IIcon[] icons;
+	
+	public static void loadfConfig(final Configuration config) {
+		itemsPerTick = config.get("Condenser", "ItemsCondensedPerTick", 8).getInt(8);
+        crystalsPerTick = config.get("Condenser", "CrystalsProducedPerTick", 16).getInt(16);
+        idlePower = config.get("Condenser", "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get("Condenser", "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
+	}
 	
 	public BlockEMCCondenser() {
 		super(Material.rock);
@@ -45,7 +45,7 @@ public class BlockEMCCondenser extends BlockContainer {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createNewTileEntity(final World world, final int meta) {
 		return new TileEMCCondenser();
 	}
 	
@@ -53,13 +53,13 @@ public class BlockEMCCondenser extends BlockContainer {
 	@Override
 	public final void registerBlockIcons(final IIconRegister register) {
 		icons = new IIcon[2];
-		icons[0] = register.registerIcon(Ref.getId("EMCCondenserTop"));
-		icons[1] = register.registerIcon(Ref.getId("EMCCondenserSide"));
+		icons[0] = register.registerIcon(Reference.getId("EMCCondenserTop"));
+		icons[1] = register.registerIcon(Reference.getId("EMCCondenserSide"));
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public IIcon getIcon(int side, int meta) {
+	public IIcon getIcon(final int side, final int meta) {
 		if(side == 0 || side == 1) {
 			return icons[0];
 		}
@@ -69,13 +69,13 @@ public class BlockEMCCondenser extends BlockContainer {
 	@Override
 	public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
 		if(!world.isRemote) {
-			TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
+			final TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
 
 			if(tileCondenser != null) {
-				ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+				final ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
 				tileCondenser.getDrops(world, x, y, z, drops);
 
-				for(ItemStack drop : drops)	{
+				for(final ItemStack drop : drops)	{
 					world.spawnEntityInWorld(new EntityItem(world, 0.5 + x, 0.5 + y, 0.2 + z, drop));
 				}
 			}
@@ -86,7 +86,7 @@ public class BlockEMCCondenser extends BlockContainer {
 	
 	@Override
 	public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack) {
-		TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
+		final TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
 
 		if(tileCondenser != null && player instanceof EntityPlayer) {
 			tileCondenser.setOwner((EntityPlayer)player);

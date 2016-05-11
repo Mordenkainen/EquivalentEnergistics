@@ -24,9 +24,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 public abstract class TileNetworkBase extends TileEntity implements IGridProxyable, IActionHost {
 	protected IGridProxy gridProxy;
 	protected MachineSource mySource;
-	private boolean isActive;
+	private boolean active;
 	
-	public TileNetworkBase(ItemStack repItem) {
+	public TileNetworkBase(final ItemStack repItem) {
+		super();
 		mySource = new MachineSource(this);
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
 			gridProxy = new NullProxy(this);
@@ -41,10 +42,10 @@ public abstract class TileNetworkBase extends TileEntity implements IGridProxyab
 	
 	public boolean isActive() {
 		if(!worldObj.isRemote && gridProxy.getNode() != null) {
-			isActive = gridProxy.getNode().isActive();
+			active = gridProxy.getNode().isActive();
 		}
 
-		return isActive;
+		return active;
 	}
 	
 	@Override
@@ -81,12 +82,12 @@ public abstract class TileNetworkBase extends TileEntity implements IGridProxyab
 	}
 	
 	@Override
-	public IGridNode getGridNode(ForgeDirection arg0) {
+	public IGridNode getGridNode(final ForgeDirection arg0) {
 		return gridProxy.getNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection arg0) {
+	public AECableType getCableConnectionType(final ForgeDirection arg0) {
 		return AECableType.SMART;
 	}
 

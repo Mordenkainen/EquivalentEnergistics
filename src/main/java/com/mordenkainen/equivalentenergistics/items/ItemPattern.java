@@ -18,12 +18,12 @@ public class ItemPattern extends Item implements ICraftingPatternItem {
 	}
 	
 	@Override
-	public ICraftingPatternDetails getPatternForItem(ItemStack paramItemStack, World paramWorld) {
-		ItemStack target = ItemStack.loadItemStackFromNBT(paramItemStack.getTagCompound());
-		return EMCCraftingPattern.get(target);
+	public ICraftingPatternDetails getPatternForItem(final ItemStack stack, final World world) {
+		final ItemStack target = ItemStack.loadItemStackFromNBT(stack.getTagCompound());
+		return EMCCraftingPattern.get(target); 
 	}
 	
-	public void setTargetItem(ItemStack pattern, ItemStack target) {
+	public void setTargetItem(final ItemStack pattern, final ItemStack target) {
 		if(!pattern.hasTagCompound()) {
 			pattern.stackTagCompound = new NBTTagCompound();
 		}

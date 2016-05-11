@@ -1,16 +1,36 @@
 package com.mordenkainen.equivalentenergistics.proxy;
 
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
-	public int EMCCrafterRenderer;
+	public int crafterRenderer;
 
+	public void preInit() {
+		Integration.preInit();
+		registerBlocks();
+	}
+	
+	public void init() {
+		Integration.init();
+		registerTileEntities();
+    	registerItems();
+    	initRenderers();
+	}
+	
+	public void postInit() {
+		Integration.postInit();
+		EMCUtils.getInstance().setCrystalEMC(ConfigManager.crystalEMCValue);
+	}
+	
 	public boolean isClient() {
 		return false;
 	}
@@ -36,8 +56,8 @@ public class CommonProxy {
 	}
 	
 	public void registerTileEntities() {
-		GameRegistry.registerTileEntity(TileEMCCondenser.class, Ref.MOD_ID + "TileEMCCondenser");
-		GameRegistry.registerTileEntity(TileEMCCrafter.class, Ref.MOD_ID + "TileEMCCrafter");
+		GameRegistry.registerTileEntity(TileEMCCondenser.class, Reference.MOD_ID + "TileEMCCondenser");
+		GameRegistry.registerTileEntity(TileEMCCrafter.class, Reference.MOD_ID + "TileEMCCrafter");
 	}
 	
 	public void initRenderers() {}

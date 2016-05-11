@@ -7,7 +7,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.models.ModelEMCCrafter;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 
@@ -24,7 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 
 	ModelEMCCrafter model = new ModelEMCCrafter();
-	private static final ResourceLocation modelTexture = new ResourceLocation(Ref.getId("textures/models/EMCCrafter.png"));
+	private static final ResourceLocation modelTexture = new ResourceLocation(Reference.getId("textures/models/EMCCrafter.png"));
 
 	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float t) {

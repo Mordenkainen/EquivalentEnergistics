@@ -1,7 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.nei;
 
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.lib.Ref;
+import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
@@ -14,12 +14,12 @@ public class NEIEquivalentEnergisticsConfig implements IConfigureNEI {
 
 	@Override
 	public String getName() {
-		return Ref.MOD_NAME;
+		return Reference.MOD_NAME;
 	}
 
 	@Override
 	public String getVersion() {
-		return Ref.MOD_VERSION;
+		return Reference.MOD_VERSION;
 	}
 
 	@Override
