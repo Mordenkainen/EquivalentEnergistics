@@ -11,3 +11,4 @@ gradle
 libs
 /.minecraft
 /.pmd
+/.project
