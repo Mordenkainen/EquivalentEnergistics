@@ -25,31 +25,31 @@ public class ItemEMCBook extends Item {
 	}
 	
 	@Override
-	public void registerIcons(IIconRegister reg) {
+	public void registerIcons(final IIconRegister reg) {
 		itemIcon = reg.registerIcon(Reference.getId("EMCBook"));
 	}
 	
 	@Override
-    public void onUpdate(ItemStack stack, World world, Entity player, int p_77663_4_, boolean p_77663_5_) {
+    public void onUpdate(final ItemStack stack, final World world, final Entity player, final int param4, final boolean param5) {
 		if(!stack.hasTagCompound()) {
 			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
 		if(!world.isRemote) {
 			if(!stack.hasTagCompound()) {
 				stack.setTagCompound(new NBTTagCompound());
 			}
-			NBTTagCompound stackNBT = stack.getTagCompound();
+			final NBTTagCompound stackNBT = stack.getTagCompound();
 			if(stackNBT.hasKey("Owner") && player.isSneaking()) {
 				stackNBT.removeTag("Owner");
 				stackNBT.removeTag("OwnerUUID");
 				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.clear")));
 				return stack;
 			}
-			String playerUUID = player.getUniqueID().toString();
+			final String playerUUID = player.getUniqueID().toString();
 			if(stackNBT.hasKey("OwnerUUID") && !stackNBT.getString("OwnerUUID").equals(playerUUID)) {
 				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.wrongowner")));
 				return stack;
@@ -64,7 +64,7 @@ public class ItemEMCBook extends Item {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean par4) {
 		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("Owner")) {
 			list.add("Owner: " + stack.getTagCompound().getString("Owner"));
 		} else {

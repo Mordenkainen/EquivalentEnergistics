@@ -1,15 +1,19 @@
 package com.mordenkainen.equivalentenergistics.integration;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.integration.ee3.EE3;
+import com.mordenkainen.equivalentenergistics.integration.projecte.ProjectE;
 import com.mordenkainen.equivalentenergistics.integration.waila.Waila;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
-
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 public final class Integration {
+	public static IEMCHandler emcHandler;
 
 	public enum Mods {
 		WAILA("Waila"),
@@ -86,7 +90,15 @@ public final class Integration {
 		if (Mods.WAILA.isEnabled()) {
 			Waila.init();
 		}
+		if (ConfigManager.useEE3) {
+			emcHandler = new EE3();
+		} else {
+			emcHandler = new ProjectE();
+		}
 	}
 	
-	public static void postInit() {}
+	public static void postInit() {
+		emcHandler.setCrystalEMC(ConfigManager.crystalEMCValue);
+		MinecraftForge.EVENT_BUS.register(emcHandler);
+	}
 }

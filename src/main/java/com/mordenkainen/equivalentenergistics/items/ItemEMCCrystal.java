@@ -28,9 +28,9 @@ public class ItemEMCCrystal extends Item {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(final Item id, final CreativeTabs tab, final List list) {
+	public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
 		for (int i = 0; i < 3; i++) {
-			final ItemStack stack  = new ItemStack(id, 1, i);
+			final ItemStack stack  = new ItemStack(item, 1, i);
 			list.add(stack);
 		}
 	}

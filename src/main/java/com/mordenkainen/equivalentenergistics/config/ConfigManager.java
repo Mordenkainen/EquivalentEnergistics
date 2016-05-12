@@ -6,8 +6,6 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
-import cpw.mods.fml.common.Loader;
-
 import net.minecraftforge.common.config.Configuration;
 
 public final class ConfigManager {
@@ -34,7 +32,7 @@ public final class ConfigManager {
         
         crystalEMCValue = (float)config.get("General", "CrystalEMC", 256.0).getDouble(256.0);
         
-        if(Loader.isModLoaded("EE3")) {
+        if(Integration.Mods.EE3.isEnabled()) {
     		useEE3 = true;
     	}
         useEE3 = config.get("General", "UseEE3", useEE3).getBoolean(useEE3);

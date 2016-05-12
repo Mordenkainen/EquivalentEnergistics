@@ -1,9 +1,9 @@
 package com.mordenkainen.equivalentenergistics.blocks;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
-import com.mordenkainen.equivalentenergistics.util.EMCUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -90,8 +90,8 @@ public class BlockEMCCrafter extends BlockContainer {
 		final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 		
 		if(tileCrafter != null && tileCrafter.checkPermissions(player) && !tileCrafter.isCrafting()) {
+			final ItemStack existingTome = tileCrafter.getCurrentTome();
 			if(player.getHeldItem() == null) {
-				final ItemStack existingTome = tileCrafter.getCurrentTome();
 				if(existingTome != null) {
 					if(!world.isRemote) {
 						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
@@ -99,7 +99,7 @@ public class BlockEMCCrafter extends BlockContainer {
 					tileCrafter.setCurrentTome(null);
 					return true;
 				}
-			} else if (EMCUtils.getInstance().isValidTome(player.getHeldItem()) && tileCrafter.getCurrentTome() == null) {
+			} else if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
 				tileCrafter.setCurrentTome(player.getHeldItem().copy());
 				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
 					player.inventory.mainInventory[player.inventory.currentItem];

@@ -20,7 +20,6 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
-import com.mordenkainen.equivalentenergistics.util.EMCEventHandler;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.MOD_DEPENDENCIES)
 public class EquivalentEnergistics {
@@ -47,10 +46,7 @@ public class EquivalentEnergistics {
     	if(!Integration.Mods.PROJECTE.isEnabled() && !Integration.Mods.EE3.isEnabled()) {
     		proxy.unmetDependency();
     	}
-    	
     	proxy.init();
-    	
-    	new EMCEventHandler();
     	CraftingManager.initRecipes();
     }
     
