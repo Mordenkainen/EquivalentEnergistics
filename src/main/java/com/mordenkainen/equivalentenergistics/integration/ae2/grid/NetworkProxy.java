@@ -3,6 +3,8 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 import java.util.Collections;
 import java.util.EnumSet;
 
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -65,7 +67,9 @@ public class NetworkProxy implements IGridProxy {
 			try {
 				final IGrid grid = getGrid();
 				grid.postEvent(new MENetworkPowerIdleChange(node));
-			} catch(final GridAccessException e) {}
+			} catch(final GridAccessException e) {
+				CommonUtils.debugLog("NetworkProxy:setIdlePowerUsage: Error accessing grid:", e);
+			}
 		}
 	}
 
@@ -186,6 +190,7 @@ public class NetworkProxy implements IGridProxy {
 		try {
 			return getEnergy().isNetworkPowered();
 		} catch(final GridAccessException e) {
+			CommonUtils.debugLog("NetworkProxy:isPowered: Error accessing grid:", e);
 			return false;
 		}
 	}
@@ -315,7 +320,9 @@ public class NetworkProxy implements IGridProxy {
 	public double getAEDemand(final double amount) {
 		try {
 			return getEnergy().getEnergyDemand(amount);
-		} catch (GridAccessException e) {}
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("NetworkProxy:getAEDemand: Error accessing grid:", e);
+		}
 		return 0.0;
 	}
 	
@@ -324,7 +331,9 @@ public class NetworkProxy implements IGridProxy {
 		try {
 			final double overflow = getEnergy().injectPower(amount, mode);
 			return mode == Actionable.SIMULATE ? overflow : 0.0;
-		} catch (GridAccessException e) {}
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("NetworkProxy:sendAEToNet: Error accessing grid:", e);
+		}
 		return 0.0;
 	}
 	
@@ -333,15 +342,18 @@ public class NetworkProxy implements IGridProxy {
 		try {
 			return getEnergy().extractAEPower(amount, mode, multiplier);
 		} catch (GridAccessException e) {
-			return 0.0;
+			CommonUtils.debugLog("NetworkProxy:extractAEPower: Error accessing grid:", e);
 		}
+		return 0.0;
 	}
 	
 	@Override
 	public double getAEMaxEnergy() {
 		try {
 			return getEnergy().getMaxStoredPower();
-		} catch (GridAccessException e) {}
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("NetworkProxy:getAEMaxEnergy: Error accessing grid:", e);
+		}
 		return 0.0;
 	}
 	
@@ -349,7 +361,9 @@ public class NetworkProxy implements IGridProxy {
 	public double getAECurrentEnergy() {
 		try {
 			return getEnergy().getStoredPower();
-		} catch (GridAccessException e) {}
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("NetworkProxy:getAECurrentEnergy: Error accessing grid:", e);
+		}
 		return 0.0;
 	}
 
@@ -367,7 +381,9 @@ public class NetworkProxy implements IGridProxy {
 				}
 				return true;
 			}
-		} catch (GridAccessException e) {}
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("NetworkProxy:injectItems: Error accessing grid:", e);
+		}
 		return false;
 	}
 }

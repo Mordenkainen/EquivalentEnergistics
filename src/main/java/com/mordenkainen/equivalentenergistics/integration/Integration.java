@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.integration;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
-import com.mordenkainen.equivalentenergistics.integration.ee3.EE3;
+import com.mordenkainen.equivalentenergistics.integration.ee3.EquivExchange3;
 import com.mordenkainen.equivalentenergistics.integration.projecte.ProjectE;
 import com.mordenkainen.equivalentenergistics.integration.waila.Waila;
 
@@ -91,7 +91,7 @@ public final class Integration {
 			Waila.init();
 		}
 		if (ConfigManager.useEE3) {
-			emcHandler = new EE3();
+			emcHandler = new EquivExchange3();
 		} else {
 			emcHandler = new ProjectE();
 		}

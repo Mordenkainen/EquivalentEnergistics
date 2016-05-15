@@ -12,6 +12,7 @@ public final class ConfigManager {
 	public static Configuration config;
 	public static float crystalEMCValue;
 	public static boolean useEE3;
+	public static boolean debug;
 	
 	private ConfigManager() {}
 	
@@ -40,5 +41,7 @@ public final class ConfigManager {
         if (config.hasChanged()) {
        		config.save();
        	}
+        
+        debug = config.get("General", "Debug", debug).getBoolean(false);
     }
 }

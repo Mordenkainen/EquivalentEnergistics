@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.tiles;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
@@ -10,6 +10,7 @@ import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvide
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.InternalInventory;
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -47,7 +48,7 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 		gridProxy.setIdlePowerUsage(BlockEMCCondenser.idlePower);
 	}
 	
-	public void getDrops(final World world, final int x, final int y, final int z, final ArrayList<ItemStack> drops) {		
+	public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {		
 		for(int i = 0; i < SLOT_COUNT; i++) {
 			final ItemStack item = internalInventory.slots[i];
 
@@ -90,7 +91,9 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 					currentEMC -= crystalEMC * numCrystals;
 				}
 			}
-		} catch(GridAccessException e) {}
+		} catch(GridAccessException e) {
+			CommonUtils.debugLog("TIleEMCCondenser:injectCrystals: Error accessing grid:", e);
+		}
 	}
 	
 	@Override

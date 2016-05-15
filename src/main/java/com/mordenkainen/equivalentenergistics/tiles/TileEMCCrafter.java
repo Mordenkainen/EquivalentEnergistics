@@ -11,6 +11,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileNetworkB
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
 import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 
@@ -128,7 +129,9 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 					craftTickCounter++ ;
 				}
 			}
-		} catch(GridAccessException e) {}
+		} catch(GridAccessException e) {
+			CommonUtils.debugLog("TileEMCCrafter:craftingTick: Error accessing grid:", e);
+		}
 	}
 	
 	private void setDisplayStack(final ItemStack stack) {
@@ -147,8 +150,9 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 
 			return sGrid.hasPermission(player, SecurityPermissions.INJECT) && sGrid.hasPermission(player, SecurityPermissions.EXTRACT);
 		} catch(GridAccessException e) {
-			return true;
+			CommonUtils.debugLog("TileEMCCrafter:checkPermissions: Error accessing grid:", e);
 		}
+		return true;
 	}
 	
 	public boolean canPlayerInteract(final EntityPlayer player) {
@@ -245,7 +249,9 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 				gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
 				sentEvent = true;
 			}
-		} catch(GridAccessException e) {}
+		} catch(GridAccessException e) {
+			CommonUtils.debugLog("TileEMCCrafter:updateEntity: Error accessing grid:", e);
+		}
 		
 		if(crafting) {
 			craftingTick();

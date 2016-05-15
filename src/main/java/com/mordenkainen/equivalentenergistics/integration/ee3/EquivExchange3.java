@@ -26,7 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-public class EE3 implements IEMCHandler {
+public class EquivExchange3 implements IEMCHandler {
 	private static Item tomeItem;
 	private float[] crystalValues = {0.0F, 0.0F, 0.0F};
 

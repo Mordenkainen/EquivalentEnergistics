@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
@@ -68,7 +69,7 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 			final TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
 
 			if(tileCondenser != null) {
-				final ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+				final List<ItemStack> drops = new ArrayList<ItemStack>();
 				tileCondenser.getDrops(world, x, y, z, drops);
 
 				for(final ItemStack drop : drops)	{

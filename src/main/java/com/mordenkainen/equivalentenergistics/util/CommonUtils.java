@@ -2,6 +2,9 @@ package com.mordenkainen.equivalentenergistics.util;
 
 import java.util.ArrayList;
 
+import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -53,5 +56,17 @@ public final class CommonUtils {
 	public static <T> T getTE(final Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
 		final TileEntity tile = world.getTileEntity(x, y, z);
 		return type.isInstance(tile) ? (T)tile : null;
+	}
+	
+	public static void debugLog(final String message) {
+		if (ConfigManager.debug) {
+			EquivalentEnergistics.logger.debug(message);
+		}
+	}
+	
+	public static void debugLog(final String message, final Throwable t) {
+		if (ConfigManager.debug) {
+			EquivalentEnergistics.logger.debug(message, t);
+		}
 	}
 }
