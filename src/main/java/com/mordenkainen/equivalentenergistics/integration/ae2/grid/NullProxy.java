@@ -13,6 +13,7 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -188,5 +189,10 @@ public class NullProxy implements IGridProxy {
 	@Override
 	public double getAECurrentEnergy() {
 		return 0;
+	}
+
+	@Override
+	public boolean injectItems(final ItemStack stack, final double powerCost, final MachineSource source) {
+		return false;
 	}
 }

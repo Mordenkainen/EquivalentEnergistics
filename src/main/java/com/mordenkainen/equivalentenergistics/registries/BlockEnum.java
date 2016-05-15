@@ -1,10 +1,9 @@
 package com.mordenkainen.equivalentenergistics.registries;
 
-import java.lang.reflect.Method;
-
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
+import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
@@ -96,13 +95,12 @@ public enum BlockEnum {
 	}
 	
 	public void loadConfig(final Configuration config) {
-		if(configKey != null) {
+		if (configKey != null) {
 			enabled = config.get("Blocks", configKey, true).getBoolean(true);
 		}
-		try {
-			final Method loadConfig = block.getClass().getDeclaredMethod("loadConfig", Configuration.class);
-			loadConfig.invoke(null, config);
-		} catch (Exception e) {}
+		if (block instanceof IConfigurable) {
+			((IConfigurable)block).loadConfig(config);
+		}
 		if (isEnabled() && !isHidden()) {
 			block.setCreativeTab(EquivalentEnergistics.tabEE);
 		}

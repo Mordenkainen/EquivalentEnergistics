@@ -5,191 +5,220 @@ import net.minecraft.client.model.ModelRenderer;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class ModelEMCCrafter extends ModelBase {
-	public ModelRenderer Frame1;
-    public ModelRenderer Frame2;
-    public ModelRenderer Frame3;
-    public ModelRenderer Frame4;
-    public ModelRenderer Frame5;
-    public ModelRenderer Frame6;
-    public ModelRenderer Frame7;
-    public ModelRenderer Frame8;
-    public ModelRenderer Frame9;
-    public ModelRenderer Frame10;
-    public ModelRenderer Frame11;
-    public ModelRenderer Frame12;
-    public ModelRenderer ConnectorBottom;
-    public ModelRenderer ConnectorTop;
-    public ModelRenderer ConnectorEast;
-    public ModelRenderer ConnectorNorth;
-    public ModelRenderer ConnectorWest;
-    public ModelRenderer ConnectorSouth;
-    public ModelRenderer CB2;
-    public ModelRenderer CB3;
-    public ModelRenderer CB4;
-    public ModelRenderer CT2;
-    public ModelRenderer CT3;
-    public ModelRenderer CT4;
-    public ModelRenderer CE2;
-    public ModelRenderer CE3;
-    public ModelRenderer CE4;
-    public ModelRenderer CN2;
-    public ModelRenderer CN3;
-    public ModelRenderer CN4;
-    public ModelRenderer CW2;
-    public ModelRenderer CW3;
-    public ModelRenderer CW4;
-    public ModelRenderer CS2;
-    public ModelRenderer CS3;
-    public ModelRenderer CS4;
+public final class ModelEMCCrafter extends ModelBase {
+	private static class Frames {
+		public static ModelRenderer frame1;
+	    public static ModelRenderer frame2;
+	    public static ModelRenderer frame3;
+	    public static ModelRenderer frame4;
+	    public static ModelRenderer frame5;
+	    public static ModelRenderer frame6;
+	    public static ModelRenderer frame7;
+	    public static ModelRenderer frame8;
+	    public static ModelRenderer frame9;
+	    public static ModelRenderer frame10;
+	    public static ModelRenderer frame11;
+	    public static ModelRenderer frame12;
+	}
+	
+	private static class ConnectorTop {
+		public static ModelRenderer top;
+		public static ModelRenderer cbTop2;
+	    public static ModelRenderer cbTop3;
+	    public static ModelRenderer cbTop4;
+	}
+	
+	private static class ConnectorBottom {
+		public static ModelRenderer bottom;
+		public static ModelRenderer cbBottom2;
+	    public static ModelRenderer cbBottom3;
+	    public static ModelRenderer cbBottom4;
+	}
+	
+	private static class ConnectorEast {
+		public static ModelRenderer east;
+		public static ModelRenderer cbEast2;
+	    public static ModelRenderer cbEast3;
+	    public static ModelRenderer cbEast4;
+	}
+	
+	private static class ConnectorNorth {
+		public static ModelRenderer north;
+		public static ModelRenderer cbNorth2;
+	    public static ModelRenderer cbNorth3;
+	    public static ModelRenderer cbNorth4;
+	}
+	
+	private static class ConnectorWest {
+		public static ModelRenderer west;
+		public static ModelRenderer cbWest2;
+	    public static ModelRenderer cbWest3;
+	    public static ModelRenderer cbWest4;
+	}
+	
+	private static class ConnectorSouth {
+		public static ModelRenderer south;
+		public static ModelRenderer cbSouth2;
+	    public static ModelRenderer cbSouth3;
+	    public static ModelRenderer cbSouth4;
+	}
 
     public ModelEMCCrafter() {
-        this.textureWidth = 64;
-        this.textureHeight = 32;
-        this.CW4 = new ModelRenderer(this, 4, 2);
-        this.CW4.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CW4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.CT2 = new ModelRenderer(this, 0, 0);
-        this.CT2.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CT2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
-        this.CE2 = new ModelRenderer(this, 0, 0);
-        this.CE2.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CE2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
-        this.Frame9 = new ModelRenderer(this, 16, 0);
-        this.Frame9.setRotationPoint(0.0F, 9.0F, 7.0F);
-        this.Frame9.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-        this.setRotateAngle(Frame9, 1.5707963267948966F, 0.0F, 0.0F);
-        this.CN4 = new ModelRenderer(this, 4, 2);
-        this.CN4.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CN4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.ConnectorSouth = new ModelRenderer(this, 16, 4);
-        this.ConnectorSouth.setRotationPoint(0.0F, 16.0F, 8.0F);
-        this.ConnectorSouth.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
-        this.setRotateAngle(ConnectorSouth, 1.5707963267948966F, 3.141592653589793F, 0.0F);
-        this.CE4 = new ModelRenderer(this, 4, 2);
-        this.CE4.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CE4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.Frame5 = new ModelRenderer(this, 0, 0);
-        this.Frame5.setRotationPoint(-7.0F, 16.0F, 7.0F);
-        this.Frame5.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame5, 1.5707963267948966F, 0.0F, 0.0F);
-        this.CW2 = new ModelRenderer(this, 0, 0);
-        this.CW2.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CW2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
-        this.Frame12 = new ModelRenderer(this, 0, 0);
-        this.Frame12.setRotationPoint(7.0F, 9.0F, 0.0F);
-        this.Frame12.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame12, 0.0F, 0.0F, 3.141592653589793F);
-        this.Frame6 = new ModelRenderer(this, 0, 0);
-        this.Frame6.setRotationPoint(7.0F, 16.0F, 7.0F);
-        this.Frame6.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame6, 1.5707963267948966F, 1.5707963267948966F, 0.0F);
-        this.CB4 = new ModelRenderer(this, 4, 2);
-        this.CB4.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CB4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.Frame2 = new ModelRenderer(this, 0, 0);
-        this.Frame2.setRotationPoint(7.0F, 23.0F, 0.0F);
-        this.Frame2.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame2, 0.0F, 3.141592653589793F, 0.0F);
-        this.Frame8 = new ModelRenderer(this, 0, 0);
-        this.Frame8.setRotationPoint(-7.0F, 16.0F, -7.0F);
-        this.Frame8.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame8, 1.5707963267948966F, 4.71238898038469F, 0.0F);
-        this.CS4 = new ModelRenderer(this, 4, 2);
-        this.CS4.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CS4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.CT3 = new ModelRenderer(this, 2, 1);
-        this.CT3.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CT3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
-        this.CS3 = new ModelRenderer(this, 2, 1);
-        this.CS3.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CS3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
-        this.Frame4 = new ModelRenderer(this, 16, 0);
-        this.Frame4.setRotationPoint(0.0F, 23.0F, -7.0F);
-        this.Frame4.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-        this.setRotateAngle(Frame4, 0.0F, 3.141592653589793F, 0.0F);
-        this.CS2 = new ModelRenderer(this, 0, 0);
-        this.CS2.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CS2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
-        this.ConnectorTop = new ModelRenderer(this, 16, 4);
-        this.ConnectorTop.setRotationPoint(0.0F, 8.0F, 0.0F);
-        this.ConnectorTop.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
-        this.CE3 = new ModelRenderer(this, 2, 1);
-        this.CE3.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CE3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
-        this.ConnectorBottom = new ModelRenderer(this, 16, 4);
-        this.ConnectorBottom.setRotationPoint(0.0F, 24.0F, 0.0F);
-        this.ConnectorBottom.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
-        this.setRotateAngle(ConnectorBottom, 3.141592653589793F, 0.0F, 0.0F);
-        this.CN3 = new ModelRenderer(this, 2, 1);
-        this.CN3.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CN3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
-        this.Frame10 = new ModelRenderer(this, 16, 0);
-        this.Frame10.setRotationPoint(0.0F, 9.0F, -7.0F);
-        this.Frame10.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-        this.setRotateAngle(Frame10, 1.5707963267948966F, 3.141592653589793F, 0.0F);
-        this.Frame3 = new ModelRenderer(this, 16, 0);
-        this.Frame3.setRotationPoint(0.0F, 23.0F, 7.0F);
-        this.Frame3.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
-        this.CW3 = new ModelRenderer(this, 2, 1);
-        this.CW3.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CW3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
-        this.Frame1 = new ModelRenderer(this, 0, 0);
-        this.Frame1.setRotationPoint(-7.0F, 23.0F, 0.0F);
-        this.Frame1.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.ConnectorEast = new ModelRenderer(this, 16, 4);
-        this.ConnectorEast.setRotationPoint(-8.0F, 16.0F, 0.0F);
-        this.ConnectorEast.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
-        this.setRotateAngle(ConnectorEast, 1.5707963267948966F, 1.5707963267948966F, 0.0F);
-        this.ConnectorNorth = new ModelRenderer(this, 16, 4);
-        this.ConnectorNorth.setRotationPoint(0.0F, 16.0F, -8.0F);
-        this.ConnectorNorth.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
-        this.setRotateAngle(ConnectorNorth, 1.5707963267948966F, 0.0F, 0.0F);
-        this.CT4 = new ModelRenderer(this, 4, 2);
-        this.CT4.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CT4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.Frame11 = new ModelRenderer(this, 0, 0);
-        this.Frame11.setRotationPoint(-7.0F, 9.0F, 0.0F);
-        this.Frame11.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame11, 0.0F, 0.0F, 1.5707963267948966F);
-        this.CB3 = new ModelRenderer(this, 2, 1);
-        this.CB3.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CB3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
-        this.CB2 = new ModelRenderer(this, 0, 0);
-        this.CB2.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CB2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
-        this.CN2 = new ModelRenderer(this, 0, 0);
-        this.CN2.setRotationPoint(0.0F, 2.0F, 0.0F);
-        this.CN2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
-        this.ConnectorWest = new ModelRenderer(this, 16, 4);
-        this.ConnectorWest.setRotationPoint(8.0F, 16.0F, 0.0F);
-        this.ConnectorWest.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
-        this.setRotateAngle(ConnectorWest, 1.5707963267948966F, 4.71238898038469F, 0.0F);
-        this.Frame7 = new ModelRenderer(this, 0, 0);
-        this.Frame7.setRotationPoint(7.0F, 16.0F, -7.0F);
-        this.Frame7.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
-        this.setRotateAngle(Frame7, 1.5707963267948966F, 3.141592653589793F, 0.0F);
-        this.ConnectorWest.addChild(this.CW4);
-        this.ConnectorTop.addChild(this.CT2);
-        this.ConnectorEast.addChild(this.CE2);
-        this.ConnectorNorth.addChild(this.CN4);
-        this.ConnectorEast.addChild(this.CE4);
-        this.ConnectorWest.addChild(this.CW2);
-        this.ConnectorBottom.addChild(this.CB4);
-        this.ConnectorSouth.addChild(this.CS4);
-        this.ConnectorTop.addChild(this.CT3);
-        this.ConnectorSouth.addChild(this.CS3);
-        this.ConnectorSouth.addChild(this.CS2);
-        this.ConnectorEast.addChild(this.CE3);
-        this.ConnectorNorth.addChild(this.CN3);
-        this.ConnectorWest.addChild(this.CW3);
-        this.ConnectorTop.addChild(this.CT4);
-        this.ConnectorBottom.addChild(this.CB3);
-        this.ConnectorBottom.addChild(this.CB2);
-        this.ConnectorNorth.addChild(this.CN2);
+    	super();
+        textureWidth = 64;
+        textureHeight = 32;
+        buildFrames();
+        buildConnectors();
+    }
+    
+    private void buildFrames() {
+    	Frames.frame9 = new ModelRenderer(this, 16, 0);
+        Frames.frame9.setRotationPoint(0.0F, 9.0F, 7.0F);
+        Frames.frame9.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
+        setRotateAngle(Frames.frame9, 1.5707963267948966F, 0.0F, 0.0F);
+        Frames.frame5 = new ModelRenderer(this, 0, 0);
+        Frames.frame5.setRotationPoint(-7.0F, 16.0F, 7.0F);
+        Frames.frame5.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame5, 1.5707963267948966F, 0.0F, 0.0F);
+        Frames.frame12 = new ModelRenderer(this, 0, 0);
+        Frames.frame12.setRotationPoint(7.0F, 9.0F, 0.0F);
+        Frames.frame12.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame12, 0.0F, 0.0F, 3.141592653589793F);
+        Frames.frame6 = new ModelRenderer(this, 0, 0);
+        Frames.frame6.setRotationPoint(7.0F, 16.0F, 7.0F);
+        Frames.frame6.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame6, 1.5707963267948966F, 1.5707963267948966F, 0.0F);
+        Frames.frame2 = new ModelRenderer(this, 0, 0);
+        Frames.frame2.setRotationPoint(7.0F, 23.0F, 0.0F);
+        Frames.frame2.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame2, 0.0F, 3.141592653589793F, 0.0F);
+        Frames.frame8 = new ModelRenderer(this, 0, 0);
+        Frames.frame8.setRotationPoint(-7.0F, 16.0F, -7.0F);
+        Frames.frame8.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame8, 1.5707963267948966F, 4.71238898038469F, 0.0F);
+        Frames.frame4 = new ModelRenderer(this, 16, 0);
+        Frames.frame4.setRotationPoint(0.0F, 23.0F, -7.0F);
+        Frames.frame4.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
+        setRotateAngle(Frames.frame4, 0.0F, 3.141592653589793F, 0.0F);
+        Frames.frame10 = new ModelRenderer(this, 16, 0);
+        Frames.frame10.setRotationPoint(0.0F, 9.0F, -7.0F);
+        Frames.frame10.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
+        setRotateAngle(Frames.frame10, 1.5707963267948966F, 3.141592653589793F, 0.0F);
+        Frames.frame3 = new ModelRenderer(this, 16, 0);
+        Frames.frame3.setRotationPoint(0.0F, 23.0F, 7.0F);
+        Frames.frame3.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
+        Frames.frame1 = new ModelRenderer(this, 0, 0);
+        Frames.frame1.setRotationPoint(-7.0F, 23.0F, 0.0F);
+        Frames.frame1.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        Frames.frame11 = new ModelRenderer(this, 0, 0);
+        Frames.frame11.setRotationPoint(-7.0F, 9.0F, 0.0F);
+        Frames.frame11.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame11, 0.0F, 0.0F, 1.5707963267948966F);
+        Frames.frame7 = new ModelRenderer(this, 0, 0);
+        Frames.frame7.setRotationPoint(7.0F, 16.0F, -7.0F);
+        Frames.frame7.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
+        setRotateAngle(Frames.frame7, 1.5707963267948966F, 3.141592653589793F, 0.0F);
+    }
+    
+    private void buildConnectors() {
+    	ConnectorWest.cbWest4 = new ModelRenderer(this, 4, 2);
+        ConnectorWest.cbWest4.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorWest.cbWest4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        ConnectorTop.cbTop2 = new ModelRenderer(this, 0, 0);
+        ConnectorTop.cbTop2.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorTop.cbTop2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
+        ConnectorEast.cbEast2 = new ModelRenderer(this, 0, 0);
+        ConnectorEast.cbEast2.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorEast.cbEast2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
+        ConnectorNorth.cbNorth4 = new ModelRenderer(this, 4, 2);
+        ConnectorNorth.cbNorth4.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorNorth.cbNorth4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        ConnectorSouth.south = new ModelRenderer(this, 16, 4);
+        ConnectorSouth.south.setRotationPoint(0.0F, 16.0F, 8.0F);
+        ConnectorSouth.south.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
+        setRotateAngle(ConnectorSouth.south, 1.5707963267948966F, 3.141592653589793F, 0.0F);
+        ConnectorEast.cbEast4 = new ModelRenderer(this, 4, 2);
+        ConnectorEast.cbEast4.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorEast.cbEast4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        ConnectorWest.cbWest2 = new ModelRenderer(this, 0, 0);
+        ConnectorWest.cbWest2.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorWest.cbWest2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
+        ConnectorBottom.cbBottom4 = new ModelRenderer(this, 4, 2);
+        ConnectorBottom.cbBottom4.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorBottom.cbBottom4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        ConnectorSouth.cbSouth4 = new ModelRenderer(this, 4, 2);
+        ConnectorSouth.cbSouth4.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorSouth.cbSouth4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        ConnectorTop.cbTop3 = new ModelRenderer(this, 2, 1);
+        ConnectorTop.cbTop3.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorTop.cbTop3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
+        ConnectorSouth.cbSouth3 = new ModelRenderer(this, 2, 1);
+        ConnectorSouth.cbSouth3.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorSouth.cbSouth3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
+        ConnectorSouth.cbSouth2 = new ModelRenderer(this, 0, 0);
+        ConnectorSouth.cbSouth2.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorSouth.cbSouth2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
+        ConnectorTop.top = new ModelRenderer(this, 16, 4);
+        ConnectorTop.top.setRotationPoint(0.0F, 8.0F, 0.0F);
+        ConnectorTop.top.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
+        ConnectorEast.cbEast3 = new ModelRenderer(this, 2, 1);
+        ConnectorEast.cbEast3.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorEast.cbEast3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
+        ConnectorBottom.bottom = new ModelRenderer(this, 16, 4);
+        ConnectorBottom.bottom.setRotationPoint(0.0F, 24.0F, 0.0F);
+        ConnectorBottom.bottom.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
+        setRotateAngle(ConnectorBottom.bottom, 3.141592653589793F, 0.0F, 0.0F);
+        ConnectorNorth.cbNorth3 = new ModelRenderer(this, 2, 1);
+        ConnectorNorth.cbNorth3.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorNorth.cbNorth3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
+        ConnectorWest.cbWest3 = new ModelRenderer(this, 2, 1);
+        ConnectorWest.cbWest3.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorWest.cbWest3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
+        ConnectorEast.east = new ModelRenderer(this, 16, 4);
+        ConnectorEast.east.setRotationPoint(-8.0F, 16.0F, 0.0F);
+        ConnectorEast.east.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
+        setRotateAngle(ConnectorEast.east, 1.5707963267948966F, 1.5707963267948966F, 0.0F);
+        ConnectorNorth.north = new ModelRenderer(this, 16, 4);
+        ConnectorNorth.north.setRotationPoint(0.0F, 16.0F, -8.0F);
+        ConnectorNorth.north.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
+        setRotateAngle(ConnectorNorth.north, 1.5707963267948966F, 0.0F, 0.0F);
+        ConnectorTop.cbTop4 = new ModelRenderer(this, 4, 2);
+        ConnectorTop.cbTop4.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorTop.cbTop4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+        ConnectorBottom.cbBottom3 = new ModelRenderer(this, 2, 1);
+        ConnectorBottom.cbBottom3.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorBottom.cbBottom3.addBox(-1.0F, -1.0F, -1.0F, 2, 1, 2, 0.0F);
+        ConnectorBottom.cbBottom2 = new ModelRenderer(this, 0, 0);
+        ConnectorBottom.cbBottom2.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorBottom.cbBottom2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
+        ConnectorNorth.cbNorth2 = new ModelRenderer(this, 0, 0);
+        ConnectorNorth.cbNorth2.setRotationPoint(0.0F, 2.0F, 0.0F);
+        ConnectorNorth.cbNorth2.addBox(-1.5F, -1.5F, -1.5F, 3, 1, 3, 0.0F);
+        ConnectorWest.west = new ModelRenderer(this, 16, 4);
+        ConnectorWest.west.setRotationPoint(8.0F, 16.0F, 0.0F);
+        ConnectorWest.west.addBox(-3.0F, 0.0F, -3.0F, 6, 1, 6, 0.0F);
+        setRotateAngle(ConnectorWest.west, 1.5707963267948966F, 4.71238898038469F, 0.0F);
+        ConnectorWest.west.addChild(ConnectorWest.cbWest4);
+        ConnectorTop.top.addChild(ConnectorTop.cbTop2);
+        ConnectorEast.east.addChild(ConnectorEast.cbEast2);
+        ConnectorNorth.north.addChild(ConnectorNorth.cbNorth4);
+        ConnectorEast.east.addChild(ConnectorEast.cbEast4);
+        ConnectorWest.west.addChild(ConnectorWest.cbWest2);
+        ConnectorBottom.bottom.addChild(ConnectorBottom.cbBottom4);
+        ConnectorSouth.south.addChild(ConnectorSouth.cbSouth4);
+        ConnectorTop.top.addChild(ConnectorTop.cbTop3);
+        ConnectorSouth.south.addChild(ConnectorSouth.cbSouth3);
+        ConnectorSouth.south.addChild(ConnectorSouth.cbSouth2);
+        ConnectorEast.east.addChild(ConnectorEast.cbEast3);
+        ConnectorNorth.north.addChild(ConnectorNorth.cbNorth3);
+        ConnectorWest.west.addChild(ConnectorWest.cbWest3);
+        ConnectorTop.top.addChild(ConnectorTop.cbTop4);
+        ConnectorBottom.bottom.addChild(ConnectorBottom.cbBottom3);
+        ConnectorBottom.bottom.addChild(ConnectorBottom.cbBottom2);
+        ConnectorNorth.north.addChild(ConnectorNorth.cbNorth2);
     }
 
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(final ModelRenderer modelRenderer, final float x, final float y, final float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
@@ -197,40 +226,40 @@ public class ModelEMCCrafter extends ModelBase {
 
     public void render() {
     	final float scale = 1F/16F;
-    	this.Frame6.render(scale);
-        this.Frame5.render(scale);
-        this.Frame1.render(scale);
-        this.Frame10.render(scale);
-        this.Frame4.render(scale);
-        this.Frame9.render(scale);
-        this.Frame7.render(scale);
-        this.Frame3.render(scale);
-        this.Frame12.render(scale);
-        this.Frame8.render(scale);
-        this.Frame11.render(scale);
-        this.Frame2.render(scale);
+    	Frames.frame6.render(scale);
+    	Frames.frame5.render(scale);
+    	Frames.frame1.render(scale);
+    	Frames.frame10.render(scale);
+    	Frames.frame4.render(scale);
+    	Frames.frame9.render(scale);
+    	Frames.frame7.render(scale);
+    	Frames.frame3.render(scale);
+    	Frames.frame12.render(scale);
+    	Frames.frame8.render(scale);
+    	Frames.frame11.render(scale);
+    	Frames.frame2.render(scale);
     }
 
-	public void renderConnector(ForgeDirection side) {
+	public void renderConnector(final ForgeDirection side) {
 		final float scale = 1F/16F;
 		switch(side) {
 			case UP:
-				this.ConnectorTop.render(scale);
+				ConnectorTop.top.render(scale);
 				break;
 			case DOWN:
-				this.ConnectorBottom.render(scale);
+				ConnectorBottom.bottom.render(scale);
 				break;
 			case EAST:
-				this.ConnectorEast.render(scale);
+				ConnectorEast.east.render(scale);
 				break;
 			case NORTH:
-				this.ConnectorNorth.render(scale);
+				ConnectorNorth.north.render(scale);
 				break;
 			case SOUTH:
-				this.ConnectorSouth.render(scale);
+				ConnectorSouth.south.render(scale);
 				break;
 			case WEST:
-				this.ConnectorWest.render(scale);
+				ConnectorWest.west.render(scale);
 				break;
 			default:
 		}

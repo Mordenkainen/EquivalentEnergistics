@@ -18,7 +18,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class ItemEMCBook extends Item {
-
+	private static final String OWNER_TAG = "Owner";
+	private static final String UUID_TAG = "OwnerUUID";
+	
 	public ItemEMCBook() {
 		super();
 		setMaxStackSize(1);
@@ -43,19 +45,19 @@ public class ItemEMCBook extends Item {
 				stack.setTagCompound(new NBTTagCompound());
 			}
 			final NBTTagCompound stackNBT = stack.getTagCompound();
-			if(stackNBT.hasKey("Owner") && player.isSneaking()) {
-				stackNBT.removeTag("Owner");
-				stackNBT.removeTag("OwnerUUID");
+			if(stackNBT.hasKey(OWNER_TAG) && player.isSneaking()) {
+				stackNBT.removeTag(OWNER_TAG);
+				stackNBT.removeTag(UUID_TAG);
 				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.clear")));
 				return stack;
 			}
 			final String playerUUID = player.getUniqueID().toString();
-			if(stackNBT.hasKey("OwnerUUID") && !stackNBT.getString("OwnerUUID").equals(playerUUID)) {
+			if(stackNBT.hasKey(UUID_TAG) && !stackNBT.getString(UUID_TAG).equals(playerUUID)) {
 				player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.wrongowner")));
 				return stack;
 			}
-			stackNBT.setString("Owner", player.getCommandSenderName());
-			stackNBT.setString("OwnerUUID", playerUUID);
+			stackNBT.setString(OWNER_TAG, player.getCommandSenderName());
+			stackNBT.setString(UUID_TAG, playerUUID);
 			player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.link")));
 		}
         return stack;
@@ -65,8 +67,8 @@ public class ItemEMCBook extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean par4) {
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("Owner")) {
-			list.add("Owner: " + stack.getTagCompound().getString("Owner"));
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
+			list.add("Owner: " + stack.getTagCompound().getString(OWNER_TAG));
 		} else {
 			list.add("No owner set.");
 		}

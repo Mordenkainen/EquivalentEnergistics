@@ -16,7 +16,9 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
@@ -349,5 +351,23 @@ public class NetworkProxy implements IGridProxy {
 			return getEnergy().getStoredPower();
 		} catch (GridAccessException e) {}
 		return 0.0;
+	}
+
+	@Override
+	public boolean injectItems(final ItemStack stack, final double powerCost, final MachineSource source) {
+		try {
+			final IStorageGrid storageGrid = getStorage();
+			
+			final IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(stack), Actionable.SIMULATE, source);
+	
+			if(rejected == null || rejected.getStackSize() == 0) {
+				storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(stack), Actionable.MODULATE, source);
+				if (powerCost > 0) {
+					getEnergy().extractAEPower(powerCost, Actionable.MODULATE, PowerMultiplier.CONFIG);
+				}
+				return true;
+			}
+		} catch (GridAccessException e) {}
+		return false;
 	}
 }

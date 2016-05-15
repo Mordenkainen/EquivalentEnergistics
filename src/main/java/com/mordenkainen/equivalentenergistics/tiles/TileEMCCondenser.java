@@ -11,13 +11,10 @@ import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.InternalInventory;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.data.IAEItemStack;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -60,6 +57,42 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 		}
 	}
 	
+	private void condenseItems() {
+		for(int i = 0; i < SLOT_COUNT; i++) {
+			if(internalInventory.getStackInSlot(i) != null) {
+				final ItemStack curItem = internalInventory.getStackInSlot(i);
+				if(Integration.emcHandler.hasEMC(curItem) && Integration.emcHandler.getSingleEnergyValue(curItem) > 0) {
+					final float itemEMC = Integration.emcHandler.getEnergyValue(curItem);
+					final int itemAvail = Math.min(BlockEMCCondenser.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
+					internalInventory.decrStackSize(i, itemAvail);
+					currentEMC += itemEMC * itemAvail;
+				} else {
+					if (gridProxy.injectItems(internalInventory.getStackInSlot(i), 0, mySource)) {
+						internalInventory.setInventorySlotContents(i, null);
+					}
+				}
+			}
+		}
+	}
+	
+	private void injectCrystals() {
+		try	{
+			final float crystalEMC = Integration.emcHandler.getCrystalEMC();
+			if(currentEMC >= crystalEMC) {
+				int numCrystals = Math.min(BlockEMCCondenser.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
+				final IEnergyGrid eGrid = gridProxy.getEnergy();
+				final double powerRequired = crystalEMC * numCrystals * BlockEMCCondenser.activePower;
+				while (numCrystals > 0 && eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) < powerRequired) {
+					numCrystals--;
+				}
+				
+				if (gridProxy.injectItems(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals), powerRequired, mySource)) {
+					currentEMC -= crystalEMC * numCrystals;
+				}
+			}
+		} catch(GridAccessException e) {}
+	}
+	
 	@Override
 	public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
 		tag.setFloat("currentEMC", currentEMC);
@@ -86,57 +119,9 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 			return;
 		}
 		
-		boolean flag = false;
+		condenseItems();
 		
-		try	{
-			for(int i = 0; i < SLOT_COUNT; i++) {
-				if(internalInventory.getStackInSlot(i) != null){
-					final ItemStack testItem = internalInventory.getStackInSlot(i).copy();
-					testItem.stackSize = 1;
-					if(Integration.emcHandler.hasEMC(testItem) && Integration.emcHandler.getEnergyValue(testItem) > 0) {
-						final float itemEMC = Integration.emcHandler.getEnergyValue(testItem);
-						final int itemAvail = Math.min(BlockEMCCondenser.itemsPerTick, Math.min(internalInventory.getStackInSlot(i).stackSize, (int)Math.floor((Float.MAX_VALUE - currentEMC) / itemEMC)));
-						internalInventory.decrStackSize(i, itemAvail);
-						currentEMC += itemEMC * itemAvail;
-						flag = true;
-					} else {
-						final IStorageGrid storageGrid = gridProxy.getStorage();
-						
-						final IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(internalInventory.getStackInSlot(i)), Actionable.SIMULATE, mySource);
-			
-						if(rejected == null || rejected.getStackSize() == 0) {
-							storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(internalInventory.getStackInSlot(i)), Actionable.MODULATE, mySource);
-							internalInventory.setInventorySlotContents(i, null);
-						}
-					}
-				}
-			}
-			
-			final float crystalEMC = Integration.emcHandler.getCrystalEMC();
-			if(currentEMC >= crystalEMC) {
-				int numCrystals = Math.min(BlockEMCCondenser.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
-				final IEnergyGrid eGrid = gridProxy.getEnergy();
-				final double powerRequired = crystalEMC * numCrystals * BlockEMCCondenser.activePower;
-				while (numCrystals > 0 && eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) < powerRequired) {
-					numCrystals--;
-				}
-				
-				final IAEItemStack crystal = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals));
-				final IStorageGrid storageGrid = gridProxy.getStorage();
-	
-				final IAEItemStack rejected = storageGrid.getItemInventory().injectItems(crystal, Actionable.SIMULATE, mySource);
-	
-				if(rejected == null || rejected.getStackSize() == 0) {
-					storageGrid.getItemInventory().injectItems(crystal, Actionable.MODULATE, mySource);
-					eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
-					currentEMC -= crystalEMC * numCrystals;
-					flag = true;
-				}
-			}
-		} catch(GridAccessException e) {}
-		if (flag) {
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		}
+		injectCrystals();
 	}
 
 	@Override

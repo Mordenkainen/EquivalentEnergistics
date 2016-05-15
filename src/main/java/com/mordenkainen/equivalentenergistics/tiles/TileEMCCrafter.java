@@ -27,6 +27,7 @@ import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -150,6 +151,21 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 		}
 	}
 	
+	public boolean canPlayerInteract(final EntityPlayer player) {
+		return checkPermissions(player) && !isCrafting();
+	}
+	
+	private void injectCrystals() {
+		final float crystalEMC = Integration.emcHandler.getCrystalEMC();
+		if(currentEMC >= crystalEMC) {
+			final int numCrystals = (int)Math.floor(currentEMC / crystalEMC);
+
+			if (gridProxy.injectItems(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals), 0, mySource)) {
+				currentEMC -= crystalEMC * numCrystals;
+			}
+		}
+	}
+	
 	@Override
 	public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
 		tag.setFloat("currentEMC", currentEMC);
@@ -222,21 +238,9 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 			return;
 		}
 		
-		try {
-			final float crystalEMC = Integration.emcHandler.getCrystalEMC();
-			if(currentEMC >= crystalEMC) {
-				final int numCrystals = (int)Math.floor(currentEMC / crystalEMC);
-				final IStorageGrid storageGrid = gridProxy.getStorage();
-				final IAEItemStack crystals = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals));
-	
-				final IAEItemStack rejected = storageGrid.getItemInventory().injectItems(crystals, Actionable.SIMULATE, mySource);
-	
-				if(rejected == null || rejected.getStackSize() == 0) {
-					storageGrid.getItemInventory().injectItems(crystals, Actionable.MODULATE, mySource);
-					currentEMC -= crystalEMC * numCrystals;
-				}
-			}
+		injectCrystals();
 			
+		try {
 			if(stalePatterns && !sentEvent && gridProxy.isReady()) {
 				gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
 				sentEvent = true;
@@ -247,7 +251,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 			craftingTick();
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(final NBTTagCompound data) {
 		super.readFromNBT(data);

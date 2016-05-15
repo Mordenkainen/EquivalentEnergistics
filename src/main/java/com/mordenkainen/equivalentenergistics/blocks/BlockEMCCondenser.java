@@ -2,6 +2,7 @@ package com.mordenkainen.equivalentenergistics.blocks;
 
 import java.util.ArrayList;
 
+import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
@@ -22,7 +23,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 
-public class BlockEMCCondenser extends BlockContainer {
+public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
+	private static final String GROUP = "Condenser";
+	
 	public static int itemsPerTick;
 	public static int crystalsPerTick;
 	public static double idlePower;
@@ -30,13 +33,6 @@ public class BlockEMCCondenser extends BlockContainer {
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
-	
-	public static void loadfConfig(final Configuration config) {
-		itemsPerTick = config.get("Condenser", "ItemsCondensedPerTick", 8).getInt(8);
-        crystalsPerTick = config.get("Condenser", "CrystalsProducedPerTick", 16).getInt(16);
-        idlePower = config.get("Condenser", "IdlePowerDrain", 0.0).getDouble(0.0);
-        activePower = config.get("Condenser", "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
-	}
 	
 	public BlockEMCCondenser() {
 		super(Material.rock);
@@ -91,5 +87,13 @@ public class BlockEMCCondenser extends BlockContainer {
 		if(tileCondenser != null && player instanceof EntityPlayer) {
 			tileCondenser.setOwner((EntityPlayer)player);
 		}
+	}
+	
+	@Override
+	public void loadConfig(final Configuration config) {
+		itemsPerTick = config.get(GROUP, "ItemsCondensedPerTick", 8).getInt(8);
+        crystalsPerTick = config.get(GROUP, "CrystalsProducedPerTick", 16).getInt(16);
+        idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
 	}
 }

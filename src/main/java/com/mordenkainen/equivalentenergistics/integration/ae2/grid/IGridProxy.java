@@ -14,6 +14,7 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -99,4 +100,6 @@ public interface IGridProxy extends IGridBlock {
 	double getAEMaxEnergy();
 
 	double getAECurrentEnergy();
+	
+	boolean injectItems(ItemStack stack, double powerCost, MachineSource source);
 }

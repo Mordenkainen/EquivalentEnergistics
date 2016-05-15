@@ -6,6 +6,7 @@ import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.util.ServerUnmetDependencyException;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -60,6 +61,6 @@ public class CommonProxy {
 	public void initRenderers() {}
 	
 	public void unmetDependency() {
-		throw new RuntimeException("Equivalent Energistics requires either Equivalent Exchange 3 or ProjectE to be installed and enabled!");
+		throw new ServerUnmetDependencyException("Equivalent Energistics requires either Equivalent Exchange 3 or ProjectE to be installed and enabled!");
 	}
 }

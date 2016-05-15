@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
@@ -19,16 +20,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 
-public class BlockEMCCrafter extends BlockContainer {
+public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 	public static double idlePower;
 	public static double activePower;
 	public static double craftingTime;
-	
-	public static void loadfConfig(final Configuration config) {
-		idlePower = config.get("Crafter", "IdlePowerDrain", 0.0).getDouble(0.0);
-        activePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
-        craftingTime = config.get("Crafter", "TicksPerCrafting", 7).getInt(7);
-	}
 	
 	public BlockEMCCrafter() {
 		super(Material.rock);
@@ -89,16 +84,14 @@ public class BlockEMCCrafter extends BlockContainer {
 	public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
 		final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 		
-		if(tileCrafter != null && tileCrafter.checkPermissions(player) && !tileCrafter.isCrafting()) {
+		if(tileCrafter != null && tileCrafter.canPlayerInteract(player)) {
 			final ItemStack existingTome = tileCrafter.getCurrentTome();
-			if(player.getHeldItem() == null) {
-				if(existingTome != null) {
-					if(!world.isRemote) {
-						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
-					}
-					tileCrafter.setCurrentTome(null);
-					return true;
+			if(player.getHeldItem() == null && existingTome != null) {
+				if(!world.isRemote) {
+					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
 				}
+				tileCrafter.setCurrentTome(null);
+				return true;
 			} else if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
 				tileCrafter.setCurrentTome(player.getHeldItem().copy());
 				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
@@ -107,5 +100,12 @@ public class BlockEMCCrafter extends BlockContainer {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public void loadConfig(final Configuration config) {
+		idlePower = config.get("Crafter", "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
+        craftingTime = config.get("Crafter", "TicksPerCrafting", 7).getInt(7);
 	}
 }

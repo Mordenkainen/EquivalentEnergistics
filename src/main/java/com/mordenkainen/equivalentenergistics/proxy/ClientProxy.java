@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.proxy;
 import com.mordenkainen.equivalentenergistics.render.BlockEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.render.TileEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
-import com.mordenkainen.equivalentenergistics.util.UnmetDependencyException;
+import com.mordenkainen.equivalentenergistics.util.ClientUnmetDependencyException;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -29,6 +29,6 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void unmetDependency() {
-		throw new UnmetDependencyException();
+		throw new ClientUnmetDependencyException();
 	}
 }

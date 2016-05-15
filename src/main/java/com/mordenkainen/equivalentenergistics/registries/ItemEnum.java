@@ -1,8 +1,7 @@
 package com.mordenkainen.equivalentenergistics.registries;
 
-import java.lang.reflect.Method;
-
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
+import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
@@ -106,10 +105,9 @@ public enum ItemEnum {
 		if(configKey != null) {
 			enabled = config.get("Items", configKey, true).getBoolean(true);
 		}
-		try {
-			final Method loadConfig = item.getClass().getDeclaredMethod("loadConfig", Configuration.class);
-			loadConfig.invoke(null, config);
-		} catch (Exception e) {}
+		if (item instanceof IConfigurable) {
+			((IConfigurable)item).loadConfig(config);
+		}
 		if (isEnabled() && !isHidden()) {
 			item.setCreativeTab(EquivalentEnergistics.tabEE);
 		}
