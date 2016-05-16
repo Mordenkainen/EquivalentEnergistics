@@ -14,6 +14,7 @@ public final class CraftingManager {
 
 	public static void initRecipes() {
 		final ItemStack base = new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockSkyStone"), 1, 1);
+		final String frame = "AMA";
 		ItemStack dust;
 		if(ConfigManager.useEE3) {
 			dust = new ItemStack(GameRegistry.findItem("EE3", "alchemicalDust"), 1, 3);
@@ -22,18 +23,18 @@ public final class CraftingManager {
 		}
 		
 		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), new Object[]{
-			"AMA",
+			frame,
 			"MCM",
-			"AMA",
+			frame,
 			'A', base,
 			'M', dust,
 			'C', new ItemStack(GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial"), 1, 44)
 		});
 		
 		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[]{
-			"AMA",
+			frame,
 			"MFM",
-			"AMA",
+			frame,
 			'A', base,
 			'M', dust,
 			'F', new ItemStack(GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial"), 1, 43)

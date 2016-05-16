@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.tiles;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
-
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -37,6 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 
 public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider, IWailaNBTProvider {
 	public static List<DimensionalLocation> crafterTiles = new ArrayList<DimensionalLocation>();
@@ -312,6 +314,38 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 			displayStack = ItemStack.loadItemStackFromNBT((NBTTagCompound)tag.getTag("displayStack"));
 		} else {
 			displayStack = null;
+		}
+	}
+	
+	public static final void postKnowledgeChange(final UUID playerUUID) {
+		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
+			while (iter.hasNext()) {
+				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
+				final TileEntity crafter = currentLoc.getTE();
+				if (crafter instanceof TileEMCCrafter) {
+					((TileEMCCrafter)crafter).playerKnowledgeChange(playerUUID);
+				} else {
+					iter.remove();
+				}
+			}
+		}
+	}
+	
+	public static final void postEnergyValueChange() {
+		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			Integration.emcHandler.relearnCrystals();
+			EMCCraftingPattern.relearnPatterns();
+			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
+			while (iter.hasNext()) {
+				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
+				final TileEntity crafter = currentLoc.getTE();
+				if (crafter instanceof TileEMCCrafter) {
+					((TileEMCCrafter)crafter).energyValueEvent();
+				} else {
+					iter.remove();
+				}
+			}
 		}
 	}
 }

@@ -1,13 +1,9 @@
 package com.mordenkainen.equivalentenergistics.integration.projecte;
 
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
-import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
-import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
-import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -19,7 +15,6 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 public class ProjectE implements IEMCHandler {
 	private float[] crystalValues = {0.0F, 0.0F, 0.0F};
@@ -108,35 +103,11 @@ public class ProjectE implements IEMCHandler {
 	
 	@SubscribeEvent
 	public void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-			while (iter.hasNext()) {
-				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-				final TileEntity crafter = currentLoc.getTE();
-				if (crafter instanceof TileEMCCrafter) {
-					((TileEMCCrafter)crafter).playerKnowledgeChange(event.playerUUID);
-				} else {
-					iter.remove();
-				}
-			}
-		}
+		TileEMCCrafter.postKnowledgeChange(event.playerUUID);
 	}
 
 	@SubscribeEvent
 	public void onEnergyValueChange(final EMCRemapEvent event) {
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			Integration.emcHandler.relearnCrystals();
-			EMCCraftingPattern.relearnPatterns();
-			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-			while (iter.hasNext()) {
-				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-				final TileEntity crafter = currentLoc.getTE();
-				if (crafter instanceof TileEMCCrafter) {
-					((TileEMCCrafter)crafter).energyValueEvent();
-				} else {
-					iter.remove();
-				}
-			}
-		}
+		TileEMCCrafter.postEnergyValueChange();
 	}
 }

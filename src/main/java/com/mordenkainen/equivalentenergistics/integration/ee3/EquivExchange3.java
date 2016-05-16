@@ -1,11 +1,8 @@
 package com.mordenkainen.equivalentenergistics.integration.ee3;
 
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
-import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
-import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
-import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 import com.pahimar.ee3.api.event.EnergyValueEvent;
 import com.pahimar.ee3.api.event.PlayerKnowledgeEvent;
 import com.pahimar.ee3.api.exchange.EnergyValue;
@@ -13,7 +10,6 @@ import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
 import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
 import com.pahimar.ee3.util.ItemHelper;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -24,7 +20,6 @@ import java.util.UUID;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 public class EquivExchange3 implements IEMCHandler {
 	private static Item tomeItem;
@@ -112,35 +107,11 @@ public class EquivExchange3 implements IEMCHandler {
 	
 	@SubscribeEvent
 	public void onPlayerKnowledgeChange(final PlayerKnowledgeEvent event)	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-			while (iter.hasNext()) {
-				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-				final TileEntity crafter = currentLoc.getTE();
-				if (crafter instanceof TileEMCCrafter) {
-					((TileEMCCrafter)crafter).playerKnowledgeChange(event.playerUUID);
-				} else {
-					iter.remove();
-				}
-			}
-		}
+		TileEMCCrafter.postKnowledgeChange(event.playerUUID);
 	}
 
 	@SubscribeEvent
 	public void onEnergyValueChange(final EnergyValueEvent event)	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			Integration.emcHandler.relearnCrystals();
-			EMCCraftingPattern.relearnPatterns();
-			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-			while (iter.hasNext()) {
-				final DimensionalLocation currentLoc = (DimensionalLocation)iter.next();
-				final TileEntity crafter = currentLoc.getTE();
-				if (crafter instanceof TileEMCCrafter) {
-					((TileEMCCrafter)crafter).energyValueEvent();
-				} else {
-					iter.remove();
-				}
-			}
-		}
+		TileEMCCrafter.postEnergyValueChange();
 	}
 }
