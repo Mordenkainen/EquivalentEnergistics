@@ -6,63 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public final class ModelEMCCrafter extends ModelBase {
-	private static class Frames {
-		public static ModelRenderer frame1;
-	    public static ModelRenderer frame2;
-	    public static ModelRenderer frame3;
-	    public static ModelRenderer frame4;
-	    public static ModelRenderer frame5;
-	    public static ModelRenderer frame6;
-	    public static ModelRenderer frame7;
-	    public static ModelRenderer frame8;
-	    public static ModelRenderer frame9;
-	    public static ModelRenderer frame10;
-	    public static ModelRenderer frame11;
-	    public static ModelRenderer frame12;
-	}
-	
-	private static class ConnectorTop {
-		public static ModelRenderer top;
-		public static ModelRenderer cbTop2;
-	    public static ModelRenderer cbTop3;
-	    public static ModelRenderer cbTop4;
-	}
-	
-	private static class ConnectorBottom {
-		public static ModelRenderer bottom;
-		public static ModelRenderer cbBottom2;
-	    public static ModelRenderer cbBottom3;
-	    public static ModelRenderer cbBottom4;
-	}
-	
-	private static class ConnectorEast {
-		public static ModelRenderer east;
-		public static ModelRenderer cbEast2;
-	    public static ModelRenderer cbEast3;
-	    public static ModelRenderer cbEast4;
-	}
-	
-	private static class ConnectorNorth {
-		public static ModelRenderer north;
-		public static ModelRenderer cbNorth2;
-	    public static ModelRenderer cbNorth3;
-	    public static ModelRenderer cbNorth4;
-	}
-	
-	private static class ConnectorWest {
-		public static ModelRenderer west;
-		public static ModelRenderer cbWest2;
-	    public static ModelRenderer cbWest3;
-	    public static ModelRenderer cbWest4;
-	}
-	
-	private static class ConnectorSouth {
-		public static ModelRenderer south;
-		public static ModelRenderer cbSouth2;
-	    public static ModelRenderer cbSouth3;
-	    public static ModelRenderer cbSouth4;
-	}
-
     public ModelEMCCrafter() {
     	super();
         textureWidth = 64;
@@ -263,5 +206,62 @@ public final class ModelEMCCrafter extends ModelBase {
 				break;
 			default:
 		}
+	}
+	
+	private static class Frames {
+		public static ModelRenderer frame1;
+	    public static ModelRenderer frame2;
+	    public static ModelRenderer frame3;
+	    public static ModelRenderer frame4;
+	    public static ModelRenderer frame5;
+	    public static ModelRenderer frame6;
+	    public static ModelRenderer frame7;
+	    public static ModelRenderer frame8;
+	    public static ModelRenderer frame9;
+	    public static ModelRenderer frame10;
+	    public static ModelRenderer frame11;
+	    public static ModelRenderer frame12;
+	}
+	
+	private static class ConnectorTop {
+		public static ModelRenderer top;
+		public static ModelRenderer cbTop2;
+	    public static ModelRenderer cbTop3;
+	    public static ModelRenderer cbTop4;
+	}
+	
+	private static class ConnectorBottom {
+		public static ModelRenderer bottom;
+		public static ModelRenderer cbBottom2;
+	    public static ModelRenderer cbBottom3;
+	    public static ModelRenderer cbBottom4;
+	}
+	
+	private static class ConnectorEast {
+		public static ModelRenderer east;
+		public static ModelRenderer cbEast2;
+	    public static ModelRenderer cbEast3;
+	    public static ModelRenderer cbEast4;
+	}
+	
+	private static class ConnectorNorth {
+		public static ModelRenderer north;
+		public static ModelRenderer cbNorth2;
+	    public static ModelRenderer cbNorth3;
+	    public static ModelRenderer cbNorth4;
+	}
+	
+	private static class ConnectorWest {
+		public static ModelRenderer west;
+		public static ModelRenderer cbWest2;
+	    public static ModelRenderer cbWest3;
+	    public static ModelRenderer cbWest4;
+	}
+	
+	private static class ConnectorSouth {
+		public static ModelRenderer south;
+		public static ModelRenderer cbSouth2;
+	    public static ModelRenderer cbSouth3;
+	    public static ModelRenderer cbSouth4;
 	}
 }

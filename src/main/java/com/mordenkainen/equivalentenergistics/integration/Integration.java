@@ -29,19 +29,19 @@ public final class Integration {
 
 		private final Side side;
 
-		private Mods(final String modid) {
+		Mods(final String modid) {
 			this(modid, modid);
 		}
 
-		private Mods(final String modid, final String modName) {
+		Mods(final String modid, final String modName) {
 			this(modid, modName, null);
 		}
 
-		private Mods(final String modid, final Side side) {
+		Mods(final String modid, final Side side) {
 			this(modid, modid, side);
 		}
 		
-		private Mods(final String modid, final String modName, final Side _side) {
+		Mods(final String modid, final String modName, final Side _side) {
 			modID = modid;
 			name = modName;
 			side = _side;

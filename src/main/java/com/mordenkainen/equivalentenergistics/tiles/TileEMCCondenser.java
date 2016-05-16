@@ -30,17 +30,6 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 	private final CondenserInventory internalInventory;
 	public float currentEMC;
 	
-	private class CondenserInventory extends InternalInventory {
-		public CondenserInventory()	{
-			super("EMCCondenserInventory", TileEMCCondenser.SLOT_COUNT, 64); 
-		}
-	
-		@Override
-		public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-			return Integration.emcHandler.hasEMC(itemStack);
-		}
-	}
-	
 	public TileEMCCondenser() {
 		super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock())));
 		internalInventory = new CondenserInventory();
@@ -130,5 +119,16 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 	@Override
 	public IInventory getInventory() {
 		return internalInventory;
+	}
+	
+	private class CondenserInventory extends InternalInventory {
+		CondenserInventory()	{
+			super("EMCCondenserInventory", TileEMCCondenser.SLOT_COUNT, 64); 
+		}
+	
+		@Override
+		public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
+			return Integration.emcHandler.hasEMC(itemStack);
+		}
 	}
 }

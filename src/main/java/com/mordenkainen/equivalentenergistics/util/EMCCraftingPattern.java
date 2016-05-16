@@ -32,7 +32,7 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
 	private void buildPattern(final ItemStack craftingResult)	{
 		if (craftingResult.getItem() == ItemEnum.EMCCRYSTAL.getItem()) {
-			outputEMC = (inputEMC = Integration.emcHandler.getEnergyValue(craftingResult));
+			outputEMC = inputEMC = Integration.emcHandler.getEnergyValue(craftingResult);
 			result = AEApi.instance().storage().createItemStack(craftingResult);
 			final ItemStack ingredient = new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 64, craftingResult.getItemDamage() - 1);
 			for (int i = 0; i < 9; i++) {
