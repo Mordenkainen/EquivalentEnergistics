@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.items;
 
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.lib.Reference;
+import com.mordenkainen.equivalentenergistics.render.TextureManager;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -27,9 +28,13 @@ public class ItemEMCBook extends Item {
 	}
 	
 	@Override
-	public void registerIcons(final IIconRegister reg) {
-		itemIcon = reg.registerIcon(Reference.getId("EMCBook"));
-	}
+	public void registerIcons(final IIconRegister reg) {}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int damage) {
+        return TextureManager.EMCBOOK.getTexture();
+    }
 	
 	@Override
     public void onUpdate(final ItemStack stack, final World world, final Entity player, final int param4, final boolean param5) {

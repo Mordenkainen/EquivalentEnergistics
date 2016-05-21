@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
-import com.mordenkainen.equivalentenergistics.lib.Reference;
+import com.mordenkainen.equivalentenergistics.render.TextureManager;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -32,9 +32,6 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 	public static double idlePower;
 	public static double activePower;
 	
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
-	
 	public BlockEMCCondenser() {
 		super(Material.rock);
 		setHardness(1.5f);
@@ -48,19 +45,15 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public final void registerBlockIcons(final IIconRegister register) {
-		icons = new IIcon[2];
-		icons[0] = register.registerIcon(Reference.getId("EMCCondenserTop"));
-		icons[1] = register.registerIcon(Reference.getId("EMCCondenserSide"));
-	}
+	public final void registerBlockIcons(final IIconRegister register) {}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(final int side, final int meta) {
 		if(side == 0 || side == 1) {
-			return icons[0];
+			return TextureManager.EMCCONDENSER.getTexture();
 		}
-		return icons[1];
+		return TextureManager.EMCCONDENSER.getTexture(1);
 	}
 
 	@Override

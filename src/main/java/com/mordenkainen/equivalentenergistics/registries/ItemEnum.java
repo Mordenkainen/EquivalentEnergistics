@@ -4,7 +4,9 @@ import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCTotal;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
@@ -18,7 +20,9 @@ public enum ItemEnum {
 	
 	EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE),
 	EMCPATTERN("EMCPattern", new ItemPattern(), true),
-	EMCCRYSTAL("EMCCrystal", new ItemEMCCrystal());
+	EMCCRYSTAL("EMCCrystal", new ItemEMCCrystal()),
+	EMCTOTITEM("EMCTotal", new ItemEMCTotal()),
+	EMCCELL("EMCCell", new ItemEMCCell());
 
 	private final String internalName;
 	

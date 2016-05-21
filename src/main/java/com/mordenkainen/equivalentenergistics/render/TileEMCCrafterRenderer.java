@@ -24,7 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 
 	private static final ModelEMCCrafter MODEL = new ModelEMCCrafter();
-	private static final ResourceLocation MODELTEXTURE = new ResourceLocation(Reference.getId("textures/models/EMCCrafter.png"));
+	private static final ResourceLocation MODELTEXTURE = new ResourceLocation(Reference.MOD_ID + ":textures/models/EMCCrafter.png");
 
 	@Override
 	public void renderTileEntityAt(final TileEntity tile, final double x, final double y, final double z, final float partialTicks) {

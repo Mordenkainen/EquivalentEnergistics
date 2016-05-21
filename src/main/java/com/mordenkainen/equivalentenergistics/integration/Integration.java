@@ -2,6 +2,7 @@ package com.mordenkainen.equivalentenergistics.integration;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.integration.ae2.AE2;
 import com.mordenkainen.equivalentenergistics.integration.ee3.EquivExchange3;
 import com.mordenkainen.equivalentenergistics.integration.projecte.ProjectE;
 import com.mordenkainen.equivalentenergistics.integration.waila.Waila;
@@ -19,7 +20,8 @@ public final class Integration {
 		WAILA("Waila"),
 		NEI("NotEnoughItems", Side.CLIENT),
 		EE3("EE3", "EquivalentExchange3"),
-		PROJECTE("ProjectE");
+		PROJECTE("ProjectE"),
+		AE2("appliedenergistics2", false);
 		
 		private final String modID;
 		
@@ -27,24 +29,43 @@ public final class Integration {
 		
 		private final String name;
 
-		private final Side side;
+		private final Side modSide;
+		
+		private final boolean usesConfig;
 
 		Mods(final String modid) {
-			this(modid, modid);
+			this(modid, modid, null, true);
+		}
+		
+		Mods(final String modid, boolean hasConfig) {
+			this(modid, modid, null, hasConfig);
 		}
 
 		Mods(final String modid, final String modName) {
-			this(modid, modName, null);
-		}
-
-		Mods(final String modid, final Side side) {
-			this(modid, modid, side);
+			this(modid, modName, null, true);
 		}
 		
-		Mods(final String modid, final String modName, final Side _side) {
+		Mods(final String modid, final Side side) {
+			this(modid, modid, side, true);
+		}
+		
+		Mods(final String modid, final String modName, boolean hasConfig) {
+			this(modid, modName, null, hasConfig);
+		}
+		
+		Mods(final String modid, final String modName, final Side side) {
+			this(modid, modid, side, true);
+		}
+		
+		Mods(final String modid, final Side side, boolean hasConfig) {
+			this(modid, modid, side, hasConfig);
+		}
+				
+		Mods(final String modid, final String modName, final Side side, final boolean hasConfig) {
 			modID = modid;
 			name = modName;
-			side = _side;
+			modSide = side;
+			usesConfig = hasConfig;
 		}
 		
 		public String getModID() {
@@ -56,15 +77,19 @@ public final class Integration {
 		}
 
 		public boolean isOnClient() {
-			return side != Side.SERVER;
+			return modSide != Side.SERVER;
 		}
 
 		public boolean isOnServer() {
-			return side != Side.CLIENT;
+			return modSide != Side.CLIENT;
 		}
 
 		public void loadConfig(final Configuration config) {
-			shouldLoad = config.get("Integration", "enable" + getModName(), true, "Enable " + getModName() + " Integration.").getBoolean(true);
+			if(usesConfig) {
+				shouldLoad = config.get("Integration", "enable" + getModName(), true, "Enable " + getModName() + " Integration.").getBoolean(true);
+			} else {
+				shouldLoad = true;
+			}
 		}
 		
 		public boolean isEnabled() {
@@ -89,6 +114,9 @@ public final class Integration {
 	public static void init() {
 		if (Mods.WAILA.isEnabled()) {
 			Waila.init();
+		}
+		if (Mods.AE2.isEnabled()) {
+			AE2.init();
 		}
 		if (ConfigManager.useEE3) {
 			emcHandler = new EquivExchange3();

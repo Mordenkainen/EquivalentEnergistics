@@ -43,7 +43,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider, IWailaNBTProvider {
 	public static List<DimensionalLocation> crafterTiles = new ArrayList<DimensionalLocation>();
 	
-	private boolean crafting, sentEvent, stalePatterns = true;
+	private boolean isCrafting, sentEvent, stalePatterns = true;
 	private ItemStack currentTome, outputStack;
 	private int craftTickCounter;
 	public float currentEMC;
@@ -64,7 +64,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 		currentTome = heldItem;
 		stalePatterns = true;
 		sentEvent = false;
-		if(!isCrafting()) {
+		if(isCrafting) {
 			setDisplayStack(null);
 		}
 	}
@@ -94,18 +94,10 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 			sentEvent = false;
 		}
 	}
-	
-	public boolean isCrafting() {
-		return crafting;
-	}
 
-	public ItemStack getCurrentOutput() {
-		return outputStack;
-	}
-	
 	private void craftingTick() {
 		if(outputStack == null) {
-			crafting = false;
+			isCrafting = false;
 			setDisplayStack(null);
 		}
 		
@@ -118,7 +110,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 				if(rejected == null || rejected.getStackSize() == 0) {
 					storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.MODULATE, mySource);
 	
-					crafting = false;
+					isCrafting = false;
 					outputStack = null;
 					setDisplayStack(null);
 				}
@@ -158,7 +150,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	}
 	
 	public boolean canPlayerInteract(final EntityPlayer player) {
-		return checkPermissions(player) && !isCrafting();
+		return checkPermissions(player) && !isCrafting;
 	}
 	
 	private void injectCrystals() {
@@ -203,8 +195,8 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 
 	@Override
 	public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
-		if(!crafting && patternDetails instanceof EMCCraftingPattern) {
-			crafting = true;
+		if(!isCrafting && patternDetails instanceof EMCCraftingPattern) {
+			isCrafting = true;
 			craftTickCounter = 0;
 			outputStack = ((EMCCraftingPattern)patternDetails).getOutputs()[0].getItemStack();
 			currentEMC += ((EMCCraftingPattern)patternDetails).inputEMC - ((EMCCraftingPattern)patternDetails).outputEMC;
@@ -216,7 +208,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	
 	@Override
 	public boolean isBusy()	{
-		return crafting;
+		return isCrafting;
 	}
 
 	@Override
@@ -240,7 +232,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 
 	@Override
 	public void updateEntity() {
-		if(worldObj.isRemote ||  !isActive()) {
+		if(worldObj.isRemote || !isActive()) {
 			return;
 		}
 		
@@ -255,7 +247,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 			CommonUtils.debugLog("TileEMCCrafter:updateEntity: Error accessing grid:", e);
 		}
 		
-		if(crafting) {
+		if(isCrafting) {
 			craftingTick();
 		}
 	}
@@ -263,7 +255,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	@Override
 	public void readFromNBT(final NBTTagCompound data) {
 		super.readFromNBT(data);
-		crafting = data.getBoolean("Crafting");
+		isCrafting = data.getBoolean("Crafting");
 		currentEMC = data.getFloat("CurrentEMC");
 		if(data.hasKey("Tome")) {
 			currentTome = ItemStack.loadItemStackFromNBT((NBTTagCompound)data.getTag("Tome"));
@@ -271,7 +263,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 		if(data.hasKey("Output")) {
 			outputStack = ItemStack.loadItemStackFromNBT((NBTTagCompound)data.getTag("Output"));
 		}
-		if(crafting) {
+		if(isCrafting) {
 			displayStack = outputStack.copy();
 			displayStack.stackSize = 1;
 		} else {
@@ -282,7 +274,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	@Override
 	public void writeToNBT(final NBTTagCompound data) {
 		super.writeToNBT(data);
-		data.setBoolean("Crafting", crafting);
+		data.setBoolean("Crafting", isCrafting);
 		data.setFloat("CurrentEMC", currentEMC);
 		if(currentTome != null) {
 			final NBTTagCompound tome = new NBTTagCompound();

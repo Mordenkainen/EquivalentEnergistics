@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.items;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.lib.Reference;
+import com.mordenkainen.equivalentenergistics.render.TextureManager;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 public class ItemEMCCrystal extends Item {
 
@@ -21,9 +23,13 @@ public class ItemEMCCrystal extends Item {
 	}
 	
 	@Override
-	public void registerIcons(final IIconRegister reg) {
-		itemIcon = reg.registerIcon(Reference.TEXTURE_PREFIX + "EMCCrystal");
-	}
+	public void registerIcons(final IIconRegister reg) {}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int damage) {
+        return TextureManager.EMCCRYSTAL.getTexture();
+    }
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -37,6 +43,6 @@ public class ItemEMCCrystal extends Item {
 	
 	@Override
 	public String getUnlocalizedName(final ItemStack stack) {
-		return "item." + Reference.getId("EMCCrystal") + "." + stack.getItemDamage();
+		return "item." + Reference.MOD_ID + ":" + "EMCCrystal." + stack.getItemDamage();
 	}
 }

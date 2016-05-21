@@ -4,11 +4,17 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.render.TextureManager;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.ServerUnmetDependencyException;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
+
 
 public class CommonProxy {
 	public int crafterRenderer;
@@ -16,6 +22,7 @@ public class CommonProxy {
 	public void preInit() {
 		Integration.preInit();
 		registerBlocks();
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	public void init() {
@@ -23,6 +30,8 @@ public class CommonProxy {
 		registerTileEntities();
     	registerItems();
     	initRenderers();
+    	//final IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
+    	//gcr.registerGridCache( EMCStorageCache.class, EMCStorageCache.class );   	
 	}
 	
 	public void postInit() {
@@ -63,4 +72,12 @@ public class CommonProxy {
 	public void unmetDependency() {
 		throw new ServerUnmetDependencyException("Equivalent Energistics requires either Equivalent Exchange 3 or ProjectE to be installed and enabled!");
 	}
-}
+	
+	@SubscribeEvent
+	public void registerTextures(TextureStitchEvent.Pre textureStitchEvent) {
+		TextureMap map = textureStitchEvent.map;
+		for (TextureManager currentTexture : TextureManager.values()) {
+			currentTexture.registerTexture(map);
+		}
+	}
+ }

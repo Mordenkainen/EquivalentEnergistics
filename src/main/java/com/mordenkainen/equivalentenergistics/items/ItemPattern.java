@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.items;
 
 import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,6 +17,9 @@ public class ItemPattern extends Item implements ICraftingPatternItem {
 		super();
 		setMaxStackSize(1);
 	}
+	
+	@Override
+	public void registerIcons(final IIconRegister reg) {}
 	
 	@Override
 	public ICraftingPatternDetails getPatternForItem(final ItemStack stack, final World world) {
