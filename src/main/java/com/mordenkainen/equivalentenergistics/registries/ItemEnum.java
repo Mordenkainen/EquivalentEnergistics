@@ -1,5 +1,7 @@
 package com.mordenkainen.equivalentenergistics.registries;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
@@ -18,7 +20,7 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum ItemEnum {
 	
-	EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE),
+	EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE.getTest()),
 	EMCPATTERN("EMCPattern", new ItemPattern(), true),
 	EMCCRYSTAL("EMCCrystal", new ItemEMCCrystal()),
 	EMCTOTITEM("EMCTotal", new ItemEMCTotal()),
@@ -28,7 +30,7 @@ public enum ItemEnum {
 	
 	private Item item;
 	
-	private Integration.Mods mod;
+	private Predicate<?> requirements;
 	
 	private boolean enabled = true;
 
@@ -37,40 +39,40 @@ public enum ItemEnum {
 	private String configKey;
 
 	ItemEnum(final String _internalName, final Item _item) {
-		this(_internalName, _item, null, false, null);
+		this(_internalName, _item, null, false, Predicates.alwaysTrue());
 	}
 	
 	ItemEnum(final String _internalName, final Item _item, final String _configKey) {
-		this(_internalName, _item, _configKey, false, null);
+		this(_internalName, _item, _configKey, false, Predicates.alwaysTrue());
 	}
 	
 	ItemEnum(final String _internalName, final Item _item, final boolean _hidden) {
-		this(_internalName, _item, null, _hidden, null);
+		this(_internalName, _item, null, _hidden, Predicates.alwaysTrue());
 	}
 	
-	ItemEnum(final String _internalName, final Item _item, final Integration.Mods _mod) {
-		this(_internalName, _item, null, false, _mod);
+	ItemEnum(final String _internalName, final Item _item, final Predicate<?> _requirements) {
+		this(_internalName, _item, null, false, _requirements);
 	}
 	
-	ItemEnum(final String _internalName, final Item _item, final String _configKey, final Integration.Mods _mod) {
-		this(_internalName, _item, _configKey, false, _mod);
+	ItemEnum(final String _internalName, final Item _item, final String _configKey, final Predicate<?> _requirements) {
+		this(_internalName, _item, _configKey, false, _requirements);
 	}
 	
-	ItemEnum(final String _internalName, final Item _item, final boolean _hidden, final Integration.Mods _mod) {
-		this(_internalName, _item, null, _hidden, _mod);
+	ItemEnum(final String _internalName, final Item _item, final boolean _hidden, final Predicate<?> _requirements) {
+		this(_internalName, _item, null, _hidden, _requirements);
 	}
 	
 	ItemEnum(final String _internalName, final Item _item, final String _configKey, final boolean _hidden) {
-		this(_internalName, _item, _configKey, _hidden, null);
+		this(_internalName, _item, _configKey, _hidden, Predicates.alwaysTrue());
 	}
 	
-	ItemEnum(final String _internalName, final Item _item, final String _configKey, final boolean _hidden, final Integration.Mods _mod) {
+	ItemEnum(final String _internalName, final Item _item, final String _configKey, final boolean _hidden, final Predicate<?> _requirements) {
 		internalName = _internalName;
 		item = _item;
 		item.setUnlocalizedName(Reference.MOD_ID + ":" + internalName);
 		configKey = _configKey;
 		hidden = _hidden;
-		mod = _mod;
+		requirements = _requirements;
 	}
 
 	public ItemStack getDamagedStack(final int damage) {
@@ -93,12 +95,12 @@ public enum ItemEnum {
 		return StatCollector.translateToLocal(item.getUnlocalizedName());
 	}
 	
-	public Integration.Mods getMod() {
-		return mod;
+	public Predicate<?> getReqs() {
+		return requirements;
 	}
 	
 	public boolean isEnabled() {
-		return enabled && (mod == null || mod.isEnabled());
+		return enabled && requirements.apply(null);
 	}
 	
 	public boolean isHidden() {
@@ -116,4 +118,5 @@ public enum ItemEnum {
 			item.setCreativeTab(EquivalentEnergistics.tabEE);
 		}
 	}
+	
 }

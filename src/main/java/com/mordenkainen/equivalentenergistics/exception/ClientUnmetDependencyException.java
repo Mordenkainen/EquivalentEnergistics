@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.util;
+package com.mordenkainen.equivalentenergistics.exception;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;

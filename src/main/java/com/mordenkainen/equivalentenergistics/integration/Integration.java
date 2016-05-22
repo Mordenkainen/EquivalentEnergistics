@@ -1,5 +1,6 @@
 package com.mordenkainen.equivalentenergistics.integration;
 
+import com.google.common.base.Predicate;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.integration.ae2.AE2;
@@ -14,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 public final class Integration {
+	
 	public static IEMCHandler emcHandler;
 
 	public enum Mods {
@@ -37,7 +39,7 @@ public final class Integration {
 			this(modid, modid, null, true);
 		}
 		
-		Mods(final String modid, boolean hasConfig) {
+		Mods(final String modid, final boolean hasConfig) {
 			this(modid, modid, null, hasConfig);
 		}
 
@@ -49,7 +51,7 @@ public final class Integration {
 			this(modid, modid, side, true);
 		}
 		
-		Mods(final String modid, final String modName, boolean hasConfig) {
+		Mods(final String modid, final String modName, final boolean hasConfig) {
 			this(modid, modName, null, hasConfig);
 		}
 		
@@ -57,7 +59,7 @@ public final class Integration {
 			this(modid, modid, side, true);
 		}
 		
-		Mods(final String modid, final Side side, boolean hasConfig) {
+		Mods(final String modid, final Side side, final boolean hasConfig) {
 			this(modid, modid, side, hasConfig);
 		}
 				
@@ -95,6 +97,15 @@ public final class Integration {
 		public boolean isEnabled() {
 			return (Loader.isModLoaded(getModID()) || ModAPIManager.INSTANCE.hasAPI(getModID())) && shouldLoad && correctSide();
 		}
+		
+		public Predicate<Mods> getTest() {
+			return new Predicate<Mods>() {
+				@Override
+				public boolean apply(Mods input) {
+					return isEnabled();
+				}
+			};
+		}
 
 		private boolean correctSide() {
 			return EquivalentEnergistics.proxy.isClient() ? isOnClient() : isOnServer();
@@ -129,4 +140,7 @@ public final class Integration {
 		emcHandler.setCrystalEMC(ConfigManager.crystalEMCValue);
 		MinecraftForge.EVENT_BUS.register(emcHandler);
 	}
+	
+	
+	
 }

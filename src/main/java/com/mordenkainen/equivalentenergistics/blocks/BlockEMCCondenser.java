@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
-import com.mordenkainen.equivalentenergistics.render.TextureManager;
+import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -16,15 +16,16 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
 import net.minecraftforge.common.config.Configuration;
 
 public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
+	
 	private static final String GROUP = "Condenser";
 	
 	public static int itemsPerTick;
@@ -51,9 +52,9 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 	@Override
 	public IIcon getIcon(final int side, final int meta) {
 		if(side == 0 || side == 1) {
-			return TextureManager.EMCCONDENSER.getTexture();
+			return TextureEnum.EMCCONDENSER.getTexture();
 		}
-		return TextureManager.EMCCONDENSER.getTexture(1);
+		return TextureEnum.EMCCONDENSER.getTexture(1);
 	}
 
 	@Override
@@ -65,8 +66,8 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 				final List<ItemStack> drops = new ArrayList<ItemStack>();
 				tileCondenser.getDrops(world, x, y, z, drops);
 
-				for(final ItemStack drop : drops)	{
-					world.spawnEntityInWorld(new EntityItem(world, 0.5 + x, 0.5 + y, 0.2 + z, drop));
+				for(final ItemStack drop : drops) {
+					CommonUtils.spawnEntItem(world, x, y, z, drop);
 				}
 			}
 		}
@@ -90,4 +91,5 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
         idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
         activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
 	}
+	
 }

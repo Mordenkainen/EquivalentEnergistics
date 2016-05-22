@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.waila;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
+
 import mcp.mobius.waila.api.IWailaRegistrar;
 
 public final class Waila {
@@ -16,4 +17,5 @@ public final class Waila {
 		registrar.registerBodyProvider(wailaHUDHandler, IWailaNBTProvider.class);
 		registrar.registerNBTProvider(wailaHUDHandler, IWailaNBTProvider.class);
 	}
+	
 }

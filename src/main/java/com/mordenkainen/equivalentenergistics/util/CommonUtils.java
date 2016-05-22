@@ -14,6 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public final class CommonUtils {
+	
 	private CommonUtils() {}
 
 	public static boolean destroyAndDrop(final World world, final int x, final int y, final int z) {
@@ -34,7 +35,7 @@ public final class CommonUtils {
 	}
 	
 	public static void spawnEntItem(final World world, final double x, final double y, final double z, final ItemStack item) {
-		if (item != null && item.stackSize > 0) {
+		if (world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots && item != null && item.stackSize > 0) {
 			final float rx = world.rand.nextFloat() * 0.8F + 0.1F;
 			final float ry = world.rand.nextFloat() * 0.8F + 0.1F;
 			final float rz = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -69,4 +70,5 @@ public final class CommonUtils {
 			EquivalentEnergistics.logger.debug(message, t);
 		}
 	}
+	
 }

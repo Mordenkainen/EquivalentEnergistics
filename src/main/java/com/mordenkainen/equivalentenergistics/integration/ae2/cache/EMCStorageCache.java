@@ -24,10 +24,12 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryHandler<IAEItemStack> {
+	
 	public EMCStorageCache(IGrid _grid) {
 		grid = _grid;
 	}
@@ -192,4 +194,5 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 		((IStorageGrid)this.grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, stacks, new BaseActionSource());
 		this.grid.postEvent(new MENetworkCellArrayUpdate());
 	}
+	
 }

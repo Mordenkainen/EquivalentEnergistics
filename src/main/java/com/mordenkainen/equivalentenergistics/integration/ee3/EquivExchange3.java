@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.integration.ee3;
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+
 import com.pahimar.ee3.api.event.EnergyValueEvent;
 import com.pahimar.ee3.api.event.PlayerKnowledgeEvent;
 import com.pahimar.ee3.api.exchange.EnergyValue;
@@ -22,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class EquivExchange3 implements IEMCHandler {
+	
 	private static Item tomeItem;
 	private float[] crystalValues = {0.0F, 0.0F, 0.0F};
 
@@ -114,4 +116,5 @@ public class EquivExchange3 implements IEMCHandler {
 	public void onEnergyValueChange(final EnergyValueEvent event)	{
 		TileEMCCrafter.postEnergyValueChange();
 	}
+	
 }

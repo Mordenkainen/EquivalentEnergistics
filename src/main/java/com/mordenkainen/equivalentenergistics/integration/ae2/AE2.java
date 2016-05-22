@@ -6,6 +6,7 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -32,4 +33,5 @@ public final class AE2 {
 			CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
 		}
 	}
+	
 }

@@ -71,4 +71,5 @@ public abstract class TileNetworkInv extends TileNetworkBase implements IInvento
 	public boolean isItemValidForSlot(final int slot, final ItemStack stack) {
 		return getInventory().isItemValidForSlot(slot, stack);
 	}
+	
 }

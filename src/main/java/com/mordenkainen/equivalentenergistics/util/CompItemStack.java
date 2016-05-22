@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class CompItemStack extends Equivalence<ItemStack> {
+	
 	private static final int PRIME = 31;
 	
 	protected boolean doEquivalent(final ItemStack stack1, final ItemStack stack2) {
@@ -39,4 +40,5 @@ public class CompItemStack extends Equivalence<ItemStack> {
 		result = PRIME * result + (stack.hasTagCompound() ? stack.stackTagCompound.hashCode() : 0);
 		return result;
 	}
+	
 }

@@ -102,4 +102,5 @@ public interface IGridProxy extends IGridBlock {
 	double getAECurrentEnergy();
 	
 	boolean injectItems(ItemStack stack, double powerCost, MachineSource source);
+	
 }

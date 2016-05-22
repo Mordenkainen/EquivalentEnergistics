@@ -8,19 +8,21 @@ import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import net.minecraftforge.common.config.Configuration;
 
 public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
+	
 	public static double idlePower;
 	public static double activePower;
 	public static double craftingTime;
@@ -63,7 +65,7 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 			if(tileCrafter != null) {
 				final ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
 				if(existingTome != null) {
-					world.spawnEntityInWorld(new EntityItem(world, x, y, z, existingTome));
+					CommonUtils.spawnEntItem(world, x, y, z, existingTome);
 				}
 			}
 		}
@@ -88,14 +90,16 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 			final ItemStack existingTome = tileCrafter.getCurrentTome();
 			if(player.getHeldItem() == null && existingTome != null) {
 				if(!world.isRemote) {
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, existingTome));
+					CommonUtils.spawnEntItem(world, x, y, z, existingTome);
 				}
 				tileCrafter.setCurrentTome(null);
 				return true;
 			} else if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
 				tileCrafter.setCurrentTome(player.getHeldItem().copy());
-				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null:
-					player.inventory.mainInventory[player.inventory.currentItem];
+				if(!player.capabilities.isCreativeMode) {
+					player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null :
+						player.inventory.mainInventory[player.inventory.currentItem];
+				}
 				return true;
 			}
 		}
@@ -108,4 +112,5 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
         activePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
         craftingTime = config.get("Crafter", "TicksPerCrafting", 7).getInt(7);
 	}
+	
 }

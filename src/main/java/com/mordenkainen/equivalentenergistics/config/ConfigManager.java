@@ -9,6 +9,7 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import net.minecraftforge.common.config.Configuration;
 
 public final class ConfigManager {
+	
 	public static Configuration config;
 	public static float crystalEMCValue;
 	public static boolean useEE3;
@@ -44,4 +45,5 @@ public final class ConfigManager {
         
         debug = config.get("General", "Debug", debug).getBoolean(false);
     }
+    
 }

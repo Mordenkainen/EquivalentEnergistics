@@ -14,9 +14,11 @@ import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
+
 import net.minecraft.item.ItemStack;
 
 public class ProjectE implements IEMCHandler {
+	
 	private float[] crystalValues = {0.0F, 0.0F, 0.0F};
 
 	@Override
@@ -110,4 +112,5 @@ public class ProjectE implements IEMCHandler {
 	public void onEnergyValueChange(final EMCRemapEvent event) {
 		TileEMCCrafter.postEnergyValueChange();
 	}
+	
 }

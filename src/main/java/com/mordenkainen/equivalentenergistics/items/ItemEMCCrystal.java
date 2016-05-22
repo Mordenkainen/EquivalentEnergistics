@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.items;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.lib.Reference;
-import com.mordenkainen.equivalentenergistics.render.TextureManager;
+import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,7 +28,7 @@ public class ItemEMCCrystal extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage) {
-        return TextureManager.EMCCRYSTAL.getTexture();
+        return TextureEnum.EMCCRYSTAL.getTexture();
     }
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

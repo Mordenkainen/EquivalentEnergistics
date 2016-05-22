@@ -30,4 +30,5 @@ public interface IEMCHandler {
 	String getTomeOwner(ItemStack currentTome);
 
 	float getSingleEnergyValue(ItemStack stack);
+	
 }

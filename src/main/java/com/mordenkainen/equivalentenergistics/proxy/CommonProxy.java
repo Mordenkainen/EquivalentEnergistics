@@ -1,22 +1,23 @@
 package com.mordenkainen.equivalentenergistics.proxy;
 
+import com.mordenkainen.equivalentenergistics.exception.ServerUnmetDependencyException;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.render.TextureManager;
+import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
-import com.mordenkainen.equivalentenergistics.util.ServerUnmetDependencyException;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-
 public class CommonProxy {
+	
 	public int crafterRenderer;
 
 	public void preInit() {
@@ -76,8 +77,9 @@ public class CommonProxy {
 	@SubscribeEvent
 	public void registerTextures(TextureStitchEvent.Pre textureStitchEvent) {
 		TextureMap map = textureStitchEvent.map;
-		for (TextureManager currentTexture : TextureManager.values()) {
+		for (TextureEnum currentTexture : TextureEnum.values()) {
 			currentTexture.registerTexture(map);
 		}
 	}
+	
  }

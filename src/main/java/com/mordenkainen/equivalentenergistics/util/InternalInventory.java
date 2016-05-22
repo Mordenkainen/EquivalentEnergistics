@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 public class InternalInventory implements IInventory {
+	
 	private static final String NBT_KEY_SLOT = "Slot";
 	
 	public ItemStack[] slots;
@@ -153,4 +154,5 @@ public class InternalInventory implements IInventory {
 			data.setTag(tagName, invList);
 		}
 	}
+	
 }

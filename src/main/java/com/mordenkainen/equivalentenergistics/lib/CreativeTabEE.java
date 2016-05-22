@@ -15,4 +15,5 @@ public class CreativeTabEE extends CreativeTabs {
 	public Item getTabIconItem() {
 		return ItemEnum.EMCCRYSTAL.getItem();
 	}
+	
 }

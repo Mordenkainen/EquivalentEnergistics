@@ -54,4 +54,5 @@ public class EquivalentEnergistics {
 	public void postInit(final FMLPostInitializationEvent event) {
     	proxy.postInit();
     }
+    
 }

@@ -7,12 +7,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 
 public class WailaHUDHandler implements IWailaDataProvider {
+	
 	private final static String TAG_NAME = "TileData";
+	
 	@Override
 	public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
 		final NBTTagCompound tag = accessor.getNBTData();
@@ -47,4 +50,5 @@ public class WailaHUDHandler implements IWailaDataProvider {
         }
         return tag;
 	}
+	
 }

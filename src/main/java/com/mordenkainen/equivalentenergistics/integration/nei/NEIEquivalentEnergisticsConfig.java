@@ -7,6 +7,7 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -37,4 +38,5 @@ public class NEIEquivalentEnergisticsConfig implements IConfigureNEI {
 			}
 		}
 	}
+	
 }

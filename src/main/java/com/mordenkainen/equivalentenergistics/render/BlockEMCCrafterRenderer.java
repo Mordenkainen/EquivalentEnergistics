@@ -36,4 +36,5 @@ public class BlockEMCCrafterRenderer implements ISimpleBlockRenderingHandler {
 	public int getRenderId() {
 		return EquivalentEnergistics.proxy.crafterRenderer;
 	}
+	
 }

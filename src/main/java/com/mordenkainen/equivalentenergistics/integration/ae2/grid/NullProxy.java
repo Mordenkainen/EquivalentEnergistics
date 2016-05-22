@@ -195,4 +195,5 @@ public class NullProxy implements IGridProxy {
 	public boolean injectItems(final ItemStack stack, final double powerCost, final MachineSource source) {
 		return false;
 	}
+	
 }

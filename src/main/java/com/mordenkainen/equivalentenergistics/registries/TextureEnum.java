@@ -1,11 +1,11 @@
-package com.mordenkainen.equivalentenergistics.render;
+package com.mordenkainen.equivalentenergistics.registries;
 
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 
-public enum TextureManager {
+public enum TextureEnum {
 
 	EMCCONDENSER(TextureType.BLOCK, "EMCCondenserTop", "EMCCondenserSide"),
 	EMCBOOK(TextureType.ITEM, "EMCBook"),
@@ -20,22 +20,22 @@ public enum TextureManager {
 
 	private IIcon[] textures;
 
-	TextureManager(TextureType _textureType, String... _textureName) {
-		this.textureType = _textureType;
-		this.textureNames = _textureName;
-		this.textures = new IIcon[this.textureNames.length];
+	TextureEnum(TextureType type, String... names) {
+		textureType = type;
+		textureNames = names;
+		textures = new IIcon[textureNames.length];
 	}
 
 	public IIcon getTexture() {
-		return this.textures[0];
+		return textures[0];
 	}
 	
 	public IIcon getTexture(int id) {
-		return this.textures[id];
+		return textures[id];
 	}
 
 	public IIcon[] getTextures() {
-		return this.textures;
+		return textures;
 	}
 
 	public void registerTexture(final TextureMap textureMap) {

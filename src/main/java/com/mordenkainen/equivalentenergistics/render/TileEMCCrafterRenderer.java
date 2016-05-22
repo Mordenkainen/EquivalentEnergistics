@@ -79,4 +79,5 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 		}
 		return false;
 	}
+	
 }

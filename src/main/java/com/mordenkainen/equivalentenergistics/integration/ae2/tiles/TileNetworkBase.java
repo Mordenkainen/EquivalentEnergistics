@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TileNetworkBase extends TileEntity implements IGridProxyable, IActionHost {
+	
 	protected IGridProxy gridProxy;
 	protected MachineSource mySource;
 	private boolean active;
@@ -113,4 +114,5 @@ public abstract class TileNetworkBase extends TileEntity implements IGridProxyab
 
 	@Override
 	public void gridChanged() {}
+	
 }
