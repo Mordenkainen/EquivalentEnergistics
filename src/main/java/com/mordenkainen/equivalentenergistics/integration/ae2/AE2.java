@@ -24,10 +24,10 @@ public final class AE2 {
 	}
 	
 	@SubscribeEvent
-	public void worldLoad(WorldEvent.Load event) {
+	public void worldLoad(final WorldEvent.Load event) {
 		try {
-			Class<?> cellInv = Class.forName("appeng.me.storage.CellInventory");
-			Method blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
+			final Class<?> cellInv = Class.forName("appeng.me.storage.CellInventory");
+			final Method blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
 			blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTAL.getItem()), OreDictionary.WILDCARD_VALUE);
 		} catch (Exception e) {
 			CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);

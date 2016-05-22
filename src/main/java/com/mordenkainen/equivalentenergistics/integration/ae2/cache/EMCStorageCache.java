@@ -30,13 +30,13 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryHandler<IAEItemStack> {
 	
-	public EMCStorageCache(IGrid _grid) {
-		grid = _grid;
-	}
-
 	private long currentEMC;
 	private long lastDisplay;
 	private IGrid grid;
+	
+	public EMCStorageCache(final IGrid _grid) {
+		grid = _grid;
+	}
 	
 	@MENetworkEventSubscribe
 	public void afterCacheConstruction( final MENetworkPostCacheConstruction cacheConstruction )
@@ -47,42 +47,42 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	
 	@Override
 	public void onUpdateTick() {
-		System.out.println(currentEMC);
+		//System.out.println(currentEMC);
 
 	}
 
 	@Override
-	public void removeNode(IGridNode gridNode, IGridHost machine) {
+	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void addNode(IGridNode gridNode, IGridHost machine) {
+	public void addNode(final IGridNode gridNode, final IGridHost machine) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void onSplit(IGridStorage destinationStorage) {
+	public void onSplit(final IGridStorage destinationStorage) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void onJoin(IGridStorage sourceStorage) {
+	public void onJoin(final IGridStorage sourceStorage) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void populateGridStorage(IGridStorage destinationStorage) {
+	public void populateGridStorage(final IGridStorage destinationStorage) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src) {
+	public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final BaseActionSource src) {
 		if (input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem())) {
 			int dam = input.getItemDamage();
 			if(type == Actionable.MODULATE) {
@@ -96,9 +96,9 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src) {
+	public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final BaseActionSource src) {
 		if (request.getItem().equals(ItemEnum.EMCCRYSTAL.getItem()) && currentEMC >= 256) {
-			int toRemove = (int)Math.min(request.getStackSize(), currentEMC/256);
+			final int toRemove = (int)Math.min(request.getStackSize(), currentEMC/256);
 			if (toRemove > 0) {
 				if(mode == Actionable.MODULATE) {
 					currentEMC -= toRemove * 256;
@@ -112,13 +112,13 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
-		int crystalcount = (int) (currentEMC/256);
+		final int crystalcount = (int) (currentEMC/256);
 		if (crystalcount > 0) {
-			IAEItemStack stack = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), crystalcount, 0));
+			final IAEItemStack stack = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), crystalcount, 0));
 			out.add(stack);
 		}
 		if (currentEMC > 0) {
-			ItemStack totStack = new ItemStack(ItemEnum.EMCTOTITEM.getItem(), 1);
+			final ItemStack totStack = new ItemStack(ItemEnum.EMCTOTITEM.getItem(), 1);
 			totStack.stackTagCompound = new NBTTagCompound();
 			totStack.stackTagCompound.setLong("emc", currentEMC);
 			out.add(AEApi.instance().storage().createItemStack(totStack));
@@ -138,12 +138,12 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public boolean isPrioritized(IAEItemStack input) {
+	public boolean isPrioritized(final IAEItemStack input) {
 		return input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
 	}
 
 	@Override
-	public boolean canAccept(IAEItemStack input) {
+	public boolean canAccept(final IAEItemStack input) {
 		return input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
 	}
 
@@ -153,13 +153,13 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public boolean validForPass(int i) {
-		return i == 1;
+	public boolean validForPass(final int pass) {
+		return pass == 1;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<IMEInventoryHandler> getCellArray(StorageChannel channel) {
+	public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
 		final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>( 1 );
 
 		if( channel == StorageChannel.ITEMS )
@@ -176,9 +176,9 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 	
 	private void updateDisplay() {
-		List<IAEItemStack> stacks = new ArrayList<IAEItemStack>();
+		final List<IAEItemStack> stacks = new ArrayList<IAEItemStack>();
 		if (lastDisplay > 0) {
-			ItemStack oldTotStack = new ItemStack(ItemEnum.EMCTOTITEM.getItem(), -1);
+			final ItemStack oldTotStack = new ItemStack(ItemEnum.EMCTOTITEM.getItem(), -1);
 			oldTotStack.stackTagCompound = new NBTTagCompound();
 			oldTotStack.stackTagCompound.setLong("emc", lastDisplay);
 			stacks.add(AEApi.instance().storage().createItemStack(oldTotStack));

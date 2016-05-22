@@ -75,9 +75,9 @@ public class CommonProxy {
 	}
 	
 	@SubscribeEvent
-	public void registerTextures(TextureStitchEvent.Pre textureStitchEvent) {
-		TextureMap map = textureStitchEvent.map;
-		for (TextureEnum currentTexture : TextureEnum.values()) {
+	public void registerTextures(final TextureStitchEvent.Pre textureStitchEvent) {
+		final TextureMap map = textureStitchEvent.map;
+		for (final TextureEnum currentTexture : TextureEnum.values()) {
 			currentTexture.registerTexture(map);
 		}
 	}

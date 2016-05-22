@@ -20,7 +20,7 @@ public enum TextureEnum {
 
 	private IIcon[] textures;
 
-	TextureEnum(TextureType type, String... names) {
+	TextureEnum(final TextureType type, final String... names) {
 		textureType = type;
 		textureNames = names;
 		textures = new IIcon[textureNames.length];
@@ -30,12 +30,12 @@ public enum TextureEnum {
 		return textures[0];
 	}
 	
-	public IIcon getTexture(int id) {
+	public IIcon getTexture(final int id) {
 		return textures[id];
 	}
 
 	public IIcon[] getTextures() {
-		return textures;
+		return textures.clone();
 	}
 
 	public void registerTexture(final TextureMap textureMap) {

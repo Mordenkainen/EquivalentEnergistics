@@ -101,7 +101,7 @@ public final class Integration {
 		public Predicate<Mods> getTest() {
 			return new Predicate<Mods>() {
 				@Override
-				public boolean apply(Mods input) {
+				public boolean apply(final Mods input) {
 					return isEnabled();
 				}
 			};
