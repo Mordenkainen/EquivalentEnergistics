@@ -27,7 +27,7 @@ public class ItemEMCCrystal extends Item {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int damage) {
+    public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCCRYSTAL.getTexture();
     }
 	

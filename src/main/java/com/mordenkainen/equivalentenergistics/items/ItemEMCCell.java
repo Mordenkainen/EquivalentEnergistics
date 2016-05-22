@@ -15,6 +15,8 @@ import net.minecraft.util.IIcon;
 public class ItemEMCCell extends Item implements ICellHandler {
 
 	public ItemEMCCell() {
+		super();
+		
 		AEApi.instance().registries().cell().addCellHandler( this );
 
 		// Set max stack size to 1
@@ -25,14 +27,14 @@ public class ItemEMCCell extends Item implements ICellHandler {
 	}
 	
 	@Override
-	public boolean isCell(ItemStack stack) {
+	public boolean isCell(final ItemStack stack) {
 		return stack.getItem() == this;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public IMEInventoryHandler getCellInventory(ItemStack stack, ISaveProvider host, StorageChannel channel) {
-		if((channel != StorageChannel.ITEMS) || !(stack.getItem() instanceof ItemEMCCell)) {
+	public IMEInventoryHandler getCellInventory(final ItemStack stack, final ISaveProvider host, final StorageChannel channel) {
+		if(channel != StorageChannel.ITEMS || !(stack.getItem() instanceof ItemEMCCell)) {
 			return null;
 		}
 		
@@ -56,18 +58,18 @@ public class ItemEMCCell extends Item implements ICellHandler {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void openChestGui(EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan) {}
+	public void openChestGui(final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final StorageChannel chan) {}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public int getStatusForCell(ItemStack is, IMEInventory handler) {
+	public int getStatusForCell(final ItemStack is, final IMEInventory handler) {
 		// TODO return cell status
 		return 1;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public double cellIdleDrain(ItemStack is, IMEInventory handler) {
+	public double cellIdleDrain(final ItemStack is, final IMEInventory handler) {
 		//TODO Cell cost
 		return 0;
 	}

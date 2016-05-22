@@ -32,7 +32,7 @@ public class ItemEMCBook extends Item {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int damage) {
+    public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCBOOK.getTexture();
     }
 	

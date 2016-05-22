@@ -26,9 +26,9 @@ public class ItemEMCTotal extends Item {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List info, boolean p_77624_4_) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List info, final boolean p_77624_4_) {
 		if (stack.hasTagCompound()) {
-			long emc = stack.stackTagCompound.getLong("emc");
+			final long emc = stack.stackTagCompound.getLong("emc");
 			if (emc > 0) {
 				info.add("Stored EMC: " + emc);
 			}

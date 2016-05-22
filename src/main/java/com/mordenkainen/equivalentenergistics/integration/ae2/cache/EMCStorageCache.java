@@ -32,7 +32,7 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	
 	private long currentEMC;
 	private long lastDisplay;
-	private IGrid grid;
+	private final IGrid grid;
 	
 	public EMCStorageCache(final IGrid _grid) {
 		grid = _grid;
@@ -84,7 +84,7 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	@Override
 	public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final BaseActionSource src) {
 		if (input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem())) {
-			int dam = input.getItemDamage();
+			final int dam = input.getItemDamage();
 			if(type == Actionable.MODULATE) {
 				currentEMC += Integration.emcHandler.getCrystalEMC(dam) *  input.getStackSize();
 			}
@@ -111,7 +111,7 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
+	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
 		final int crystalcount = (int) (currentEMC/256);
 		if (crystalcount > 0) {
 			final IAEItemStack stack = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), crystalcount, 0));
