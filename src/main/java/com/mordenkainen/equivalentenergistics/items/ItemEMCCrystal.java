@@ -28,14 +28,14 @@ public class ItemEMCCrystal extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
-        return TextureEnum.EMCCRYSTAL.getTexture();
+        return TextureEnum.EMCCRYSTAL.getTexture(damage);
     }
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 5; i++) {
 			final ItemStack stack  = new ItemStack(item, 1, i);
 			list.add(stack);
 		}
