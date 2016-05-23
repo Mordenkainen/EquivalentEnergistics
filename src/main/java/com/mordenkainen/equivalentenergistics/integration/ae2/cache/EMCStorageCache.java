@@ -64,7 +64,7 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public void onSplit(final IGridStorage destinationStorage) {
+	public void onSplit(final IGridStorage dstStorage) {
 		// TODO Auto-generated method stub
 
 	}
@@ -76,22 +76,22 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public void populateGridStorage(final IGridStorage destinationStorage) {
+	public void populateGridStorage(final IGridStorage dstStorage) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final BaseActionSource src) {
-		if (input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem())) {
-			final int dam = input.getItemDamage();
-			if(type == Actionable.MODULATE) {
-				currentEMC += Integration.emcHandler.getCrystalEMC(dam) *  input.getStackSize();
+	public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
+		if (stack.getItem().equals(ItemEnum.EMCCRYSTAL.getItem())) {
+			final int dam = stack.getItemDamage();
+			if(mode == Actionable.MODULATE) {
+				currentEMC += Integration.emcHandler.getCrystalEMC(dam) *  stack.getStackSize();
 			}
 			updateDisplay();
 			return null;
 		} else {
-			return input;
+			return stack;
 		}
 	}
 
@@ -111,20 +111,20 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
+	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> stacks) {
 		final int crystalcount = (int) (currentEMC/256);
 		if (crystalcount > 0) {
 			final IAEItemStack stack = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), crystalcount, 0));
-			out.add(stack);
+			stacks.add(stack);
 		}
 		if (currentEMC > 0) {
 			final ItemStack totStack = new ItemStack(ItemEnum.EMCTOTITEM.getItem(), 1);
 			totStack.stackTagCompound = new NBTTagCompound();
 			totStack.stackTagCompound.setLong("emc", currentEMC);
-			out.add(AEApi.instance().storage().createItemStack(totStack));
+			stacks.add(AEApi.instance().storage().createItemStack(totStack));
 			lastDisplay = currentEMC;
 		}
-		return out;
+		return stacks;
 	}
 
 	@Override
@@ -138,13 +138,13 @@ public class EMCStorageCache implements IGridCache, ICellProvider, IMEInventoryH
 	}
 
 	@Override
-	public boolean isPrioritized(final IAEItemStack input) {
-		return input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
+	public boolean isPrioritized(final IAEItemStack stack) {
+		return stack.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
 	}
 
 	@Override
-	public boolean canAccept(final IAEItemStack input) {
-		return input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
+	public boolean canAccept(final IAEItemStack stack) {
+		return stack.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
 	}
 
 	@Override

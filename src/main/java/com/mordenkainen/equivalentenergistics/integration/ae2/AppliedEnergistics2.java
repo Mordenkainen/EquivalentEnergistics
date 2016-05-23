@@ -8,18 +8,19 @@ import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 import net.minecraft.item.Item;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
-public final class AE2 {
+public final class AppliedEnergistics2 {
 	
-	private static AE2 instance;
+	private static AppliedEnergistics2 instance;
 	
-	private AE2() {}
+	private AppliedEnergistics2() {}
 	
 	public static void init() {
-		instance = new AE2();
+		instance = new AppliedEnergistics2();
 		MinecraftForge.EVENT_BUS.register(instance);
 	}
 	
@@ -29,9 +30,17 @@ public final class AE2 {
 			final Class<?> cellInv = Class.forName("appeng.me.storage.CellInventory");
 			final Method blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
 			blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTAL.getItem()), OreDictionary.WILDCARD_VALUE);
-		} catch (Exception e) {
-			CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
+		} catch (IllegalArgumentException e) {
+			logReflectionError(e);
+		} catch (SecurityException e) {
+			logReflectionError(e);
+		} catch (ReflectiveOperationException e) {
+			logReflectionError(e);
 		}
+	}
+	
+	private void logReflectionError(Exception e) {
+		CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
 	}
 	
 }

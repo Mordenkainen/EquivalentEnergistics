@@ -5,6 +5,7 @@ import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -13,8 +14,10 @@ public final class CraftingManager {
 	private CraftingManager() {}
 
 	public static void initRecipes() {
+		final Item aeMaterial = GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial");
 		final ItemStack base = new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockSkyStone"), 1, 1);
 		final String frame = "AMA";
+		
 		ItemStack dust;
 		if(ConfigManager.useEE3) {
 			dust = new ItemStack(GameRegistry.findItem("EE3", "alchemicalDust"), 1, 3);
@@ -28,7 +31,7 @@ public final class CraftingManager {
 			frame,
 			'A', base,
 			'M', dust,
-			'C', new ItemStack(GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial"), 1, 44)
+			'C', new ItemStack(aeMaterial, 1, 44)
 		});
 		
 		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[]{
@@ -37,8 +40,9 @@ public final class CraftingManager {
 			frame,
 			'A', base,
 			'M', dust,
-			'F', new ItemStack(GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial"), 1, 43)
+			'F', new ItemStack(aeMaterial, 1, 43)
 		});
+		
 		if(!ConfigManager.useEE3) {
 			GameRegistry.addShapedRecipe(ItemEnum.EMCBOOK.getSizedStack(1), new Object[]{
 				" M ",
@@ -49,4 +53,5 @@ public final class CraftingManager {
 			});
 		}
 	}
+	
 }

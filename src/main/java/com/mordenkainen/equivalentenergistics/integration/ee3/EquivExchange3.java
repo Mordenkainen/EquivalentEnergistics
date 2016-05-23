@@ -85,9 +85,15 @@ public class EquivExchange3 implements IEMCHandler {
 
 	@Override
 	public void setCrystalEMC(final float emc) {
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), emc);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), emc * 576.0F);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), (float)(emc * Math.pow(576.0D, 2.0D)));
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), 1);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), 64);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), emc);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), emc * 576.0F);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), (float)(emc * Math.pow(576.0D, 2.0D)));
+		
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), emc);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), emc * 576.0F);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 2), (float)(emc * Math.pow(576.0D, 2.0D)));
 	}
 
 	@Override

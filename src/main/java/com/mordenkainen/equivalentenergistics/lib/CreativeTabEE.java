@@ -4,6 +4,7 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class CreativeTabEE extends CreativeTabs {
 
@@ -13,7 +14,12 @@ public class CreativeTabEE extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-		return ItemEnum.EMCCRYSTAL.getItem();
+		return null;
+	}
+	
+	@Override
+	public ItemStack getIconItemStack() {
+		return ItemEnum.EMCCRYSTAL.getDamagedStack(2);
 	}
 	
 }
