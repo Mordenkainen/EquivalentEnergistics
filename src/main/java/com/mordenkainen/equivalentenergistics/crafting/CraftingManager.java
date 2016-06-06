@@ -11,12 +11,13 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public final class CraftingManager {
+	private static final String frame = "AMA";
+	
 	private CraftingManager() {}
 
 	public static void initRecipes() {
 		final Item aeMaterial = GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial");
 		final ItemStack base = new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockSkyStone"), 1, 1);
-		final String frame = "AMA";
 		
 		ItemStack dust;
 		if(ConfigManager.useEE3) {

@@ -1,6 +1,5 @@
 package com.mordenkainen.equivalentenergistics.items;
 
-import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import appeng.api.AEApi;
@@ -19,10 +18,10 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 
 	private final NBTTagCompound cellData;
 	private final ISaveProvider saveProvider;
-	private long currentEMC;
+	private float currentEMC;
+	private float capacity;
 
-	public HandlerEMCCell( final ItemStack storageStack, final ISaveProvider saveProvider )
-	{
+	public HandlerEMCCell(final ItemStack storageStack, final ISaveProvider saveProvider, final float capacity) {
 		// Ensure we have a NBT tag
 		if( !storageStack.hasTagCompound() )
 		{
@@ -37,55 +36,39 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 		if(cellData.hasKey("emc")) {
 			currentEMC = cellData.getLong("emc");
 		}
+		
+		this.capacity = capacity;
 	}
 	
 	@Override
 	public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final BaseActionSource src) {
-		if (input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem())) {
-			final int dam = ((IAEItemStack)input).getItemDamage();
-			if(type == Actionable.MODULATE) {
-				currentEMC += Integration.emcHandler.getCrystalEMC(dam) *  ((IAEItemStack)input).getStackSize();
-				cellData.setLong("emc", currentEMC);
-				
-				if( this.saveProvider != null )
-				{
-					this.saveProvider.saveChanges( this );
-				}
-			}
-			return null;
-		} else {
-			return input;
-		}
+		return input;
 	}
 
 	@Override
 	public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final BaseActionSource src) {
-		if (request.getItem().equals(ItemEnum.EMCCRYSTAL.getItem()) && currentEMC >= 256) {
-			final int toRemove = (int)Math.min(request.getStackSize(), currentEMC/256);
-			if (toRemove > 0) {
-				if(mode == Actionable.MODULATE) {
-					currentEMC -= toRemove * 256;
-					cellData.setLong("emc", currentEMC);
-					
-					if( this.saveProvider != null )
-					{
-						this.saveProvider.saveChanges( this );
-					}
-				}
-				return AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), toRemove));
-			}
-		}
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
-		final int crystalcount = (int) (currentEMC/256);
-		if (crystalcount > 0) {
-			final IAEItemStack stack = AEApi.instance().storage().createItemStack(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), crystalcount, 0));
-			out.add(stack);
+	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> stacks) {
+		if(!stacks.isEmpty() && stacks.getFirstItem().getItem().equals(ItemEnum.EMCCOMM.getItem())) {
+			IItemList<IAEItemStack> retStack = AEApi.instance().storage().createItemList();
+			ItemStack retItem = new ItemStack(ItemEnum.EMCCOMM.getItem());
+			ItemStack stack = stacks.getFirstItem().getItemStack();
+			float change = 0;
+			if(stack.hasTagCompound() && stack.stackTagCompound.hasKey("change")) {
+				change = adjustEMC(stack.stackTagCompound.getFloat("change"));
+			}
+			retItem.stackTagCompound = new NBTTagCompound();
+			retItem.getTagCompound().setFloat("emc", currentEMC);
+			retItem.getTagCompound().setFloat("max", capacity);
+			retItem.getTagCompound().setFloat("avail", capacity - currentEMC);
+			retItem.getTagCompound().setFloat("adjust", change);
+			retStack.add(AEApi.instance().storage().createItemStack(retItem));
+			return retStack;
 		}
-		return out;
+		return stacks;
 	}
 
 	@Override
@@ -100,12 +83,12 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 
 	@Override
 	public boolean isPrioritized(final IAEItemStack input) {
-		return input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
+		return false;
 	}
 
 	@Override
 	public boolean canAccept(final IAEItemStack input) {
-		return input.getItem().equals(ItemEnum.EMCCRYSTAL.getItem());
+		return false;
 	}
 
 	@Override
@@ -123,4 +106,34 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 		return pass == 1;
 	}
 
+	public float adjustEMC(float amount) {
+		float toAdjust;
+		
+		if(amount > 0) {
+			toAdjust = Math.min(amount, capacity - currentEMC);
+		} else {
+			toAdjust = Math.max(amount, -currentEMC);
+		}
+		
+		if(toAdjust != 0) {
+			currentEMC += toAdjust;
+			cellData.setFloat("emc", currentEMC);
+			if (saveProvider != null) {
+				saveProvider.saveChanges(this);
+			}
+		}
+		
+		return toAdjust;
+	}
+	
+	public int getCellStatus() {
+		if(currentEMC >= capacity) {
+			return 3;
+		}
+		if(currentEMC > capacity * 0.75) {
+			return 2;
+		}
+		return 1;
+	}
+	
 }

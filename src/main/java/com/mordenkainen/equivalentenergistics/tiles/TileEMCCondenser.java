@@ -8,7 +8,6 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessExc
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileNetworkInv;
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.InternalInventory;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -63,23 +62,28 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 				}
 			}
 		}
+		/*final float crystalEMC = Integration.emcHandler.getCrystalEMC();
+		if(currentEMC >= crystalEMC) {
+			int numCrystals = Math.min(BlockEMCCondenser.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
+			final IEnergyGrid eGrid = gridProxy.getEnergy();
+			final double powerRequired = crystalEMC * numCrystals * BlockEMCCondenser.activePower;
+			while (numCrystals > 0 && eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) < powerRequired) {
+				numCrystals--;
+			}
+			
+			if (gridProxy.injectItems(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals), powerRequired, mySource)) {
+				currentEMC -= crystalEMC * numCrystals;
+			}
+		}*/
 	}
 	
 	private void injectCrystals() {
 		try	{
-			final float crystalEMC = Integration.emcHandler.getCrystalEMC();
-			if(currentEMC >= crystalEMC) {
-				int numCrystals = Math.min(BlockEMCCondenser.crystalsPerTick, (int)Math.floor(currentEMC/crystalEMC));
-				final IEnergyGrid eGrid = gridProxy.getEnergy();
-				final double powerRequired = crystalEMC * numCrystals * BlockEMCCondenser.activePower;
-				while (numCrystals > 0 && eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG) < powerRequired) {
-					numCrystals--;
-				}
-				
-				if (gridProxy.injectItems(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals), powerRequired, mySource)) {
-					currentEMC -= crystalEMC * numCrystals;
-				}
+			if(currentEMC > 0) {
+				final float toInject = Math.min(currentEMC, BlockEMCCondenser.crystalsPerTick * 256);
+				currentEMC -= gridProxy.getEMCStorage().injectEMC(toInject);
 			}
+			
 		} catch(GridAccessException e) {
 			CommonUtils.debugLog("TIleEMCCondenser:injectCrystals: Error accessing grid:", e);
 		}

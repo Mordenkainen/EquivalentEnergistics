@@ -25,12 +25,12 @@ import net.minecraft.item.ItemStack;
 public class EquivExchange3 implements IEMCHandler {
 	
 	private static Item tomeItem;
-	private float[] crystalValues = {0.0F, 0.0F, 0.0F};
+	private float[] crystalValues = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
 
 	@Override
 	public void relearnCrystals() {
-		crystalValues = new float[] {0.0F, 0.0F, 0.0F};
-		for (int i = 0; i <= 2; i++) {
+		crystalValues = new float[] {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
+		for (int i = 0; i < 5; i++) {
 			crystalValues[i] = getCrystalEMC(i);
 		}
 	}
@@ -87,9 +87,9 @@ public class EquivExchange3 implements IEMCHandler {
 	public void setCrystalEMC(final float emc) {
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), 1);
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), 64);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), emc);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), emc * 576.0F);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), (float)(emc * Math.pow(576.0D, 2.0D)));
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), 4096);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), 262144);
+		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), 16777216);
 		
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), emc);
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), emc * 576.0F);

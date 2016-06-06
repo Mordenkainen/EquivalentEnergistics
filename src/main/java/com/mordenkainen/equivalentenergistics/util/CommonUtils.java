@@ -1,10 +1,12 @@
 package com.mordenkainen.equivalentenergistics.util;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 
+import appeng.api.config.PowerUnits;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -17,6 +19,21 @@ public final class CommonUtils {
 	
 	private CommonUtils() {}
 
+	public static String formatEMC(final float emc) {
+		float displayValue = emc;
+
+		final String[] preFixes = {"k", "M", "B", "T", "P",	"T", "P", "E", "Z", "Y"};
+		String level = "";
+		int offset = 0;
+		while(displayValue > 1000 && offset < preFixes.length) {
+			displayValue /= 1000;
+			level = preFixes[offset++];
+		}
+
+		final DecimalFormat formatter = new DecimalFormat("#.##");
+		return formatter.format(displayValue) + ' ' + level;
+	}
+	
 	public static boolean destroyAndDrop(final World world, final int x, final int y, final int z) {
 		final Block block = world.getBlock(x, y, z);
 		if(block != null && block.getBlockHardness(world, x, y, z) >= 0) {

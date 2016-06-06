@@ -1,4 +1,3 @@
-// TODO: Hide this in NEI
 package com.mordenkainen.equivalentenergistics.items;
 
 import java.util.List;

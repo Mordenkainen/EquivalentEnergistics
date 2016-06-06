@@ -2,6 +2,8 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
 import java.util.EnumSet;
 
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.GridFlags;
@@ -163,6 +165,11 @@ public class NullProxy implements IGridProxy {
 
 	@Override
 	public IEnergyGrid getEnergy() throws GridAccessException {
+		throw new GridAccessException();
+	}
+	
+	@Override
+	public EMCStorageGrid getEMCStorage() throws GridAccessException {
 		throw new GridAccessException();
 	}
 

@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 import java.util.Collections;
 import java.util.EnumSet;
 
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
@@ -314,6 +315,22 @@ public class NetworkProxy implements IGridProxy {
 		}
 		
 		return energyGrid;
+	}
+	
+	@Override
+	public EMCStorageGrid getEMCStorage() throws GridAccessException {
+		final IGrid grid = getGrid();
+		if(grid == null) {
+			throw new GridAccessException();
+		}
+		
+		final EMCStorageGrid emcGrid = grid.getCache(EMCStorageGrid.class);
+		
+		if(emcGrid == null) {
+			throw new GridAccessException();
+		}
+		
+		return emcGrid;
 	}
 	
 	@Override

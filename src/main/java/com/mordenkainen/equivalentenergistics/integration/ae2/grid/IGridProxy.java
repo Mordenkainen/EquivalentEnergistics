@@ -2,6 +2,8 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
 import java.util.EnumSet;
 
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.GridFlags;
@@ -90,6 +92,8 @@ public interface IGridProxy extends IGridBlock {
 	ICraftingGrid getCrafting() throws GridAccessException;
 
 	IEnergyGrid getEnergy() throws GridAccessException;
+	
+	EMCStorageGrid getEMCStorage() throws GridAccessException;
 
 	double getAEDemand(double amount);
 

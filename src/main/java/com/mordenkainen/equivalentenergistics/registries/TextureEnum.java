@@ -10,7 +10,8 @@ public enum TextureEnum {
 	EMCCONDENSER(TextureType.BLOCK, "EMCCondenserTop", "EMCCondenserSide"),
 	EMCBOOK(TextureType.ITEM, "EMCBook"),
 	EMCCRYSTAL(TextureType.ITEM, "EMCNugget", "EMCShard", "EMCCrystal", "DenseEMCCrystal", "SuperDenseEMCCrystal"),
-	EMCCRYSTALOLD(TextureType.ITEM, "EMCCrystal");
+	EMCCRYSTALOLD(TextureType.ITEM, "EMCCrystal"),
+	EMCCELL(TextureType.ITEM, "EMCCell");
 	
 	private enum TextureType {
 		ITEM, BLOCK, PART

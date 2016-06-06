@@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.items.ItemCommunicator;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
@@ -25,8 +26,9 @@ public enum ItemEnum {
 	EMCPATTERN("EMCPattern", new ItemPattern(), true),
 	EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()),
 	EMCCRYSTALOLD("EMCCrystal", new ItemEMCCrystalOld()),
-	EMCTOTITEM("EMCTotal", new ItemEMCTotal()),
-	EMCCELL("EMCCell", new ItemEMCCell());
+	EMCTOTITEM("EMCTotal", new ItemEMCTotal(), true),
+	EMCCELL("EMCCell", new ItemEMCCell()),
+	EMCCOMM("EMCComunicator", new ItemCommunicator(), true);
 
 	private final String internalName;
 	

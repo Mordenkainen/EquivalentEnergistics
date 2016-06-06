@@ -1,6 +1,7 @@
 // TODO: Hide this in NEI
 package com.mordenkainen.equivalentenergistics.items;
 
+//import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -24,7 +25,8 @@ public class ItemPattern extends Item implements ICraftingPatternItem {
 	@Override
 	public ICraftingPatternDetails getPatternForItem(final ItemStack stack, final World world) {
 		final ItemStack target = ItemStack.loadItemStackFromNBT(stack.getTagCompound());
-		return EMCCraftingPattern.get(target); 
+		//return EMCCraftingPattern.get(target);
+		return EMCCraftingPattern.get(target);
 	}
 	
 	public void setTargetItem(final ItemStack pattern, final ItemStack target) {

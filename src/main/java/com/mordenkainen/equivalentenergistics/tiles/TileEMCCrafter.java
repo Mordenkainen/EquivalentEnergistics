@@ -14,6 +14,7 @@ import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
+//import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 
 import appeng.api.AEApi;
@@ -154,14 +155,22 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	}
 	
 	private void injectCrystals() {
-		final float crystalEMC = Integration.emcHandler.getCrystalEMC();
+		if (currentEMC > 0) {
+			try {
+				gridProxy.getEMCStorage().injectEMC(currentEMC);
+			} catch (GridAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		/*final float crystalEMC = Integration.emcHandler.getCrystalEMC();
 		if(currentEMC >= crystalEMC) {
 			final int numCrystals = (int)Math.floor(currentEMC / crystalEMC);
 
 			if (gridProxy.injectItems(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), numCrystals), 0, mySource)) {
 				currentEMC -= crystalEMC * numCrystals;
 			}
-		}
+		}*/
 	}
 	
 	@Override
@@ -226,8 +235,10 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 				}
 			}
 		}
+		craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0)));
 		craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1)));
 		craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2)));
+		craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3)));
 	}
 
 	@Override

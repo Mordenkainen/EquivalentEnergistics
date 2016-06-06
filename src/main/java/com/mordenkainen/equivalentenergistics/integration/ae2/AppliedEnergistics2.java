@@ -30,16 +30,17 @@ public final class AppliedEnergistics2 {
 			final Class<?> cellInv = Class.forName("appeng.me.storage.CellInventory");
 			final Method blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
 			blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTAL.getItem()), OreDictionary.WILDCARD_VALUE);
-		} catch (IllegalArgumentException e) {
+			blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTALOLD.getItem()), OreDictionary.WILDCARD_VALUE);
+		} catch (final IllegalArgumentException e) {
 			logReflectionError(e);
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			logReflectionError(e);
-		} catch (ReflectiveOperationException e) {
+		} catch (final ReflectiveOperationException e) {
 			logReflectionError(e);
 		}
 	}
 	
-	private void logReflectionError(Exception e) {
+	private void logReflectionError(final Exception e) {
 		CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
 	}
 	

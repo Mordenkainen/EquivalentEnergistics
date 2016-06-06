@@ -19,12 +19,12 @@ import net.minecraft.item.ItemStack;
 
 public class ProjectE implements IEMCHandler {
 	
-	private float[] crystalValues = {0.0F, 0.0F, 0.0F};
+	private float[] crystalValues = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
 
 	@Override
 	public void relearnCrystals() {
-		crystalValues = new float[] {0.0F, 0.0F, 0.0F};
-		for (int i = 0; i <= 2; i++) {
+		crystalValues = new float[] {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
+		for (int i = 0; i < 5; i++) {
 			crystalValues[i] = getCrystalEMC(i);
 		}
 	}
@@ -81,11 +81,11 @@ public class ProjectE implements IEMCHandler {
 
 	@Override
 	public void setCrystalEMC(final float emc) {
-		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), (int)1);
-		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), (int)64);
-		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), (int)emc);
-		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), (int)emc * 576);
-		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), (int)(emc * Math.pow(576.0D, 2.0D)));
+		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), 1);
+		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), 64);
+		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), 4096);
+		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), 262144);
+		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), 16777216);
 		
 		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), (int)emc);
 		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), (int)emc * 576);

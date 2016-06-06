@@ -1,5 +1,11 @@
 package com.mordenkainen.equivalentenergistics.items;
 
+import java.util.List;
+
+import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
@@ -7,6 +13,10 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,16 +24,16 @@ import net.minecraft.util.IIcon;
 
 public class ItemEMCCell extends Item implements ICellHandler {
 
+	private static float[] capacities = {1000000, 4000000, 16000000, 64000000};
+	private static double[] drain = {0.1, 0.2, 0.4, 0.8};
+	
 	public ItemEMCCell() {
 		super();
 		
-		AEApi.instance().registries().cell().addCellHandler( this );
+		AEApi.instance().registries().cell().addCellHandler(this);
 
-		// Set max stack size to 1
-		this.setMaxStackSize( 1 );
-
-		// No damage
-		this.setMaxDamage( 0 );
+		setMaxStackSize(1);
+		setHasSubtypes(true);
 	}
 	
 	@Override
@@ -38,7 +48,7 @@ public class ItemEMCCell extends Item implements ICellHandler {
 			return null;
 		}
 		
-		return new HandlerEMCCell(stack, host);
+		return new HandlerEMCCell(stack, host, capacities[stack.getItemDamage()]);
 	}
 
 	@Override
@@ -63,15 +73,48 @@ public class ItemEMCCell extends Item implements ICellHandler {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public int getStatusForCell(final ItemStack is, final IMEInventory handler) {
-		// TODO return cell status
-		return 1;
+		if(handler instanceof HandlerEMCCell) {
+			return ((HandlerEMCCell)handler).getCellStatus();
+		}
+		return 0;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public double cellIdleDrain(final ItemStack is, final IMEInventory handler) {
-		//TODO Cell cost
-		return 0;
+		return drain[is.getItemDamage()];
 	}
 
+	@Override
+	public void registerIcons(final IIconRegister reg) {}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(final int damage) {
+        return TextureEnum.EMCCELL.getTexture();
+    }
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
+		for (int i = 0; i < 4; i++) {
+			final ItemStack stack  = new ItemStack(item, 1, i);
+			list.add(stack);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean param4) {
+		if(stack != null && stack.getItem() == ItemEnum.EMCCELL.getItem()) {
+			float curEMC = 0;
+			if(stack.hasTagCompound() && stack.stackTagCompound.hasKey("emc")) {
+				curEMC = stack.stackTagCompound.getFloat("emc");
+			}
+			
+			list.add("EMC: " + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(capacities[stack.getItemDamage()]));
+		}
+	}
+	
 }

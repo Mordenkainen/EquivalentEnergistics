@@ -2,12 +2,15 @@ package com.mordenkainen.equivalentenergistics.proxy;
 
 import com.mordenkainen.equivalentenergistics.exception.ServerUnmetDependencyException;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 
+import appeng.api.AEApi;
+import appeng.api.networking.IGridCacheRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
@@ -24,8 +27,8 @@ public class CommonProxy {
 		registerTileEntities();
     	registerItems();
     	initRenderers();
-    	//final IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
-    	//gcr.registerGridCache( EMCStorageCache.class, EMCStorageCache.class );   	
+    	final IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
+    	gcr.registerGridCache( EMCStorageGrid.class, EMCStorageGrid.class );   	
 	}
 	
 	public void postInit() {
