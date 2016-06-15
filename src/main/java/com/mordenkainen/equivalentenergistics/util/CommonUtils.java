@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 
-import appeng.api.config.PowerUnits;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;

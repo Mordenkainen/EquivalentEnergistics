@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public final class CraftingManager {
-	private static final String frame = "AMA";
+	private static final String FRAME = "AMA";
 	
 	private CraftingManager() {}
 
@@ -27,18 +27,18 @@ public final class CraftingManager {
 		}
 		
 		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), new Object[]{
-			frame,
+			FRAME,
 			"MCM",
-			frame,
+			FRAME,
 			'A', base,
 			'M', dust,
 			'C', new ItemStack(aeMaterial, 1, 44)
 		});
 		
 		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[]{
-			frame,
+			FRAME,
 			"MFM",
-			frame,
+			FRAME,
 			'A', base,
 			'M', dust,
 			'F', new ItemStack(aeMaterial, 1, 43)

@@ -1,10 +1,10 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cache;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.items.HandlerEMCCell;
+import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import appeng.api.AEApi;
@@ -20,15 +20,11 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.ICellContainer;
 import appeng.api.storage.ICellProvider;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHandler<IAEItemStack> {
 	
@@ -36,7 +32,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	private float maxEMC;
 	private final IGrid grid;
 	private boolean dirty = false;
-	private List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
+	private final List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
 	
 	public EMCStorageGrid(final IGrid _grid) {
 		grid = _grid;
@@ -54,20 +50,61 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	{
 		currentEMC = maxEMC = 0;
 		for(ICellProvider provider : driveBays) {
-			List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
-			for(IMEInventoryHandler cell : cells) {
-				IItemList<IAEItemStack> checkStack = AEApi.instance().storage().createItemList();
-				checkStack.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCOMM.getDamagedStack(0)));
-				IItemList<IAEItemStack> retStacks = cell.getAvailableItems(checkStack);
-				if(!retStacks.isEmpty() && retStacks.getFirstItem().getItem().equals(ItemEnum.EMCCOMM.getItem()) && retStacks.getFirstItem().getItemStack().hasTagCompound()) {
-					ItemStack stack = retStacks.getFirstItem().getItemStack();
-					currentEMC += stack.getTagCompound().getFloat("emc");
-					maxEMC += stack.getTagCompound().getFloat("max");
+			final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
+			for(final IMEInventoryHandler cell : cells) {
+				HandlerEMCCell handler = getHandler(cell);
+				if (handler != null) {
+					currentEMC += handler.getEMC();
+					maxEMC += handler.getCapacity();
 				}
 			}
 		}
 	}
 	
+	private HandlerEMCCell getHandler(IMEInventoryHandler<IAEItemStack> cell) {
+		if (cell == null) {
+			return null;
+		}
+		if (cell instanceof HandlerEMCCell) {
+			return (HandlerEMCCell) cell;
+		}
+		Class<?> clazz = cell.getClass();
+		if ("DriveWatcher".equals(clazz.getSimpleName())) {
+			Class<?> meHandler = clazz.getSuperclass();
+			Field intHandler;
+			try {
+				intHandler = meHandler.getDeclaredField("internal");
+				intHandler.setAccessible(true);
+				IMEInventoryHandler<IAEItemStack> realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(cell);
+				if (realHandler instanceof HandlerEMCCell) {
+					return (HandlerEMCCell) realHandler;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if ("ChestMonitorHandler".equals(clazz.getSimpleName())) {
+			Class<?> meMon = clazz.getSuperclass();
+			Field extHandler;
+			Field intHandler;
+			try {
+				extHandler = meMon.getDeclaredField("internalHandler");
+				extHandler.setAccessible(true);
+				IMEInventoryHandler<IAEItemStack> extHandlerVal = (IMEInventoryHandler<IAEItemStack>) extHandler.get(cell);
+				intHandler = extHandlerVal.getClass().getDeclaredField("internal");
+				intHandler.setAccessible(true);
+				IMEInventoryHandler<IAEItemStack> realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(extHandlerVal);
+				if (realHandler instanceof HandlerEMCCell) {
+					return (HandlerEMCCell) realHandler;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public void onUpdateTick() {
 		/*if(dirty) {
@@ -80,20 +117,17 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		System.out.println("MaxEMC: " + maxEMC);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	@Override
 	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
 		if(machine instanceof ICellProvider) {
 			driveBays.remove((ICellProvider)machine);
-			List<IMEInventoryHandler> cells = ((ICellProvider)machine).getCellArray(StorageChannel.ITEMS);
-			for(IMEInventoryHandler cell : cells) {
-				IItemList<IAEItemStack> checkStack = AEApi.instance().storage().createItemList();
-				checkStack.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCOMM.getDamagedStack(0)));
-				IItemList<IAEItemStack> retStacks = cell.getAvailableItems(checkStack);
-				if(!retStacks.isEmpty() && retStacks.getFirstItem().getItem().equals(ItemEnum.EMCCOMM.getItem()) && retStacks.getFirstItem().getItemStack().hasTagCompound()) {
-					ItemStack stack = retStacks.getFirstItem().getItemStack();
-					currentEMC -= stack.getTagCompound().getFloat("emc");
-					maxEMC -= stack.getTagCompound().getFloat("max");
+			final List<IMEInventoryHandler> cells = ((ICellProvider)machine).getCellArray(StorageChannel.ITEMS);
+			for(final IMEInventoryHandler cell : cells) {
+				HandlerEMCCell handler = getHandler(cell);
+				if (handler != null) {
+					currentEMC -= handler.getEMC();
+					maxEMC -= handler.getCapacity();
 				}
 			}
 		}
@@ -156,7 +190,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> stacks) {
+	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> stacks) {
 		/*if(currentEMC > 0) {
 			float remainingEMC = currentEMC;
 			for(int i = 4; i >= 0; i--) {
@@ -232,25 +266,17 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		((IStorageGrid)this.grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, stacks, new BaseActionSource());
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public float injectEMC(float emc) {
+	@SuppressWarnings({ "rawtypes", "unchecked"})
+	public float injectEMC(final float emc) {
 		float toAdd = emc;
-		for(ICellProvider provider : driveBays) {
+		for(final ICellProvider provider : driveBays) {
 			List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
 			for(IMEInventoryHandler cell : cells) {
-				IItemList<IAEItemStack> checkStack = AEApi.instance().storage().createItemList();
-				ItemStack injectItem = ItemEnum.EMCCOMM.getDamagedStack(0);
-				injectItem.stackTagCompound = new NBTTagCompound();
-				injectItem.getTagCompound().setFloat("change", toAdd);
-				checkStack.add(AEApi.instance().storage().createItemStack(injectItem));
-				IItemList<IAEItemStack> retStacks = cell.getAvailableItems(checkStack);
-				if(!retStacks.isEmpty() && retStacks.getFirstItem().getItem().equals(ItemEnum.EMCCOMM.getItem())) {
-					ItemStack comStack = retStacks.getFirstItem().getItemStack();
-					if(comStack.hasTagCompound() && comStack.stackTagCompound.hasKey("adjust")) {
-						toAdd -= comStack.stackTagCompound.getFloat("adjust");
-						if(toAdd <= 0) {
-							break;
-						}
+				HandlerEMCCell handler = getHandler(cell);
+				if (handler != null && handler.getAvail() > 0) {
+					toAdd -= handler.adjustEMC(toAdd);
+					if(toAdd <= 0) {
+						break;
 					}
 				}
 			}
@@ -260,14 +286,6 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		}
 		
 		currentEMC += emc - toAdd;
-		
-		
-		
-		
-		
-		//dirty = true;
-		
-		
 		
 		return emc - toAdd;
 	}

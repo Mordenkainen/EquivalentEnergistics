@@ -12,6 +12,11 @@ item.equivalentenergistics:EMCCrystalOld.1.name=Dense EMC Crystal (Deprecated)
 item.equivalentenergistics:EMCCrystalOld.2.name=Super Dense EMC Crystal (Deprecated)
 item.equivalentenergistics:EMCBook.name=Alchemical Tome
 item.equivalentenergistics:EMCPattern.name=EMC Pattern
+item.equivalentenergistics:EMCCell.0.name=EMC Storage Cell Tier 0
+item.equivalentenergistics:EMCCell.1.name=EMC Storage Cell Tier 1
+item.equivalentenergistics:EMCCell.2.name=EMC Storage Cell Tier 2
+item.equivalentenergistics:EMCCell.3.name=EMC Storage Cell Tier 3
+
 
 # Block Names
 tile.equivalentenergistics:EMCCondenser.name=EMC Condenser

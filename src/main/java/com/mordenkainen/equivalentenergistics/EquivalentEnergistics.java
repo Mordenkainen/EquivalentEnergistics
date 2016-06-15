@@ -43,7 +43,7 @@ public class EquivalentEnergistics {
 	
     @EventHandler
     public void init(final FMLInitializationEvent event) {
-    	if(!Integration.Mods.PROJECTE.isEnabled() && !Integration.Mods.EE3.isEnabled()) {
+    	if (!Integration.Mods.PROJECTE.isEnabled() && !Integration.Mods.EE3.isEnabled()) {
     		proxy.unmetDependency();
     	}
     	proxy.init();
