@@ -24,7 +24,7 @@ public final class CommonUtils {
 		final String[] preFixes = {"k", "M", "B", "T", "P",	"T", "P", "E", "Z", "Y"};
 		String level = "";
 		int offset = 0;
-		while(displayValue > 1000 && offset < preFixes.length) {
+		while (displayValue > 1000 && offset < preFixes.length) {
 			displayValue /= 1000;
 			level = preFixes[offset++];
 		}
@@ -35,11 +35,11 @@ public final class CommonUtils {
 	
 	public static boolean destroyAndDrop(final World world, final int x, final int y, final int z) {
 		final Block block = world.getBlock(x, y, z);
-		if(block != null && block.getBlockHardness(world, x, y, z) >= 0) {
-			if(!world.isRemote){
+		if (block != null && block.getBlockHardness(world, x, y, z) >= 0) {
+			if (!world.isRemote){
 				block.breakBlock(world, x, y, z, block, world.getBlockMetadata(x, y, z));
 				final ArrayList<ItemStack> drops = block.getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-				for(final ItemStack stack : drops) {
+				for (final ItemStack stack : drops) {
 					spawnEntItem(world, x, y, z, stack);
 				}
 			}

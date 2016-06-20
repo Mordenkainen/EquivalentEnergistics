@@ -20,8 +20,7 @@ public class ClientUnmetDependencyException extends CustomModLoadingErrorDisplay
 
 	@Override
 	public void drawScreen(final GuiErrorScreen errorScreen, final FontRenderer fontRenderer, final int mouseRelX, final int mouseRelY, final float tickTime) {
-		for (int i = 0; i < errorMessage.length; i++)
-        {
+		for (int i = 0; i < errorMessage.length; i++) {
             errorScreen.drawCenteredString(fontRenderer, errorMessage[i], errorScreen.width / 2, (errorScreen.height - fontRenderer.FONT_HEIGHT * errorMessage.length) / 2
                     + fontRenderer.FONT_HEIGHT + 10 * i, 0xffaabbcc);
         }

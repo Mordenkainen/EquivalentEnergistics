@@ -14,10 +14,10 @@ public class InternalInventory implements IInventory {
 	public String customName;
 	private final int stackLimit;
 	
-	public InternalInventory(final String customName, final int size, final int stackLimit)	{
-		this.slots = new ItemStack[size];
-		this.customName = customName;
-		this.stackLimit = stackLimit;
+	public InternalInventory(final String _customName, final int size, final int _stackLimit) {
+		slots = new ItemStack[size];
+		customName = _customName;
+		stackLimit = _stackLimit;
 	}
 	
 	@Override
@@ -34,14 +34,14 @@ public class InternalInventory implements IInventory {
 	public ItemStack decrStackSize(final int slotId, final int amount) {
 		final ItemStack slotStack = slots[slotId];
 
-		if(slotStack == null) {
+		if (slotStack == null) {
 			return null;
 		}
 
 		final int decAmount = Math.min(amount, slotStack.stackSize);
 		final int remAmount = slotStack.stackSize - decAmount;
 
-		if(remAmount > 0) {
+		if (remAmount > 0) {
 			slots[slotId].stackSize = remAmount;
 		} else {
 			slots[slotId] = null;
@@ -49,7 +49,7 @@ public class InternalInventory implements IInventory {
 
 		ItemStack resultStack = null;
 		
-		if(decAmount > 0) {
+		if (decAmount > 0) {
 			resultStack = slotStack.copy();
 			resultStack.stackSize = decAmount;
 		}
@@ -66,7 +66,7 @@ public class InternalInventory implements IInventory {
 
 	@Override
 	public void setInventorySlotContents(final int slotId, final ItemStack itemStack) {
-		if(itemStack != null && itemStack.stackSize > getInventoryStackLimit()) {
+		if (itemStack != null && itemStack.stackSize > getInventoryStackLimit()) {
 			itemStack.stackSize = getInventoryStackLimit();
 		}
 
@@ -110,36 +110,36 @@ public class InternalInventory implements IInventory {
 	}
 
 	public final void loadFromNBT(final NBTTagCompound data, final String tagName) {
-		if(data == null) {
+		if (data == null) {
 			return;
 		}
 
-		if(!data.hasKey(tagName)) {
+		if (!data.hasKey(tagName)) {
 			return;
 		}
 
 		final NBTTagList invList = data.getTagList(tagName, (byte)10);
 
-		for(int index = 0; index < invList.tagCount(); index++) {
+		for (int index = 0; index < invList.tagCount(); index++) {
 			final NBTTagCompound nbtCompound = invList.getCompoundTagAt(index);
 
 			final int slotIndex = nbtCompound.getByte(InternalInventory.NBT_KEY_SLOT) & 0xFF;
 
-			if(slotIndex >= 0 && slotIndex < this.slots.length) {
+			if (slotIndex >= 0 && slotIndex < this.slots.length) {
 				this.slots[slotIndex] = ItemStack.loadItemStackFromNBT(nbtCompound);
 			}
 		}
 	}
 	
 	public final void saveToNBT(final NBTTagCompound data, final String tagName) {
-		if(data == null) {
+		if (data == null) {
 			return;
 		}
 
 		final NBTTagList invList = new NBTTagList();
 
-		for(int slotIndex = 0; slotIndex < this.slots.length; slotIndex++) {
-			if(this.slots[slotIndex] != null) {
+		for (int slotIndex = 0; slotIndex < this.slots.length; slotIndex++) {
+			if (this.slots[slotIndex] != null) {
 				final NBTTagCompound nbtCompound = new NBTTagCompound();
 
 				nbtCompound.setByte(InternalInventory.NBT_KEY_SLOT, (byte)slotIndex);
@@ -150,7 +150,7 @@ public class InternalInventory implements IInventory {
 			}
 		}
 
-		if(invList.tagCount() > 0) {
+		if (invList.tagCount() > 0) {
 			data.setTag(tagName, invList);
 		}
 	}

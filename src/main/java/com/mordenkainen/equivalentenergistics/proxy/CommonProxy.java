@@ -1,16 +1,14 @@
 package com.mordenkainen.equivalentenergistics.proxy;
 
+import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.exception.ServerUnmetDependencyException;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 
-import appeng.api.AEApi;
-import appeng.api.networking.IGridCacheRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
@@ -23,12 +21,14 @@ public class CommonProxy {
 	}
 	
 	public void init() {
+		if (!Integration.Mods.PROJECTE.isEnabled() && !Integration.Mods.EE3.isEnabled()) {
+    		unmetDependency();
+    	}
 		Integration.init();
 		registerTileEntities();
     	registerItems();
     	initRenderers();
-    	final IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
-    	gcr.registerGridCache( EMCStorageGrid.class, EMCStorageGrid.class );   	
+    	CraftingManager.initRecipes();
 	}
 	
 	public void postInit() {
@@ -45,7 +45,7 @@ public class CommonProxy {
 	
 	public void registerItems() {
 		for (final ItemEnum current : ItemEnum.values()) {
-			if(current.isEnabled()) {
+			if (current.isEnabled()) {
 				GameRegistry.registerItem(current.getItem(), current.getInternalName());
 			}
 		}
@@ -53,7 +53,7 @@ public class CommonProxy {
 	
 	public void registerBlocks() {
 		for (final BlockEnum current : BlockEnum.values()) {
-			if(current.isEnabled()) {
+			if (current.isEnabled()) {
 				GameRegistry.registerBlock(current.getBlock(), current.getItemBlockClass(), current.getInternalName());
 			}
 		}

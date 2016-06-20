@@ -26,7 +26,7 @@ public class CompItemStack extends Equivalence<ItemStack> {
 			return false;
 		}
 		
-		if(!stack1.hasTagCompound()) {
+		if (!stack1.hasTagCompound()) {
 			return !stack2.hasTagCompound();
 		}
 		

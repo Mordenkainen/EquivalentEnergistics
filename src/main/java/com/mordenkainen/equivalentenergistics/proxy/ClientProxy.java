@@ -9,7 +9,9 @@ import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import net.minecraft.client.renderer.texture.TextureMap;
+
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 

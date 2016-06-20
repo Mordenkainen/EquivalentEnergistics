@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileNetworkBase;
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
@@ -14,8 +15,6 @@ import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
-//import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
-import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -157,7 +156,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	private void injectCrystals() {
 		if (currentEMC > 0) {
 			try {
-				gridProxy.getEMCStorage().injectEMC(currentEMC);
+				gridProxy.getEMCStorage().injectEMC(currentEMC, Actionable.MODULATE);
 			} catch (GridAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

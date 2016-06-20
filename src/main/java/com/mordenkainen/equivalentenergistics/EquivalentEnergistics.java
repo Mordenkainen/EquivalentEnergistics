@@ -15,8 +15,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
-import com.mordenkainen.equivalentenergistics.crafting.CraftingManager;
-import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
@@ -43,11 +41,7 @@ public class EquivalentEnergistics {
 	
     @EventHandler
     public void init(final FMLInitializationEvent event) {
-    	if (!Integration.Mods.PROJECTE.isEnabled() && !Integration.Mods.EE3.isEnabled()) {
-    		proxy.unmetDependency();
-    	}
     	proxy.init();
-    	CraftingManager.initRecipes();
     }
     
     @EventHandler

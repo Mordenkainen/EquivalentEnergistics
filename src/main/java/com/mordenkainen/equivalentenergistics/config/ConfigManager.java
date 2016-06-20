@@ -34,16 +34,16 @@ public final class ConfigManager {
         
         crystalEMCValue = (float)config.get("General", "CrystalEMC", 256.0).getDouble(256.0);
         
-        if(Integration.Mods.EE3.isEnabled()) {
+        if (Integration.Mods.EE3.isEnabled()) {
     		useEE3 = true;
     	}
         useEE3 = config.get("General", "UseEE3", useEE3).getBoolean(useEE3);
         
+        debug = config.get("General", "Debug", debug).getBoolean(false);
+        
         if (config.hasChanged()) {
        		config.save();
        	}
-        
-        debug = config.get("General", "Debug", debug).getBoolean(false);
     }
     
 }

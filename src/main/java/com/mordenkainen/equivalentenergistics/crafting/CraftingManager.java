@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public final class CraftingManager {
+	
 	private static final String FRAME = "AMA";
 	
 	private CraftingManager() {}

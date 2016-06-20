@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.util;
+package com.mordenkainen.equivalentenergistics.integration.ae2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import com.google.common.base.Equivalence.Wrapper;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.util.CompItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;

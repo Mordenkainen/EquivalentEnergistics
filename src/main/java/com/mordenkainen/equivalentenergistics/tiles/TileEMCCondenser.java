@@ -81,7 +81,7 @@ public class TileEMCCondenser extends TileNetworkInv implements IWailaNBTProvide
 		try	{
 			if(currentEMC > 0) {
 				final float toInject = Math.min(currentEMC, BlockEMCCondenser.crystalsPerTick * 256);
-				currentEMC -= gridProxy.getEMCStorage().injectEMC(toInject);
+				currentEMC -= gridProxy.getEMCStorage().injectEMC(toInject, Actionable.MODULATE);
 			}
 			
 		} catch(GridAccessException e) {

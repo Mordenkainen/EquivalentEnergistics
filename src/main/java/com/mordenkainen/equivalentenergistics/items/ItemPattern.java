@@ -1,14 +1,14 @@
 // TODO: Hide this in NEI
 package com.mordenkainen.equivalentenergistics.items;
 
-//import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
-import com.mordenkainen.equivalentenergistics.util.EMCCraftingPattern;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
+
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 
