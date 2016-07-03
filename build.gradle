@@ -21,6 +21,9 @@ version = "${mod_version}"
 group= "com.mordenkainen.equivalentenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "EquivalentEnergistics"
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = ".minecraft"

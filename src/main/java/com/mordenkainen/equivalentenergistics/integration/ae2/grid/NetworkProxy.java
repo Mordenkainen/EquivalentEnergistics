@@ -21,6 +21,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.ITickManager;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -315,6 +316,22 @@ public class NetworkProxy implements IGridProxy {
 		}
 		
 		return energyGrid;
+	}
+	
+	@Override
+	public ITickManager getTick() throws GridAccessException {
+		final IGrid grid = getGrid();
+		if(grid == null) {
+			throw new GridAccessException();
+		}
+		
+		final ITickManager tickGrid = grid.getCache(ITickManager.class);
+		
+		if(tickGrid == null) {
+			throw new GridAccessException();
+		}
+		
+		return tickGrid;
 	}
 	
 	@Override

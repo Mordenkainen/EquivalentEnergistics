@@ -2,6 +2,7 @@ package com.mordenkainen.equivalentenergistics.registries;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
@@ -110,7 +111,7 @@ public enum ItemEnum {
 	}
 	
 	public void loadConfig(final Configuration config) {
-		if(configKey != null) {
+		if (configKey != null) {
 			enabled = config.get("Items", configKey, true).getBoolean(true);
 		}
 		if (item instanceof IConfigurable) {

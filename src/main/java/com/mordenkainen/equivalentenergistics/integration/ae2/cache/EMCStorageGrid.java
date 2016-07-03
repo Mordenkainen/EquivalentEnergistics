@@ -114,9 +114,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 			final int damage = stack.getItemDamage();
 			final int toAdd = (int) Math.min(stack.getStackSize(), (maxEMC - currentEMC) / Integration.emcHandler.getCrystalEMC(damage));
 			if (toAdd > 0) {
-				if (mode == Actionable.MODULATE) {
-					injectEMC(toAdd * Integration.emcHandler.getCrystalEMC(damage), Actionable.MODULATE);
-				}
+				injectEMC(toAdd * Integration.emcHandler.getCrystalEMC(damage), mode);
 				return toAdd == stack.getStackSize() ? null : AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(damage)).setStackSize(stack.getStackSize() - toAdd);
 			}
 		}
@@ -130,9 +128,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 			final int damage = request.getItemDamage();
 			final int toRemove = (int) Math.min(request.getStackSize(), currentEMC / Integration.emcHandler.getCrystalEMC(damage));
 			if (toRemove > 0) {
-				if (mode == Actionable.MODULATE) {
-					extractEMC(toRemove * Integration.emcHandler.getCrystalEMC(damage), mode);
-				}
+				extractEMC(toRemove * Integration.emcHandler.getCrystalEMC(damage), mode);
 				return AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(damage)).setStackSize(toRemove);
 			}
 		}

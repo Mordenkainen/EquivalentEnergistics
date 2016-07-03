@@ -122,5 +122,20 @@ public class EquivExchange3 implements IEMCHandler {
 	public void onEnergyValueChange(final EnergyValueEvent event)	{
 		TileEMCCrafter.postEnergyValueChange();
 	}
+
+	@Override
+	public boolean isEMCStorage(final ItemStack stack) {
+		return false;
+	}
+
+	@Override
+	public float getStoredEMC(final ItemStack stack) {
+		return 0;
+	}
+
+	@Override
+	public float extractEMC(final ItemStack stack, final float toStore) {
+		return 0;
+	}
 	
 }

@@ -17,6 +17,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
@@ -165,6 +166,11 @@ public class NullProxy implements IGridProxy {
 
 	@Override
 	public IEnergyGrid getEnergy() throws GridAccessException {
+		throw new GridAccessException();
+	}
+	
+	@Override
+	public ITickManager getTick() throws GridAccessException {
 		throw new GridAccessException();
 	}
 	

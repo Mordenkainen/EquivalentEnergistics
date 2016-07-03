@@ -18,6 +18,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
@@ -92,6 +93,8 @@ public interface IGridProxy extends IGridBlock {
 	ICraftingGrid getCrafting() throws GridAccessException;
 
 	IEnergyGrid getEnergy() throws GridAccessException;
+	
+	ITickManager getTick() throws GridAccessException;
 	
 	EMCStorageGrid getEMCStorage() throws GridAccessException;
 

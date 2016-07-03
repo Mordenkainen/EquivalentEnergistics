@@ -1,4 +1,6 @@
-package com.mordenkainen.equivalentenergistics.util;
+package com.mordenkainen.equivalentenergistics.util.inventory;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -13,11 +15,17 @@ public class InternalInventory implements IInventory {
 	public ItemStack[] slots;
 	public String customName;
 	private final int stackLimit;
+	private final IInvChangeNotifier te;
 	
-	public InternalInventory(final String _customName, final int size, final int _stackLimit) {
+	public InternalInventory(final String _customName, final int size, final int _stackLimit, final IInvChangeNotifier _te) {
 		slots = new ItemStack[size];
 		customName = _customName;
 		stackLimit = _stackLimit;
+		te = _te;
+	}
+	
+	public InternalInventory(final String _customName, final int size, final int _stackLimit) {
+		this(_customName, size, _stackLimit, null);
 	}
 	
 	@Override
@@ -91,7 +99,11 @@ public class InternalInventory implements IInventory {
 	}
 
 	@Override
-	public void markDirty() {}
+	public void markDirty() {
+		if (te != null && !FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+			te.onChangeInventory();
+		}
+	}
 
 	@Override
 	public boolean isUseableByPlayer(final EntityPlayer player) {
@@ -153,6 +165,15 @@ public class InternalInventory implements IInventory {
 		if (invList.tagCount() > 0) {
 			data.setTag(tagName, invList);
 		}
+	}
+	
+	public boolean isEmpty() {
+		for (int x = 0; x < getSizeInventory(); x++) {
+			if (getStackInSlot(x) != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

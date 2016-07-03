@@ -14,7 +14,7 @@ import java.util.UUID;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
-
+import moze_intel.projecte.api.item.IItemEmc;
 import net.minecraft.item.ItemStack;
 
 public class ProjectE implements IEMCHandler {
@@ -117,6 +117,21 @@ public class ProjectE implements IEMCHandler {
 	@SubscribeEvent
 	public void onEnergyValueChange(final EMCRemapEvent event) {
 		TileEMCCrafter.postEnergyValueChange();
+	}
+
+	@Override
+	public boolean isEMCStorage(final ItemStack stack) {
+		return stack.getItem() instanceof IItemEmc;
+	}
+
+	@Override
+	public float getStoredEMC(final ItemStack stack) {
+		return (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+	}
+
+	@Override
+	public float extractEMC(final ItemStack stack, final float toStore) {
+		return (float) ((IItemEmc) stack.getItem()).extractEmc(stack, toStore);
 	}
 	
 }

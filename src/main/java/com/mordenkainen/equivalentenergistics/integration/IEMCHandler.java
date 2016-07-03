@@ -31,4 +31,10 @@ public interface IEMCHandler {
 
 	float getSingleEnergyValue(ItemStack stack);
 	
+	boolean isEMCStorage(ItemStack stack);
+
+	float getStoredEMC(ItemStack stack);
+
+	float extractEMC(ItemStack stack, float toStore);
+	
 }

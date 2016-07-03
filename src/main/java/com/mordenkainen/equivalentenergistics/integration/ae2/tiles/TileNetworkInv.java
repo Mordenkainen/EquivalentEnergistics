@@ -1,75 +1,27 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.tiles;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import com.mordenkainen.equivalentenergistics.util.inventory.IInventoryInt;
 
-public abstract class TileNetworkInv extends TileNetworkBase implements IInventory {
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+public abstract class TileNetworkInv extends TileNetworkBase implements IInventoryInt {
 
 	public TileNetworkInv(final ItemStack repItem) {
 		super(repItem);
 	}
-
-	public abstract IInventory getInventory();
 	
 	@Override
-	public int getSizeInventory() {
-		return getInventory().getSizeInventory();
+	public void readFromNBT(final NBTTagCompound data) {
+		super.readFromNBT(data);
+		getInventory().loadFromNBT(data, INVSLOTS);
+		IInventoryInt.super.readFromNBT(data);
 	}
-
+	
 	@Override
-	public ItemStack getStackInSlot(final int slot) {
-		return getInventory().getStackInSlot(slot);
-	}
-
-	@Override
-	public ItemStack decrStackSize(final int slot, final int amount) {
-		return getInventory().decrStackSize(slot, amount);
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(final int slot) {
-		return getInventory().getStackInSlotOnClosing(slot);
-	}
-
-	@Override
-	public void setInventorySlotContents(final int slot, final ItemStack stack) {
-		getInventory().setInventorySlotContents(slot, stack);
-	}
-
-	@Override
-	public String getInventoryName() {
-		return getInventory().getInventoryName();
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() {
-		return getInventory().hasCustomInventoryName();
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return getInventory().getInventoryStackLimit();
-	}
-
-	@Override
-	public boolean isUseableByPlayer(final EntityPlayer player) {
-		return getInventory().isUseableByPlayer(player);
-	}
-
-	@Override
-	public void openInventory() {
-		getInventory().openInventory();
-	}
-
-	@Override
-	public void closeInventory() {
-		getInventory().closeInventory();
-	}
-
-	@Override
-	public boolean isItemValidForSlot(final int slot, final ItemStack stack) {
-		return getInventory().isItemValidForSlot(slot, stack);
+	public void writeToNBT(final NBTTagCompound data) {
+		super.writeToNBT(data);
+		IInventoryInt.super.writeToNBT(data);
 	}
 	
 }

@@ -31,6 +31,7 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 		super(Material.rock);
 		setHardness(1.5f);
 		setStepSound(Block.soundTypeStone);
+		setLightOpacity(1);
 	}
 
 	@Override

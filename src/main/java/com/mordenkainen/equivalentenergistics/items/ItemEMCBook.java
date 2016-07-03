@@ -19,6 +19,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class ItemEMCBook extends Item {
+	
 	private static final String OWNER_TAG = "Owner";
 	private static final String UUID_TAG = "OwnerUUID";
 	
@@ -78,4 +79,5 @@ public class ItemEMCBook extends Item {
 			list.add("No owner set.");
 		}
 	}
+	
 }
