@@ -86,7 +86,7 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 			}
 			
 			ItemStack resultStack;
-			if (stack.getItem() == ItemEnum.EMCCRYSTAL.getItem() || stack.getItem() == ItemEnum.EMCCRYSTAL.getItem()) {
+			if (isCrystal(stack)) {
 				resultStack = convertItemsToEMC(stack, toProcess);
 			} else if (isEMCStorage(stack)) {
 				resultStack = processStorage(stack);
@@ -96,11 +96,11 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 				resultStack = ejectStack(stack);
 			}
 			
-			if (resultStack == null || resultStack.stackSize == 0) {
+			if (resultStack == null) {
 				didWork = true;
 				getInventory().setInventorySlotContents(slot, null);
 				toProcess -= stack.stackSize;
-			} else if (!(ItemStack.areItemStacksEqual(resultStack, stack) && ItemStack.areItemStackTagsEqual(resultStack, stack))){
+			} else if (!stackSame(stack, resultStack)){
 				didWork = true;
 				getInventory().setInventorySlotContents(slot, resultStack);
 				toProcess -= stack.stackSize - resultStack.stackSize;
@@ -111,6 +111,14 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 			}
 		}
 		return didWork;
+	}
+
+	private boolean stackSame(final ItemStack stack1, final ItemStack stack2) {
+		return ItemStack.areItemStacksEqual(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+	}
+
+	private boolean isCrystal(final ItemStack stack) {
+		return stack.getItem() == ItemEnum.EMCCRYSTAL.getItem() || stack.getItem() == ItemEnum.EMCCRYSTALOLD.getItem();
 	}
 
 	protected ItemStack convertItemsToEMC(final ItemStack stack, final int maxItems) {

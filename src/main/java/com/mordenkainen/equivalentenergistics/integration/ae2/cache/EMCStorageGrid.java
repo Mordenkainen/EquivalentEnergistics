@@ -266,12 +266,12 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		IMEInventoryHandler<IAEItemStack> realHandler = null;
 		try {
 			if ("DriveWatcher".equals(cell.getClass().getSimpleName())) {
-				realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(cell);
+					realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(cell);
 			} else if ("ChestMonitorHandler".equals(cell.getClass().getSimpleName())) {
 				final IMEInventoryHandler<IAEItemStack> monHandler = (IMEInventoryHandler<IAEItemStack>) extHandler.get(cell);
 				realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(monHandler);
 			}
-		} catch (Exception e) {
+		} catch (IllegalArgumentException | IllegalAccessException e) {
 			CommonUtils.debugLog("Failed to reflect into AE", e);
 		}
 		
@@ -283,17 +283,19 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	}
 	
 	private static boolean reflectFields() {
+			Class<?> clazz;
 		try {
-			Class<?> clazz = Class.forName("appeng.me.storage.MEInventoryHandler");
+			clazz = Class.forName("appeng.me.storage.MEInventoryHandler");
 			intHandler = clazz.getDeclaredField("internal");
 			intHandler.setAccessible(true);
 			clazz = Class.forName("appeng.me.storage.MEMonitorHandler");
 			extHandler = clazz.getDeclaredField("internalHandler");
 			extHandler.setAccessible(true);
-		} catch (Exception e) {
+		} catch (ClassNotFoundException | NoSuchFieldException | SecurityException e) {
 			CommonUtils.debugLog("Failed to reflect into AE", e);
 			return false;
 		}
+
 		return true;
 	}
 	
