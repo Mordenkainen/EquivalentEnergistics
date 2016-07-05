@@ -51,7 +51,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		((IStorageGrid) grid.getCache(IStorageGrid.class)).registerCellProvider(this);
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
 	@MENetworkEventSubscribe
 	public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
 		currentEMC = maxEMC = 0;
@@ -75,7 +75,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		}
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" }) // NOPMD
 	@Override
 	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
 		if (machine instanceof ICellProvider) {
@@ -174,7 +174,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		return pass == 1;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("rawtypes") // NOPMD
 	@Override
 	public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
 		final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
@@ -214,7 +214,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		((IStorageGrid) grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
 	public float handleCells(final float emc) {
 		float toAdjust = emc;
 		for (final ICellProvider provider : driveBays) {
@@ -253,7 +253,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		return toAdd;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") // NOPMD
 	private HandlerEMCCell getHandler(final IMEInventoryHandler<IAEItemStack> cell) {
 		if (cell instanceof HandlerEMCCell) {
 			return (HandlerEMCCell) cell;

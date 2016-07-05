@@ -27,7 +27,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
-	
+		
 	private static final String GROUP = "Condenser";
 	private static final double OFFSET = 0.0625D;
 	
@@ -115,27 +115,25 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
     			d1 = (double) (x + 1) + OFFSET;
     			break;
     		case WEST:
-    			d1 = (double) (x) - OFFSET;
+    			d1 = (double) x - OFFSET;
     			break;
             case UP:
     			d2 = (double) (y + 1) + OFFSET;
     			break;
     		case DOWN:
-    			d2 = (double) (y) - OFFSET;
+    			d2 = (double) y - OFFSET;
     			break;
     		case SOUTH:
     			d3 = (double) (z + 1) + OFFSET;
     			break;
     		case NORTH:
-    			d3 = (double) (z) - OFFSET;
+    			d3 = (double) z - OFFSET;
     			break;
 			default:
 				break;
     	}
     	
-    	if (d1 < (double) x || d1 > (double) (x + 1) || d2 < (double) y || d2 > (double) (y + 1) || d3 < (double) z || d3 > (double) (z + 1)) {
-        	world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
-        }
+    	world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
 	}
 
 	@Override

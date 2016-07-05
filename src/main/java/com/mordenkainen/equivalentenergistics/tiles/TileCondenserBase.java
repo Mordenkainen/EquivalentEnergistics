@@ -190,7 +190,7 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 
 	protected abstract int getMaxItemsForPower(ItemStack stack);
 	
-	protected static enum CondenserState {
+	protected enum CondenserState {
 		Idle,
 		Active,
 		Blocked;
