@@ -8,8 +8,9 @@ import com.pahimar.ee3.api.event.EnergyValueEvent;
 import com.pahimar.ee3.api.event.PlayerKnowledgeEvent;
 import com.pahimar.ee3.api.exchange.EnergyValue;
 import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
-import com.pahimar.ee3.util.ItemHelper;
+import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy.Phase;
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
+import com.pahimar.ee3.util.ItemStackUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -54,7 +55,9 @@ public class EquivExchange3 implements IEMCHandler {
 	@Override
 	public float getCrystalEMC(final int tier) {
 		if (this.crystalValues[tier] == 0.0F) {
-			crystalValues[tier] = EnergyValueRegistryProxy.getEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, tier)).getValue();
+			ItemStack stack = new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, tier);
+			EnergyValue val = EnergyValueRegistryProxy.getEnergyValue(stack);
+			crystalValues[tier] = val.getValue();
 		}
 		return crystalValues[tier];
 	}
@@ -63,7 +66,7 @@ public class EquivExchange3 implements IEMCHandler {
 	public List<ItemStack> getTransmutations(final TileEMCCrafter tile) {
 		List<ItemStack> transmutations;
 
-		transmutations = new ArrayList<ItemStack>(TransmutationKnowledgeRegistryProxy.getPlayerKnownTransmutations(ItemHelper.getOwnerUUID(tile.getCurrentTome())));
+		transmutations = new ArrayList<ItemStack>(PlayerKnowledgeRegistryProxy.getKnownItemStacks(ItemStackUtils.getOwnerName(tile.getCurrentTome())));
 		
 		final Iterator<ItemStack> iter = transmutations.iterator();
 		while (iter.hasNext()) {
@@ -78,32 +81,26 @@ public class EquivExchange3 implements IEMCHandler {
 	@Override
 	public boolean isValidTome(final ItemStack itemStack)	{
 		if (tomeItem == null) { 
-			tomeItem = GameRegistry.findItem("EE3", "alchemicalTome");
+			tomeItem = GameRegistry.findItem("EE3", "alchenomicon");
 		}
-		return itemStack != null && itemStack.getItem() == tomeItem && ItemHelper.hasOwnerUUID(itemStack);
+		return itemStack != null && itemStack.getItem() == tomeItem && ItemStackUtils.getOwnerUUID(itemStack) != null;
 	}
 
 	@Override
-	public void setCrystalEMC(final float emc) {
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), 1);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), 64);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), 4096);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), 262144);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), 16777216);
-		
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), emc);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), emc * 576.0F);
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 2), (float)(emc * Math.pow(576.0D, 2.0D)));
+	public void setCrystalEMC(final float emc) {		
+		EnergyValueRegistryProxy.setEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), emc, Phase.POST_CALCULATION);
+		EnergyValueRegistryProxy.setEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), emc * 576.0F, Phase.POST_CALCULATION);
+		EnergyValueRegistryProxy.setEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 2), (float)(emc * Math.pow(576.0D, 2.0D)), Phase.POST_CALCULATION);
 	}
 
 	@Override
 	public UUID getTomeUUID(final ItemStack currentTome) {
-		return ItemHelper.getOwnerUUID(currentTome);
+		return ItemStackUtils.getOwnerUUID(currentTome);
 	}
 
 	@Override
 	public String getTomeOwner(final ItemStack currentTome) {
-		return ItemHelper.getOwnerName(currentTome);
+		return ItemStackUtils.getOwnerName(currentTome);
 	}
 
 	@Override

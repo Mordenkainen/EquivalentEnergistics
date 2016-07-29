@@ -2,6 +2,8 @@ package com.mordenkainen.equivalentenergistics.integration.waila;
 
 import java.util.List;
 
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +22,7 @@ public class WailaHUDHandler implements IWailaDataProvider {
 	public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
 		final NBTTagCompound tag = accessor.getNBTData();
 		if(tag.hasKey(TAG_NAME)) {
-			currenttip.add("Stored EMC: " + tag.getCompoundTag(TAG_NAME).getFloat("currentEMC"));
+			currenttip.add("Stored EMC: " + CommonUtils.formatEMC(tag.getCompoundTag(TAG_NAME).getFloat("currentEMC")));
 			if(tag.getCompoundTag(TAG_NAME).hasKey("owner")) {
 				currenttip.add("Owner: " + tag.getCompoundTag(TAG_NAME).getString("owner"));
 			}

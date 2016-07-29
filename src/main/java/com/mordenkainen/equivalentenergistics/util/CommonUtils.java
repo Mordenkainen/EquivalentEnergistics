@@ -29,7 +29,7 @@ public final class CommonUtils {
 			level = preFixes[offset++];
 		}
 
-		final DecimalFormat formatter = new DecimalFormat("#.####");
+		final DecimalFormat formatter = new DecimalFormat("#.###");
 		return formatter.format(displayValue) + ' ' + level;
 	}
 	

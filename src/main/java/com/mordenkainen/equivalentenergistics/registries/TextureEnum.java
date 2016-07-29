@@ -11,7 +11,9 @@ public enum TextureEnum {
 	EMCBOOK(TextureType.ITEM, "EMCBook"),
 	EMCCRYSTAL(TextureType.ITEM, "EMCNugget", "EMCShard", "EMCCrystal", "DenseEMCCrystal", "SuperDenseEMCCrystal"),
 	EMCCRYSTALOLD(TextureType.ITEM, "EMCCrystal"),
-	EMCCELL(TextureType.ITEM, "EMCCellTier0", "EMCCellTier1", "EMCCellTier2", "EMCCellTier3");
+	EMCCELL(TextureType.ITEM, "EMCCellTier0", "EMCCellTier1", "EMCCellTier2", "EMCCellTier3", "EMCCellTier4", "EMCCellTier5", "EMCCellTier6", "EMCCellTier7"),
+	MISCITEM(TextureType.ITEM, "EMCCellHousing", "EMCTotal"),
+	EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7");
 	
 	private enum TextureType {
 		ITEM, BLOCK, PART

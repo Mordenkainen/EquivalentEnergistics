@@ -37,6 +37,8 @@ public class NEIEquivalentEnergisticsConfig implements IConfigureNEI {
 				}
 			}
 		}
+		
+		API.hideItem(ItemEnum.MISCITEM.getDamagedStack(1));
 	}
 	
 }

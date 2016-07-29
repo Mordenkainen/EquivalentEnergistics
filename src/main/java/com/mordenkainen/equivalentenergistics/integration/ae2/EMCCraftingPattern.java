@@ -44,11 +44,7 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
 	@Override
 	public boolean isValidItemForSlot(final int slotIndex, final ItemStack itemStack, final World world) {
-		if(itemStack == null || ingredients[slotIndex] == null) {
-			return false;
-		}
-		
-		return itemStack.isItemEqual(ingredients[slotIndex].getItemStack());
+		return false;
 	}
 
 	@Override
@@ -68,7 +64,7 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
 	@Override
 	public ItemStack getOutput(final InventoryCrafting craftingInv, final World world) {
-		return result.getItemStack();
+		return null;
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -54,18 +55,23 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	@SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
 	@MENetworkEventSubscribe
 	public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
-		currentEMC = maxEMC = 0;
+		float newEMC = 0;
+		float newMax = 0;
 		for (final ICellProvider provider : driveBays) {
 			final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
 			for (final IMEInventoryHandler cell : cells) {
 				final HandlerEMCCell handler = getHandler(cell);
 				if (handler != null) {
-					currentEMC += handler.getEMC();
-					maxEMC += handler.getCapacity();
+					newEMC += handler.getEMC();
+					newMax += handler.getCapacity();
 				}
 			}
 		}
-		dirty = true;
+		if (newMax != maxEMC || newEMC != currentEMC) {
+			maxEMC = newMax;
+			currentEMC = newEMC;
+			dirty = true;
+		}
 	}
 
 	@Override
@@ -79,15 +85,21 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	@Override
 	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
 		if (machine instanceof ICellProvider) {
+			float newEMC = currentEMC;
+			float newMax = maxEMC;
 			driveBays.remove((ICellProvider) machine);
 			final List<IMEInventoryHandler> cells = ((ICellProvider) machine).getCellArray(StorageChannel.ITEMS);
 			for (final IMEInventoryHandler cell : cells) {
 				final HandlerEMCCell handler = getHandler(cell);
 				if (handler != null) {
-					currentEMC -= handler.getEMC();
-					maxEMC -= handler.getCapacity();
-					dirty = true;
+					newEMC -= handler.getEMC();
+					newEMC -= handler.getCapacity();
 				}
+			}
+			if (newMax != maxEMC || newEMC != currentEMC) {
+				maxEMC = newMax;
+				currentEMC = newEMC;
+				dirty = true;
 			}
 		}
 	}
@@ -110,12 +122,18 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
 	@Override
 	public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
+		float itemEMC = 0;
 		if (ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem())) {
-			final int damage = stack.getItemDamage();
-			final int toAdd = (int) Math.min(stack.getStackSize(), (maxEMC - currentEMC) / Integration.emcHandler.getCrystalEMC(damage));
+			itemEMC = ItemEMCCrystal.crystalValues[stack.getItemDamage()];
+		} else if (ItemEnum.EMCCRYSTALOLD.getItem().equals(stack.getItem())) {
+			itemEMC = Integration.emcHandler.getSingleEnergyValue(stack.getItemStack());
+		}
+		
+		if(itemEMC > 0) {
+			final int toAdd = (int) Math.min(stack.getStackSize(), (maxEMC - currentEMC) / itemEMC);
 			if (toAdd > 0) {
-				injectEMC(toAdd * Integration.emcHandler.getCrystalEMC(damage), mode);
-				return toAdd == stack.getStackSize() ? null : AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(damage)).setStackSize(stack.getStackSize() - toAdd);
+				injectEMC(toAdd * itemEMC, mode);
+				return toAdd == stack.getStackSize() ? null : AEApi.instance().storage().createItemStack(new ItemStack(stack.getItem(), 1, stack.getItemDamage())).setStackSize(stack.getStackSize() - toAdd);
 			}
 		}
 		
@@ -124,14 +142,21 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
 	@Override
 	public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final BaseActionSource src) {
+		float itemEMC = 0;
 		if (ItemEnum.EMCCRYSTAL.getItem().equals(request.getItem())) {
-			final int damage = request.getItemDamage();
-			final int toRemove = (int) Math.min(request.getStackSize(), currentEMC / Integration.emcHandler.getCrystalEMC(damage));
+			itemEMC = ItemEMCCrystal.crystalValues[request.getItemDamage()];
+		} else if (ItemEnum.EMCCRYSTALOLD.getItem().equals(request.getItem())) {
+			itemEMC = Integration.emcHandler.getSingleEnergyValue(request.getItemStack());
+		}
+		
+		if(itemEMC > 0) {
+			final int toRemove = (int) Math.min(request.getStackSize(), currentEMC / itemEMC);
 			if (toRemove > 0) {
-				extractEMC(toRemove * Integration.emcHandler.getCrystalEMC(damage), mode);
-				return AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(damage)).setStackSize(toRemove);
+				extractEMC(toRemove * itemEMC, mode);
+				return AEApi.instance().storage().createItemStack(new ItemStack(request.getItem(), 1, request.getItemDamage())).setStackSize(toRemove);
 			}
 		}
+		
 		return null;		
 	}
 
@@ -156,12 +181,12 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
 	@Override
 	public boolean isPrioritized(final IAEItemStack stack) {
-		return ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem());
+		return ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem()) || ItemEnum.EMCCRYSTALOLD.getItem().equals(stack.getItem());
 	}
 
 	@Override
 	public boolean canAccept(final IAEItemStack stack) {
-		return ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem());
+		return ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem()) || ItemEnum.EMCCRYSTALOLD.getItem().equals(stack.getItem());
 	}
 
 	@Override
@@ -202,14 +227,14 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		if (currentEMC > 0) {
 			float remainingEMC = currentEMC;
 			for(int i = 4; i >= 0; i--) {
-				final long crystalcount = (long) (remainingEMC / Integration.emcHandler.getCrystalEMC(i));
+				final long crystalcount = (long) (remainingEMC / ItemEMCCrystal.crystalValues[i]);
 				if (crystalcount > 0) {
 					cachedList.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(i)).setStackSize(crystalcount));
-					remainingEMC -= crystalcount * Integration.emcHandler.getCrystalEMC(i);
+					remainingEMC -= crystalcount * ItemEMCCrystal.crystalValues[i];
 				}
 			}
 		}
-		final ItemStack totStack = new ItemStack(ItemEnum.EMCTOTITEM.getItem(), 1);
+		final ItemStack totStack = ItemEnum.MISCITEM.getDamagedStack(1);
 		cachedList.add(AEApi.instance().storage().createItemStack(totStack).setStackSize((long)currentEMC));
 		((IStorageGrid) grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
 	}
@@ -288,7 +313,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 			clazz = Class.forName("appeng.me.storage.MEInventoryHandler");
 			intHandler = clazz.getDeclaredField("internal");
 			intHandler.setAccessible(true);
-			clazz = Class.forName("appeng.me.storage.MEMonitorHandler");
+			clazz = Class.forName("appeng.api.storage.MEMonitorHandler");
 			extHandler = clazz.getDeclaredField("internalHandler");
 			extHandler.setAccessible(true);
 		} catch (ClassNotFoundException | NoSuchFieldException | SecurityException e) {

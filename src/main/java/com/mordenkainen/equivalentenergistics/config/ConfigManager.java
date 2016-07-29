@@ -22,6 +22,8 @@ public final class ConfigManager {
 
         config.load();
         
+        crystalEMCValue = (float)config.get("General", "CrystalEMC", 256.0).getDouble(256.0);
+        
         Integration.loadConfig(config);
         
         for (final BlockEnum current : BlockEnum.values()) {
@@ -31,8 +33,6 @@ public final class ConfigManager {
         for (final ItemEnum current : ItemEnum.values()) {
         	current.loadConfig(config);
         }
-        
-        crystalEMCValue = (float)config.get("General", "CrystalEMC", 256.0).getDouble(256.0);
         
         if (Integration.Mods.EE3.isEnabled()) {
     		useEE3 = true;

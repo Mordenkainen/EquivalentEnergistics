@@ -22,7 +22,7 @@ public class TileEMCCondenser extends TileCondenserAEBase {
 
 	@Override
 	protected float getEMCPerTick() {
-		return BlockEMCCondenser.itemsPerTick * 256;
+		return BlockEMCCondenser.emcPerTick;
 	}
 
 	@Override

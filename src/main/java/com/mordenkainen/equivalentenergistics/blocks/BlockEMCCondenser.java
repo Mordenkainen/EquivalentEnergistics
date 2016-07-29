@@ -2,8 +2,10 @@ package com.mordenkainen.equivalentenergistics.blocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
+import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
@@ -22,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -32,7 +34,7 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 	private static final double OFFSET = 0.0625D;
 	
 	public static int itemsPerTick;
-	public static int crystalsPerTick;
+	public static float emcPerTick;
 	public static double idlePower;
 	public static double activePower;
 	
@@ -139,7 +141,13 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 	@Override
 	public void loadConfig(final Configuration config) {
 		itemsPerTick = config.get(GROUP, "ItemsCondensedPerTick", 8).getInt(8);
-        crystalsPerTick = config.get(GROUP, "CrystalsProducedPerTick", 16).getInt(16);
+		emcPerTick = 16 * ConfigManager.crystalEMCValue;
+		if (config.hasKey(GROUP.toLowerCase(Locale.US), "CrystalsProducedPerTick")) {
+			emcPerTick = config.get(GROUP, "CrystalsProducedPerTick", 16).getInt(16) * ConfigManager.crystalEMCValue;
+			final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
+			condenserCat.remove("CrystalsProducedPerTick");
+		}
+		emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", emcPerTick).getDouble(emcPerTick);
         idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
         activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
 	}

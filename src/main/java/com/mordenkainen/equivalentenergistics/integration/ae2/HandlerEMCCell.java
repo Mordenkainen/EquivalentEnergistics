@@ -14,6 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 
+	private static final String EMC_TAG = "emc";
+	
 	private final NBTTagCompound cellData;
 	private final ISaveProvider saveProvider;
 	private float currentEMC;
@@ -26,7 +28,7 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 
 		cellData = storageStack.getTagCompound();
 		if (cellData.hasKey("emc")) {
-			currentEMC = cellData.getLong("emc");
+			currentEMC = cellData.getLong(EMC_TAG);
 		}
 		
 		saveProvider = _saveProvider;
@@ -94,7 +96,7 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 		
 		if (toAdjust != 0) {
 			currentEMC += toAdjust;
-			cellData.setFloat("emc", currentEMC);
+			cellData.setFloat(EMC_TAG, currentEMC);
 			if (saveProvider != null) {
 				saveProvider.saveChanges(this);
 			}

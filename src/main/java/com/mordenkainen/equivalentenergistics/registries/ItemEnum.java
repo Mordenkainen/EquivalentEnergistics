@@ -6,12 +6,13 @@ import com.google.common.base.Predicates;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.items.ItemMisc;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
-import com.mordenkainen.equivalentenergistics.items.ItemEMCTotal;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
+import com.mordenkainen.equivalentenergistics.items.ItemStorageComponent;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import net.minecraft.item.Item;
@@ -26,8 +27,9 @@ public enum ItemEnum {
 	EMCPATTERN("EMCPattern", new ItemPattern(), true),
 	EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()),
 	EMCCRYSTALOLD("EMCCrystal", new ItemEMCCrystalOld()),
-	EMCTOTITEM("EMCTotal", new ItemEMCTotal(), true),
-	EMCCELL("EMCCell", new ItemEMCCell());
+	EMCCELL("EMCCell", new ItemEMCCell()),
+	MISCITEM("ItemMisc", new ItemMisc()),
+	CELLCOMPONENT("EMCStorageComponent", new ItemStorageComponent());
 
 	private final String internalName;
 	

@@ -16,6 +16,21 @@ item.equivalentenergistics:EMCCell.0.name=EMC Storage Cell Tier 0
 item.equivalentenergistics:EMCCell.1.name=EMC Storage Cell Tier 1
 item.equivalentenergistics:EMCCell.2.name=EMC Storage Cell Tier 2
 item.equivalentenergistics:EMCCell.3.name=EMC Storage Cell Tier 3
+item.equivalentenergistics:EMCCell.4.name=EMC Storage Cell Tier 4
+item.equivalentenergistics:EMCCell.5.name=EMC Storage Cell Tier 5
+item.equivalentenergistics:EMCCell.6.name=EMC Storage Cell Tier 6
+item.equivalentenergistics:EMCCell.7.name=EMC Storage Cell Tier 7
+item.equivalentenergistics:ItemMisc.0.name=Empty EMC Cell Housing
+item.equivalentenergistics:ItemMisc.1.name=EMC Total
+item.equivalentenergistics:EMCStorageComponent.0.name=EMC Storage Component Tier 0
+item.equivalentenergistics:EMCStorageComponent.1.name=EMC Storage Component Tier 1
+item.equivalentenergistics:EMCStorageComponent.2.name=EMC Storage Component Tier 2
+item.equivalentenergistics:EMCStorageComponent.3.name=EMC Storage Component Tier 3
+item.equivalentenergistics:EMCStorageComponent.4.name=EMC Storage Component Tier 4
+item.equivalentenergistics:EMCStorageComponent.5.name=EMC Storage Component Tier 5
+item.equivalentenergistics:EMCStorageComponent.6.name=EMC Storage Component Tier 6
+item.equivalentenergistics:EMCStorageComponent.7.name=EMC Storage Component Tier 7
+
 
 
 # Block Names
@@ -26,4 +41,8 @@ tile.equivalentenergistics:EMCCrafter.name=EMC Assembler
 message.book.clear=Owner Cleared!
 message.book.wrongowner=You are not the owner of this Tome.
 message.book.link=Tome linked!
+message.cell.chestwarning=EMC Storage Cells can not be viewed in an ME Chest.
+
+# Tooltips
+tooltip.emc.name=EMC:
 
