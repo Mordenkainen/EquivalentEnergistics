@@ -22,6 +22,12 @@ public class DimensionalLocation {
 	public TileEntity getTE() {
 		return world.getTileEntity(x, y, z);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getTE(final Class<T> type) {
+		final TileEntity tile = world.getTileEntity(x, y, z);
+		return type.isInstance(tile) ? (T) tile : null;
+	}
 
 	public int hashCode() {
 		int result = 1;
@@ -42,7 +48,7 @@ public class DimensionalLocation {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final DimensionalLocation other = (DimensionalLocation)obj;
+		final DimensionalLocation other = (DimensionalLocation) obj;
 		if (world == null) {
 			if (other.world != null) {
 				return false;

@@ -9,8 +9,6 @@ import net.minecraft.item.ItemStack;
 
 public interface IEMCHandler {
 
-	void relearnCrystals();
-
 	boolean hasEMC(ItemStack itemStack);
 
 	float getEnergyValue(ItemStack itemStack);

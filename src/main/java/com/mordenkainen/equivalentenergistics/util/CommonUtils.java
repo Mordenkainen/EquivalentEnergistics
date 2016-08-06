@@ -21,7 +21,7 @@ public final class CommonUtils {
 	public static String formatEMC(final float emc) {
 		float displayValue = emc;
 
-		final String[] preFixes = {"k", "M", "B", "T", "P",	"T", "P", "E", "Z", "Y"};
+		final String[] preFixes = {"K", "M", "B", "T", "P",	"T", "P", "E", "Z", "Y"};
 		String level = "";
 		int offset = 0;
 		while (displayValue > 1000 && offset < preFixes.length) {
@@ -59,7 +59,7 @@ public final class CommonUtils {
 			final EntityItem entityItem = new EntityItem(world, x + rx, y + ry, z + rz, new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
 
 			if (item.hasTagCompound()) {
-				entityItem.getEntityItem().setTagCompound((NBTTagCompound)item.getTagCompound().copy());
+				entityItem.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
 			}
 
 			entityItem.motionX = world.rand.nextGaussian() * 0.05F;

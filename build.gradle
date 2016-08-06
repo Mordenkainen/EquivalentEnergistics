@@ -45,7 +45,9 @@ dependencies {
     compile "codechicken:CodeChickenCore:${minecraft_version}-${ccc_version}:dev"
     compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
     compile "mcp.mobius.waila:Waila:${waila_version}_${minecraft_version}:dev"
-    compile "com.pahimar.ee3:EquivalentExchange3:${minecraft_version}-${ee3_version}:dev"
+    compile ("com.pahimar.ee3:EquivalentExchange3:${minecraft_version}-${ee3_version}:dev"){
+        transitive = false
+    }
     compile ("appeng:appliedenergistics2:${ae2_version}:api"){
         transitive = false
     }

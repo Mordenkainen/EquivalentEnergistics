@@ -174,7 +174,7 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 		try	{
 			if (currentEMC > 0) {
 				final float toInject = Math.min(currentEMC, getEMCPerTick());
-				float ejected = getProxy().getEMCStorage().injectEMC(toInject, Actionable.MODULATE);
+				final float ejected = getProxy().getEMCStorage().injectEMC(toInject, Actionable.MODULATE);
 				if (ejected > 0) {
 					currentEMC -= ejected;
 					return true;

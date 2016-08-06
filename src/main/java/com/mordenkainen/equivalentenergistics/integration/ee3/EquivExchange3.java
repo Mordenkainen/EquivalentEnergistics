@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.ee3;
 
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 
@@ -8,7 +9,6 @@ import com.pahimar.ee3.api.event.EnergyValueEvent;
 import com.pahimar.ee3.api.event.PlayerKnowledgeEvent;
 import com.pahimar.ee3.api.exchange.EnergyValue;
 import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
-import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy.Phase;
 import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.util.ItemStackUtils;
 
@@ -26,15 +26,6 @@ import net.minecraft.item.ItemStack;
 public class EquivExchange3 implements IEMCHandler {
 	
 	private static Item tomeItem;
-	private float[] crystalValues = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-
-	@Override
-	public void relearnCrystals() {
-		crystalValues = new float[] {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-		for (int i = 0; i < 5; i++) {
-			crystalValues[i] = getCrystalEMC(i);
-		}
-	}
 
 	@Override
 	public boolean hasEMC(final ItemStack itemStack) {
@@ -54,12 +45,7 @@ public class EquivExchange3 implements IEMCHandler {
 
 	@Override
 	public float getCrystalEMC(final int tier) {
-		if (this.crystalValues[tier] == 0.0F) {
-			ItemStack stack = new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, tier);
-			EnergyValue val = EnergyValueRegistryProxy.getEnergyValue(stack);
-			crystalValues[tier] = val.getValue();
-		}
-		return crystalValues[tier];
+		return ItemEMCCrystal.CRYSTAL_VALUES[tier];
 	}
 
 	@Override
@@ -71,7 +57,7 @@ public class EquivExchange3 implements IEMCHandler {
 		final Iterator<ItemStack> iter = transmutations.iterator();
 		while (iter.hasNext()) {
 			final ItemStack currentItem = (ItemStack)iter.next();
-			if (currentItem == null || currentItem.getItem() == ItemEnum.EMCCRYSTAL.getItem()) {
+			if (currentItem == null || currentItem.getItem() == ItemEnum.EMCCRYSTAL.getItem() || currentItem.getItem() == ItemEnum.EMCCRYSTALOLD.getItem()) {
 				iter.remove();
 			}
 		}
@@ -87,11 +73,7 @@ public class EquivExchange3 implements IEMCHandler {
 	}
 
 	@Override
-	public void setCrystalEMC(final float emc) {		
-		EnergyValueRegistryProxy.setEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), emc, Phase.POST_CALCULATION);
-		EnergyValueRegistryProxy.setEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), emc * 576.0F, Phase.POST_CALCULATION);
-		EnergyValueRegistryProxy.setEnergyValue(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 2), (float)(emc * Math.pow(576.0D, 2.0D)), Phase.POST_CALCULATION);
-	}
+	public void setCrystalEMC(final float emc) {}
 
 	@Override
 	public UUID getTomeUUID(final ItemStack currentTome) {

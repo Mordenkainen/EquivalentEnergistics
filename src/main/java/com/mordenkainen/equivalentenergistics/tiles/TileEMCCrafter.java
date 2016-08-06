@@ -336,7 +336,6 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 	
 	public static final void postEnergyValueChange() {
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-			Integration.emcHandler.relearnCrystals();
 			EMCCraftingPattern.relearnPatterns();
 			final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
 			while (iter.hasNext()) {

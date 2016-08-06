@@ -58,4 +58,5 @@ public enum TextureEnum {
 			textures[i] = textureMap.registerIcon(header + textureNames[i]);
 		}
 	}
+	
 }

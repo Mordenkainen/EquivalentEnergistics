@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.projecte;
 
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 
@@ -19,16 +20,6 @@ import net.minecraft.item.ItemStack;
 
 public class ProjectE implements IEMCHandler {
 	
-	private float[] crystalValues = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-
-	@Override
-	public void relearnCrystals() {
-		crystalValues = new float[] {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-		for (int i = 0; i < 5; i++) {
-			crystalValues[i] = getCrystalEMC(i);
-		}
-	}
-
 	@Override
 	public boolean hasEMC(final ItemStack itemStack) {
 		// horrible hack for bug in PE API
@@ -48,10 +39,7 @@ public class ProjectE implements IEMCHandler {
 
 	@Override
 	public float getCrystalEMC(final int tier) {
-		if (this.crystalValues[tier] == 0.0F) {
-			crystalValues[tier] = ProjectEAPI.getEMCProxy().getValue(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, tier));
-		}
-		return crystalValues[tier];
+		return ItemEMCCrystal.CRYSTAL_VALUES[tier];
 	}
 
 	@Override
@@ -67,7 +55,7 @@ public class ProjectE implements IEMCHandler {
 		final Iterator<ItemStack> iter = transmutations.iterator();
 		while (iter.hasNext()) {
 			final ItemStack currentItem = (ItemStack)iter.next();
-			if (currentItem == null || currentItem.getItem() == ItemEnum.EMCCRYSTAL.getItem()) {
+			if (currentItem == null || currentItem.getItem() == ItemEnum.EMCCRYSTAL.getItem() || currentItem.getItem() == ItemEnum.EMCCRYSTALOLD.getItem()) {
 				iter.remove();
 			}
 		}

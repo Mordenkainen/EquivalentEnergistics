@@ -130,6 +130,8 @@ public class InternalInventory implements IInventory {
 			return;
 		}
 
+		slots = new ItemStack[slots.length];
+		
 		final NBTTagList invList = data.getTagList(tagName, (byte)10);
 
 		for (int index = 0; index < invList.tagCount(); index++) {
@@ -137,8 +139,8 @@ public class InternalInventory implements IInventory {
 
 			final int slotIndex = nbtCompound.getByte(InternalInventory.NBT_KEY_SLOT) & 0xFF;
 
-			if (slotIndex >= 0 && slotIndex < this.slots.length) {
-				this.slots[slotIndex] = ItemStack.loadItemStackFromNBT(nbtCompound);
+			if (slotIndex >= 0 && slotIndex < slots.length) {
+				slots[slotIndex] = ItemStack.loadItemStackFromNBT(nbtCompound);
 			}
 		}
 	}
@@ -150,13 +152,13 @@ public class InternalInventory implements IInventory {
 
 		final NBTTagList invList = new NBTTagList();
 
-		for (int slotIndex = 0; slotIndex < this.slots.length; slotIndex++) {
-			if (this.slots[slotIndex] != null) {
+		for (int slotIndex = 0; slotIndex < slots.length; slotIndex++) {
+			if (slots[slotIndex] != null) {
 				final NBTTagCompound nbtCompound = new NBTTagCompound();
 
-				nbtCompound.setByte(InternalInventory.NBT_KEY_SLOT, (byte)slotIndex);
+				nbtCompound.setByte(InternalInventory.NBT_KEY_SLOT, (byte) slotIndex);
 
-				this.slots[slotIndex].writeToNBT(nbtCompound);
+				slots[slotIndex].writeToNBT(nbtCompound);
 
 				invList.appendTag(nbtCompound);
 			}

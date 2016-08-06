@@ -7,10 +7,7 @@ import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
@@ -18,7 +15,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public class ItemEMCBook extends Item {
+public class ItemEMCBook extends ItemBase {
 	
 	private static final String OWNER_TAG = "Owner";
 	private static final String UUID_TAG = "OwnerUUID";
@@ -28,21 +25,13 @@ public class ItemEMCBook extends Item {
 		setMaxStackSize(1);
 	}
 	
-	@Override
-	public void registerIcons(final IIconRegister reg) {}
-	
+	// Item Overrides
+	// ------------------------
 	@Override
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCBOOK.getTexture();
     }
-	
-	@Override
-    public void onUpdate(final ItemStack stack, final World world, final Entity player, final int param4, final boolean param5) {
-		if(!stack.hasTagCompound()) {
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
 
 	@Override
 	public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
@@ -79,5 +68,6 @@ public class ItemEMCBook extends Item {
 			list.add("No owner set.");
 		}
 	}
+	// ------------------------
 	
 }

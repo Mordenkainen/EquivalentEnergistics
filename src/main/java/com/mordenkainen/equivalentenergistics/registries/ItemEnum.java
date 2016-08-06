@@ -80,10 +80,6 @@ public enum ItemEnum {
 		requirements = _requirements;
 	}
 
-	public ItemStack getDamagedStack(final int damage) {
-		return new ItemStack(item, 1, damage);
-	}
-
 	public String getInternalName() {
 		return internalName;
 	}
@@ -94,6 +90,18 @@ public enum ItemEnum {
 
 	public ItemStack getSizedStack(final int size) {
 		return new ItemStack(item, size);
+	}
+	
+	public ItemStack getDamagedStack(final int damage) {
+		return new ItemStack(item, 1, damage);
+	}
+
+	public ItemStack getFullStack() {
+		return new ItemStack(item, 64);
+	}
+	
+	public ItemStack getStack(final int size, final int damage) {
+		return new ItemStack(item, size, damage);
 	}
 
 	public String getStatName() {
