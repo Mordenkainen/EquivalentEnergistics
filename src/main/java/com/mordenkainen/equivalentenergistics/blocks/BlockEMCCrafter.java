@@ -23,6 +23,8 @@ import net.minecraftforge.common.config.Configuration;
 
 public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 	
+	private static final String GROUP = "Crafter";
+	
 	public static double idlePower;
 	public static double activePower;
 	public static double craftingTime;
@@ -34,6 +36,16 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 		setLightOpacity(1);
 	}
 
+	// BlockContainer Overrides
+	// ------------------------
+	@Override
+	public TileEntity createNewTileEntity(final World world, final int meta) {
+		return new TileEMCCrafter();
+	}
+	// ------------------------
+	
+	// Block Overrides
+	// ------------------------
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
@@ -49,11 +61,6 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 		return EquivalentEnergistics.proxy.crafterRenderer;
 	}
 	
-	@Override
-	public TileEntity createNewTileEntity(final World world, final int meta) {
-		return new TileEMCCrafter();
-	}
-	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public final void registerBlockIcons(final IIconRegister register) {}
@@ -64,10 +71,7 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 			final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 
 			if(tileCrafter != null) {
-				final ItemStack existingTome = ((TileEMCCrafter)tileCrafter).getCurrentTome();
-				if(existingTome != null) {
-					CommonUtils.spawnEntItem(world, x, y, z, existingTome);
-				}
+				CommonUtils.spawnEntItem(world, x, y, z, ((TileEMCCrafter) tileCrafter).getCurrentTome());
 			}
 		}
 
@@ -87,31 +91,38 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 	public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
 		final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
 		
-		if(tileCrafter != null && tileCrafter.canPlayerInteract(player)) {
-			final ItemStack existingTome = tileCrafter.getCurrentTome();
-			if(player.getHeldItem() == null && existingTome != null) {
-				if(!world.isRemote) {
-					CommonUtils.spawnEntItem(world, x, y, z, existingTome);
-				}
-				tileCrafter.setCurrentTome(null);
-				return true;
-			} else if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
-				tileCrafter.setCurrentTome(player.getHeldItem().copy());
-				if(!player.capabilities.isCreativeMode) {
-					player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null :
-						player.inventory.mainInventory[player.inventory.currentItem];
-				}
-				return true;
-			}
+		if(tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
+			return false;
 		}
+		
+		final ItemStack existingTome = tileCrafter.getCurrentTome();
+		if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
+			tileCrafter.setCurrentTome(player.getHeldItem().copy());
+			if(!player.capabilities.isCreativeMode) {
+				player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize==0 ? null :	player.inventory.mainInventory[player.inventory.currentItem];
+			}
+			return true;
+		} else if (existingTome != null) {
+			if(!world.isRemote) {
+				CommonUtils.spawnEntItem(world, x, y, z, existingTome);
+			}
+			tileCrafter.setCurrentTome(null);
+			return true;
+		}
+		
 		return false;
+		
 	}
+	// ------------------------
 	
+	// IConfigurable Overrides
+	// ------------------------
 	@Override
 	public void loadConfig(final Configuration config) {
-		idlePower = config.get("Crafter", "IdlePowerDrain", 0.0).getDouble(0.0);
-        activePower = config.get("Crafter", "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
-        craftingTime = config.get("Crafter", "TicksPerCrafting", 7).getInt(7);
+		idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get(GROUP, "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
+        craftingTime = config.get(GROUP, "TicksPerCrafting", 7).getInt(7);
 	}
+	// ------------------------
 	
 }

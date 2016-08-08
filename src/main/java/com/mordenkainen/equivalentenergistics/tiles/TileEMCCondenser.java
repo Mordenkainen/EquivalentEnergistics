@@ -20,11 +20,21 @@ public class TileEMCCondenser extends TileCondenserAEBase {
 		super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock())));
 	}
 
+	// TileCondenserAEBase Overrides
+	// ------------------------
 	@Override
 	protected float getEMCPerTick() {
 		return BlockEMCCondenser.emcPerTick;
 	}
+	
+	@Override
+	protected int getSlotCount() {
+		return SLOT_COUNT;
+	}
+	// ------------------------
 
+	// TileCondenserBase Overrides
+	// ------------------------
 	@Override
 	protected int getMaxItems() {
 		return BlockEMCCondenser.itemsPerTick;
@@ -59,10 +69,6 @@ public class TileEMCCondenser extends TileCondenserAEBase {
 			return 0;
 		}
 	}
-
-	@Override
-	protected int getSlotCount() {
-		return SLOT_COUNT;
-	}
+	// ------------------------
 	
 }

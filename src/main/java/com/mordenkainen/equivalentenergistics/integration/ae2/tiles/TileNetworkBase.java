@@ -30,6 +30,8 @@ public abstract class TileNetworkBase extends TileEntity implements IGridProxyab
 		}
 	}
 	
+	// TileEntity Overrides
+	// ------------------------
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
@@ -59,12 +61,18 @@ public abstract class TileNetworkBase extends TileEntity implements IGridProxyab
 		super.writeToNBT(data);
 		IGridProxyable.super.writeToNBT(data);
 	}
+	// -----------------------
 
+	// IGridHost Overrides
+	// ------------------------
 	@Override
 	public void securityBreak() {
 		CommonUtils.destroyAndDrop(worldObj, xCoord, yCoord, zCoord);
 	}
+	// ------------------------
 
+	// IGridProxyable Overrides
+	// ------------------------
 	@Override
 	public IGridProxy getProxy() {
 		return gridProxy;
@@ -77,5 +85,6 @@ public abstract class TileNetworkBase extends TileEntity implements IGridProxyab
 
 	@Override
 	public void gridChanged() {}
+	// ------------------------
 	
 }

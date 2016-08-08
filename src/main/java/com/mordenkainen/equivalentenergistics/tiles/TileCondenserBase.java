@@ -21,6 +21,45 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 	protected float currentEMC;
 	protected CondenserState state = CondenserState.Idle; 
 	
+	// IWailaNBTProvider Overrides
+	// ------------------------
+	@Override
+	public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
+		tag.setFloat("currentEMC", currentEMC);
+		tag.setFloat("maxEMC", getMaxEMC());
+		return tag;
+	}
+	// ------------------------
+	
+	// TileEntity Overrides
+	// ------------------------
+	@Override
+	public void readFromNBT(final NBTTagCompound data) {
+		super.readFromNBT(data);
+		currentEMC = data.getFloat("CurrentEMC");
+		IInventoryInt.super.readFromNBT(data);
+	}
+	
+	@Override
+	public void writeToNBT(final NBTTagCompound data) {
+		super.writeToNBT(data);
+		data.setFloat("CurrentEMC", currentEMC);
+		IInventoryInt.super.writeToNBT(data);
+	}	
+	
+	@Override
+	public Packet getDescriptionPacket() {
+		final NBTTagCompound nbttagcompound = new NBTTagCompound();
+		nbttagcompound.setInteger("state", state.ordinal());
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
+	}
+
+	@Override
+	public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
+		state = CondenserState.values()[pkt.func_148857_g().getInteger("state")];
+	}
+	// ------------------------
+	
 	public boolean isBlocked() {
 		return state == CondenserState.Blocked;
 	}
@@ -41,27 +80,6 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 				drops.add(item);
 			}
 		}
-	}
-	
-	@Override
-	public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
-		tag.setFloat("currentEMC", currentEMC);
-		tag.setFloat("maxEMC", getMaxEMC());
-		return tag;
-	}
-	
-	@Override
-	public void readFromNBT(final NBTTagCompound data) {
-		super.readFromNBT(data);
-		currentEMC = data.getFloat("CurrentEMC");
-		IInventoryInt.super.readFromNBT(data);
-	}
-	
-	@Override
-	public void writeToNBT(final NBTTagCompound data) {
-		super.writeToNBT(data);
-		data.setFloat("CurrentEMC", currentEMC);
-		IInventoryInt.super.writeToNBT(data);
 	}
 	
 	protected CondenserState condense() {
@@ -100,7 +118,7 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 				didWork = true;
 				getInventory().setInventorySlotContents(slot, null);
 				toProcess -= stack.stackSize;
-			} else if (!stackSame(stack, resultStack)){
+			} else if (!isStackSame(stack, resultStack)){
 				didWork = true;
 				getInventory().setInventorySlotContents(slot, resultStack);
 				toProcess -= stack.stackSize - resultStack.stackSize;
@@ -113,7 +131,7 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 		return didWork;
 	}
 
-	private boolean stackSame(final ItemStack stack1, final ItemStack stack2) {
+	private boolean isStackSame(final ItemStack stack1, final ItemStack stack2) {
 		return ItemStack.areItemStacksEqual(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
 	}
 
@@ -122,7 +140,7 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 	}
 
 	protected ItemStack convertItemsToEMC(final ItemStack stack, final int maxItems) {
-		final int maxToDo = Math.min(stack.stackSize, Math.min(maxItems, (int) ((getMaxEMC() - currentEMC)/Integration.emcHandler.getSingleEnergyValue(stack))));
+		final int maxToDo = Math.min(stack.stackSize, Math.min(maxItems, (int) ((getMaxEMC() - currentEMC) / Integration.emcHandler.getSingleEnergyValue(stack))));
 		if (maxToDo > 0) {
 			currentEMC += Integration.emcHandler.getSingleEnergyValue(stack) * maxToDo;
 			if (maxToDo >= stack.stackSize) {
@@ -172,18 +190,6 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 			return true;
 		}
 		return Integration.emcHandler.isEMCStorage(stack);
-	}
-	
-	@Override
-	public Packet getDescriptionPacket() {
-		final NBTTagCompound nbttagcompound = new NBTTagCompound();
-		nbttagcompound.setInteger("state", state.ordinal());
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
-	}
-
-	@Override
-	public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
-		state = CondenserState.values()[pkt.func_148857_g().getInteger("state")];
 	}
 	
 	protected abstract int getMaxItems();

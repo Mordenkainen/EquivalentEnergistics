@@ -2,11 +2,11 @@
 itemGroup.equivalentenergistics=Equivalent Energistics
 
 # Item Names
-item.equivalentenergistics:EMCCrystal.0.name=EMC Crystal Splinter
-item.equivalentenergistics:EMCCrystal.1.name=EMC Crystal Shard
-item.equivalentenergistics:EMCCrystal.2.name=EMC Crystal
-item.equivalentenergistics:EMCCrystal.3.name=Dense EMC Crystal
-item.equivalentenergistics:EMCCrystal.4.name=Super Dense EMC Crystal
+item.equivalentenergistics:EMCStorageItem.0.name=EMC Crystal Splinter
+item.equivalentenergistics:EMCStorageItem.1.name=EMC Crystal Shard
+item.equivalentenergistics:EMCStorageItem.2.name=EMC Crystal
+item.equivalentenergistics:EMCStorageItem.3.name=Dense EMC Crystal
+item.equivalentenergistics:EMCStorageItem.4.name=Super Dense EMC Crystal
 item.equivalentenergistics:EMCCrystalOld.0.name=EMC Crystal (Deprecated)
 item.equivalentenergistics:EMCCrystalOld.1.name=Dense EMC Crystal (Deprecated)
 item.equivalentenergistics:EMCCrystalOld.2.name=Super Dense EMC Crystal (Deprecated)

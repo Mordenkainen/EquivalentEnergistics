@@ -44,11 +44,16 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 		setStepSound(Block.soundTypeStone);
 	}
 
+	// BlockContainer Overrides
+	// ------------------------
 	@Override
 	public TileEntity createNewTileEntity(final World world, final int meta) {
 		return new TileEMCCondenser();
 	}
+	// ------------------------
 	
+	// Block Overrides
+	// ------------------------
 	@SideOnly(Side.CLIENT)
 	@Override
 	public final void registerBlockIcons(final IIconRegister register) {}
@@ -56,10 +61,7 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(final int side, final int meta) {
-		if (side == 0 || side == 1) {
-			return TextureEnum.EMCCONDENSER.getTexture();
-		}
-		return TextureEnum.EMCCONDENSER.getTexture(1);
+		return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? 0 : 1);
 	}
 
 	@Override
@@ -106,6 +108,24 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
             spawnParticle(world, x, y, z, dir, random);
 		}
 	}
+	// ------------------------
+	
+	// IConfigurable Overrides
+	// ------------------------
+	@Override
+	public void loadConfig(final Configuration config) {
+		itemsPerTick = config.get(GROUP, "ItemsCondensedPerTick", 8).getInt(8);
+		emcPerTick = 16 * ConfigManager.crystalEMCValue;
+		if (config.hasKey(GROUP.toLowerCase(Locale.US), "CrystalsProducedPerTick")) {
+			emcPerTick = config.get(GROUP, "CrystalsProducedPerTick", 16).getInt(16) * ConfigManager.crystalEMCValue;
+			final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
+			condenserCat.remove("CrystalsProducedPerTick");
+		}
+		emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", emcPerTick).getDouble(emcPerTick);
+        idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
+	}
+	// ------------------------
 	
 	private void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final Random random) {
 		double d1 = (double) ((float) x + random.nextFloat());
@@ -138,18 +158,4 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
     	world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
 	}
 
-	@Override
-	public void loadConfig(final Configuration config) {
-		itemsPerTick = config.get(GROUP, "ItemsCondensedPerTick", 8).getInt(8);
-		emcPerTick = 16 * ConfigManager.crystalEMCValue;
-		if (config.hasKey(GROUP.toLowerCase(Locale.US), "CrystalsProducedPerTick")) {
-			emcPerTick = config.get(GROUP, "CrystalsProducedPerTick", 16).getInt(16) * ConfigManager.crystalEMCValue;
-			final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
-			condenserCat.remove("CrystalsProducedPerTick");
-		}
-		emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", emcPerTick).getDouble(emcPerTick);
-        idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
-        activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
-	}
-	
 }

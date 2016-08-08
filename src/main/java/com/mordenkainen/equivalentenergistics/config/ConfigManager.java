@@ -1,3 +1,4 @@
+// TODO fix config handling
 package com.mordenkainen.equivalentenergistics.config;
 
 import java.io.File;

@@ -86,6 +86,10 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 	}
 
 	public float adjustEMC(final float amount) {
+		if (amount == 0) {
+			return 0;
+		}
+		
 		float toAdjust;
 		
 		if (amount > 0) {
@@ -109,7 +113,7 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 		if (currentEMC >= capacity) {
 			return 3;
 		}
-		if (currentEMC > capacity * 0.75) {
+		if (currentEMC >= capacity * 0.75) {
 			return 2;
 		}
 		return 1;

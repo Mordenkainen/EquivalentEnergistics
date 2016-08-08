@@ -74,6 +74,8 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 		}
 	}
 
+	// IGridCache Overrides
+	// ------------------------
 	@Override
 	public void onUpdateTick() {
 		if(dirty) {
@@ -119,7 +121,10 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
 	@Override
 	public void populateGridStorage(final IGridStorage dstStorage) {}
-
+	// ------------------------
+	
+	// IMEInventoryHandler Overrides
+	// ------------------------
 	@Override
 	public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
 		float itemEMC = 0;
@@ -133,7 +138,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 			final int toAdd = (int) Math.min(stack.getStackSize(), (maxEMC - currentEMC) / itemEMC);
 			if (toAdd > 0) {
 				injectEMC(toAdd * itemEMC, mode);
-				return toAdd == stack.getStackSize() ? null : AEApi.instance().storage().createItemStack(new ItemStack(stack.getItem(), 1, stack.getItemDamage())).setStackSize(stack.getStackSize() - toAdd);
+				return toAdd == stack.getStackSize() ? null : stack.copy().setStackSize(stack.getStackSize() - toAdd);
 			}
 		}
 		
@@ -153,7 +158,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 			final int toRemove = (int) Math.min(request.getStackSize(), currentEMC / itemEMC);
 			if (toRemove > 0) {
 				extractEMC(toRemove * itemEMC, mode);
-				return AEApi.instance().storage().createItemStack(new ItemStack(request.getItem(), 1, request.getItemDamage())).setStackSize(toRemove);
+				return request.copy().setStackSize(toRemove);
 			}
 		}
 		
@@ -198,7 +203,10 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	public boolean validForPass(final int pass) {
 		return pass == 1;
 	}
+	// ------------------------
 
+	// ICellProvider Overrides
+	// ------------------------
 	@SuppressWarnings("rawtypes") // NOPMD
 	@Override
 	public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
@@ -215,6 +223,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 	public int getPriority() {
 		return Integer.MAX_VALUE - 1;
 	}
+	// ------------------------
 	
 	private void updateDisplay() {
 		dirty = false;
@@ -235,7 +244,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 			}
 		}
 		final ItemStack totStack = ItemEnum.MISCITEM.getDamagedStack(1);
-		cachedList.add(AEApi.instance().storage().createItemStack(totStack).setStackSize((long)currentEMC));
+		cachedList.add(AEApi.instance().storage().createItemStack(totStack).setStackSize((long) currentEMC));
 		((IStorageGrid) grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
 	}
 	

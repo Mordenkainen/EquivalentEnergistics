@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.proxy;
 
 import com.mordenkainen.equivalentenergistics.exception.ClientUnmetDependencyException;
+import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.render.BlockEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.render.TileEMCCrafterRenderer;
@@ -35,9 +36,11 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void initRenderers() {
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new TileEMCCrafterRenderer());
-		crafterRenderer = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(new BlockEMCCrafterRenderer());
+		if (BlockEnum.EMCCRAFTER.isEnabled()) {
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new TileEMCCrafterRenderer());
+			crafterRenderer = RenderingRegistry.getNextAvailableRenderId();
+			RenderingRegistry.registerBlockHandler(new BlockEMCCrafterRenderer());
+		}
     }
 	
 	@Override

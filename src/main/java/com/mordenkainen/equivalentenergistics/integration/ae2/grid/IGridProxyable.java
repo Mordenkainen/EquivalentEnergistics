@@ -12,6 +12,27 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IGridProxyable extends IGridHost, IActionHost {
 	
+	// IGridHost Overrides
+	// ------------------------
+	@Override
+	default IGridNode getGridNode(final ForgeDirection arg0) {
+		return getProxy().getNode();
+	}
+	
+	@Override
+	default AECableType getCableConnectionType(final ForgeDirection arg0) {
+		return AECableType.SMART;
+	}
+	// ------------------------
+
+	// IActionHost Overrides
+	// ------------------------
+	@Override
+	default IGridNode getActionableNode() {
+		return getProxy().getNode();
+	}
+	// ------------------------
+	
 	default boolean isActive() {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
 			return false;
@@ -49,21 +70,6 @@ public interface IGridProxyable extends IGridHost, IActionHost {
 	
 	default void writeToNBT(final NBTTagCompound data) {
 		getProxy().writeToNBT(data);
-	}
-	
-	@Override
-	default IGridNode getGridNode(final ForgeDirection arg0) {
-		return getProxy().getNode();
-	}
-	
-	@Override
-	default AECableType getCableConnectionType(final ForgeDirection arg0) {
-		return AECableType.SMART;
-	}
-	
-	@Override
-	default IGridNode getActionableNode() {
-		return getProxy().getNode();
 	}
 	
 	IGridProxy getProxy();

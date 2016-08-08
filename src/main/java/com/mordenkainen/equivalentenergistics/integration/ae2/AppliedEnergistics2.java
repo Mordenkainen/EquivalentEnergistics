@@ -1,5 +1,6 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
@@ -27,7 +28,7 @@ public final class AppliedEnergistics2 {
 		instance = new AppliedEnergistics2();
 		MinecraftForge.EVENT_BUS.register(instance);
 		final IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
-    	gcr.registerGridCache( EMCStorageGrid.class, EMCStorageGrid.class );
+    	gcr.registerGridCache(EMCStorageGrid.class, EMCStorageGrid.class);
     	AEApi.instance().registries().cell().addCellHandler((ICellHandler) ItemEnum.EMCCELL.getItem());
 	}
 	
@@ -38,11 +39,7 @@ public final class AppliedEnergistics2 {
 			final Method blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
 			blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTAL.getItem()), OreDictionary.WILDCARD_VALUE);
 			blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTALOLD.getItem()), OreDictionary.WILDCARD_VALUE);
-		} catch (final IllegalArgumentException e) {
-			logReflectionError(e);
-		} catch (final SecurityException e) {
-			logReflectionError(e);
-		} catch (final ReflectiveOperationException e) {
+		} catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException | ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 			logReflectionError(e);
 		}
 	}

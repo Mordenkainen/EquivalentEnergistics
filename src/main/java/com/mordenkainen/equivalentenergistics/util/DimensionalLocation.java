@@ -42,12 +42,11 @@ public class DimensionalLocation {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+		
 		final DimensionalLocation other = (DimensionalLocation) obj;
 		if (world == null) {
 			if (other.world != null) {

@@ -60,8 +60,12 @@ public class CommonProxy {
 	}
 	
 	public void registerTileEntities() {
-		GameRegistry.registerTileEntity(TileEMCCondenser.class, Reference.MOD_ID + "TileEMCCondenser");
-		GameRegistry.registerTileEntity(TileEMCCrafter.class, Reference.MOD_ID + "TileEMCCrafter");
+		if (BlockEnum.EMCCONDENSER.isEnabled()) {
+			GameRegistry.registerTileEntity(TileEMCCondenser.class, Reference.MOD_ID + "TileEMCCondenser");
+		}
+		if (BlockEnum.EMCCRAFTER.isEnabled()) {
+			GameRegistry.registerTileEntity(TileEMCCrafter.class, Reference.MOD_ID + "TileEMCCrafter");
+		}
 	}
 	
 	public void initRenderers() {}

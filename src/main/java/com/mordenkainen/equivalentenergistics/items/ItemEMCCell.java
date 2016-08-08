@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
@@ -81,7 +82,7 @@ public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable
 			final float curEMC = hasEMCTag(stack) ? stack.getTagCompound().getFloat(EMC_TAG) : 0;
 			
 			if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + curEMC + " / " + capacities[stack.getItemDamage()]);
+				list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + String.format("%.2f", curEMC) + " / " + String.format("%.2f", capacities[stack.getItemDamage()]));
 			} else {
 				list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(capacities[stack.getItemDamage()]));
 			}
@@ -112,7 +113,11 @@ public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable
 	@Override
 	public void loadConfig(final Configuration config) {
 		for (int i = 0; i < NUM_CELLS; i++) {
-			capacities[i] = (float) config.get(GROUP, "Tier" + i + "_Capacity", capacities[i]).getDouble(capacities[i]);
+			try {
+				capacities[i] = Float.valueOf(config.get(GROUP, "Tier" + i + "_Capacity", String.format("%.0f", capacities[i])).getString());
+			} catch (NumberFormatException e) {
+				EquivalentEnergistics.logger.warn("Storage Cell Tier" + i + "_Capacity configured for invalid value! Default will be used!");
+			}
 			drain[i] = config.get(GROUP, "Tier_" + i + "_PowerDrain", drain[i]).getDouble(drain[i]);
 		}		
 	}

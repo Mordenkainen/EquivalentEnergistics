@@ -1,7 +1,5 @@
 package com.mordenkainen.equivalentenergistics;
 
-import java.io.File;
-
 import net.minecraft.creativetab.CreativeTabs;
 
 import org.apache.logging.log4j.Logger;
@@ -35,7 +33,7 @@ public class EquivalentEnergistics {
 	@EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
-		ConfigManager.init(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + ".cfg"));
+		ConfigManager.init(event.getSuggestedConfigurationFile());
 		proxy.preInit();
 	}
 	

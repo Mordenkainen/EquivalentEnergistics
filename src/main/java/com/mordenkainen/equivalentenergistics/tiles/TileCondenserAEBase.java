@@ -52,6 +52,8 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 		sleeping = false;
 	}
 	
+	// TileEntity Overrides
+	// ------------------------
 	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
@@ -81,7 +83,10 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 		super.writeToNBT(data);
 		IGridProxyable.super.writeToNBT(data);
 	}
+	// ------------------------
 	
+	// IGridTickable Overrides
+	// ------------------------
 	@Override
 	public TickingRequest getTickingRequest(final IGridNode node) {
 		return new TickingRequest(1, 20, sleeping, true);
@@ -103,18 +108,27 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 			return TickRateModulation.URGENT;
 		}
 	}
+	// ------------------------
 	
+	// IGridHost Overrides
+	// ------------------------	
 	@Override
 	public void securityBreak() {
 		CommonUtils.destroyAndDrop(worldObj, xCoord, yCoord, zCoord);
 	}
-
+	// ------------------------
+	
+	// IInventoryInt Overrides
+	// ------------------------
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends InternalInventory> T getInventory() {
 		return (T) internalInventory;
 	}
+	// ------------------------
 
+	// IGridProxyable Overrides
+	// ------------------------
 	@Override
 	public IGridProxy getProxy() {
 		return gridProxy;
@@ -127,7 +141,10 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 
 	@Override
 	public void gridChanged() {}
+	// ------------------------
 
+	// TileCondenserBase Overrides
+	// ------------------------
 	@Override
 	protected ItemStack ejectStack(final ItemStack stack) {
 		final IAEItemStack toInject = AEApi.instance().storage().createItemStack(stack.copy());
@@ -187,7 +204,10 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 		}
 		return false;
 	}
+	// ------------------------
 	
+	// IInvChangeNotifier Overrides
+	// ------------------------	
 	@Override
 	public void onChangeInventory() {
 		if (sleeping) {
@@ -198,6 +218,7 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 			}
 		}
 	}
+	// ------------------------
 	
 	protected abstract int getSlotCount();
 	

@@ -11,6 +11,8 @@ public abstract class TileNetworkInv extends TileNetworkBase implements IInvento
 		super(repItem);
 	}
 	
+	// TileEntity Overrides
+	// ------------------------
 	@Override
 	public void readFromNBT(final NBTTagCompound data) {
 		super.readFromNBT(data);
@@ -23,5 +25,6 @@ public abstract class TileNetworkInv extends TileNetworkBase implements IInvento
 		super.writeToNBT(data);
 		IInventoryInt.super.writeToNBT(data);
 	}
+	// ------------------------
 	
 }
