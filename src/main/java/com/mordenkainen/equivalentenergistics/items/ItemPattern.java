@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
+import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -26,13 +27,13 @@ public class ItemPattern extends ItemBase implements ICraftingPatternItem {
 	public ICraftingPatternDetails getPatternForItem(final ItemStack stack, final World world) {
 		return EMCCraftingPattern.get(ItemStack.loadItemStackFromNBT(stack.getTagCompound()));
 	}
-	
-	@Optional.Method(modid = "appliedenergistics2")
-	public void setTargetItem(final ItemStack pattern, final ItemStack target) {
-		if(!pattern.hasTagCompound()) {
-			pattern.stackTagCompound = new NBTTagCompound();
-		}
-		target.writeToNBT(pattern.getTagCompound());
-	}
 	// ------------------------
+	
+	public static ItemStack getItemForPattern(final ItemStack target) {
+		final ItemStack pattern = new ItemStack(ItemEnum.EMCPATTERN.getItem());
+		pattern.setTagCompound(new NBTTagCompound());
+		target.writeToNBT(pattern.getTagCompound());
+		return pattern;
+	}
+	
 }
