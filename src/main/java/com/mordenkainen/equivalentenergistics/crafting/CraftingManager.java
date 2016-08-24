@@ -63,7 +63,7 @@ public final class CraftingManager {
 		}
 		
 		// Components
-		GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "ABA", "BCB", "ABA", 'A', dust, 'B', new ItemStack(aeMaterial, 1), 'C', new ItemStack(aeMaterial, 1, 22));
+		GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "ABA", "BCB", "ABA", 'A', dust, 'B', new ItemStack(aeMaterial, 1), 'C', new ItemStack(aeMaterial, 1, 22)); // NOPMD
 		for (int i = 1; i < 4; i++) {
 			GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "ABA", "CDC", "ACA", 'A', dust, 'B', new ItemStack(aeMaterial, 1, 23), 'C', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'D', new ItemStack(aeGlass, 1));
 		}

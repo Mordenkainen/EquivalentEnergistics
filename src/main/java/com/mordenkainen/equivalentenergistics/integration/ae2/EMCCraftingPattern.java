@@ -149,7 +149,7 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 		while (iter.hasNext()) {
 			final Wrapper<ItemStack> wrappedStack = iter.next();
 			if(Integration.emcHandler.hasEMC(wrappedStack.get())) {
-				final EMCCraftingPattern pattern = ((EMCCraftingPattern)patterns.get(wrappedStack));
+				final EMCCraftingPattern pattern = (EMCCraftingPattern) patterns.get(wrappedStack);
 				pattern.buildPattern(wrappedStack.get());
 				if (!pattern.valid) {
 					EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.result[0].getItem().getUnlocalizedName(pattern.result[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));

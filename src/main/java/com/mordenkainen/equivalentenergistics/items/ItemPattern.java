@@ -1,5 +1,6 @@
 package com.mordenkainen.equivalentenergistics.items;
 
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -19,6 +20,15 @@ public class ItemPattern extends ItemBase implements ICraftingPatternItem {
 		super();
 		setMaxStackSize(1);
 	}
+	
+	// Item Overrides
+	// ------------------------
+	@Override
+	public EnumRarity getRarity(final ItemStack stack)
+    {
+        return EnumRarity.rare;
+    }
+	// ------------------------
 	
 	// ICraftingPatternItem Overrides
 	// ------------------------
