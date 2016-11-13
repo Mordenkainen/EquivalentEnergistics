@@ -1,7 +1,6 @@
 package com.mordenkainen.equivalentenergistics.util.inventory;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,173 +8,173 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 public class InternalInventory implements IInventory {
-	
-	private static final String NBT_KEY_SLOT = "Slot";
-	
-	public ItemStack[] slots;
-	public String customName;
-	private final int stackLimit;
-	private final IInvChangeNotifier te;
-	
-	public InternalInventory(final String _customName, final int size, final int _stackLimit, final IInvChangeNotifier _te) {
-		slots = new ItemStack[size];
-		customName = _customName;
-		stackLimit = _stackLimit;
-		te = _te;
-	}
-	
-	public InternalInventory(final String _customName, final int size, final int _stackLimit) {
-		this(_customName, size, _stackLimit, null);
-	}
-	
-	@Override
-	public int getSizeInventory() {
-		return slots.length;
-	}
 
-	@Override
-	public ItemStack getStackInSlot(final int index) {
-		return slots[index];
-	}
+    private static final String NBT_KEY_SLOT = "Slot";
 
-	@Override
-	public ItemStack decrStackSize(final int slotId, final int amount) {
-		final ItemStack slotStack = slots[slotId];
+    public ItemStack[] slots;
+    public String customName;
+    private final int stackLimit;
+    private final IInvChangeNotifier te;
 
-		if (slotStack == null) {
-			return null;
-		}
+    public InternalInventory(final String _customName, final int size, final int _stackLimit, final IInvChangeNotifier _te) {
+        slots = new ItemStack[size];
+        customName = _customName;
+        stackLimit = _stackLimit;
+        te = _te;
+    }
 
-		final int decAmount = Math.min(amount, slotStack.stackSize);
-		final int remAmount = slotStack.stackSize - decAmount;
+    public InternalInventory(final String _customName, final int size, final int _stackLimit) {
+        this(_customName, size, _stackLimit, null);
+    }
 
-		if (remAmount > 0) {
-			slots[slotId].stackSize = remAmount;
-		} else {
-			slots[slotId] = null;
-		}
+    @Override
+    public int getSizeInventory() {
+        return slots.length;
+    }
 
-		ItemStack resultStack = null;
-		
-		if (decAmount > 0) {
-			resultStack = slotStack.copy();
-			resultStack.stackSize = decAmount;
-		}
+    @Override
+    public ItemStack getStackInSlot(final int index) {
+        return slots[index];
+    }
 
-		markDirty();
+    @Override
+    public ItemStack decrStackSize(final int slotId, final int amount) {
+        final ItemStack slotStack = slots[slotId];
 
-		return resultStack;
-	}
+        if (slotStack == null) {
+            return null;
+        }
 
-	@Override
-	public ItemStack getStackInSlotOnClosing(final int slotId) {
-		return slots[slotId];
-	}
+        final int decAmount = Math.min(amount, slotStack.stackSize);
+        final int remAmount = slotStack.stackSize - decAmount;
 
-	@Override
-	public void setInventorySlotContents(final int slotId, final ItemStack itemStack) {
-		if (itemStack != null && itemStack.stackSize > getInventoryStackLimit()) {
-			itemStack.stackSize = getInventoryStackLimit();
-		}
+        if (remAmount > 0) {
+            slots[slotId].stackSize = remAmount;
+        } else {
+            slots[slotId] = null;
+        }
 
-		slots[slotId] = itemStack;
+        ItemStack resultStack = null;
 
-		markDirty();
-	}
+        if (decAmount > 0) {
+            resultStack = slotStack.copy();
+            resultStack.stackSize = decAmount;
+        }
 
-	@Override
-	public String getInventoryName() {
-		return customName;
-	}
+        markDirty();
 
-	@Override
-	public boolean hasCustomInventoryName() {
-		return false;
-	}
+        return resultStack;
+    }
 
-	@Override
-	public int getInventoryStackLimit() {
-		return stackLimit;
-	}
+    @Override
+    public ItemStack getStackInSlotOnClosing(final int slotId) {
+        return slots[slotId];
+    }
 
-	@Override
-	public void markDirty() {
-		if (te != null && !FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-			te.onChangeInventory();
-		}
-	}
+    @Override
+    public void setInventorySlotContents(final int slotId, final ItemStack itemStack) {
+        if (itemStack != null && itemStack.stackSize > getInventoryStackLimit()) {
+            itemStack.stackSize = getInventoryStackLimit();
+        }
 
-	@Override
-	public boolean isUseableByPlayer(final EntityPlayer player) {
-		return true;
-	}
+        slots[slotId] = itemStack;
 
-	@Override
-	public void openInventory() {}
+        markDirty();
+    }
 
-	@Override
-	public void closeInventory() {}
+    @Override
+    public String getInventoryName() {
+        return customName;
+    }
 
-	@Override
-	public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-		return false;
-	}
+    @Override
+    public boolean hasCustomInventoryName() {
+        return false;
+    }
 
-	public final void loadFromNBT(final NBTTagCompound data, final String tagName) {
-		if (data == null) {
-			return;
-		}
+    @Override
+    public int getInventoryStackLimit() {
+        return stackLimit;
+    }
 
-		if (!data.hasKey(tagName)) {
-			return;
-		}
+    @Override
+    public void markDirty() {
+        if (te != null && !FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            te.onChangeInventory();
+        }
+    }
 
-		slots = new ItemStack[slots.length];
-		
-		final NBTTagList invList = data.getTagList(tagName, (byte)10);
+    @Override
+    public boolean isUseableByPlayer(final EntityPlayer player) {
+        return true;
+    }
 
-		for (int index = 0; index < invList.tagCount(); index++) {
-			final NBTTagCompound nbtCompound = invList.getCompoundTagAt(index);
+    @Override
+    public void openInventory() {}
 
-			final int slotIndex = nbtCompound.getByte(InternalInventory.NBT_KEY_SLOT) & 0xFF;
+    @Override
+    public void closeInventory() {}
 
-			if (slotIndex >= 0 && slotIndex < slots.length) {
-				slots[slotIndex] = ItemStack.loadItemStackFromNBT(nbtCompound);
-			}
-		}
-	}
-	
-	public final void saveToNBT(final NBTTagCompound data, final String tagName) {
-		if (data == null) {
-			return;
-		}
+    @Override
+    public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
+        return false;
+    }
 
-		final NBTTagList invList = new NBTTagList();
+    public final void loadFromNBT(final NBTTagCompound data, final String tagName) {
+        if (data == null) {
+            return;
+        }
 
-		for (int slotIndex = 0; slotIndex < slots.length; slotIndex++) {
-			if (slots[slotIndex] != null) {
-				final NBTTagCompound nbtCompound = new NBTTagCompound();
+        if (!data.hasKey(tagName)) {
+            return;
+        }
 
-				nbtCompound.setByte(InternalInventory.NBT_KEY_SLOT, (byte) slotIndex);
+        slots = new ItemStack[slots.length];
 
-				slots[slotIndex].writeToNBT(nbtCompound);
+        final NBTTagList invList = data.getTagList(tagName, (byte) 10);
 
-				invList.appendTag(nbtCompound);
-			}
-		}
+        for (int index = 0; index < invList.tagCount(); index++) {
+            final NBTTagCompound nbtCompound = invList.getCompoundTagAt(index);
 
-		if (invList.tagCount() > 0) {
-			data.setTag(tagName, invList);
-		}
-	}
-	
-	public boolean isEmpty() {
-		for (int x = 0; x < getSizeInventory(); x++) {
-			if (getStackInSlot(x) != null) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
+            final int slotIndex = nbtCompound.getByte(InternalInventory.NBT_KEY_SLOT) & 0xFF;
+
+            if (slotIndex >= 0 && slotIndex < slots.length) {
+                slots[slotIndex] = ItemStack.loadItemStackFromNBT(nbtCompound);
+            }
+        }
+    }
+
+    public final void saveToNBT(final NBTTagCompound data, final String tagName) {
+        if (data == null) {
+            return;
+        }
+
+        final NBTTagList invList = new NBTTagList();
+
+        for (int slotIndex = 0; slotIndex < slots.length; slotIndex++) {
+            if (slots[slotIndex] != null) {
+                final NBTTagCompound nbtCompound = new NBTTagCompound();
+
+                nbtCompound.setByte(InternalInventory.NBT_KEY_SLOT, (byte) slotIndex);
+
+                slots[slotIndex].writeToNBT(nbtCompound);
+
+                invList.appendTag(nbtCompound);
+            }
+        }
+
+        if (invList.tagCount() > 0) {
+            data.setTag(tagName, invList);
+        }
+    }
+
+    public boolean isEmpty() {
+        for (int x = 0; x < getSizeInventory(); x++) {
+            if (getStackInSlot(x) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

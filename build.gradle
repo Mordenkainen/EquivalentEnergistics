@@ -40,6 +40,12 @@ repositories {
     }
 }
 
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'com.mordenkainen.equivalentenergistics.asm.EqECoreLoader',
+                   'FMLCorePluginContainsFMLMod': 'true'    }
+}
+
 dependencies {
     compile "codechicken:CodeChickenLib:${minecraft_version}-${ccl_version}:dev"
     compile "codechicken:CodeChickenCore:${minecraft_version}-${ccc_version}:dev"

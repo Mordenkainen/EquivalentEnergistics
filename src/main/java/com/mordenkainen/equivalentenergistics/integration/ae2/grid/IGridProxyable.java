@@ -11,71 +11,71 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IGridProxyable extends IGridHost, IActionHost {
-	
-	// IGridHost Overrides
-	// ------------------------
-	@Override
-	default IGridNode getGridNode(final ForgeDirection arg0) {
-		return getProxy().getNode();
-	}
-	
-	@Override
-	default AECableType getCableConnectionType(final ForgeDirection arg0) {
-		return AECableType.SMART;
-	}
-	// ------------------------
 
-	// IActionHost Overrides
-	// ------------------------
-	@Override
-	default IGridNode getActionableNode() {
-		return getProxy().getNode();
-	}
-	// ------------------------
-	
-	default boolean isActive() {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-			return false;
-		}
-		
-		if (getProxy().getNode() == null) {
-			return false;
-		} else {
-			return getProxy().getNode().isActive();
-		}
-	}
-	
-	default void setOwner(final EntityPlayer player) {
-		getProxy().setOwner(player);
-	}
-	
-	default void onChunkUnload() {
-		getProxy().onChunkUnload();
-	}
-	
-	default void invalidate() {
-		getProxy().invalidate();
-	}
-	
-	default void validate() {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-			return;
-		}
-		getProxy().onReady();
-	}
-	
-	default void readFromNBT(final NBTTagCompound data) {
-		getProxy().readFromNBT(data);
-	}
-	
-	default void writeToNBT(final NBTTagCompound data) {
-		getProxy().writeToNBT(data);
-	}
-	
-	IGridProxy getProxy();
+    // IGridHost Overrides
+    // ------------------------
+    @Override
+    default IGridNode getGridNode(final ForgeDirection arg0) {
+        return getProxy().getNode();
+    }
 
-	DimensionalCoord getLocation();
+    @Override
+    default AECableType getCableConnectionType(final ForgeDirection arg0) {
+        return AECableType.SMART;
+    }
+    // ------------------------
 
-	void gridChanged();
-	
+    // IActionHost Overrides
+    // ------------------------
+    @Override
+    default IGridNode getActionableNode() {
+        return getProxy().getNode();
+    }
+    // ------------------------
+
+    default boolean isActive() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return false;
+        }
+
+        if (getProxy().getNode() == null) {
+            return false;
+        } else {
+            return getProxy().getNode().isActive();
+        }
+    }
+
+    default void setOwner(final EntityPlayer player) {
+        getProxy().setOwner(player);
+    }
+
+    default void onChunkUnload() {
+        getProxy().onChunkUnload();
+    }
+
+    default void invalidate() {
+        getProxy().invalidate();
+    }
+
+    default void validate() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return;
+        }
+        getProxy().onReady();
+    }
+
+    default void readFromNBT(final NBTTagCompound data) {
+        getProxy().readFromNBT(data);
+    }
+
+    default void writeToNBT(final NBTTagCompound data) {
+        getProxy().writeToNBT(data);
+    }
+
+    IGridProxy getProxy();
+
+    DimensionalCoord getLocation();
+
+    void gridChanged();
+
 }

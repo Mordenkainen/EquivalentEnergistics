@@ -21,93 +21,107 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IGridProxy extends IGridBlock {
 
-	double getIdlePowerUsage();
+    @Override
+    double getIdlePowerUsage();
 
-	void setIdlePowerUsage(double idle);
+    void setIdlePowerUsage(double idle);
 
-	EnumSet<GridFlags> getFlags();
+    @Override
+    EnumSet<GridFlags> getFlags();
 
-	void setFlags(GridFlags... gridFlags);
+    void setFlags(GridFlags... gridFlags);
 
-	boolean isWorldAccessible();
+    @Override
+    boolean isWorldAccessible();
 
-	DimensionalCoord getLocation();
+    @Override
+    DimensionalCoord getLocation();
 
-	AEColor getGridColor();
+    @Override
+    AEColor getGridColor();
 
-	void setGridColor(AEColor color);
+    void setGridColor(AEColor color);
 
-	void onGridNotification(GridNotification gridNotification);
+    @Override
+    void onGridNotification(GridNotification gridNotification);
 
-	void setNetworkStatus(IGrid grid, int usedChannels);
+    @Override
+    void setNetworkStatus(IGrid grid, int usedChannels);
 
-	EnumSet<ForgeDirection> getConnectableSides();
+    @Override
+    EnumSet<ForgeDirection> getConnectableSides();
 
-	void setConnectableSides(EnumSet<ForgeDirection> validSides);
+    void setConnectableSides(EnumSet<ForgeDirection> validSides);
 
-	IGridHost getMachine();
+    @Override
+    IGridHost getMachine();
 
-	void gridChanged();
+    @Override
+    void gridChanged();
 
-	ItemStack getMachineRepresentation();
+    @Override
+    ItemStack getMachineRepresentation();
 
-	void setMachineRepresentation(ItemStack stack);
+    void setMachineRepresentation(ItemStack stack);
 
-	void writeToNBT(NBTTagCompound tag);
+    void writeToNBT(NBTTagCompound tag);
 
-	void readFromNBT(NBTTagCompound tag);
+    void readFromNBT(NBTTagCompound tag);
 
-	void onChunkUnload();
+    void onChunkUnload();
 
-	void invalidate();
+    void invalidate();
 
-	boolean onReady();
+    boolean onReady();
 
-	boolean isReady();
+    boolean isReady();
 
-	boolean isPowered();
+    boolean isPowered();
 
-	void setOwner(EntityPlayer player);
+    void setOwner(EntityPlayer player);
 
-	IGridNode getNode();
+    IGridNode getNode();
 
-	boolean isActive();
+    boolean isActive();
 
-	IGrid getGrid() throws GridAccessException;
+    IGrid getGrid() throws GridAccessException;
 
-	IPathingGrid getPath() throws GridAccessException;
+    IPathingGrid getPath() throws GridAccessException;
 
-	IStorageGrid getStorage() throws GridAccessException;
+    IStorageGrid getStorage() throws GridAccessException;
 
-	ISecurityGrid getSecurity() throws GridAccessException;
+    ISecurityGrid getSecurity() throws GridAccessException;
 
-	ICraftingGrid getCrafting() throws GridAccessException;
+    ICraftingGrid getCrafting() throws GridAccessException;
 
-	IEnergyGrid getEnergy() throws GridAccessException;
-	
-	ITickManager getTick() throws GridAccessException;
-	
-	EMCStorageGrid getEMCStorage() throws GridAccessException;
+    IEnergyGrid getEnergy() throws GridAccessException;
 
-	double getAEDemand(double amount);
+    ITickManager getTick() throws GridAccessException;
 
-	double sendAEToNet(double amount, Actionable mode);
-	
-	double extractAEPower(double amount, Actionable mode, PowerMultiplier multiplier);
+    EMCStorageGrid getEMCStorage() throws GridAccessException;
 
-	double getAEMaxEnergy();
+    double getAEDemand(double amount);
 
-	double getAECurrentEnergy();
-	
-	boolean injectItems(ItemStack stack, double powerCost, MachineSource source);
-	
+    double sendAEToNet(double amount, Actionable mode);
+
+    double extractAEPower(double amount, Actionable mode, PowerMultiplier multiplier);
+
+    double getAEMaxEnergy();
+
+    double getAECurrentEnergy();
+
+    static IGridProxy getDefaultProxy(final ItemStack repItem, final IGridProxyable host) {
+        return FMLCommonHandler.instance().getEffectiveSide().isClient() ? new NullProxy(host) : new NetworkProxy(host, "node0", repItem, true);
+    }
+
+    ItemStack injectItemsForPower(ItemStack stack, MachineSource source);
+
 }

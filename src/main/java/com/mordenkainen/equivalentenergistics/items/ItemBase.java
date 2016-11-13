@@ -5,10 +5,10 @@ import net.minecraft.item.Item;
 
 public class ItemBase extends Item {
 
-	// Item Overrides
-	// ------------------------
-	@Override
-	public void registerIcons(final IIconRegister reg) {}
-	// ------------------------
-	
+    // Item Overrides
+    // ------------------------
+    @Override
+    public void registerIcons(final IIconRegister reg) {}
+    // ------------------------
+
 }

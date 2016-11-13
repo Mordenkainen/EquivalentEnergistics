@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.blocks;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -17,6 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.config.Configuration;
@@ -65,6 +67,12 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 	@Override
 	public final void registerBlockIcons(final IIconRegister register) {}
 	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public IIcon getIcon(final int side, final int meta) {
+		return TextureEnum.EMCCONDENSER.getTexture();
+	}
+	
 	@Override
 	public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
 		if(!world.isRemote) {
@@ -103,10 +111,10 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 			}
 			return true;
 		} else if (existingTome != null) {
+			tileCrafter.setCurrentTome(null);
 			if(!world.isRemote) {
 				CommonUtils.spawnEntItem(world, x, y, z, existingTome);
 			}
-			tileCrafter.setCurrentTome(null);
 			return true;
 		}
 		

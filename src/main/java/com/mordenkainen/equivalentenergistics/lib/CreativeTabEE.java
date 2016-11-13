@@ -8,18 +8,18 @@ import net.minecraft.item.ItemStack;
 
 public class CreativeTabEE extends CreativeTabs {
 
-	public CreativeTabEE(final int tabID, final String label) {
-		super(tabID, label);
-	}
+    public CreativeTabEE(final int tabID, final String label) {
+        super(tabID, label);
+    }
 
-	@Override
-	public Item getTabIconItem() {
-		return null;
-	}
-	
-	@Override
-	public ItemStack getIconItemStack() {
-		return ItemEnum.EMCCRYSTAL.getDamagedStack(2);
-	}
-	
+    @Override
+    public Item getTabIconItem() {
+        return null;
+    }
+
+    @Override
+    public ItemStack getIconItemStack() {
+        return ItemEnum.EMCCRYSTAL.getDamagedStack(2);
+    }
+
 }

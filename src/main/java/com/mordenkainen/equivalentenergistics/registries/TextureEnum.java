@@ -7,56 +7,55 @@ import net.minecraft.util.IIcon;
 
 public enum TextureEnum {
 
-	EMCCONDENSER(TextureType.BLOCK, "EMCCondenserTop", "EMCCondenserSide"),
-	EMCBOOK(TextureType.ITEM, "EMCBook"),
-	EMCCRYSTAL(TextureType.ITEM, "EMCNugget", "EMCShard", "EMCCrystal", "DenseEMCCrystal", "SuperDenseEMCCrystal"),
-	EMCCRYSTALOLD(TextureType.ITEM, "EMCCrystal"),
-	EMCCELL(TextureType.ITEM, "EMCCellTier0", "EMCCellTier1", "EMCCellTier2", "EMCCellTier3", "EMCCellTier4", "EMCCellTier5", "EMCCellTier6", "EMCCellTier7"),
-	MISCITEM(TextureType.ITEM, "EMCCellHousing", "EMCTotal"),
-	EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7");
-	
-	private enum TextureType {
-		ITEM, BLOCK, PART
-	}
+    EMCCONDENSER(TextureType.BLOCK, "EMCCondenserTop", "EMCCondenserSide"),
+    EMCBOOK(TextureType.ITEM, "EMCBook"),
+    EMCCRYSTAL(TextureType.ITEM, "EMCNugget", "EMCShard", "EMCCrystal", "DenseEMCCrystal", "SuperDenseEMCCrystal"),
+    EMCCRYSTALOLD(TextureType.ITEM, "EMCCrystal"),
+    EMCCELL(TextureType.ITEM, "EMCCellTier0", "EMCCellTier1", "EMCCellTier2", "EMCCellTier3", "EMCCellTier4", "EMCCellTier5", "EMCCellTier6", "EMCCellTier7"),
+    MISCITEM(TextureType.ITEM, "EMCCellHousing", "EMCTotal"),
+    EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7");
 
-	private TextureType textureType;
-	private String[] textureNames;
+    private enum TextureType {
+        ITEM, BLOCK, PART
+    }
 
-	private IIcon[] textures;
+    private TextureType textureType;
+    private String[] textureNames;
 
-	TextureEnum(final TextureType type, final String... names) {
-		textureType = type;
-		textureNames = names;
-		textures = new IIcon[textureNames.length];
-	}
+    private IIcon[] textures;
 
-	public IIcon getTexture() {
-		return textures[0];
-	}
-	
-	public IIcon getTexture(final int id) {
-		return textures[id];
-	}
+    TextureEnum(final TextureType type, final String... names) {
+        textureType = type;
+        textureNames = names;
+        textures = new IIcon[textureNames.length];
+    }
 
-	public IIcon[] getTextures() {
-		return textures.clone();
-	}
+    public IIcon getTexture() {
+        return textures[0];
+    }
 
-	public void registerTexture(final TextureMap textureMap) {
-		if (!(textureMap.getTextureType() == 0 && (textureType == TextureType.BLOCK || textureType == TextureType.PART))
-				&& !(textureMap.getTextureType() == 1 && textureType == TextureType.ITEM)) {
-			return;
-		}
+    public IIcon getTexture(final int id) {
+        return textures[id];
+    }
 
-		String header = Reference.MOD_ID + ":";
-		
-		if (textureType == TextureType.PART) {
-			header += "part/";
-		}
-		
-		for (int i = 0; i < textureNames.length; i++) {
-			textures[i] = textureMap.registerIcon(header + textureNames[i]);
-		}
-	}
-	
+    public IIcon[] getTextures() {
+        return textures.clone();
+    }
+
+    public void registerTexture(final TextureMap textureMap) {
+        if (!(textureMap.getTextureType() == 0 && (textureType == TextureType.BLOCK || textureType == TextureType.PART)) && !(textureMap.getTextureType() == 1 && textureType == TextureType.ITEM)) {
+            return;
+        }
+
+        String header = Reference.MOD_ID + ":";
+
+        if (textureType == TextureType.PART) {
+            header += "part/";
+        }
+
+        for (int i = 0; i < textureNames.length; i++) {
+            textures[i] = textureMap.registerIcon(header + textureNames[i]);
+        }
+    }
+
 }

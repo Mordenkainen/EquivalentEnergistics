@@ -9,30 +9,30 @@ import net.minecraft.item.ItemStack;
 
 public interface IEMCHandler {
 
-	boolean hasEMC(ItemStack itemStack);
+    boolean hasEMC(ItemStack itemStack);
 
-	float getEnergyValue(ItemStack itemStack);
+    float getEnergyValue(ItemStack itemStack);
 
-	float getCrystalEMC();
+    float getCrystalEMC();
 
-	float getCrystalEMC(int tier);
+    float getCrystalEMC(int tier);
 
-	List<ItemStack> getTransmutations(TileEMCCrafter tile);
+    List<ItemStack> getTransmutations(TileEMCCrafter tile);
 
-	boolean isValidTome(ItemStack itemStack);
+    boolean isValidTome(ItemStack itemStack);
 
-	void setCrystalEMC(float emc);
+    void setCrystalEMC(float emc);
 
-	UUID getTomeUUID(ItemStack currentTome);
+    UUID getTomeUUID(ItemStack currentTome);
 
-	String getTomeOwner(ItemStack currentTome);
+    String getTomeOwner(ItemStack currentTome);
 
-	float getSingleEnergyValue(ItemStack stack);
-	
-	boolean isEMCStorage(ItemStack stack);
+    float getSingleEnergyValue(ItemStack stack);
 
-	float getStoredEMC(ItemStack stack);
+    boolean isEMCStorage(ItemStack stack);
 
-	float extractEMC(ItemStack stack, float toStore);
-	
+    float getStoredEMC(ItemStack stack);
+
+    float extractEMC(ItemStack stack, float toStore);
+
 }

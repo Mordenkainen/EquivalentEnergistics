@@ -20,193 +20,191 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class NullProxy implements IGridProxy {
 
-	private final IGridProxyable tile;
-	
-	public NullProxy(final IGridProxyable _tile) {
-		tile = _tile;
-	}
-	
-	@Override
-	public double getIdlePowerUsage() {
-		return 0;
-	}
+    private final IGridProxyable tile;
 
-	@Override
-	public void setIdlePowerUsage(final double idle) {}
+    public NullProxy(final IGridProxyable _tile) {
+        tile = _tile;
+    }
 
-	@Override
-	public EnumSet<GridFlags> getFlags() {
-		return null;
-	}
+    @Override
+    public double getIdlePowerUsage() {
+        return 0;
+    }
 
-	@Override
-	public void setFlags(final GridFlags... gridFlags) {}
+    @Override
+    public void setIdlePowerUsage(final double idle) {}
 
-	@Override
-	public boolean isWorldAccessible() {
-		return false;
-	}
+    @Override
+    public EnumSet<GridFlags> getFlags() {
+        return null;
+    }
 
-	@Override
-	public DimensionalCoord getLocation() {
-		return tile.getLocation();
-	}
+    @Override
+    public void setFlags(final GridFlags... gridFlags) {}
 
-	@Override
-	public AEColor getGridColor() {
-		return null;
-	}
+    @Override
+    public boolean isWorldAccessible() {
+        return false;
+    }
 
-	@Override
-	public void setGridColor(final AEColor color) {}
+    @Override
+    public DimensionalCoord getLocation() {
+        return tile.getLocation();
+    }
 
-	@Override
-	public void onGridNotification(final GridNotification gridNotification) {}
+    @Override
+    public AEColor getGridColor() {
+        return null;
+    }
 
-	@Override
-	public void setNetworkStatus(final IGrid grid, final int usedChannels) {}
+    @Override
+    public void setGridColor(final AEColor color) {}
 
-	@Override
-	public EnumSet<ForgeDirection> getConnectableSides() {
-		return null;
-	}
+    @Override
+    public void onGridNotification(final GridNotification gridNotification) {}
 
-	@Override
-	public void setConnectableSides(final EnumSet<ForgeDirection> validSides) {}
+    @Override
+    public void setNetworkStatus(final IGrid grid, final int usedChannels) {}
 
-	@Override
-	public IGridHost getMachine() {
-		return null;
-	}
+    @Override
+    public EnumSet<ForgeDirection> getConnectableSides() {
+        return null;
+    }
 
-	@Override
-	public void gridChanged() {}
+    @Override
+    public void setConnectableSides(final EnumSet<ForgeDirection> validSides) {}
 
-	@Override
-	public ItemStack getMachineRepresentation() {
-		return null;
-	}
+    @Override
+    public IGridHost getMachine() {
+        return null;
+    }
 
-	@Override
-	public void setMachineRepresentation(final ItemStack stack) {}
+    @Override
+    public void gridChanged() {}
 
-	@Override
-	public void writeToNBT(final NBTTagCompound tag) {}
+    @Override
+    public ItemStack getMachineRepresentation() {
+        return null;
+    }
 
-	@Override
-	public void readFromNBT(final NBTTagCompound tag) {}
+    @Override
+    public void setMachineRepresentation(final ItemStack stack) {}
 
-	@Override
-	public void onChunkUnload() {}
+    @Override
+    public void writeToNBT(final NBTTagCompound tag) {}
 
-	@Override
-	public void invalidate() {}
+    @Override
+    public void readFromNBT(final NBTTagCompound tag) {}
 
-	@Override
-	public boolean onReady() {
-		return false;
-	}
+    @Override
+    public void onChunkUnload() {}
 
-	@Override
-	public boolean isReady() {
-		return false;
-	}
+    @Override
+    public void invalidate() {}
 
-	@Override
-	public boolean isPowered() {
-		return false;
-	}
+    @Override
+    public boolean onReady() {
+        return false;
+    }
 
-	@Override
-	public void setOwner(final EntityPlayer player) {}
+    @Override
+    public boolean isReady() {
+        return false;
+    }
 
-	@Override
-	public IGridNode getNode() {
-		return null;
-	}
+    @Override
+    public boolean isPowered() {
+        return false;
+    }
 
-	@Override
-	public boolean isActive() {
-		return false;
-	}
+    @Override
+    public void setOwner(final EntityPlayer player) {}
 
-	@Override
-	public IGrid getGrid() throws GridAccessException {
-		throw new GridAccessException();
-	}
+    @Override
+    public IGridNode getNode() {
+        return null;
+    }
 
-	@Override
-	public IPathingGrid getPath() throws GridAccessException {
-		throw new GridAccessException();
-	}
+    @Override
+    public boolean isActive() {
+        return false;
+    }
 
-	@Override
-	public IStorageGrid getStorage() throws GridAccessException {
-		throw new GridAccessException();
-	}
+    @Override
+    public IGrid getGrid() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public ISecurityGrid getSecurity() throws GridAccessException {
-		throw new GridAccessException();
-	}
+    @Override
+    public IPathingGrid getPath() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public ICraftingGrid getCrafting() throws GridAccessException {
-		throw new GridAccessException();
-	}
+    @Override
+    public IStorageGrid getStorage() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public IEnergyGrid getEnergy() throws GridAccessException {
-		throw new GridAccessException();
-	}
-	
-	@Override
-	public ITickManager getTick() throws GridAccessException {
-		throw new GridAccessException();
-	}
-	
-	@Override
-	public EMCStorageGrid getEMCStorage() throws GridAccessException {
-		throw new GridAccessException();
-	}
+    @Override
+    public ISecurityGrid getSecurity() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public double getAEDemand(final double amount) {
-		return 0;
-	}
+    @Override
+    public ICraftingGrid getCrafting() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public double sendAEToNet(final double amount, final Actionable mode) {
-		return 0;
-	}
-	
-	@Override
-	public double extractAEPower(final double amount, final Actionable mode, final PowerMultiplier multiplier) {
-		return 0;
-	}
+    @Override
+    public IEnergyGrid getEnergy() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public double getAEMaxEnergy() {
-		return 0;
-	}
+    @Override
+    public ITickManager getTick() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public double getAECurrentEnergy() {
-		return 0;
-	}
+    @Override
+    public EMCStorageGrid getEMCStorage() throws GridAccessException {
+        throw new GridAccessException();
+    }
 
-	@Override
-	public boolean injectItems(final ItemStack stack, final double powerCost, final MachineSource source) {
-		return false;
-	}
-	
+    @Override
+    public double getAEDemand(final double amount) {
+        return 0;
+    }
+
+    @Override
+    public double sendAEToNet(final double amount, final Actionable mode) {
+        return 0;
+    }
+
+    @Override
+    public double extractAEPower(final double amount, final Actionable mode, final PowerMultiplier multiplier) {
+        return 0;
+    }
+
+    @Override
+    public double getAEMaxEnergy() {
+        return 0;
+    }
+
+    @Override
+    public double getAECurrentEnergy() {
+        return 0;
+    }
+
+    @Override
+    public ItemStack injectItemsForPower(final ItemStack stack, final MachineSource source) {
+        return stack;
+    }
+
 }

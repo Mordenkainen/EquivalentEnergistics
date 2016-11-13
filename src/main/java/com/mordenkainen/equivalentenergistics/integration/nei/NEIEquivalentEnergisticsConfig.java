@@ -7,38 +7,37 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class NEIEquivalentEnergisticsConfig implements IConfigureNEI {
 
-	@Override
-	public String getName() {
-		return Reference.MOD_NAME;
-	}
+    @Override
+    public String getName() {
+        return Reference.MOD_NAME;
+    }
 
-	@Override
-	public String getVersion() {
-		return Reference.MOD_VERSION;
-	}
+    @Override
+    public String getVersion() {
+        return Reference.MOD_VERSION;
+    }
 
-	@Override
-	public void loadConfig() {
-		if(Integration.Mods.NEI.isEnabled()) {
-			for (final BlockEnum current : BlockEnum.values()) {
-				if (current.isEnabled() && current.isHidden()) {
-					API.hideItem(new ItemStack(Item.getItemFromBlock(current.getBlock())));
-				}
-			}
-			for (final ItemEnum current : ItemEnum.values()) {
-				if (current.isEnabled() && current.isHidden()) {
-					API.hideItem(current.getSizedStack(1));
-				}
-			}
-			
-			API.hideItem(ItemEnum.MISCITEM.getDamagedStack(1));
-		}
-	}
-	
+    @Override
+    public void loadConfig() {
+        if (Integration.Mods.NEI.isEnabled()) {
+            for (final BlockEnum current : BlockEnum.values()) {
+                if (current.isEnabled() && current.isHidden()) {
+                    API.hideItem(new ItemStack(Item.getItemFromBlock(current.getBlock())));
+                }
+            }
+            for (final ItemEnum current : ItemEnum.values()) {
+                if (current.isEnabled() && current.isHidden()) {
+                    API.hideItem(current.getSizedStack(1));
+                }
+            }
+
+            API.hideItem(ItemEnum.MISCITEM.getDamagedStack(1));
+        }
+    }
+
 }

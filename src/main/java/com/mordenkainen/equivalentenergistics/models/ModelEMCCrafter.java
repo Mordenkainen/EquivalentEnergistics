@@ -2,20 +2,19 @@ package com.mordenkainen.equivalentenergistics.models;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
 public final class ModelEMCCrafter extends ModelBase {
     public ModelEMCCrafter() {
-    	super();
+        super();
         textureWidth = 64;
         textureHeight = 32;
         buildFrames();
         buildConnectors();
     }
-    
+
     private void buildFrames() {
-    	Frames.frame9 = new ModelRenderer(this, 16, 0);
+        Frames.frame9 = new ModelRenderer(this, 16, 0);
         Frames.frame9.setRotationPoint(0.0F, 9.0F, 7.0F);
         Frames.frame9.addBox(-8.0F, -1.0F, -1.0F, 16, 2, 2, 0.0F);
         setRotateAngle(Frames.frame9, 1.5707963267948966F, 0.0F, 0.0F);
@@ -62,9 +61,9 @@ public final class ModelEMCCrafter extends ModelBase {
         Frames.frame7.addBox(-1.0F, -1.0F, -6.0F, 2, 2, 12, 0.0F);
         setRotateAngle(Frames.frame7, 1.5707963267948966F, 3.141592653589793F, 0.0F);
     }
-    
+
     private void buildConnectors() {
-    	ConnectorWest.cbWest4 = new ModelRenderer(this, 4, 2);
+        ConnectorWest.cbWest4 = new ModelRenderer(this, 4, 2);
         ConnectorWest.cbWest4.setRotationPoint(0.0F, 2.0F, 0.0F);
         ConnectorWest.cbWest4.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
         ConnectorTop.cbTop2 = new ModelRenderer(this, 0, 0);
@@ -168,100 +167,100 @@ public final class ModelEMCCrafter extends ModelBase {
     }
 
     public void render() {
-    	final float scale = 1F/16F;
-    	Frames.frame6.render(scale);
-    	Frames.frame5.render(scale);
-    	Frames.frame1.render(scale);
-    	Frames.frame10.render(scale);
-    	Frames.frame4.render(scale);
-    	Frames.frame9.render(scale);
-    	Frames.frame7.render(scale);
-    	Frames.frame3.render(scale);
-    	Frames.frame12.render(scale);
-    	Frames.frame8.render(scale);
-    	Frames.frame11.render(scale);
-    	Frames.frame2.render(scale);
+        final float scale = 1F / 16F;
+        Frames.frame6.render(scale);
+        Frames.frame5.render(scale);
+        Frames.frame1.render(scale);
+        Frames.frame10.render(scale);
+        Frames.frame4.render(scale);
+        Frames.frame9.render(scale);
+        Frames.frame7.render(scale);
+        Frames.frame3.render(scale);
+        Frames.frame12.render(scale);
+        Frames.frame8.render(scale);
+        Frames.frame11.render(scale);
+        Frames.frame2.render(scale);
     }
 
-	public void renderConnector(final ForgeDirection side) {
-		final float scale = 1F/16F;
-		switch(side) {
-			case UP:
-				ConnectorTop.top.render(scale);
-				break;
-			case DOWN:
-				ConnectorBottom.bottom.render(scale);
-				break;
-			case EAST:
-				ConnectorEast.east.render(scale);
-				break;
-			case NORTH:
-				ConnectorNorth.north.render(scale);
-				break;
-			case SOUTH:
-				ConnectorSouth.south.render(scale);
-				break;
-			case WEST:
-				ConnectorWest.west.render(scale);
-				break;
-			default:
-		}
-	}
-	
-	private static class Frames {
-		public static ModelRenderer frame1;
-	    public static ModelRenderer frame2;
-	    public static ModelRenderer frame3;
-	    public static ModelRenderer frame4;
-	    public static ModelRenderer frame5;
-	    public static ModelRenderer frame6;
-	    public static ModelRenderer frame7;
-	    public static ModelRenderer frame8;
-	    public static ModelRenderer frame9;
-	    public static ModelRenderer frame10;
-	    public static ModelRenderer frame11;
-	    public static ModelRenderer frame12;
-	}
-	
-	private static class ConnectorTop {
-		public static ModelRenderer top;
-		public static ModelRenderer cbTop2;
-	    public static ModelRenderer cbTop3;
-	    public static ModelRenderer cbTop4;
-	}
-	
-	private static class ConnectorBottom {
-		public static ModelRenderer bottom;
-		public static ModelRenderer cbBottom2;
-	    public static ModelRenderer cbBottom3;
-	    public static ModelRenderer cbBottom4;
-	}
-	
-	private static class ConnectorEast {
-		public static ModelRenderer east;
-		public static ModelRenderer cbEast2;
-	    public static ModelRenderer cbEast3;
-	    public static ModelRenderer cbEast4;
-	}
-	
-	private static class ConnectorNorth {
-		public static ModelRenderer north;
-		public static ModelRenderer cbNorth2;
-	    public static ModelRenderer cbNorth3;
-	    public static ModelRenderer cbNorth4;
-	}
-	
-	private static class ConnectorWest {
-		public static ModelRenderer west;
-		public static ModelRenderer cbWest2;
-	    public static ModelRenderer cbWest3;
-	    public static ModelRenderer cbWest4;
-	}
-	
-	private static class ConnectorSouth {
-		public static ModelRenderer south;
-		public static ModelRenderer cbSouth2;
-	    public static ModelRenderer cbSouth3;
-	    public static ModelRenderer cbSouth4;
-	}
+    public void renderConnector(final ForgeDirection side) {
+        final float scale = 1F / 16F;
+        switch (side) {
+            case UP:
+                ConnectorTop.top.render(scale);
+                break;
+            case DOWN:
+                ConnectorBottom.bottom.render(scale);
+                break;
+            case EAST:
+                ConnectorEast.east.render(scale);
+                break;
+            case NORTH:
+                ConnectorNorth.north.render(scale);
+                break;
+            case SOUTH:
+                ConnectorSouth.south.render(scale);
+                break;
+            case WEST:
+                ConnectorWest.west.render(scale);
+                break;
+            default:
+        }
+    }
+
+    private static class Frames {
+        public static ModelRenderer frame1;
+        public static ModelRenderer frame2;
+        public static ModelRenderer frame3;
+        public static ModelRenderer frame4;
+        public static ModelRenderer frame5;
+        public static ModelRenderer frame6;
+        public static ModelRenderer frame7;
+        public static ModelRenderer frame8;
+        public static ModelRenderer frame9;
+        public static ModelRenderer frame10;
+        public static ModelRenderer frame11;
+        public static ModelRenderer frame12;
+    }
+
+    private static class ConnectorTop {
+        public static ModelRenderer top;
+        public static ModelRenderer cbTop2;
+        public static ModelRenderer cbTop3;
+        public static ModelRenderer cbTop4;
+    }
+
+    private static class ConnectorBottom {
+        public static ModelRenderer bottom;
+        public static ModelRenderer cbBottom2;
+        public static ModelRenderer cbBottom3;
+        public static ModelRenderer cbBottom4;
+    }
+
+    private static class ConnectorEast {
+        public static ModelRenderer east;
+        public static ModelRenderer cbEast2;
+        public static ModelRenderer cbEast3;
+        public static ModelRenderer cbEast4;
+    }
+
+    private static class ConnectorNorth {
+        public static ModelRenderer north;
+        public static ModelRenderer cbNorth2;
+        public static ModelRenderer cbNorth3;
+        public static ModelRenderer cbNorth4;
+    }
+
+    private static class ConnectorWest {
+        public static ModelRenderer west;
+        public static ModelRenderer cbWest2;
+        public static ModelRenderer cbWest3;
+        public static ModelRenderer cbWest4;
+    }
+
+    private static class ConnectorSouth {
+        public static ModelRenderer south;
+        public static ModelRenderer cbSouth2;
+        public static ModelRenderer cbSouth3;
+        public static ModelRenderer cbSouth4;
+    }
 }
