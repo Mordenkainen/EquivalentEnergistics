@@ -9,6 +9,7 @@ import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.StatCollector;
@@ -33,42 +34,42 @@ public enum BlockEnum {
 
     private Predicate<?> requirements;
 
-    BlockEnum(final String _internalName, final Block _block) {
-        this(_internalName, _block, ItemBlock.class, Predicates.alwaysTrue(), null, false);
+    BlockEnum(final String internalName, final Block block) {
+        this(internalName, block, ItemBlock.class, Predicates.alwaysTrue(), null, false);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final Predicate<?> _requirements) {
-        this(_internalName, _block, ItemBlock.class, _requirements, null, false);
+    BlockEnum(final String internalName, final Block block, final Predicate<?> requirements) {
+        this(internalName, block, ItemBlock.class, requirements, null, false);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final Predicate<?> _requirements, final String _configKey) {
-        this(_internalName, _block, ItemBlock.class, _requirements, _configKey, false);
+    BlockEnum(final String internalName, final Block block, final Predicate<?> requirements, final String configKey) {
+        this(internalName, block, ItemBlock.class, requirements, configKey, false);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final String _configKey) {
-        this(_internalName, _block, ItemBlock.class, Predicates.alwaysTrue(), _configKey, false);
+    BlockEnum(final String internalName, final Block block, final String configKey) {
+        this(internalName, block, ItemBlock.class, Predicates.alwaysTrue(), configKey, false);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final boolean _hidden) {
-        this(_internalName, _block, ItemBlock.class, Predicates.alwaysTrue(), null, _hidden);
+    BlockEnum(final String internalName, final Block block, final boolean hidden) {
+        this(internalName, block, ItemBlock.class, Predicates.alwaysTrue(), null, hidden);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final Predicate<?> _requirements, final boolean _hidden) {
-        this(_internalName, _block, ItemBlock.class, _requirements, null, _hidden);
+    BlockEnum(final String internalName, final Block block, final Predicate<?> requirements, final boolean hidden) {
+        this(internalName, block, ItemBlock.class, requirements, null, hidden);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final String _configKey, final boolean _hidden) {
-        this(_internalName, _block, ItemBlock.class, Predicates.alwaysTrue(), _configKey, _hidden);
+    BlockEnum(final String internalName, final Block block, final String configKey, final boolean hidden) {
+        this(internalName, block, ItemBlock.class, Predicates.alwaysTrue(), configKey, hidden);
     }
 
-    BlockEnum(final String _internalName, final Block _block, final Class<? extends ItemBlock> _itemBlockClass, final Predicate<?> _requirements, final String _configKey, final boolean _hidden) {
-        internalName = _internalName;
-        block = _block;
-        block.setBlockName(Reference.MOD_ID + ":" + internalName);
-        itemBlockClass = _itemBlockClass;
-        requirements = _requirements;
-        configKey = _configKey;
-        hidden = _hidden;
+    BlockEnum(final String internalName, final Block block, final Class<? extends ItemBlock> itemBlockClass, final Predicate<?> requirements, final String configKey, final boolean hidden) {
+    	this.internalName = internalName;
+    	this.block = block;
+    	this.block.setBlockName(Reference.MOD_ID + ":" + internalName);
+    	this.itemBlockClass = itemBlockClass;
+    	this.requirements = requirements;
+    	this.configKey = configKey;
+    	this.hidden = hidden;
     }
 
     public Block getBlock() {
@@ -99,16 +100,26 @@ public enum BlockEnum {
         return hidden;
     }
 
-    public void loadConfig(final Configuration config) {
-        if (configKey != null) {
-            enabled = config.get("Blocks", configKey, true).getBoolean(true);
-        }
-        if (block instanceof IConfigurable) {
-            ((IConfigurable) block).loadConfig(config);
-        }
-        if (isEnabled() && !isHidden()) {
-            block.setCreativeTab(EquivalentEnergistics.tabEE);
-        }
+    public static void loadConfig(final Configuration config) {
+    	for (final BlockEnum current : BlockEnum.values()) {
+    		if (current.configKey != null) {
+    			current.enabled = config.get("Blocks", current.configKey, true).getBoolean(true);
+            }
+            if (current.block instanceof IConfigurable) {
+                ((IConfigurable) current.block).loadConfig(config);
+            }
+            if (current.isEnabled() && !current.isHidden()) {
+            	current.block.setCreativeTab(EquivalentEnergistics.tabEE);
+            }
+    	}
     }
 
+    public static void registerBlocks() {
+        for (final BlockEnum current : BlockEnum.values()) {
+            if (current.isEnabled()) {
+                GameRegistry.registerBlock(current.getBlock(), current.getItemBlockClass(), current.getInternalName());
+            }
+        }
+    }
+    
 }

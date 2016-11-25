@@ -11,15 +11,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public class ItemMisc extends ItemBase {
+public class ItemMisc extends ItemMultiBase {
 
     public ItemMisc() {
-        super();
-        setHasSubtypes(true);
+        super(2);
     }
 
-    // Item Overrides
-    // ------------------------
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
@@ -32,11 +29,5 @@ public class ItemMisc extends ItemBase {
     public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
         list.add(new ItemStack(item, 1, 0));
     }
-
-    @Override
-    public String getUnlocalizedName(final ItemStack stack) {
-        return super.getUnlocalizedName() + "." + stack.getItemDamage();
-    }
-    // ------------------------
 
 }

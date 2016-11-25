@@ -137,7 +137,7 @@ public final class Integration {
     }
 
     public static void postInit() {
-        emcHandler.setCrystalEMC(ConfigManager.crystalEMCValue);
+        emcHandler.setCrystalEMC();
         MinecraftForge.EVENT_BUS.register(emcHandler);
     }
 

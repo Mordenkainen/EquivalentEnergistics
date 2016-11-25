@@ -14,6 +14,7 @@ import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.items.ItemStorageComponent;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -41,41 +42,41 @@ public enum ItemEnum {
 
     private String configKey;
 
-    ItemEnum(final String _internalName, final Item _item) {
-        this(_internalName, _item, null, false, Predicates.alwaysTrue());
+    ItemEnum(final String internalName, final Item item) {
+        this(internalName, item, null, false, Predicates.alwaysTrue());
     }
 
-    ItemEnum(final String _internalName, final Item _item, final String _configKey) {
-        this(_internalName, _item, _configKey, false, Predicates.alwaysTrue());
+    ItemEnum(final String internalName, final Item item, final String configKey) {
+        this(internalName, item, configKey, false, Predicates.alwaysTrue());
     }
 
-    ItemEnum(final String _internalName, final Item _item, final boolean _hidden) {
-        this(_internalName, _item, null, _hidden, Predicates.alwaysTrue());
+    ItemEnum(final String internalName, final Item item, final boolean hidden) {
+        this(internalName, item, null, hidden, Predicates.alwaysTrue());
     }
 
-    ItemEnum(final String _internalName, final Item _item, final Predicate<?> _requirements) {
-        this(_internalName, _item, null, false, _requirements);
+    ItemEnum(final String internalName, final Item item, final Predicate<?> requirements) {
+        this(internalName, item, null, false, requirements);
     }
 
-    ItemEnum(final String _internalName, final Item _item, final String _configKey, final Predicate<?> _requirements) {
-        this(_internalName, _item, _configKey, false, _requirements);
+    ItemEnum(final String internalName, final Item item, final String configKey, final Predicate<?> requirements) {
+        this(internalName, item, configKey, false, requirements);
     }
 
-    ItemEnum(final String _internalName, final Item _item, final boolean _hidden, final Predicate<?> _requirements) {
-        this(_internalName, _item, null, _hidden, _requirements);
+    ItemEnum(final String internalName, final Item item, final boolean hidden, final Predicate<?> requirements) {
+        this(internalName, item, null, hidden, requirements);
     }
 
-    ItemEnum(final String _internalName, final Item _item, final String _configKey, final boolean _hidden) {
-        this(_internalName, _item, _configKey, _hidden, Predicates.alwaysTrue());
+    ItemEnum(final String internalName, final Item item, final String configKey, final boolean hidden) {
+        this(internalName, item, configKey, hidden, Predicates.alwaysTrue());
     }
 
-    ItemEnum(final String _internalName, final Item _item, final String _configKey, final boolean _hidden, final Predicate<?> _requirements) {
-        internalName = _internalName;
-        item = _item;
-        item.setUnlocalizedName(Reference.MOD_ID + ":" + internalName);
-        configKey = _configKey;
-        hidden = _hidden;
-        requirements = _requirements;
+    ItemEnum(final String internalName, final Item item, final String configKey, final boolean hidden, final Predicate<?> requirements) {
+        this.internalName = internalName;
+        this.item = item;
+        this.item.setUnlocalizedName(Reference.MOD_ID + ":" + internalName);
+        this.configKey = configKey;
+        this.hidden = hidden;
+        this.requirements = requirements;
     }
 
     public String getInternalName() {
@@ -117,17 +118,34 @@ public enum ItemEnum {
     public boolean isHidden() {
         return hidden;
     }
-
-    public void loadConfig(final Configuration config) {
-        if (configKey != null) {
-            enabled = config.get("Items", configKey, true).getBoolean(true);
-        }
-        if (item instanceof IConfigurable) {
-            ((IConfigurable) item).loadConfig(config);
-        }
-        if (isEnabled() && !isHidden()) {
-            item.setCreativeTab(EquivalentEnergistics.tabEE);
-        }
+    
+    public boolean isSameItem(final ItemStack stack) {
+    	if (stack == null || stack.getItem() == null) {
+    		return false;
+    	}
+    	return stack.getItem() == item;
     }
 
+    public static void loadConfig(final Configuration config) {
+    	for (final ItemEnum current : ItemEnum.values()) {
+    		if (current.configKey != null) {
+    			current.enabled = config.get("Items", current.configKey, true).getBoolean(true);
+            }
+            if (current.item instanceof IConfigurable) {
+                ((IConfigurable) current.item).loadConfig(config);
+            }
+            if (current.isEnabled() && !current.isHidden()) {
+            	current.item.setCreativeTab(EquivalentEnergistics.tabEE);
+            }
+    	}
+    }
+
+    public static void registerItems() {
+        for (final ItemEnum current : ItemEnum.values()) {
+            if (current.isEnabled()) {
+                GameRegistry.registerItem(current.getItem(), current.getInternalName());
+            }
+        }
+    }
+    
 }

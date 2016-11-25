@@ -20,7 +20,7 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
     private float currentEMC;
     private final float capacity;
 
-    public HandlerEMCCell(final ItemStack storageStack, final ISaveProvider _saveProvider, final float _capacity) {
+    public HandlerEMCCell(final ItemStack storageStack, final ISaveProvider saveProvider, final float capacity) {
         if (!storageStack.hasTagCompound()) {
             storageStack.setTagCompound(new NBTTagCompound());
         }
@@ -30,8 +30,8 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
             currentEMC = cellData.getLong(EMC_TAG);
         }
 
-        saveProvider = _saveProvider;
-        capacity = _capacity;
+        this.saveProvider = saveProvider;
+        this.capacity = capacity;
     }
 
     @Override
@@ -84,28 +84,40 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
         return false;
     }
 
-    public float adjustEMC(final float amount) {
-        if (amount == 0) {
-            return 0;
-        }
-
-        float toAdjust;
-
-        if (amount > 0) {
-            toAdjust = Math.min(amount, capacity - currentEMC);
-        } else {
-            toAdjust = Math.max(amount, -currentEMC);
-        }
-
-        if (toAdjust != 0) {
-            currentEMC += toAdjust;
-            cellData.setFloat(EMC_TAG, currentEMC);
+    public float addEMC(final float amount) {
+    	if (amount <= 0) {
+    		return 0;
+    	}
+    	
+    	final float toAdd = Math.min(amount, getAvail());
+    	
+    	if (toAdd > 0) {
+    		currentEMC += toAdd;
+    		cellData.setFloat(EMC_TAG, currentEMC);
             if (saveProvider != null) {
                 saveProvider.saveChanges(this);
             }
-        }
-
-        return toAdjust;
+    	}
+    	
+    	return toAdd;
+    }
+    
+    public float extractEMC(final float amount) {
+    	if (amount <= 0) {
+    		return 0;
+    	}
+    	
+    	final float toExtract = Math.min(amount, currentEMC);
+    	
+    	if (toExtract > 0) {
+    		currentEMC -= toExtract;
+    		cellData.setFloat(EMC_TAG, currentEMC);
+            if (saveProvider != null) {
+                saveProvider.saveChanges(this);
+            }
+    	}
+    	
+    	return toExtract;
     }
 
     public int getCellStatus() {

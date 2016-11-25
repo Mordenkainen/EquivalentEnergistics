@@ -49,12 +49,12 @@ public final class CraftingManager {
         for (int i = 4; i < 6; i++) {
             GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "ABA", "CDC", "ACA", 'A', dust, 'B', new ItemStack(aeMaterial, 1, 24), 'C', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'D', new ItemStack(aeGlass, 1));
         }
-        for (int i = 6; i < 8; i++) {
+        for (int i = 6; i < NUM_CELLS; i++) {
             GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "ABA", "CDC", "ACA", 'A', new ItemStack(Items.nether_star), 'B', new ItemStack(aeMaterial, 1, 24), 'C', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'D', new ItemStack(aeGlass, 1));
         }
 
         // Cells
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < NUM_CELLS; i++) {
             GameRegistry.addShapedRecipe(ItemEnum.EMCCELL.getDamagedStack(i), "ABA", "BCB", "DDD", 'A', new ItemStack(aeGlass, 1), 'B', new ItemStack(Items.redstone), 'C', ItemEnum.CELLCOMPONENT.getDamagedStack(i), 'D', new ItemStack(Items.iron_ingot));
         }
     }

@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class DimensionalLocation {
-
     private static final int PRIME = 31;
 
     public int x;

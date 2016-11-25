@@ -17,7 +17,7 @@ public class CommonProxy {
 
     public void preInit() {
         Integration.preInit();
-        registerBlocks();
+        BlockEnum.registerBlocks();
     }
 
     public void init() {
@@ -26,7 +26,7 @@ public class CommonProxy {
         }
         Integration.init();
         registerTileEntities();
-        registerItems();
+        ItemEnum.registerItems();
         initRenderers();
         CraftingManager.initRecipes();
     }
@@ -41,22 +41,6 @@ public class CommonProxy {
 
     public boolean isServer() {
         return true;
-    }
-
-    public void registerItems() {
-        for (final ItemEnum current : ItemEnum.values()) {
-            if (current.isEnabled()) {
-                GameRegistry.registerItem(current.getItem(), current.getInternalName());
-            }
-        }
-    }
-
-    public void registerBlocks() {
-        for (final BlockEnum current : BlockEnum.values()) {
-            if (current.isEnabled()) {
-                GameRegistry.registerBlock(current.getBlock(), current.getItemBlockClass(), current.getInternalName());
-            }
-        }
     }
 
     public void registerTileEntities() {

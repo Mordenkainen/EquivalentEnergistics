@@ -16,7 +16,9 @@ public enum TextureEnum {
     EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7");
 
     private enum TextureType {
-        ITEM, BLOCK, PART
+        ITEM,
+        BLOCK,
+        PART
     }
 
     private TextureType textureType;
@@ -42,20 +44,22 @@ public enum TextureEnum {
         return textures.clone();
     }
 
-    public void registerTexture(final TextureMap textureMap) {
-        if (!(textureMap.getTextureType() == 0 && (textureType == TextureType.BLOCK || textureType == TextureType.PART)) && !(textureMap.getTextureType() == 1 && textureType == TextureType.ITEM)) {
-            return;
-        }
+    public static void registerTextures(final TextureMap textureMap) {
+    	for (final TextureEnum currentTexture : TextureEnum.values()) {
+    		if (!(textureMap.getTextureType() == 0 && (currentTexture.textureType == TextureType.BLOCK || currentTexture.textureType == TextureType.PART)) && !(textureMap.getTextureType() == 1 && currentTexture.textureType == TextureType.ITEM)) {
+                continue;
+            }
 
-        String header = Reference.MOD_ID + ":";
+            String header = Reference.MOD_ID + ":";
 
-        if (textureType == TextureType.PART) {
-            header += "part/";
-        }
+            if (currentTexture.textureType == TextureType.PART) {
+                header += "part/";
+            }
 
-        for (int i = 0; i < textureNames.length; i++) {
-            textures[i] = textureMap.registerIcon(header + textureNames[i]);
-        }
+            for (int i = 0; i < currentTexture.textureNames.length; i++) {
+            	currentTexture.textures[i] = textureMap.registerIcon(header + currentTexture.textureNames[i]);
+            }
+    	}
     }
 
 }

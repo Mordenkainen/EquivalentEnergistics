@@ -75,7 +75,7 @@ public class EquivExchange3 implements IEMCHandler {
     }
 
     @Override
-    public void setCrystalEMC(final float emc) {}
+    public void setCrystalEMC() {}
 
     @Override
     public UUID getTomeUUID(final ItemStack currentTome) {

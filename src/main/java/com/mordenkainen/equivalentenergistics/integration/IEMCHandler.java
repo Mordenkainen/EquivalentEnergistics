@@ -21,7 +21,7 @@ public interface IEMCHandler {
 
     boolean isValidTome(ItemStack itemStack);
 
-    void setCrystalEMC(float emc);
+    void setCrystalEMC();
 
     UUID getTomeUUID(ItemStack currentTome);
 

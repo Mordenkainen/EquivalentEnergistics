@@ -4,9 +4,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -28,7 +28,6 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import net.minecraft.item.ItemStack;
 
 public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHandler<IAEItemStack> {
 
@@ -73,8 +72,6 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
         }
     }
 
-    // IGridCache Overrides
-    // ------------------------
     @Override
     public void onUpdateTick() {
         if (dirty) {
@@ -85,10 +82,9 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
     @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof ICellProvider) {
-            float newEMC = currentEMC;
+        if (machine instanceof ICellProvider && driveBays.remove(machine)) {
+        	float newEMC = currentEMC;
             float newMax = maxEMC;
-            driveBays.remove(machine);
             final List<IMEInventoryHandler> cells = ((ICellProvider) machine).getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCell handler = getHandler(cell);
@@ -120,17 +116,14 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
     @Override
     public void populateGridStorage(final IGridStorage dstStorage) {}
-    // ------------------------
 
-    // IMEInventoryHandler Overrides
-    // ------------------------
     @Override
     public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
         float itemEMC = 0;
-        if (ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem())) {
+        if (ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack())) {
             itemEMC = ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()];
-        } else if (ItemEnum.EMCCRYSTALOLD.getItem().equals(stack.getItem())) {
-            itemEMC = Integration.emcHandler.getSingleEnergyValue(stack.getItemStack());
+        } else if (ItemEnum.EMCCRYSTALOLD.isSameItem(stack.getItemStack())) {
+            itemEMC = ItemEMCCrystalOld.CRYSTAL_VALUES[stack.getItemDamage()];
         }
 
         if (itemEMC > 0) {
@@ -147,10 +140,10 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
     @Override
     public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final BaseActionSource src) {
         float itemEMC = 0;
-        if (ItemEnum.EMCCRYSTAL.getItem().equals(request.getItem())) {
+        if (ItemEnum.EMCCRYSTAL.isSameItem(request.getItemStack())) {
             itemEMC = ItemEMCCrystal.CRYSTAL_VALUES[request.getItemDamage()];
-        } else if (ItemEnum.EMCCRYSTALOLD.getItem().equals(request.getItem())) {
-            itemEMC = Integration.emcHandler.getSingleEnergyValue(request.getItemStack());
+        } else if (ItemEnum.EMCCRYSTALOLD.isSameItem(request.getItemStack())) {
+            itemEMC = ItemEMCCrystalOld.CRYSTAL_VALUES[request.getItemDamage()];
         }
 
         if (itemEMC > 0) {
@@ -185,12 +178,12 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
     @Override
     public boolean isPrioritized(final IAEItemStack stack) {
-        return ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem()) || ItemEnum.EMCCRYSTALOLD.getItem().equals(stack.getItem());
+        return ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack()) || ItemEnum.EMCCRYSTALOLD.isSameItem(stack.getItemStack());
     }
 
     @Override
     public boolean canAccept(final IAEItemStack stack) {
-        return ItemEnum.EMCCRYSTAL.getItem().equals(stack.getItem()) || ItemEnum.EMCCRYSTALOLD.getItem().equals(stack.getItem());
+    	return ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack()) || ItemEnum.EMCCRYSTALOLD.isSameItem(stack.getItemStack());
     }
 
     @Override
@@ -202,10 +195,7 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
     public boolean validForPass(final int pass) {
         return pass == 1;
     }
-    // ------------------------
 
-    // ICellProvider Overrides
-    // ------------------------
     @SuppressWarnings("rawtypes") // NOPMD
     @Override
     public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
@@ -222,7 +212,6 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
     public int getPriority() {
         return Integer.MAX_VALUE - 1;
     }
-    // ------------------------
 
     private void updateDisplay() {
         dirty = false;
@@ -242,48 +231,60 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
                 }
             }
         }
-        final ItemStack totStack = ItemEnum.MISCITEM.getDamagedStack(1);
-        cachedList.add(AEApi.instance().storage().createItemStack(totStack).setStackSize((long) currentEMC));
+        cachedList.add(AEApi.instance().storage().createItemStack(ItemEnum.MISCITEM.getDamagedStack(1)).setStackSize((long) currentEMC));
         ((IStorageGrid) grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
-    public float handleCells(final float emc) {
-        float toAdjust = emc;
-        for (final ICellProvider provider : driveBays) {
+    public float injectEMC(final float emc, final Actionable mode) {
+        final float toAdd = Math.min(emc, maxEMC - currentEMC);
+        if (mode != Actionable.MODULATE) {
+        	return toAdd;
+        }
+        
+    	float added = 0;
+    	for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCell handler = getHandler(cell);
                 if (handler != null) {
-                    toAdjust -= handler.adjustEMC(toAdjust);
+                    added += handler.addEMC(toAdd - added);
                     dirty = true;
-                    if (toAdjust == 0) {
-                        return emc;
+                    if (added == toAdd) {
+                        break;
                     }
                 }
             }
         }
-        return emc;
+    	
+    	currentEMC += added;
+        return added;
     }
 
-    public float injectEMC(final float emc, final Actionable mode) {
-        final float toAdd = Math.min(emc, maxEMC - currentEMC);
-        if (mode == Actionable.MODULATE) {
-            final float added = handleCells(toAdd);
-            currentEMC += added;
-            return added;
-        }
-        return toAdd;
-    }
-
+    @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     public float extractEMC(final float emc, final Actionable mode) {
-        final float toAdd = Math.min(emc, currentEMC);
-        if (mode == Actionable.MODULATE) {
-            final float extracted = handleCells(-toAdd);
-            currentEMC += extracted;
-            return -extracted;
+        final float toExtract = Math.min(emc, currentEMC);
+        if (mode != Actionable.MODULATE) {
+        	return toExtract;
         }
-        return toAdd;
+        
+    	float extracted = 0;
+    	for (final ICellProvider provider : driveBays) {
+            final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
+            for (final IMEInventoryHandler cell : cells) {
+                final HandlerEMCCell handler = getHandler(cell);
+                if (handler != null) {
+                	extracted += handler.extractEMC(toExtract - extracted);
+                    dirty = true;
+                    if (extracted == toExtract) {
+                        break;
+                    }
+                }
+            }
+        }
+    	
+    	currentEMC -= extracted;
+    	return extracted;
     }
 
     @SuppressWarnings("unchecked") // NOPMD
@@ -298,9 +299,10 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
 
         IMEInventoryHandler<IAEItemStack> realHandler = null;
         try {
-            if ("DriveWatcher".equals(cell.getClass().getSimpleName())) {
+        	final String className = cell.getClass().getSimpleName();
+            if ("DriveWatcher".equals(className)) {
                 realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(cell);
-            } else if ("ChestMonitorHandler".equals(cell.getClass().getSimpleName())) {
+            } else if ("ChestMonitorHandler".equals(className)) {
                 final IMEInventoryHandler<IAEItemStack> monHandler = (IMEInventoryHandler<IAEItemStack>) extHandler.get(cell);
                 realHandler = (IMEInventoryHandler<IAEItemStack>) intHandler.get(monHandler);
             }

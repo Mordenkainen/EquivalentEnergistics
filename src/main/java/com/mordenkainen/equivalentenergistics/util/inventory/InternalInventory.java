@@ -16,15 +16,15 @@ public class InternalInventory implements IInventory {
     private final int stackLimit;
     private final IInvChangeNotifier te;
 
-    public InternalInventory(final String _customName, final int size, final int _stackLimit, final IInvChangeNotifier _te) {
+    public InternalInventory(final String customName, final int size, final int stackLimit, final IInvChangeNotifier te) {
         slots = new ItemStack[size];
-        customName = _customName;
-        stackLimit = _stackLimit;
-        te = _te;
+        this.customName = customName;
+        this.stackLimit = stackLimit;
+        this.te = te;
     }
 
-    public InternalInventory(final String _customName, final int size, final int _stackLimit) {
-        this(_customName, size, _stackLimit, null);
+    public InternalInventory(final String customName, final int size, final int stackLimit) {
+        this(customName, size, stackLimit, null);
     }
 
     @Override

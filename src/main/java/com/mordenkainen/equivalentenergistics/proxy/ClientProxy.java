@@ -49,9 +49,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void registerTextures(final TextureStitchEvent.Pre event) {
         final TextureMap map = event.map;
-        for (final TextureEnum currentTexture : TextureEnum.values()) {
-            currentTexture.registerTexture(map);
-        }
+        TextureEnum.registerTextures(map);
     }
 
 }

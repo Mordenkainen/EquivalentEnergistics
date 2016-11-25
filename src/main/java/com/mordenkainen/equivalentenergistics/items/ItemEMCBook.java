@@ -24,8 +24,6 @@ public class ItemEMCBook extends ItemBase {
         setMaxStackSize(1);
     }
 
-    // Item Overrides
-    // ------------------------
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
@@ -67,6 +65,5 @@ public class ItemEMCBook extends ItemBase {
             list.add("No owner set.");
         }
     }
-    // ------------------------
 
 }

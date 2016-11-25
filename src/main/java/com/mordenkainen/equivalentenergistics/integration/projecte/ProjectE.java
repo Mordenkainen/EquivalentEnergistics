@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 
@@ -67,16 +68,16 @@ public class ProjectE implements IEMCHandler {
     }
 
     @Override
-    public void setCrystalEMC(final float emc) {
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), 1);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), 64);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), 4096);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), 262144);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), 16777216);
+    public void setCrystalEMC() {
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 0), (int) ItemEMCCrystal.CRYSTAL_VALUES[0]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 1), (int) ItemEMCCrystal.CRYSTAL_VALUES[1]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 2), (int) ItemEMCCrystal.CRYSTAL_VALUES[2]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 3), (int) ItemEMCCrystal.CRYSTAL_VALUES[3]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTAL.getItem(), 1, 4), (int) ItemEMCCrystal.CRYSTAL_VALUES[4]);
 
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), (int) emc);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), (int) emc * 576);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 2), (int) (emc * Math.pow(576.0D, 2.0D)));
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 0), (int) ItemEMCCrystalOld.CRYSTAL_VALUES[0]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 1), (int) ItemEMCCrystalOld.CRYSTAL_VALUES[1]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ItemEnum.EMCCRYSTALOLD.getItem(), 1, 2), (int) ItemEMCCrystalOld.CRYSTAL_VALUES[2]);
     }
 
     @Override

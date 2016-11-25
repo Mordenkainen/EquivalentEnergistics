@@ -22,9 +22,8 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IItemEmc;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
@@ -35,90 +34,69 @@ import net.minecraftforge.common.config.Configuration;
 
 @Optional.InterfaceList({ @Optional.Interface(iface = "moze_intel.projecte.api.item.IItemEmc", modid = "ProjectE"), @Optional.Interface(iface = "appeng.api.storage.ICellHandler", modid = "appliedenergistics2") // NOPMD
 })
-public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable, IItemEmc {
+public class ItemEMCCell extends ItemMultiBase implements ICellHandler, IConfigurable, IItemEmc {
 
     private static final String GROUP = "Storage Cells";
     private static final String EMC_TAG = "emc";
-    private static final int NUM_CELLS = 8;
 
-    private static float[] capacities = { 1000000, 4000000, 16000000, 64000000, 256000000, 1024000000, 4096000000f, 16384000000f };
-    private static double[] drain = { 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8 };
+    private static final float[] CAPACITIES = { 1000000, 4000000, 16000000, 64000000, 256000000, 1024000000, 4096000000f, 16384000000f };
+    private static final double[] DRAIN = { 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8 };
 
     public ItemEMCCell() {
-        super();
-
+        super(8);
         setMaxStackSize(1);
-        setHasSubtypes(true);
     }
 
-    // Item Overrides
-    // ------------------------
+    @Override
+    public EnumRarity getRarity(final ItemStack stack) {
+        return EnumRarity.values()[stack.getItemDamage() / 2];
+    }
+    
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCCELL.getTexture(damage);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
-        for (int i = 0; i < NUM_CELLS; i++) {
-            list.add(new ItemStack(item, 1, i));
-        }
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked", "rawtypes" }) //NOPMD
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean param4) {
         if (isCell(stack)) {
-            final float curEMC = hasEMCTag(stack) ? stack.getTagCompound().getFloat(EMC_TAG) : 0;
+            final float curEMC = getStoredCellEMC(stack);
 
             if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + String.format("%.2f", curEMC) + " / " + String.format("%.2f", capacities[stack.getItemDamage()]));
+                list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + String.format("%.2f", curEMC) + " / " + String.format("%.2f", CAPACITIES[stack.getItemDamage()]));
             } else {
-                list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(capacities[stack.getItemDamage()]));
+                list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(CAPACITIES[stack.getItemDamage()]));
             }
         }
     }
 
     @Override
-    public String getUnlocalizedName(final ItemStack stack) {
-        return super.getUnlocalizedName() + "." + stack.getItemDamage();
-    }
-
-    @Override
     public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
-        if (stack == null || !player.isSneaking() || !isEmpty(stack)) {
+        if (stack == null || !isEmpty(stack)) {
             return stack;
         }
 
-        if (player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
+        if (player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
             return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
         }
         return stack;
     }
 
-    // ------------------------
-
-    // IConfigurable Overrides
-    // ------------------------
     @Override
     public void loadConfig(final Configuration config) {
-        for (int i = 0; i < NUM_CELLS; i++) {
+        for (int i = 0; i < itemCount; i++) {
             try {
-                capacities[i] = Float.valueOf(config.get(GROUP, "Tier" + i + "_Capacity", String.format("%.0f", capacities[i])).getString());
+                CAPACITIES[i] = Float.valueOf(config.get(GROUP, "Tier" + i + "_Capacity", String.format("%.0f", CAPACITIES[i])).getString());
             } catch (final NumberFormatException e) {
                 EquivalentEnergistics.logger.warn("Storage Cell Tier" + i + "_Capacity configured for invalid value! Default will be used!");
             }
-            drain[i] = config.get(GROUP, "Tier_" + i + "_PowerDrain", drain[i]).getDouble(drain[i]);
+            DRAIN[i] = config.get(GROUP, "Tier_" + i + "_PowerDrain", DRAIN[i]).getDouble(DRAIN[i]);
         }
     }
-    // ------------------------
-
-    // ICellHandler Overrides
-    // ------------------------
+    
     @Optional.Method(modid = "appliedenergistics2")
     @Override
     public boolean isCell(final ItemStack stack) {
@@ -130,7 +108,7 @@ public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable
     @Override
     public IMEInventoryHandler getCellInventory(final ItemStack stack, final ISaveProvider host, final StorageChannel channel) {
         if (channel == StorageChannel.ITEMS && isCell(stack)) {
-            return new HandlerEMCCell(stack, host, capacities[stack.getItemDamage()]);
+            return new HandlerEMCCell(stack, host, CAPACITIES[stack.getItemDamage()]);
         }
         return null;
     }
@@ -174,21 +152,17 @@ public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable
     @SuppressWarnings("rawtypes")
     @Override
     public double cellIdleDrain(final ItemStack stack, final IMEInventory handler) {
-        return drain[stack.getItemDamage()];
+        return DRAIN[stack.getItemDamage()];
     }
-    // ------------------------
-
-    // IItemEmc Overrides
-    // ------------------------
+    
     @Override
     public double addEmc(final ItemStack stack, final double toAdd) {
-
         if (ConfigManager.useEE3 || !isCell(stack)) {
             return 0;
         }
 
-        final float currentEMC = hasEMCTag(stack) ? stack.getTagCompound().getFloat(EMC_TAG) : 0;
-        final float amountToAdd = Math.min((float) toAdd, capacities[stack.getItemDamage()] - currentEMC);
+        final float currentEMC = getStoredCellEMC(stack);
+        final float amountToAdd = Math.min((float) toAdd, CAPACITIES[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
@@ -221,32 +195,32 @@ public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable
         if (ConfigManager.useEE3) {
             return 0;
         }
-        return capacities[stack.getItemDamage()];
+        return CAPACITIES[stack.getItemDamage()];
     }
-    // ------------------------
 
     public float getStoredCellEMC(final ItemStack stack) {
         if (!isCell(stack) || !hasEMCTag(stack)) {
             return 0;
         }
 
-        return stack.getTagCompound().getFloat(EMC_TAG);
+        return Math.max(stack.getTagCompound().getFloat(EMC_TAG), 0);
     }
 
     public float extractCellEMC(final ItemStack stack, final float emc) {
-        if (!isCell(stack) || !hasEMCTag(stack)) {
+        if (!isCell(stack) || isEmpty(stack)) {
             return 0;
         }
 
-        final float currentEMC = stack.getTagCompound().getFloat(EMC_TAG);
+        final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = Math.min(emc, currentEMC);
-        if (currentEMC - toRemove >= 0) {
-            stack.stackTagCompound.removeTag(EMC_TAG);
-            if (stack.stackTagCompound.hasNoTags()) {
-                stack.stackTagCompound = null;
+        
+        if (toRemove >= currentEMC) {
+            stack.getTagCompound().removeTag(EMC_TAG);
+            if (stack.getTagCompound().hasNoTags()) {
+                stack.setTagCompound(null);
             }
         } else {
-            stack.stackTagCompound.setFloat(EMC_TAG, currentEMC - toRemove);
+            stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
         }
         return toRemove;
     }
@@ -256,7 +230,7 @@ public class ItemEMCCell extends ItemBase implements ICellHandler, IConfigurable
     }
 
     private boolean isEmpty(final ItemStack stack) {
-        return !hasEMCTag(stack) || stack.getTagCompound().getFloat(EMC_TAG) <= 0;
+        return getStoredCellEMC(stack) == 0;
     }
 
 }

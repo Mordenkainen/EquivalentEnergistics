@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
@@ -109,13 +108,11 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
         idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
         activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
 
-        emcPerTick = 16 * ConfigManager.crystalEMCValue;
+        emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", 4096).getDouble(4096);
         if (config.hasKey(GROUP.toLowerCase(Locale.US), "CrystalsProducedPerTick")) {
-            emcPerTick = config.get(GROUP, "CrystalsProducedPerTick", 16).getInt(16) * ConfigManager.crystalEMCValue;
             final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
             condenserCat.remove("CrystalsProducedPerTick");
         }
-        emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", emcPerTick).getDouble(emcPerTick);
     }
 
     private void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final Random random) {
