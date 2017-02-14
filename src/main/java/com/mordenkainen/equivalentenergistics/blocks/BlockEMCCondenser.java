@@ -6,6 +6,7 @@ import java.util.Random;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
+import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenserBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -47,7 +48,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(final World world, final int x, final int y, final int z, final Random random) {
-        final TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
+        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
 
         if (tileCondenser == null || !tileCondenser.isBlocked()) {
             return;

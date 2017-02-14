@@ -179,9 +179,7 @@ public final class GridUtils {
             IAEItemStack rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.SIMULATE, source);
 
             long stored = toInject.getStackSize();
-            if (rejected == null) {
-                return stack;
-            } else {
+            if (rejected != null) {
                 stored -= rejected.getStackSize();
             }
 

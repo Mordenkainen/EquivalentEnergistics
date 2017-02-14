@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
@@ -106,17 +107,25 @@ public class EquivExchange3 implements IEMCHandler {
 
     @Override
     public boolean isEMCStorage(final ItemStack stack) {
-        return false;
+        return stack.getItem() == ItemEnum.EMCCELL.getItem();
     }
 
     @Override
     public float getStoredEMC(final ItemStack stack) {
-        return 0;
+    	if (stack.getItem() == ItemEnum.EMCCELL.getItem()) {
+    		return ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).getStoredCellEMC(stack);
+    	} else {
+    		return 0;
+    	}
     }
 
     @Override
     public float extractEMC(final ItemStack stack, final float toStore) {
-        return 0;
+    	if (stack.getItem() == ItemEnum.EMCCELL.getItem()) {
+    		return ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).extractCellEMC(stack, toStore);
+    	} else {
+    		return 0;
+    	}
     }
 
     public static void postPlayerLearn(final String player) {

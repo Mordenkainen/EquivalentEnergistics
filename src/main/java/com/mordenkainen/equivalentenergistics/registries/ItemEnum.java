@@ -148,4 +148,8 @@ public enum ItemEnum {
         }
     }
     
+    public static boolean isCrystal(final ItemStack stack) {
+        return EMCCRYSTAL.isSameItem(stack) || EMCCRYSTALOLD.isSameItem(stack);
+    }
+    
 }
