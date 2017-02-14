@@ -2,6 +2,7 @@ package com.mordenkainen.equivalentenergistics.util;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public final class CommonUtils {
 
@@ -73,6 +75,37 @@ public final class CommonUtils {
     public static <T> T getTE(final Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
         final TileEntity tile = world.getTileEntity(x, y, z);
         return type.isInstance(tile) ? (T) tile : null;
+    }
+    
+    public static void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final Random random) {
+        double d1 = x + random.nextFloat();
+        double d2 = y + random.nextFloat();
+        double d3 = z + random.nextFloat();
+
+        switch (dir) {
+            case EAST:
+                d1 = x + 1 + 0.0625D;
+                break;
+            case WEST:
+                d1 = x - 0.0625D;
+                break;
+            case UP:
+                d2 = y + 1 + 0.0625D;
+                break;
+            case DOWN:
+                d2 = y - 0.0625D;
+                break;
+            case SOUTH:
+                d3 = z + 1 + 0.0625D;
+                break;
+            case NORTH:
+                d3 = z - 0.0625D;
+                break;
+            default:
+                break;
+        }
+
+        world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
     }
 
     public static void debugLog(final String message) {

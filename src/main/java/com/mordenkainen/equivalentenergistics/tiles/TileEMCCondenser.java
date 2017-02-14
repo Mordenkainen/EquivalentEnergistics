@@ -3,8 +3,10 @@ package com.mordenkainen.equivalentenergistics.tiles;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
+import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -17,6 +19,7 @@ public class TileEMCCondenser extends TileCondenserAEBase {
 
     public TileEMCCondenser() {
         super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock())));
+        emcPool = new EMCPool(0, Float.MAX_VALUE);
     }
 
     @Override
@@ -35,15 +38,10 @@ public class TileEMCCondenser extends TileCondenserAEBase {
     }
 
     @Override
-    protected float getMaxEMC() {
-        return Float.MAX_VALUE;
-    }
-
-    @Override
     protected void consumePower(final ItemStack stack, final int count) {
         IEnergyGrid eGrid;
         try {
-            eGrid = getProxy().getEnergy();
+            eGrid = GridUtils.getEnergy(getProxy());
             final double powerRequired = Integration.emcHandler.getSingleEnergyValue(stack) * count * BlockEMCCondenser.activePower;
             eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.ONE);
         } catch (final GridAccessException e) {
@@ -54,7 +52,7 @@ public class TileEMCCondenser extends TileCondenserAEBase {
     @Override
     protected int getMaxItemsForPower(final ItemStack stack) {
         try {
-            final IEnergyGrid eGrid = getProxy().getEnergy();
+            final IEnergyGrid eGrid = GridUtils.getEnergy(getProxy());
             final double powerRequired = Integration.emcHandler.getSingleEnergyValue(stack) * stack.stackSize * BlockEMCCondenser.activePower;
             final double powerAvail = eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.ONE);
             return (int) (powerAvail / (Integration.emcHandler.getSingleEnergyValue(stack) * BlockEMCCondenser.activePower));

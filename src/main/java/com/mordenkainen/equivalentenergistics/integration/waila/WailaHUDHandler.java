@@ -17,6 +17,7 @@ public class WailaHUDHandler implements IWailaDataProvider {
 
     private final static String TAG_NAME = "TileData";
 
+    // TODO: Better tags and formatting
     @Override
     public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         final NBTTagCompound tag = accessor.getNBTData();

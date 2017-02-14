@@ -37,7 +37,7 @@ public class EqECoreTransformer implements IClassTransformer {
 		public boolean before;
 		public String event;
 		
-		private patches(final String method, final String desc, final int opcode, final BiPredicate<AbstractInsnNode, Integer> test, final boolean before, final String event) {
+		patches(final String method, final String desc, final int opcode, final BiPredicate<AbstractInsnNode, Integer> test, final boolean before, final String event) {
 			this.method = method;
 			this.desc = desc;
 			this.opcode = opcode;

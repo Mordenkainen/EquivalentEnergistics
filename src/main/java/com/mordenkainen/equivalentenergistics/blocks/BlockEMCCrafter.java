@@ -11,10 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +20,7 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
+public class BlockEMCCrafter extends BlockContainerBase implements IConfigurable {
 	
 	private static final String GROUP = "Crafter";
 	
@@ -38,16 +35,11 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 		setLightOpacity(1);
 	}
 
-	// BlockContainer Overrides
-	// ------------------------
 	@Override
 	public TileEntity createNewTileEntity(final World world, final int meta) {
 		return new TileEMCCrafter();
 	}
-	// ------------------------
-	
-	// Block Overrides
-	// ------------------------
+
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
@@ -65,34 +57,8 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public final void registerBlockIcons(final IIconRegister register) {}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
 	public IIcon getIcon(final int side, final int meta) {
 		return TextureEnum.EMCCONDENSER.getTexture();
-	}
-	
-	@Override
-	public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
-		if(!world.isRemote) {
-			final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
-
-			if(tileCrafter != null) {
-				CommonUtils.spawnEntItem(world, x, y, z, ((TileEMCCrafter) tileCrafter).getCurrentTome());
-			}
-		}
-
-		super.breakBlock(world, x, y, z, block, metaData);
-	}
-
-	@Override
-	public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack) {
-		final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
-
-		if(tileCrafter != null && player instanceof EntityPlayer) {
-			tileCrafter.setOwner((EntityPlayer)player);
-		}
 	}
 	
 	@Override
@@ -121,16 +87,12 @@ public class BlockEMCCrafter extends BlockContainer implements IConfigurable {
 		return false;
 		
 	}
-	// ------------------------
 	
-	// IConfigurable Overrides
-	// ------------------------
 	@Override
 	public void loadConfig(final Configuration config) {
 		idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
         activePower = config.get(GROUP, "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
         craftingTime = config.get(GROUP, "TicksPerCrafting", 7).getInt(7);
 	}
-	// ------------------------
 	
 }

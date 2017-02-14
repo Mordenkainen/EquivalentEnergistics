@@ -71,7 +71,7 @@ public interface IGridProxyable extends IGridHost, IActionHost {
     default void writeToNBT(final NBTTagCompound data) {
         getProxy().writeToNBT(data);
     }
-
+    
     IGridProxy getProxy();
 
     DimensionalCoord getLocation();

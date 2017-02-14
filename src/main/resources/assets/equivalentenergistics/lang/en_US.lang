@@ -34,7 +34,7 @@ item.equivalentenergistics:EMCStorageComponent.7.name=Tier 8 EMC Storage Compone
 
 
 # Block Names
-tile.equivalentenergistics:EMCCondenser.name=EMC Condenser
+tile.equivalentenergistics:EMCCondenser.0.name=EMC Condenser
 tile.equivalentenergistics:EMCCrafter.name=EMC Assembler
 
 # Messages

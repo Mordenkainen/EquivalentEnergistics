@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.tiles;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxy;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxyable;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
@@ -111,17 +112,17 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
 
     @Override
     protected ItemStack ejectStack(final ItemStack stack) {
-        return getProxy().injectItemsForPower(stack, mySource);
+        return GridUtils.injectItemsForPower(getProxy(), stack, mySource);
     }
 
     @Override
     protected boolean ejectEMC() {
         try {
-            if (currentEMC > 0) {
-                final float toInject = Math.min(currentEMC, getEMCPerTick());
-                final float ejected = getProxy().getEMCStorage().injectEMC(toInject, Actionable.MODULATE);
+            if (emcPool.getCurrentEMC() > 0) {
+                final float toInject = Math.min(emcPool.getCurrentEMC(), getEMCPerTick());
+                final float ejected = GridUtils.getEMCStorage(getProxy()).injectEMC(toInject, Actionable.MODULATE);
                 if (ejected > 0) {
-                    currentEMC -= ejected;
+                    emcPool.extractEMC(ejected);
                     return true;
                 }
             }
@@ -135,7 +136,7 @@ public abstract class TileCondenserAEBase extends TileCondenserBase implements I
     public void onChangeInventory() {
         if (sleeping) {
             try {
-                getProxy().getTick().alertDevice(getActionableNode());
+            	GridUtils.getTick(getProxy()).alertDevice(getActionableNode());
             } catch (final GridAccessException e) {
                 CommonUtils.debugLog("onChangeInventory: Error accessing grid:", e);
             }

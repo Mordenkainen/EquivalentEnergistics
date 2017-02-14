@@ -1,7 +1,5 @@
 package com.mordenkainen.equivalentenergistics.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -13,12 +11,7 @@ import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -26,11 +19,9 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
+public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfigurable {
 
     private static final String GROUP = "Condenser";
-    private static final double OFFSET = 0.0625D;
-
     public static int itemsPerTick;
     public static float emcPerTick;
     public static double idlePower;
@@ -49,39 +40,8 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public final void registerBlockIcons(final IIconRegister register) {}
-
-    @SideOnly(Side.CLIENT)
-    @Override
     public IIcon getIcon(final int side, final int meta) {
         return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? 0 : 1);
-    }
-
-    @Override
-    public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
-        if (!world.isRemote) {
-            final TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
-
-            if (tileCondenser != null) {
-                final List<ItemStack> drops = new ArrayList<ItemStack>();
-                tileCondenser.getDrops(world, x, y, z, drops);
-
-                for (final ItemStack drop : drops) {
-                    CommonUtils.spawnEntItem(world, x, y, z, drop);
-                }
-            }
-        }
-
-        super.breakBlock(world, x, y, z, block, metaData);
-    }
-
-    @Override
-    public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack) {
-        final TileEMCCondenser tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
-
-        if (tileCondenser != null && player instanceof EntityPlayer) {
-            tileCondenser.setOwner((EntityPlayer) player);
-        }
     }
 
     @Override
@@ -98,7 +58,7 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
                 continue;
             }
 
-            spawnParticle(world, x, y, z, dir, random);
+            CommonUtils.spawnParticle(world, x, y, z, dir, random);
         }
     }
 
@@ -113,37 +73,6 @@ public class BlockEMCCondenser extends BlockContainer implements IConfigurable {
             final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
             condenserCat.remove("CrystalsProducedPerTick");
         }
-    }
-
-    private void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final Random random) {
-        double d1 = x + random.nextFloat();
-        double d2 = y + random.nextFloat();
-        double d3 = z + random.nextFloat();
-
-        switch (dir) {
-            case EAST:
-                d1 = x + 1 + OFFSET;
-                break;
-            case WEST:
-                d1 = x - OFFSET;
-                break;
-            case UP:
-                d2 = y + 1 + OFFSET;
-                break;
-            case DOWN:
-                d2 = y - OFFSET;
-                break;
-            case SOUTH:
-                d3 = z + 1 + OFFSET;
-                break;
-            case NORTH:
-                d3 = z - OFFSET;
-                break;
-            default:
-                break;
-        }
-
-        world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
     }
 
 }

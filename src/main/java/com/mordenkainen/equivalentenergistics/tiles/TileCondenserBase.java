@@ -6,6 +6,8 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.util.EMCPool;
+import com.mordenkainen.equivalentenergistics.util.IDropItems;
 import com.mordenkainen.equivalentenergistics.util.inventory.IInventoryInt;
 import com.mordenkainen.equivalentenergistics.util.inventory.InvUtils;
 
@@ -17,29 +19,29 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public abstract class TileCondenserBase extends TileEntity implements IWailaNBTProvider, IInventoryInt {
+public abstract class TileCondenserBase extends TileEntity implements IWailaNBTProvider, IInventoryInt, IDropItems {
 
-    protected float currentEMC;
     protected CondenserState state = CondenserState.Idle;
+    protected EMCPool emcPool;
 
     @Override
     public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
-        tag.setFloat("currentEMC", currentEMC);
-        tag.setFloat("maxEMC", getMaxEMC());
+        tag.setFloat("currentEMC", emcPool.getCurrentEMC());
+        tag.setFloat("maxEMC", emcPool.getMaxEMC());
         return tag;
     }
 
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        currentEMC = data.getFloat("CurrentEMC");
+        emcPool.setCurrentEMC(data.getFloat("CurrentEMC"));
         IInventoryInt.super.readFromNBT(data);
     }
 
     @Override
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
-        data.setFloat("CurrentEMC", currentEMC);
+        data.setFloat("CurrentEMC", emcPool.getCurrentEMC());
         IInventoryInt.super.writeToNBT(data);
     }
 
@@ -60,9 +62,10 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
     }
 
     protected boolean hasWork() {
-        return currentEMC > 0 || !getInventory().isEmpty();
+        return emcPool.getCurrentEMC() > 0 || !getInventory().isEmpty();
     }
 
+    @Override
     public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
         drops.addAll(InvUtils.getInvAsList(getInventory()));
     }
@@ -70,8 +73,8 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
     protected CondenserState condense() {
         if (hasWork()) {
             boolean didWork = false;
-            didWork |= processInv();
             didWork |= ejectEMC();
+            didWork |= processInv();
             return didWork ? CondenserState.Active : CondenserState.Blocked;
         } else {
             return CondenserState.Idle;
@@ -113,16 +116,26 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
     }
 
     private boolean isCrystal(final ItemStack stack) {
-        return stack.getItem() == ItemEnum.EMCCRYSTAL.getItem() || stack.getItem() == ItemEnum.EMCCRYSTALOLD.getItem();
+        return ItemEnum.EMCCRYSTAL.isSameItem(stack) || ItemEnum.EMCCRYSTALOLD.isSameItem(stack);
     }
 
     protected ItemStack convertItemsToEMC(final ItemStack stack, final int maxItems) {
-        final int maxToDo = Math.min(stack.stackSize, Math.min(maxItems, (int) ((getMaxEMC() - currentEMC) / Integration.emcHandler.getSingleEnergyValue(stack))));
+    	if (emcPool.isFull()) {
+    		return stack;
+    	}
+    	
+        final float itemEMC = Integration.emcHandler.getSingleEnergyValue(stack);
+        int maxToDo = 1;
+        
+        if (emcPool.getAvail() > itemEMC) {
+        	maxToDo = Math.min(stack.stackSize, Math.min(maxItems, (int) (emcPool.getAvail() / itemEMC)));
+        }
+    	
         if (maxToDo <= 0) {
             return stack;
         }
 
-        currentEMC += Integration.emcHandler.getSingleEnergyValue(stack) * maxToDo;
+        emcPool.addEMC(itemEMC * maxToDo);
         if (maxToDo >= stack.stackSize) {
             return null;
         }
@@ -134,17 +147,17 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
 
     protected ItemStack processStorage(final ItemStack stack) {
         boolean eject = false;
-        float toStore = getMaxEMC() - currentEMC;
+        float toStore = emcPool.getAvail();
         if (stack.getItem() == ItemEnum.EMCCELL.getItem()) {
             final ItemEMCCell cell = (ItemEMCCell) ItemEnum.EMCCELL.getItem();
             toStore = Math.min(toStore, cell.getStoredCellEMC(stack));
-            currentEMC += cell.extractCellEMC(stack, toStore);
+            emcPool.addEMC(cell.extractCellEMC(stack, toStore));
             if (cell.getStoredCellEMC(stack) <= 0) {
                 eject = true;
             }
         } else {
             toStore = Math.min(toStore, Integration.emcHandler.getStoredEMC(stack));
-            currentEMC += Integration.emcHandler.extractEMC(stack, toStore);
+            emcPool.addEMC(Integration.emcHandler.extractEMC(stack, toStore));
             if (Integration.emcHandler.getStoredEMC(stack) <= 0) {
                 eject = true;
             }
@@ -161,10 +174,7 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
     }
 
     private boolean isEMCStorage(final ItemStack stack) {
-        if (stack.getItem() == ItemEnum.EMCCELL.getItem()) {
-            return true;
-        }
-        return Integration.emcHandler.isEMCStorage(stack);
+        return ItemEnum.EMCCELL.isSameItem(stack) || Integration.emcHandler.isEMCStorage(stack);
     }
 
     protected abstract int getMaxItems();
@@ -172,8 +182,6 @@ public abstract class TileCondenserBase extends TileEntity implements IWailaNBTP
     protected abstract ItemStack ejectStack(ItemStack stack);
 
     protected abstract boolean ejectEMC();
-
-    protected abstract float getMaxEMC();
 
     protected abstract void consumePower(ItemStack items, int count);
 

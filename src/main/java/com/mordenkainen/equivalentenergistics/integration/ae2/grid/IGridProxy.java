@@ -2,23 +2,12 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
 import java.util.EnumSet;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
-
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -85,43 +74,19 @@ public interface IGridProxy extends IGridBlock {
     boolean isReady();
 
     boolean isPowered();
+    
+    boolean meetsChannelRequirements();
 
     void setOwner(EntityPlayer player);
 
     IGridNode getNode();
 
-    boolean isActive();
-
     IGrid getGrid() throws GridAccessException;
-
-    IPathingGrid getPath() throws GridAccessException;
-
-    IStorageGrid getStorage() throws GridAccessException;
-
-    ISecurityGrid getSecurity() throws GridAccessException;
-
-    ICraftingGrid getCrafting() throws GridAccessException;
-
-    IEnergyGrid getEnergy() throws GridAccessException;
-
-    ITickManager getTick() throws GridAccessException;
-
-    EMCStorageGrid getEMCStorage() throws GridAccessException;
-
-    double getAEDemand(double amount);
-
-    double sendAEToNet(double amount, Actionable mode);
-
-    double extractAEPower(double amount, Actionable mode, PowerMultiplier multiplier);
-
-    double getAEMaxEnergy();
-
-    double getAECurrentEnergy();
+    
+    boolean isActive();
 
     static IGridProxy getDefaultProxy(final ItemStack repItem, final IGridProxyable host) {
         return FMLCommonHandler.instance().getEffectiveSide().isClient() ? new NullProxy(host) : new NetworkProxy(host, "node0", repItem, true);
     }
-
-    ItemStack injectItemsForPower(ItemStack stack, MachineSource source);
 
 }

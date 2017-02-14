@@ -9,12 +9,14 @@ import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
-import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileNetworkBase;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
+import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEBase;
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
+import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -39,8 +41,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
-public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider, IWailaNBTProvider {
+public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWailaNBTProvider, IDropItems {
     public static List<DimensionalLocation> crafterTiles = new ArrayList<DimensionalLocation>();
 
     private boolean isCrafting, sentEvent, stalePatterns = true;
@@ -269,7 +272,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 
         try {
             if (craftTickCounter >= (outputStack.getItem() == ItemEnum.EMCCRYSTAL.getItem() ? -1 : BlockEMCCrafter.craftingTime)) {
-                final IStorageGrid storageGrid = gridProxy.getStorage();
+                final IStorageGrid storageGrid = GridUtils.getStorage(getProxy());
 
                 final IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource);
 
@@ -285,7 +288,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
                     craftTickCounter++;
                     return;
                 }
-                final IEnergyGrid eGrid = gridProxy.getEnergy();
+                final IEnergyGrid eGrid = GridUtils.getEnergy(getProxy());
                 final double powerExtracted = eGrid.extractAEPower(BlockEMCCrafter.activePower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
                 if (powerExtracted - BlockEMCCrafter.activePower >= 0.0D) {
@@ -310,7 +313,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
 
     public boolean checkPermissions(final EntityPlayer player) {
         try {
-            final ISecurityGrid sGrid = gridProxy.getSecurity();
+            final ISecurityGrid sGrid = GridUtils.getSecurity(getProxy());
 
             return sGrid.hasPermission(player, SecurityPermissions.INJECT) && sGrid.hasPermission(player, SecurityPermissions.EXTRACT);
         } catch (final GridAccessException e) {
@@ -326,7 +329,7 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
     private void injectEMC() {
         if (currentEMC > 0) {
             try {
-                currentEMC -= gridProxy.getEMCStorage().injectEMC(currentEMC, Actionable.MODULATE);
+                currentEMC -= GridUtils.getEMCStorage(getProxy()).injectEMC(currentEMC, Actionable.MODULATE);
             } catch (final GridAccessException e) {
                 CommonUtils.debugLog("TileEMCCrafter:injectEMC: Error accessing grid.", e);
             }
@@ -363,4 +366,12 @@ public class TileEMCCrafter extends TileNetworkBase implements ICraftingProvider
             }
         }
     }
+
+	@Override
+	public void getDrops(World world, int x, int y, int z, List<ItemStack> drops) {
+		if (currentTome != null) {
+			drops.add(currentTome);
+		}
+		
+	}
 }
