@@ -142,10 +142,7 @@ public class ItemEMCCell extends ItemMultiBase implements ICellHandler, IConfigu
     @SuppressWarnings("rawtypes")
     @Override
     public int getStatusForCell(final ItemStack stack, final IMEInventory handler) {
-        if (handler instanceof HandlerEMCCell) {
-            return ((HandlerEMCCell) handler).getCellStatus();
-        }
-        return 0;
+        return handler instanceof HandlerEMCCell ? ((HandlerEMCCell) handler).getCellStatus() : 0;
     }
 
     @Optional.Method(modid = "appliedenergistics2")

@@ -77,7 +77,7 @@ public final class CommonUtils {
         return type.isInstance(tile) ? (T) tile : null;
     }
     
-    public static void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final Random random) {
+    public static void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final String particle, final Random random) {
         double d1 = x + random.nextFloat();
         double d2 = y + random.nextFloat();
         double d3 = z + random.nextFloat();
@@ -105,7 +105,7 @@ public final class CommonUtils {
                 break;
         }
 
-        world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
+        world.spawnParticle(particle, d1, d2, d3, 0.0D, 0.0D, 0.0D);
     }
 
     public static void debugLog(final String message) {

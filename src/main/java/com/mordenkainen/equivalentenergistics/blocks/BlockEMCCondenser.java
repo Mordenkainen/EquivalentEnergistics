@@ -48,18 +48,35 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(final World world, final int x, final int y, final int z, final Random random) {
-        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(TileEMCCondenser.class, world, x, y, z);
+        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(TileEMCCondenserBase.class, world, x, y, z);
 
-        if (tileCondenser == null || !tileCondenser.isBlocked()) {
+        if (tileCondenser == null) {
             return;
         }
+        
+        String particle = null;
+        switch (tileCondenser.getState()) {
+	        case BLOCKED:
+	        	particle = "reddust";
+				break;
+			case MISSING_CHANNEL:
+				particle = "largesmoke";
+				break;
+			case UNPOWERED:
+				particle = "angryVillager";
+				break;
+			default:
+				break;
+        }
 
-        for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            if (world.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ).isOpaqueCube()) {
-                continue;
-            }
-
-            CommonUtils.spawnParticle(world, x, y, z, dir, random);
+        if (particle != null) {
+	        for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+	            if (world.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ).isOpaqueCube()) {
+	                continue;
+	            }
+	
+	            CommonUtils.spawnParticle(world, x, y, z, dir, particle, random);
+	        }
         }
     }
 
