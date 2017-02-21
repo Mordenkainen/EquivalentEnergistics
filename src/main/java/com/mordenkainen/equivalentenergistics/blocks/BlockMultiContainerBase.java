@@ -13,8 +13,9 @@ public abstract class BlockMultiContainerBase extends BlockContainerBase {
 
 	protected int numBlocks = 1;
 
-	public BlockMultiContainerBase(final Material material) {
+	public BlockMultiContainerBase(final Material material, final int numBlocks) {
 		super(material);
+		this.numBlocks = numBlocks;
 	}
 
 	@Override

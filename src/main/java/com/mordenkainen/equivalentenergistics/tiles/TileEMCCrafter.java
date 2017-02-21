@@ -374,4 +374,10 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
 		}
 		
 	}
+
+	@Override
+	protected void getPacketData(NBTTagCompound nbttagcompound) {}
+
+	@Override
+	protected void readPacketData(NBTTagCompound nbttagcompound) {}
 }

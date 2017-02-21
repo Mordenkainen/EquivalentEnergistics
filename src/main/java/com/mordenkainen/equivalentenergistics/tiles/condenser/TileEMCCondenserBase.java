@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.tiles;
+package com.mordenkainen.equivalentenergistics.tiles.condenser;
 
 import java.util.EnumSet;
 
@@ -23,30 +23,35 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.StatCollector;
 
 public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTickable {
-
+	private final static String STATE_TAG = "state";
+	
 	protected CondenserState state = CondenserState.IDLE;
 	protected final EnumSet<CondenserState> failedStates = EnumSet.of(CondenserState.MISSING_CHANNEL, CondenserState.UNPOWERED);
 
 	public enum CondenserState {
-	    IDLE("Idle"),
-	    ACTIVE("Active"),
-	    BLOCKED("Blocked"),
-	    UNPOWERED("No Power"),
-	    MISSING_CHANNEL("Device Missing Channel");
+	    IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle"),
+	    ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active"),
+	    BLOCKED(TickRateModulation.IDLE, "message.condenser.statename.blocked"),
+	    UNPOWERED(TickRateModulation.IDLE, "message.condenser.statename.no_power"),
+	    MISSING_CHANNEL(TickRateModulation.IDLE, "message.condenser.statename.missing_channel");
 		
 		private final String name;
+		private final TickRateModulation tickRate;
 		
-		CondenserState(final String name) {
-			this.name = name;
+		CondenserState(final TickRateModulation tickRate, final String name) {
+			this.name = StatCollector.translateToLocal(name);
+			this.tickRate = tickRate;
 		}
 		
 		public String getName() {
 			return name;
+		}
+		
+		public TickRateModulation getTickRate() {
+			return tickRate;
 		}
 	}
 	
@@ -69,18 +74,15 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 	}
 
 	@Override
-	public Packet getDescriptionPacket() {
-	    final NBTTagCompound nbttagcompound = new NBTTagCompound();
-	    nbttagcompound.setInteger("state", state.ordinal());
-	    return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
+	protected void getPacketData(final NBTTagCompound nbttagcompound) {
+		nbttagcompound.setInteger(STATE_TAG, state.ordinal());
 	}
 
 	@Override
-	public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
-		final NBTTagCompound nbttagcompound = pkt.func_148857_g();
-	    state = CondenserState.values()[nbttagcompound.getInteger("state")];
+	protected void readPacketData(final NBTTagCompound nbttagcompound) {
+		state = CondenserState.values()[nbttagcompound.getInteger(STATE_TAG)];
 	}
-	
+
 	@Override
 	public TickingRequest getTickingRequest(final IGridNode node) {
 		return new TickingRequest(1, 20, false, true);
@@ -92,18 +94,18 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 		
 		newState = checkRequirements();
 		
-		if (updateState(newState) || failedStates.contains(state)) {
-			return TickRateModulation.IDLE;
+		if (newState != CondenserState.IDLE && updateState(newState) || failedStates.contains(newState)) {
+			return state.getTickRate();
 		}
 		
 		if (!getInventory().isEmpty()) {
 			newState = processInv();
 			updateState(newState);
-			return state == CondenserState.BLOCKED ? TickRateModulation.IDLE : TickRateModulation.URGENT;
+			return state.getTickRate();
 		}
 		
 		updateState(CondenserState.IDLE);
-		return TickRateModulation.IDLE;
+		return state.getTickRate();
 	}
 
 	protected abstract float getEMCPerTick();
@@ -112,15 +114,13 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 	    return state;
 	}
 	
-	protected CondenserState checkRequirements() {
-		if (!gridProxy.isActive()) {			
-			if (!gridProxy.meetsChannelRequirements()) {
-				return CondenserState.MISSING_CHANNEL;
-			}
-			
-			if (!gridProxy.isPowered()) {
-				return CondenserState.UNPOWERED;
-			}
+	protected CondenserState checkRequirements() {			
+		if (!gridProxy.meetsChannelRequirements()) {
+			return CondenserState.MISSING_CHANNEL;
+		}
+		
+		if (!gridProxy.isPowered()) {
+			return CondenserState.UNPOWERED;
 		}
 		
 		return CondenserState.IDLE;
@@ -147,6 +147,10 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 			
 			if (itemEMC > availEMC) {
 				return -1;
+			}
+			
+			if (itemEMC > remainingEMC) {
+				return remainingEMC;
 			}
 			
 			int maxToDo = Math.min(stack.stackSize, Math.min((int) (availEMC / itemEMC), (int) (remainingEMC / itemEMC)));
@@ -192,7 +196,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 			}		
 			
 			if (Integration.emcHandler.getStoredEMC(stack) <= 0) {
-				getInventory().setInventorySlotContents(slot, GridUtils.injectItemsForPower(getProxy(), stack, mySource));
+				getInventory().setInventorySlotContents(slot, ejectItem(stack));
 				if (getInventory().getStackInSlot(slot) != null) {
 					return -1;
 				}
@@ -220,7 +224,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 			} else if (Integration.emcHandler.hasEMC(stack)) {
 				remainingEMC = processItems(slot, remainingEMC, true);
 			} else {
-				getInventory().setInventorySlotContents(slot, GridUtils.injectItemsForPower(getProxy(), stack, mySource));
+				getInventory().setInventorySlotContents(slot, ejectItem(stack));
 				if (getInventory().getStackInSlot(slot) != null) {
 					remainingEMC = -1;
 				}
@@ -239,4 +243,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 		return false;
 	}
 	
+	protected ItemStack ejectItem(final ItemStack stack) {
+		return GridUtils.injectItemsForPower(getProxy(), stack, mySource);
+	}
 }

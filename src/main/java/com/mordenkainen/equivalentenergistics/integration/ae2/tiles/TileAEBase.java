@@ -8,6 +8,9 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.util.DimensionalCoord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class TileAEBase extends TileEntity implements IGridProxyable {
@@ -69,4 +72,20 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
 	@Override
 	public void gridChanged() {}
 
+	@Override
+	public Packet getDescriptionPacket() {
+	    final NBTTagCompound nbttagcompound = new NBTTagCompound();
+	    getPacketData(nbttagcompound);
+	    return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
+	}
+
+	protected abstract void getPacketData(final NBTTagCompound nbttagcompound);
+
+	@Override
+	public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
+		final NBTTagCompound nbttagcompound = pkt.func_148857_g();
+	    readPacketData(nbttagcompound);
+	}
+	
+	protected abstract void readPacketData(final NBTTagCompound nbttagcompound);
 }

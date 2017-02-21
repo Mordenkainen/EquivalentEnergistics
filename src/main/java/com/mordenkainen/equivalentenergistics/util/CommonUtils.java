@@ -6,9 +6,12 @@ import java.util.Random;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.util.inventory.InventoryAdapter;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -107,8 +110,78 @@ public final class CommonUtils {
 
         world.spawnParticle(particle, d1, d2, d3, 0.0D, 0.0D, 0.0D);
     }
+    
+    public static int importFromAdjInv(final ForgeDirection side, final IInventory sourceInv, final IInventory destInv, final int destSlot, final int maxItems) {
+    	int remainingItems = maxItems;
+		final ISidedInventory inv = InventoryAdapter.getAdapter(sourceInv);
+		for (final int slot : inv.getAccessibleSlotsFromSide(side.ordinal())) {
+			ItemStack destStack = destInv.getStackInSlot(destSlot);
+			ItemStack sourceStack = inv.getStackInSlot(slot);
+			if (sourceStack == null || !inv.canExtractItem(slot, sourceStack, side.getOpposite().ordinal())) {
+				continue;
+			}
+			
+			if (destStack == null) {
+				final int toMove = Math.min(sourceStack.stackSize, remainingItems);
+				sourceStack.stackSize -= toMove;
+				destStack = sourceStack.copy();
+				destStack.stackSize = toMove;
+				destInv.setInventorySlotContents(destSlot, filterForEmpty(destStack));
+				inv.setInventorySlotContents(slot, filterForEmpty(sourceStack));
+				remainingItems -= toMove;
+			} else if (isSameItem(destStack, sourceStack)) {
+				final int toMove = Math.min(Math.min(sourceStack.stackSize, destStack.getMaxStackSize() - destStack.stackSize), remainingItems);
+				sourceStack.stackSize -= toMove;
+				destStack.stackSize += toMove;
+				destInv.setInventorySlotContents(destSlot, filterForEmpty(destStack));
+				inv.setInventorySlotContents(slot,filterForEmpty(sourceStack));
+				remainingItems -= toMove;
+			}
 
-    public static void debugLog(final String message) {
+			if(remainingItems <= 0) {
+				break;
+			}
+		}
+		return maxItems - remainingItems;
+    }
+    
+    public static int ejectStack(ItemStack sourceStack, final IInventory destInv, final ForgeDirection side, final int maxItems) {
+    	int remainingItems = maxItems;
+		final ISidedInventory inv = InventoryAdapter.getAdapter(destInv);
+		for (final int slot : inv.getAccessibleSlotsFromSide(side.ordinal())) {
+			if(inv.canInsertItem(slot, sourceStack, side.ordinal())) {
+				ItemStack destStack = inv.getStackInSlot(slot);
+				if (destStack == null) {
+					final int toMove = Math.min(sourceStack.stackSize, remainingItems);
+					destStack = sourceStack.copy();
+					destStack.stackSize = toMove;
+					sourceStack.stackSize -= toMove;
+					remainingItems -= toMove;
+					inv.setInventorySlotContents(slot, destStack);
+				} else if (isSameItem(destStack, sourceStack)) {
+					final int toMove = Math.min(Math.min(sourceStack.stackSize, destStack.getMaxStackSize() - destStack.stackSize), remainingItems);
+					destStack.stackSize += toMove;
+					sourceStack.stackSize -= toMove;
+					remainingItems -= toMove;
+					inv.setInventorySlotContents(slot, destStack);
+				}
+			}
+			if (remainingItems <= 0) {
+				break;
+			}
+		}
+		return maxItems - remainingItems;
+	}
+   
+    private static boolean isSameItem(final ItemStack stack1, final ItemStack stack2) {
+		return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage() && stack1.stackTagCompound == stack2.stackTagCompound;
+	}
+    
+    private static ItemStack filterForEmpty(final ItemStack stack) {
+    	return stack.stackSize <=0 ? null : stack;
+    }
+
+	public static void debugLog(final String message) {
         if (ConfigManager.debug) {
             EquivalentEnergistics.logger.debug(message);
         }

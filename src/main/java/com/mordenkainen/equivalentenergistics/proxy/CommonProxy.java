@@ -6,8 +6,11 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenser;
+import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserAdv;
+import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserExt;
+import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserUlt;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -46,6 +49,9 @@ public class CommonProxy {
     public void registerTileEntities() {
         if (BlockEnum.EMCCONDENSER.isEnabled()) {
             GameRegistry.registerTileEntity(TileEMCCondenser.class, Reference.MOD_ID + "TileEMCCondenser");
+            GameRegistry.registerTileEntity(TileEMCCondenserAdv.class, Reference.MOD_ID + "TileEMCCondenserAdv");
+            GameRegistry.registerTileEntity(TileEMCCondenserExt.class, Reference.MOD_ID + "TileEMCCondenserExt");
+            GameRegistry.registerTileEntity(TileEMCCondenserUlt.class, Reference.MOD_ID + "TileEMCCondenserUlt");
         }
         if (BlockEnum.EMCCRAFTER.isEnabled()) {
             GameRegistry.registerTileEntity(TileEMCCrafter.class, Reference.MOD_ID + "TileEMCCrafter");

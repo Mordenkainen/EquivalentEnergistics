@@ -35,6 +35,9 @@ item.equivalentenergistics:EMCStorageComponent.7.name=Tier 8 EMC Storage Compone
 
 # Block Names
 tile.equivalentenergistics:EMCCondenser.0.name=EMC Condenser
+tile.equivalentenergistics:EMCCondenser.1.name=Advanced EMC Condenser
+tile.equivalentenergistics:EMCCondenser.2.name=Improved EMC Condenser
+tile.equivalentenergistics:EMCCondenser.3.name=Ultimate EMC Condenser
 tile.equivalentenergistics:EMCCrafter.name=EMC Assembler
 
 # Messages
@@ -42,7 +45,19 @@ message.book.clear=Owner Cleared!
 message.book.wrongowner=You are not the owner of this Tome.
 message.book.link=Tome linked!
 message.cell.chestwarning=EMC Storage Cells can not be viewed in an ME Chest.
+message.condenser.statename.idle=Idle
+message.condenser.statename.active=Active
+message.condenser.statename.blocked=Blocked
+message.condenser.statename.no_power=No Power
+message.condenser.statename.missing_channel=Device Missing Channel
+message.condenser.redstonemode.none=None
+message.condenser.redstonemode.blocked=Emit when blocked
+message.condenser.redstonemode.active=Emit when active
+message.condenser.redstonemode.idle=Emit when idle
+message.condenser.redstonemode.disabled=Disabled by redstone
+message.condenser.redstonemode.enabled=Enabled by redstone
 
 # Tooltips
-tooltip.emc.name=EMC:
-
+tooltip.emc.name=Stored EMC:
+tooltip.status.name=Status:
+tooltip.mode.name=Redstone mode:

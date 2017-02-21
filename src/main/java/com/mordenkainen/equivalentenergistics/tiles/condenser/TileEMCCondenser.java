@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.tiles;
+package com.mordenkainen.equivalentenergistics.tiles.condenser;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
@@ -15,7 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTProvider {
-
+	private final static String EMC_TAG = "CurrentEMC";
+	
 	protected float currentEMC;
 	
 	public TileEMCCondenser() {
@@ -25,7 +26,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
 	@Override
     public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
 		if (currentEMC > 0) {
-			tag.setFloat("currentEMC", currentEMC);
+			tag.setFloat(EMC_TAG, currentEMC);
 		}
         return tag;
     }
@@ -33,8 +34,8 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        if (data.hasKey("CurrentEMC")) {
-        	currentEMC = data.getFloat("CurrentEMC");
+        if (data.hasKey(EMC_TAG)) {
+        	currentEMC = data.getFloat(EMC_TAG);
         }
     }
 
@@ -42,7 +43,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         if (currentEMC > 0) {
-        	data.setFloat("CurrentEMC", currentEMC);
+        	data.setFloat(EMC_TAG, currentEMC);
         }
     }
 
