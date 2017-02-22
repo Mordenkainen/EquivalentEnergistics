@@ -22,19 +22,12 @@ public class ProjectE implements IEMCHandler {
 
     @Override
     public boolean hasEMC(final ItemStack itemStack) {
-        // horrible hack for bug in PE API
-        // return ProjectEAPI.getEMCProxy().hasValue(itemStack));
         return ProjectEAPI.getEMCProxy().getValue(itemStack) > 0;
     }
 
     @Override
     public float getEnergyValue(final ItemStack itemStack) {
         return ProjectEAPI.getEMCProxy().getValue(itemStack);
-    }
-
-    @Override
-    public float getCrystalEMC() {
-        return getCrystalEMC(0);
     }
 
     @Override
@@ -55,7 +48,7 @@ public class ProjectE implements IEMCHandler {
         final Iterator<ItemStack> iter = transmutations.iterator();
         while (iter.hasNext()) {
             final ItemStack currentItem = iter.next();
-            if (currentItem == null || currentItem.getItem() == ItemEnum.EMCCRYSTAL.getItem() || currentItem.getItem() == ItemEnum.EMCCRYSTALOLD.getItem()) {
+            if (currentItem == null || ItemEnum.EMCCRYSTAL.isSameItem(currentItem) || ItemEnum.EMCCRYSTALOLD.isSameItem(currentItem)) {
                 iter.remove();
             }
         }
@@ -64,7 +57,7 @@ public class ProjectE implements IEMCHandler {
 
     @Override
     public boolean isValidTome(final ItemStack itemStack) {
-        return itemStack != null && itemStack.getItem() == ItemEnum.EMCBOOK.getItem() && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("OwnerUUID");
+        return itemStack != null && ItemEnum.EMCBOOK.isSameItem(itemStack) && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("OwnerUUID");
     }
 
     @Override
@@ -114,12 +107,12 @@ public class ProjectE implements IEMCHandler {
 
     @Override
     public float getStoredEMC(final ItemStack stack) {
-        return (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+        return stack.getItem() instanceof IItemEmc ? (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack) : 0;
     }
 
     @Override
     public float extractEMC(final ItemStack stack, final float toStore) {
-        return (float) ((IItemEmc) stack.getItem()).extractEmc(stack, toStore);
+        return stack.getItem() instanceof IItemEmc ? (float) ((IItemEmc) stack.getItem()).extractEmc(stack, toStore) : 0;
     }
 
 }

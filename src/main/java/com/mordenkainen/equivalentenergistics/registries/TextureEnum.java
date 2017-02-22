@@ -17,9 +17,19 @@ public enum TextureEnum {
     EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7");
 
     private enum TextureType {
-        ITEM,
-        BLOCK,
-        PART
+        ITEM(1),
+        BLOCK(0),
+        PART(0);
+    	
+    	private int textureType;
+    	
+    	TextureType(final int textureType) {
+    		this.textureType = textureType;
+    	}
+    	
+    	public int getTextureType() {
+    		return textureType;
+    	}
     }
 
     private TextureType textureType;
@@ -47,8 +57,8 @@ public enum TextureEnum {
 
     public static void registerTextures(final TextureMap textureMap) {
     	for (final TextureEnum currentTexture : TextureEnum.values()) {
-    		if (!(textureMap.getTextureType() == 0 && (currentTexture.textureType == TextureType.BLOCK || currentTexture.textureType == TextureType.PART)) && !(textureMap.getTextureType() == 1 && currentTexture.textureType == TextureType.ITEM)) {
-                continue;
+    		if (textureMap.getTextureType() != currentTexture.textureType.getTextureType()) {
+    		    continue;
             }
 
             String header = Reference.MOD_ID + ":";

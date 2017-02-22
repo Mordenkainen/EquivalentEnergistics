@@ -12,8 +12,6 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
-import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
@@ -26,15 +24,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 
-@Optional.InterfaceList({ @Optional.Interface(iface = "moze_intel.projecte.api.item.IItemEmc", modid = "ProjectE"), @Optional.Interface(iface = "appeng.api.storage.ICellHandler", modid = "appliedenergistics2") // NOPMD
-})
-public class ItemEMCCell extends ItemMultiBase implements ICellHandler, IConfigurable, IItemEmc {
+@Optional.Interface(iface = "moze_intel.projecte.api.item.IItemEmc", modid = "ProjectE")
+public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItemEmc {
 
     private static final String GROUP = "Storage Cells";
     private static final String EMC_TAG = "emc";
@@ -44,7 +40,6 @@ public class ItemEMCCell extends ItemMultiBase implements ICellHandler, IConfigu
 
     public ItemEMCCell() {
         super(8);
-        setMaxStackSize(1);
     }
 
     @Override
@@ -96,12 +91,6 @@ public class ItemEMCCell extends ItemMultiBase implements ICellHandler, IConfigu
             DRAIN[i] = config.get(GROUP, "Tier_" + i + "_PowerDrain", DRAIN[i]).getDouble(DRAIN[i]);
         }
     }
-    
-    @Optional.Method(modid = "appliedenergistics2")
-    @Override
-    public boolean isCell(final ItemStack stack) {
-        return stack != null && stack.getItem() == this;
-    }
 
     @Optional.Method(modid = "appliedenergistics2")
     @SuppressWarnings("rawtypes") // NOPMD
@@ -111,31 +100,6 @@ public class ItemEMCCell extends ItemMultiBase implements ICellHandler, IConfigu
             return new HandlerEMCCell(stack, host, CAPACITIES[stack.getItemDamage()]);
         }
         return null;
-    }
-
-    @Optional.Method(modid = "appliedenergistics2")
-    @Override
-    public IIcon getTopTexture_Light() {
-        return null;
-    }
-
-    @Optional.Method(modid = "appliedenergistics2")
-    @Override
-    public IIcon getTopTexture_Medium() {
-        return null;
-    }
-
-    @Optional.Method(modid = "appliedenergistics2")
-    @Override
-    public IIcon getTopTexture_Dark() {
-        return null;
-    }
-
-    @Optional.Method(modid = "appliedenergistics2")
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void openChestGui(final EntityPlayer player, final IChestOrDrive chest, final ICellHandler handler, final IMEInventoryHandler inv, final ItemStack stack, final StorageChannel channel) {
-        player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.cell.chestwarning")));
     }
 
     @Optional.Method(modid = "appliedenergistics2")

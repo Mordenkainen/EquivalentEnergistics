@@ -13,8 +13,6 @@ public interface IEMCHandler {
 
     float getEnergyValue(ItemStack itemStack);
 
-    float getCrystalEMC();
-
     float getCrystalEMC(int tier);
 
     List<ItemStack> getTransmutations(TileEMCCrafter tile);

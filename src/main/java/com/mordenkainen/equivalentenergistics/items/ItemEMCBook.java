@@ -60,9 +60,9 @@ public class ItemEMCBook extends ItemBase {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean par4) {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
-            list.add("Owner: " + stack.getTagCompound().getString(OWNER_TAG));
+            list.add(StatCollector.translateToLocal("message.book.owner") + " " + stack.getTagCompound().getString(OWNER_TAG));
         } else {
-            list.add("No owner set.");
+            list.add(StatCollector.translateToLocal("message.book.no_owner"));
         }
     }
 

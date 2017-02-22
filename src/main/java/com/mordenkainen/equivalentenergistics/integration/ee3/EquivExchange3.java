@@ -42,11 +42,6 @@ public class EquivExchange3 implements IEMCHandler {
     }
 
     @Override
-    public float getCrystalEMC() {
-        return getCrystalEMC(0);
-    }
-
-    @Override
     public float getCrystalEMC(final int tier) {
         return ItemEMCCrystal.CRYSTAL_VALUES[tier];
     }
@@ -60,7 +55,7 @@ public class EquivExchange3 implements IEMCHandler {
         final Iterator<ItemStack> iter = transmutations.iterator();
         while (iter.hasNext()) {
             final ItemStack currentItem = iter.next();
-            if (currentItem == null || currentItem.getItem() == ItemEnum.EMCCRYSTAL.getItem() || currentItem.getItem() == ItemEnum.EMCCRYSTALOLD.getItem()) {
+            if (currentItem == null || ItemEnum.EMCCRYSTAL.isSameItem(currentItem) || ItemEnum.EMCCRYSTALOLD.isSameItem(currentItem)) {
                 iter.remove();
             }
         }
@@ -107,25 +102,17 @@ public class EquivExchange3 implements IEMCHandler {
 
     @Override
     public boolean isEMCStorage(final ItemStack stack) {
-        return stack.getItem() == ItemEnum.EMCCELL.getItem();
+        return ItemEnum.EMCCELL.isSameItem(stack);
     }
 
     @Override
     public float getStoredEMC(final ItemStack stack) {
-    	if (stack.getItem() == ItemEnum.EMCCELL.getItem()) {
-    		return ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).getStoredCellEMC(stack);
-    	} else {
-    		return 0;
-    	}
+    	return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).getStoredCellEMC(stack) : 0;
     }
 
     @Override
     public float extractEMC(final ItemStack stack, final float toStore) {
-    	if (stack.getItem() == ItemEnum.EMCCELL.getItem()) {
-    		return ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).extractCellEMC(stack, toStore);
-    	} else {
-    		return 0;
-    	}
+    	return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).extractCellEMC(stack, toStore) : 0;
     }
 
     public static void postPlayerLearn(final String player) {

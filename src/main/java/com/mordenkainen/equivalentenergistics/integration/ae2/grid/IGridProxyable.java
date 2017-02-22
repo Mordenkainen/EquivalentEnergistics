@@ -1,3 +1,4 @@
+// TODO check ownership
 package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
 import appeng.api.networking.IGridHost;

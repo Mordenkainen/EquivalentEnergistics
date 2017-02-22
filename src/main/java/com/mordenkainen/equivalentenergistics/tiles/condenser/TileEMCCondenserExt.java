@@ -8,6 +8,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.inventory.InternalInventory;
+import com.mordenkainen.equivalentenergistics.util.inventory.InvUtils;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -57,7 +58,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 					}
 					final IInventory sourceInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
 					if (sourceInv != null) {
-						numItems -= CommonUtils.importFromAdjInv(side.getOpposite(), sourceInv, getInventory(), slot, numItems);
+						numItems -= InvUtils.importFromAdjInv(side.getOpposite(), sourceInv, getInventory(), slot, numItems);
 					}
 					if (numItems <= 0) {
 						break outerLoop;
@@ -82,7 +83,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 			}
 			final IInventory destInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
 			if (destInv != null) {
-				final int ejected = CommonUtils.ejectStack(stack, destInv, side.getOpposite(), numItems);
+				final int ejected = InvUtils.ejectStack(stack, destInv, side.getOpposite(), numItems);
 				numItems -= ejected;
 				stack.stackSize -= ejected;
 			}

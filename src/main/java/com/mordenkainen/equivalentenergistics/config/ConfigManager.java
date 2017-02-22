@@ -12,7 +12,6 @@ import net.minecraftforge.common.config.Configuration;
 public final class ConfigManager {
 
     public static Configuration config;
-    public static float crystalEMCValue;
     public static boolean useEE3;
     public static boolean debug;
 

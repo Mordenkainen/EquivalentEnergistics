@@ -8,7 +8,6 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
-import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.storage.ICellHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.item.Item;
@@ -25,8 +24,7 @@ public final class AppliedEnergistics2 {
     public static void init() {
         instance = new AppliedEnergistics2();
         MinecraftForge.EVENT_BUS.register(instance);
-        final IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
-        gcr.registerGridCache(EMCStorageGrid.class, EMCStorageGrid.class);
+        AEApi.instance().registries().gridCache().registerGridCache(EMCStorageGrid.class, EMCStorageGrid.class);
         AEApi.instance().registries().cell().addCellHandler((ICellHandler) ItemEnum.EMCCELL.getItem());
     }
 
