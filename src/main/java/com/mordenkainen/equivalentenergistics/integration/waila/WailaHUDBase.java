@@ -37,5 +37,4 @@ public abstract class WailaHUDBase implements IWailaDataProvider {
 	    }
 	    return tag;
 	}
-
 }
