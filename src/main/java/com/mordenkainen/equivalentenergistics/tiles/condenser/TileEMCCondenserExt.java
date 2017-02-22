@@ -5,12 +5,14 @@ import java.util.Map;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
+import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.inventory.InternalInventory;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,7 +23,11 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 	private final Map<ForgeDirection, Boolean> sides = new HashMap<ForgeDirection, Boolean>();
 	
 	public TileEMCCondenserExt() {
-		super();
+		this(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock()),1,2));
+	}
+	
+	public TileEMCCondenserExt(final ItemStack repItem) {
+		super(repItem);
 		internalInventory = new InternalInventory("EMCCondenserInventory", 4, 64);
 	}
 	
@@ -121,6 +127,10 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         super.readFromNBT(data);
         sides.clear();
         final NBTTagCompound list = (NBTTagCompound) data.getTag(SIDE_TAG);
+        if (list == null) {
+        	return;
+        }
+        
         for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
         	if (list.hasKey(side.name())) {
         		sides.put(side, list.getBoolean(side.name()));

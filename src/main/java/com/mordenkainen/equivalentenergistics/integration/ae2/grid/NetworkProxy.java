@@ -147,7 +147,7 @@ public class NetworkProxy implements IGridProxy {
         if (tag.hasKey(nbtName)) {
             nbt = tag;
         }
-        if (node != null) {
+        if (node != null && nbt != null) {
             node.loadFromNBT(nbtName, nbt);
             nbt = null;
         }

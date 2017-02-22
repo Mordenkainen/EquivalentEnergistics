@@ -7,7 +7,7 @@ import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.items.itemblocks.ItemBlockMulti;
+import com.mordenkainen.equivalentenergistics.items.itemblocks.ItemBlockCondenser;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -18,7 +18,7 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum BlockEnum {
 
-    EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), ItemBlockMulti.class, Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCondenser", false),
+    EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), ItemBlockCondenser.class, Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCondenser", false),
     EMCCRAFTER("EMCCrafter", new BlockEMCCrafter(), Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCrafter");
 
     private final String internalName;

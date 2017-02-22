@@ -73,7 +73,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
 	    		}
 	    	}
     	}
-        return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
+        return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -126,20 +126,18 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
 			return false;
 		}
     	
-    	if (player.getHeldItem() !=  null && player.getHeldItem().getItem() == Items.redstone) {
-    		final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
-    		if (!world.isRemote) {
+    	if (player.getHeldItem() == null) {
+    		final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
+    		if (tileCondenser != null && !world.isRemote) {
+    			tileCondenser.toggleSide(side);
+    		}
+    		return true;
+    	} else if (player.getHeldItem().getItem() == Items.redstone) {
+			final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
+    		if (tileCondenser != null && !world.isRemote) {
         		tileCondenser.nextMode();
         		player.addChatComponentMessage(new ChatComponentText(tileCondenser.getMode().description()));
         	}
-    		return true;
-    	}
-    	
-    	if (player.getHeldItem() == null) {
-    		final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
-    		if (!world.isRemote) {
-    			tileCondenser.toggleSide(side);
-    		}
     		return true;
     	}
 		
@@ -174,14 +172,9 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
         activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
         emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", 4096).getDouble(4096);
         
-        if (config.hasKey(GROUP.toLowerCase(Locale.US), "CrystalsProducedPerTick")) {
-            final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
-            condenserCat.remove("CrystalsProducedPerTick");
-        }
-        if (config.hasKey(GROUP.toLowerCase(Locale.US), "ItemsCondensedPerTick")) {
-            final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
-            condenserCat.remove("ItemsCondensedPerTick");
-        }
+        final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
+        condenserCat.remove("CrystalsProducedPerTick");
+        condenserCat.remove("ItemsCondensedPerTick");
     }
 
 }

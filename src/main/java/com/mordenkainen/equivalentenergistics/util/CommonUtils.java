@@ -145,7 +145,7 @@ public final class CommonUtils {
 		return maxItems - remainingItems;
     }
     
-    public static int ejectStack(ItemStack sourceStack, final IInventory destInv, final ForgeDirection side, final int maxItems) {
+    public static int ejectStack(final ItemStack sourceStack, final IInventory destInv, final ForgeDirection side, final int maxItems) {
     	int remainingItems = maxItems;
 		final ISidedInventory inv = InventoryAdapter.getAdapter(destInv);
 		for (final int slot : inv.getAccessibleSlotsFromSide(side.ordinal())) {

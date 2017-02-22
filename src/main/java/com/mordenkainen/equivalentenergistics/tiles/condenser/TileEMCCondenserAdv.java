@@ -46,7 +46,11 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
 	}
 	
 	public TileEMCCondenserAdv() {
-		super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock())));
+		this(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock()),1,1));
+	}
+	
+	public TileEMCCondenserAdv(final ItemStack repItem) {
+		super(repItem);
 	}
 	
 	@Override
