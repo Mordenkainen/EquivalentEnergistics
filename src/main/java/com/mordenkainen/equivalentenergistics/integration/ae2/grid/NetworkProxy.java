@@ -7,7 +7,6 @@ import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -35,11 +34,11 @@ public class NetworkProxy implements IGridProxy {
     private IGridNode node;
     private NBTTagCompound nbt;
 
-    public NetworkProxy(final IGridProxyable _tile, final String name, final ItemStack visual, final boolean inWorld) {
-        tile = _tile;
+    public NetworkProxy(final IGridProxyable tile, final String name, final ItemStack repItem, final boolean inWorld) {
+        this.tile = tile;
         nbtName = name;
         worldNode = inWorld;
-        myRepInstance = visual;
+        myRepInstance = repItem;
         validSides = EnumSet.allOf(ForgeDirection.class);
     }
 
@@ -69,11 +68,11 @@ public class NetworkProxy implements IGridProxy {
 
     @Override
     public void setFlags(final GridFlags... gridFlags) {
-        final EnumSet<GridFlags> _flags = EnumSet.noneOf(GridFlags.class);
+        final EnumSet<GridFlags> flags = EnumSet.noneOf(GridFlags.class);
 
-        Collections.addAll(_flags, gridFlags);
+        Collections.addAll(flags, gridFlags);
 
-        flags = _flags;
+        this.flags = flags;
     }
 
     @Override
@@ -97,19 +96,13 @@ public class NetworkProxy implements IGridProxy {
     }
 
     @Override
-    public void onGridNotification(final GridNotification gridNotification) {}
-
-    @Override
-    public void setNetworkStatus(final IGrid grid, final int usedChannels) {}
-
-    @Override
     public EnumSet<ForgeDirection> getConnectableSides() {
         return validSides;
     }
 
     @Override
-    public void setConnectableSides(final EnumSet<ForgeDirection> _validSides) {
-        validSides = _validSides;
+    public void setConnectableSides(final EnumSet<ForgeDirection> validSides) {
+        this.validSides = validSides;
         if (node != null) {
             node.updateState();
         }
@@ -231,17 +224,15 @@ public class NetworkProxy implements IGridProxy {
 
     @Override
     public IGrid getGrid() throws GridAccessException {
-        if (node == null) {
-            throw new GridAccessException();
+        if (node != null) {
+        	final IGrid grid = node.getGrid();
+
+            if (grid != null) {
+                return grid;
+            }
         }
-
-        final IGrid grid = node.getGrid();
-
-        if (grid == null) {
-            throw new GridAccessException();
-        }
-
-        return grid;
+        
+        throw new GridAccessException();
     }
 
 }

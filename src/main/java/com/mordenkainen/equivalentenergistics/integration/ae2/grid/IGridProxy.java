@@ -40,10 +40,10 @@ public interface IGridProxy extends IGridBlock {
     void setGridColor(AEColor color);
 
     @Override
-    void onGridNotification(GridNotification gridNotification);
+    default void onGridNotification(GridNotification gridNotification) {}
 
     @Override
-    void setNetworkStatus(IGrid grid, int usedChannels);
+    default void setNetworkStatus(IGrid grid, int usedChannels) {}
 
     @Override
     EnumSet<ForgeDirection> getConnectableSides();

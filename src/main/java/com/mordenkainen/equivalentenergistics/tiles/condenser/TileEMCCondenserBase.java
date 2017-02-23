@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEInv;
@@ -142,7 +142,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 		ItemStack stack = getInventory().getStackInSlot(slot);
 		final float itemEMC = Integration.emcHandler.getSingleEnergyValue(stack);
 		try {
-			final EMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
+			final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
 			final float availEMC = emcGrid.getAvail();
 			
 			if (itemEMC > availEMC) {
@@ -184,7 +184,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 		
 		try {			
 			if (itemEMC > 0) {
-				final EMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
+				final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
 				toStore = Math.min(Math.min(remainingEMC, itemEMC), emcGrid.getAvail());
 				if (toStore <= 0) {
 					return -1;

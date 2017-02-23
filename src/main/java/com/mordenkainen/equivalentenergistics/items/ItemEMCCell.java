@@ -70,13 +70,10 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
 
     @Override
     public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
-        if (stack == null || !isEmpty(stack)) {
-            return stack;
+        if (stack != null && isEmpty(stack) && player != null && player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
+        	return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
         }
 
-        if (player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
-            return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
-        }
         return stack;
     }
 
@@ -175,14 +172,14 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
         final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = Math.min(emc, currentEMC);
         
-        if (toRemove >= currentEMC) {
+        stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
+        if (isEmpty(stack)) {
             stack.getTagCompound().removeTag(EMC_TAG);
             if (stack.getTagCompound().hasNoTags()) {
                 stack.setTagCompound(null);
             }
-        } else {
-            stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
         }
+        
         return toRemove;
     }
 

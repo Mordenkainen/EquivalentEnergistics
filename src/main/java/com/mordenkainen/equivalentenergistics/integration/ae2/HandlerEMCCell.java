@@ -93,10 +93,7 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
     	
     	if (toAdd > 0) {
     		currentEMC += toAdd;
-    		cellData.setFloat(EMC_TAG, currentEMC);
-            if (saveProvider != null) {
-                saveProvider.saveChanges(this);
-            }
+    		updateEMC();
     	}
     	
     	return toAdd;
@@ -111,10 +108,7 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
     	
     	if (toExtract > 0) {
     		currentEMC -= toExtract;
-    		cellData.setFloat(EMC_TAG, currentEMC);
-            if (saveProvider != null) {
-                saveProvider.saveChanges(this);
-            }
+    		updateEMC();
     	}
     	
     	return toExtract;
@@ -140,6 +134,13 @@ public class HandlerEMCCell implements IMEInventoryHandler<IAEItemStack> {
 
     public float getAvail() {
         return Math.max(capacity - currentEMC, 0);
+    }
+    
+    private void updateEMC() {
+    	cellData.setFloat(EMC_TAG, currentEMC);
+        if (saveProvider != null) {
+            saveProvider.saveChanges(this);
+        }
     }
 
 }

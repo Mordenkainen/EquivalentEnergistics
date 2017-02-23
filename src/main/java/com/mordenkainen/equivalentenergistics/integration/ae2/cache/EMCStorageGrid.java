@@ -11,10 +11,8 @@ import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
@@ -29,7 +27,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
-public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHandler<IAEItemStack> {
+public class EMCStorageGrid implements IEMCStorageGrid, IGridCellHandler {
 
     private static Field intHandler;
     private static Field extHandler;
@@ -166,53 +164,6 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
         return stacks;
     }
 
-    @Override
-    public StorageChannel getChannel() {
-        return StorageChannel.ITEMS;
-    }
-
-    @Override
-    public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
-    }
-
-    @Override
-    public boolean isPrioritized(final IAEItemStack stack) {
-        return ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack()) || ItemEnum.EMCCRYSTALOLD.isSameItem(stack.getItemStack());
-    }
-
-    @Override
-    public boolean canAccept(final IAEItemStack stack) {
-    	return ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack()) || ItemEnum.EMCCRYSTALOLD.isSameItem(stack.getItemStack());
-    }
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public boolean validForPass(final int pass) {
-        return pass == 1;
-    }
-
-    @SuppressWarnings("rawtypes") // NOPMD
-    @Override
-    public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
-        final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
-
-        if (channel == StorageChannel.ITEMS) {
-            list.add(this);
-        }
-
-        return list;
-    }
-
-    @Override
-    public int getPriority() {
-        return Integer.MAX_VALUE - 1;
-    }
-
     private void updateDisplay() {
         dirty = false;
         for (final IAEItemStack stack : cachedList) {
@@ -235,7 +186,8 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
         ((IStorageGrid) grid.getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
+    @Override
+	@SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     public float injectEMC(final float emc, final Actionable mode) {
         final float toAdd = Math.min(emc, maxEMC - currentEMC);
         if (mode != Actionable.MODULATE) {
@@ -261,7 +213,8 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
         return added;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
+    @Override
+	@SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     public float extractEMC(final float emc, final Actionable mode) {
         final float toExtract = Math.min(emc, currentEMC);
         if (mode != Actionable.MODULATE) {
@@ -287,25 +240,30 @@ public class EMCStorageGrid implements IGridCache, ICellProvider, IMEInventoryHa
     	return extracted;
     }
 
-    public float getCurrentEMC() {
+    @Override
+	public float getCurrentEMC() {
 		return currentEMC;
 	}
     
-    public float getMaxEMC() {
+    @Override
+	public float getMaxEMC() {
 		return maxEMC;
 	}
     
-    public float getAvail() {
+    @Override
+	public float getAvail() {
 		if (isFull()) {
 			return 0;
 		}
 		return maxEMC - currentEMC;
 	}
 	
+	@Override
 	public boolean isFull() {
 		return currentEMC >= maxEMC;
 	}
 	
+	@Override
 	public boolean isEmpty() {
 		return currentEMC == 0;
 	}

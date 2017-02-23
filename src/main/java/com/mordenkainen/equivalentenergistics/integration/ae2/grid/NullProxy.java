@@ -3,7 +3,6 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 import java.util.EnumSet;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -18,8 +17,8 @@ public class NullProxy implements IGridProxy {
 
     private final IGridProxyable tile;
 
-    public NullProxy(final IGridProxyable _tile) {
-        tile = _tile;
+    public NullProxy(final IGridProxyable tile) {
+        this.tile = tile;
     }
 
     @Override
@@ -55,12 +54,6 @@ public class NullProxy implements IGridProxy {
 
     @Override
     public void setGridColor(final AEColor color) {}
-
-    @Override
-    public void onGridNotification(final GridNotification gridNotification) {}
-
-    @Override
-    public void setNetworkStatus(final IGrid grid, final int usedChannels) {}
 
     @Override
     public EnumSet<ForgeDirection> getConnectableSides() {

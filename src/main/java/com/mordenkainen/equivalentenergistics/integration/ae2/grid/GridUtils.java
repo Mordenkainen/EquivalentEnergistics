@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
@@ -110,13 +111,13 @@ public final class GridUtils {
         return tickGrid;
 	}
 
-	public static EMCStorageGrid getEMCStorage(final IGridProxy proxy) throws GridAccessException {
+	public static IEMCStorageGrid getEMCStorage(final IGridProxy proxy) throws GridAccessException {
 		final IGrid grid = proxy.getGrid();
         if (grid == null) {
             throw new GridAccessException();
         }
 
-        final EMCStorageGrid emcGrid = grid.getCache(EMCStorageGrid.class);
+        final IEMCStorageGrid emcGrid = grid.getCache(EMCStorageGrid.class);
 
         if (emcGrid == null) {
             throw new GridAccessException();
