@@ -1,6 +1,5 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -117,7 +116,7 @@ public final class GridUtils {
             throw new GridAccessException();
         }
 
-        final IEMCStorageGrid emcGrid = grid.getCache(EMCStorageGrid.class);
+        final IEMCStorageGrid emcGrid = grid.getCache(IEMCStorageGrid.class);
 
         if (emcGrid == null) {
             throw new GridAccessException();
@@ -210,6 +209,6 @@ public final class GridUtils {
         }
 
         return stack;
-
     }
+    
 }

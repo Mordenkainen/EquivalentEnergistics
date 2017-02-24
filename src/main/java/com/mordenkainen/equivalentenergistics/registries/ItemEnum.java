@@ -7,6 +7,7 @@ import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCBook;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
+import com.mordenkainen.equivalentenergistics.items.ItemEMCCellCreative;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
 import com.mordenkainen.equivalentenergistics.items.ItemMisc;
@@ -27,6 +28,7 @@ public enum ItemEnum {
     EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()),
     EMCCRYSTALOLD("EMCCrystal", new ItemEMCCrystalOld()),
     EMCCELL("EMCCell", new ItemEMCCell()),
+    EMCCELLCREATIVE("EMCCellCreative", new ItemEMCCellCreative()),
     MISCITEM("ItemMisc", new ItemMisc()),
     CELLCOMPONENT("EMCStorageComponent", new ItemStorageComponent());
 

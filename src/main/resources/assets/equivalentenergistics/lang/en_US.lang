@@ -20,6 +20,7 @@ item.equivalentenergistics:EMCCell.4.name=Tier 5 EMC Storage Cell
 item.equivalentenergistics:EMCCell.5.name=Tier 6 EMC Storage Cell
 item.equivalentenergistics:EMCCell.6.name=Tier 7 EMC Storage Cell
 item.equivalentenergistics:EMCCell.7.name=Tier 8 EMC Storage Cell
+item.equivalentenergistics:EMCCellCreative.0.name=Creative EMC Storage Cell
 item.equivalentenergistics:ItemMisc.0.name=Empty EMC Cell Housing
 item.equivalentenergistics:ItemMisc.1.name=EMC Total
 item.equivalentenergistics:EMCStorageComponent.0.name=Tier 1 EMC Storage Component

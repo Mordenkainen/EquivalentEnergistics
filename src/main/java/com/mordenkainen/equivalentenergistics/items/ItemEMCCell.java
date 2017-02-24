@@ -8,6 +8,7 @@ import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
+import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCellBase;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
@@ -103,7 +104,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     @SuppressWarnings("rawtypes")
     @Override
     public int getStatusForCell(final ItemStack stack, final IMEInventory handler) {
-        return handler instanceof HandlerEMCCell ? ((HandlerEMCCell) handler).getCellStatus() : 0;
+        return handler instanceof HandlerEMCCellBase ? ((HandlerEMCCellBase) handler).getCellStatus() : 0;
     }
 
     @Optional.Method(modid = "appliedenergistics2")

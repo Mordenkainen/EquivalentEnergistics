@@ -13,6 +13,10 @@ public class EMCPool {
 		this.overflow = overflow;
 	}
 	
+	public EMCPool() {
+		this(0, 0, false);
+	}
+	
 	public EMCPool(final float currentEMC) {
 		this(currentEMC, currentEMC, true);
 	}

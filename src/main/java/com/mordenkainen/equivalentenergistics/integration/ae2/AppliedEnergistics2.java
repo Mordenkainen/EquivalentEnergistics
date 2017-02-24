@@ -27,6 +27,7 @@ public final class AppliedEnergistics2 {
         MinecraftForge.EVENT_BUS.register(instance);
         AEApi.instance().registries().gridCache().registerGridCache(IEMCStorageGrid.class, EMCStorageGrid.class);
         AEApi.instance().registries().cell().addCellHandler((ICellHandler) ItemEnum.EMCCELL.getItem());
+        AEApi.instance().registries().cell().addCellHandler((ICellHandler) ItemEnum.EMCCELLCREATIVE.getItem());
     }
 
     @SubscribeEvent
