@@ -135,26 +135,17 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
 
     @Override
     public double extractEmc(final ItemStack stack, final double toRemove) {
-        if (ConfigManager.useEE3) {
-            return 0;
-        }
-        return extractCellEMC(stack, (float) toRemove);
+        return ConfigManager.useEE3 ? 0 : extractCellEMC(stack, (float) toRemove);
     }
 
     @Override
     public double getStoredEmc(final ItemStack stack) {
-        if (ConfigManager.useEE3) {
-            return 0;
-        }
-        return getStoredCellEMC(stack);
+        return ConfigManager.useEE3 ? 0 : getStoredCellEMC(stack);
     }
 
     @Override
     public double getMaximumEmc(final ItemStack stack) {
-        if (ConfigManager.useEE3) {
-            return 0;
-        }
-        return CAPACITIES[stack.getItemDamage()];
+        return ConfigManager.useEE3 ? 0 : CAPACITIES[stack.getItemDamage()];
     }
 
     public float getStoredCellEMC(final ItemStack stack) {
