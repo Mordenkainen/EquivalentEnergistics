@@ -3,8 +3,10 @@ package com.mordenkainen.equivalentenergistics.integration.ae2;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.EMCStorageGrid;
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.IEMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.IEMCCraftingGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.EMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
@@ -26,6 +28,7 @@ public final class AppliedEnergistics2 {
         instance = new AppliedEnergistics2();
         MinecraftForge.EVENT_BUS.register(instance);
         AEApi.instance().registries().gridCache().registerGridCache(IEMCStorageGrid.class, EMCStorageGrid.class);
+        AEApi.instance().registries().gridCache().registerGridCache(IEMCCraftingGrid.class, EMCCraftingGrid.class);
         AEApi.instance().registries().cell().addCellHandler((ICellHandler) ItemEnum.EMCCELL.getItem());
         AEApi.instance().registries().cell().addCellHandler((ICellHandler) ItemEnum.EMCCELLCREATIVE.getItem());
     }

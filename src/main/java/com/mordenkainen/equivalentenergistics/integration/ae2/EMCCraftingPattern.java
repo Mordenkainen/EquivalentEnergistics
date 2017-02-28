@@ -1,31 +1,20 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-import com.google.common.base.Equivalence;
-import com.google.common.base.Equivalence.Wrapper;
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.util.CompItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public final class EMCCraftingPattern implements ICraftingPatternDetails {
-
-    private static Equivalence<ItemStack> eq = new CompItemStack();
-    private static Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
 
     private IAEItemStack[] ingredients;
     private final IAEItemStack[] result = new IAEItemStack[1];
@@ -33,9 +22,7 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
     public float inputEMC;
     public boolean valid = true;
 
-    // ICraftingPatternDetails Overrides
-    // ------------------------
-    private EMCCraftingPattern(final ItemStack craftingResult) {
+    public EMCCraftingPattern(final ItemStack craftingResult) {
         buildPattern(craftingResult);
     }
 
@@ -91,7 +78,6 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
     @Override
     public void setPriority(final int priority) {}
-    // ------------------------
 
     private void buildPattern(final ItemStack craftingResult) {
         if (craftingResult.getItem() == ItemEnum.EMCCRYSTAL.getItem()) {
@@ -100,6 +86,10 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
             createItemPattern(craftingResult);
         }
     }
+    
+    public void rebuildPattern() {
+    	buildPattern(this.result[0].getItemStack());
+	}
 
     private void createCrystalPattern(final int tier) {
         valid = true;
@@ -139,39 +129,6 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
         if (crystals.size() <= 9) {
             valid = true;
-        }
-    }
-
-    public static void relearnPatterns() {
-        final Iterator<Wrapper<ItemStack>> iter = patterns.keySet().iterator();
-
-        while (iter.hasNext()) {
-            final Wrapper<ItemStack> wrappedStack = iter.next();
-            if (Integration.emcHandler.hasEMC(wrappedStack.get())) {
-                final EMCCraftingPattern pattern = patterns.get(wrappedStack);
-                pattern.buildPattern(wrappedStack.get());
-                if (!pattern.valid) {
-                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.result[0].getItem().getUnlocalizedName(pattern.result[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
-                    iter.remove();
-                }
-            } else {
-                iter.remove();
-            }
-        }
-    }
-
-    public static EMCCraftingPattern get(final ItemStack result) {
-        if (patterns.containsKey(eq.wrap(result))) {
-            return patterns.get(eq.wrap(result));
-        }
-
-        final EMCCraftingPattern newPattern = new EMCCraftingPattern(result);
-        if (newPattern.valid) {
-            patterns.put(eq.wrap(result), newPattern);
-            return newPattern;
-        } else {
-            EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(newPattern.result[0].getItem().getUnlocalizedName(newPattern.result[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", newPattern.outputEMC));
-            return null;
         }
     }
 

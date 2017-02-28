@@ -1,9 +1,7 @@
 package com.mordenkainen.equivalentenergistics.tiles;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCrafter;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
@@ -15,7 +13,6 @@ import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvide
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
-import com.mordenkainen.equivalentenergistics.util.DimensionalLocation;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
 import appeng.api.AEApi;
@@ -27,30 +24,22 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWailaNBTProvider, IDropItems {
-    public static List<DimensionalLocation> crafterTiles = new ArrayList<DimensionalLocation>();
 
-    private boolean isCrafting, sentEvent, stalePatterns = true;
+    private boolean isCrafting;
     private ItemStack currentTome, outputStack;
     private int craftTickCounter;
     public float currentEMC;
-    private List<EMCCraftingPattern> bookPatterns = new ArrayList<EMCCraftingPattern>();
     public ItemStack displayStack;
 
     public TileEMCCrafter() {
@@ -59,8 +48,6 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
         gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
-    // IWailaNBTProvider Overrides
-    // ------------------------
     @Override
     public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
         tag.setFloat("currentEMC", currentEMC);
@@ -69,51 +56,7 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
         }
         return tag;
     }
-    // ------------------------
-
-    // TileEntity Overrides
-    // ------------------------
-    @Override
-    public void validate() {
-        super.validate();
-        if (!crafterTiles.contains(new DimensionalLocation(xCoord, yCoord, zCoord, worldObj))) {
-            crafterTiles.add(new DimensionalLocation(xCoord, yCoord, zCoord, worldObj));
-        }
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
-        crafterTiles.remove(new DimensionalLocation(xCoord, yCoord, zCoord, worldObj));
-    }
-
-    @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
-        crafterTiles.remove(new DimensionalLocation(xCoord, yCoord, zCoord, worldObj));
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        final NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (displayStack != null) {
-            final NBTTagCompound stackTags = new NBTTagCompound();
-            displayStack.writeToNBT(stackTags);
-            nbttagcompound.setTag("displayStack", stackTags);
-        }
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
-    }
-
-    @Override
-    public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
-        final NBTTagCompound tag = pkt.func_148857_g();
-        if (tag.hasKey("displayStack")) {
-            displayStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.getTag("displayStack"));
-        } else {
-            displayStack = null;
-        }
-    }
-
+    
     @Override
     public void updateEntity() {
         if (worldObj.isRemote || !isActive()) {
@@ -121,19 +64,6 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
         }
 
         injectEMC();
-
-        if (!stalePatterns) {
-            sentEvent = true;
-        }
-
-        try {
-            if (stalePatterns && !sentEvent && gridProxy.isReady()) {
-                gridProxy.getGrid().postEvent(new MENetworkCraftingPatternChange(this, getActionableNode()));
-                sentEvent = true;
-            }
-        } catch (final GridAccessException e) {
-            CommonUtils.debugLog("TileEMCCrafter:updateEntity: Error accessing grid:", e);
-        }
 
         if (isCrafting) {
             craftingTick();
@@ -179,10 +109,7 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
             data.setTag("Output", output);
         }
     }
-    // ------------------------
-
-    // ICraftingMedium Overrides
-    // ------------------------
+    
     @Override
     public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
         if (!isCrafting && patternDetails instanceof EMCCraftingPattern) {
@@ -200,29 +127,17 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
     public boolean isBusy() {
         return isCrafting;
     }
-    // ------------------------
-
-    // ICraftingProvider Overrides
-    // ------------------------
+    
     @Override
     public void provideCrafting(final ICraftingProviderHelper craftingTracker) {
-        if (Integration.emcHandler.isValidTome(currentTome)) {
-            if (stalePatterns) {
-                bookPatterns = getPatterns();
-                stalePatterns = false;
-            }
-            for (final EMCCraftingPattern pattern : bookPatterns) {
-                if (pattern.valid) {
-                    craftingTracker.addCraftingOption(this, pattern);
-                }
-            }
-        }
-        craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(ItemEnum.EMCCRYSTAL.getDamagedStack(0)));
-        craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(ItemEnum.EMCCRYSTAL.getDamagedStack(1)));
-        craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(ItemEnum.EMCCRYSTAL.getDamagedStack(2)));
-        craftingTracker.addCraftingOption(this, EMCCraftingPattern.get(ItemEnum.EMCCRYSTAL.getDamagedStack(3)));
+    	try {
+			for (final EMCCraftingPattern pattern : GridUtils.getEMCCrafting(getProxy()).getPatterns()) {
+				craftingTracker.addCraftingOption(this, pattern);
+			}
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("provideCrafting: Error accessing grid:", e);
+		}
     }
-    // ------------------------
 
     public ItemStack getCurrentTome() {
         return currentTome;
@@ -230,38 +145,12 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
 
     public void setCurrentTome(final ItemStack heldItem) {
         currentTome = heldItem;
-        stalePatterns = true;
-        sentEvent = false;
         setDisplayStack(null);
-    }
-
-    public void playerKnowledgeChange(final UUID playerUUID) {
-        if (currentTome != null) {
-            final UUID tomeUUID = Integration.emcHandler.getTomeUUID(currentTome);
-            if (tomeUUID.equals(playerUUID)) {
-                stalePatterns = true;
-                sentEvent = false;
-            }
-        }
-    }
-
-    private List<EMCCraftingPattern> getPatterns() {
-        final ArrayList<EMCCraftingPattern> patterns = new ArrayList<EMCCraftingPattern>();
-        final List<ItemStack> transmutations = Integration.emcHandler.getTransmutations(this);
-        for (final ItemStack curItem : transmutations) {
-            final EMCCraftingPattern pattern = EMCCraftingPattern.get(curItem);
-            if (pattern != null) {
-                patterns.add(pattern);
-            }
-        }
-        return patterns;
-    }
-
-    public void energyValueEvent() {
-        if (currentTome != null) {
-            stalePatterns = true;
-            sentEvent = false;
-        }
+        try {
+			GridUtils.getEMCCrafting(getProxy()).updatePatterns();
+		} catch (GridAccessException e) {
+			CommonUtils.debugLog("setCurrentTome: Error accessing grid:", e);
+		}
     }
 
     private void craftingTick() {
@@ -284,10 +173,6 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
                     setDisplayStack(null);
                 }
             } else {
-                if (BlockEMCCrafter.activePower <= 0) {
-                    craftTickCounter++;
-                    return;
-                }
                 final IEnergyGrid eGrid = GridUtils.getEnergy(getProxy());
                 final double powerExtracted = eGrid.extractAEPower(BlockEMCCrafter.activePower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
@@ -336,48 +221,32 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
         }
     }
 
-    public static final void postKnowledgeChange(final UUID playerUUID) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-            while (iter.hasNext()) {
-                final DimensionalLocation currentLoc = iter.next();
-                final TileEntity crafter = currentLoc.getTE();
-                if (crafter instanceof TileEMCCrafter) {
-                    ((TileEMCCrafter) crafter).playerKnowledgeChange(playerUUID);
-                } else {
-                    iter.remove();
-                }
-            }
-        }
-    }
-
-    public static final void postEnergyValueChange() {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            EMCCraftingPattern.relearnPatterns();
-            final Iterator<DimensionalLocation> iter = TileEMCCrafter.crafterTiles.iterator();
-            while (iter.hasNext()) {
-                final DimensionalLocation currentLoc = iter.next();
-                final TileEntity crafter = currentLoc.getTE();
-                if (crafter instanceof TileEMCCrafter) {
-                    ((TileEMCCrafter) crafter).energyValueEvent();
-                } else {
-                    iter.remove();
-                }
-            }
-        }
-    }
-
 	@Override
-	public void getDrops(World world, int x, int y, int z, List<ItemStack> drops) {
+	public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
 		if (currentTome != null) {
 			drops.add(currentTome);
 		}
-		
 	}
 
 	@Override
-	protected void getPacketData(NBTTagCompound nbttagcompound) {}
+	protected void getPacketData(final NBTTagCompound nbttagcompound) {
+		if (displayStack != null) {
+            final NBTTagCompound stackTags = new NBTTagCompound();
+            displayStack.writeToNBT(stackTags);
+            nbttagcompound.setTag("displayStack", stackTags);
+        }
+	}
 
 	@Override
-	protected void readPacketData(NBTTagCompound nbttagcompound) {}
+	protected void readPacketData(final NBTTagCompound nbttagcompound) {
+		displayStack = nbttagcompound.hasKey("displayStack") ? ItemStack.loadItemStackFromNBT((NBTTagCompound) nbttagcompound.getTag("displayStack")) : null;
+	}
+
+	public String getPlayerUUID() {
+		return currentTome == null ? null : Integration.emcHandler.getTomeUUID(currentTome).toString();
+	}
+
+	public List<ItemStack> getTransmutations() {
+		return currentTome == null ? new ArrayList<ItemStack>() : Integration.emcHandler.getTransmutations(this);
+	}
 }

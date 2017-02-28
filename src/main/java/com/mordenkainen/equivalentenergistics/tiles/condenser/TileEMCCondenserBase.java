@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.IEMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEInv;

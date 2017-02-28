@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.integration.ae2.cache;
+package com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage;
 
 import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
@@ -18,8 +18,8 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     private final EMCGridCellHandler cellHandler = new EMCGridCellHandler(this);
     private final EMCGridCrystalHandler crystalHandler = new EMCGridCrystalHandler(this);
 
-    public EMCStorageGrid(final IGrid _grid) {
-        grid = _grid; 
+    public EMCStorageGrid(final IGrid grid) {
+        this.grid = grid; 
     }
 
     @MENetworkEventSubscribe

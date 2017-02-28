@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.cache.IEMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.IEMCCraftingGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
@@ -123,6 +124,21 @@ public final class GridUtils {
         }
 
         return emcGrid;
+	}
+	
+	public static IEMCCraftingGrid getEMCCrafting(final IGridProxy proxy) throws GridAccessException {
+		final IGrid grid = proxy.getGrid();
+        if (grid == null) {
+            throw new GridAccessException();
+        }
+
+        final IEMCCraftingGrid emcCraftGrid = grid.getCache(IEMCCraftingGrid.class);
+
+        if (emcCraftGrid == null) {
+            throw new GridAccessException();
+        }
+
+        return emcCraftGrid;
 	}
 	
 	public static double getAEMaxEnergy(final IGridProxy proxy) {

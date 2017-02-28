@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.items;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import appeng.api.implementations.ICraftingPatternItem;
@@ -21,7 +21,7 @@ public class ItemPattern extends ItemBase implements ICraftingPatternItem {
     @Optional.Method(modid = "appliedenergistics2")
     @Override
     public ICraftingPatternDetails getPatternForItem(final ItemStack stack, final World world) {
-        return EMCCraftingPattern.get(ItemStack.loadItemStackFromNBT(stack.getTagCompound()));
+        return EMCCraftingGrid.getPattern(ItemStack.loadItemStackFromNBT(stack.getTagCompound()));
     }
    
     public static ItemStack getItemForPattern(final ItemStack target) {

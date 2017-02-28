@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
@@ -92,12 +93,12 @@ public class ProjectE implements IEMCHandler {
 
     @SubscribeEvent
     public void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
-        TileEMCCrafter.postKnowledgeChange(event.playerUUID);
+    	EMCCraftingGrid.knowledgeEvent(event.playerUUID);
     }
 
     @SubscribeEvent
     public void onEnergyValueChange(final EMCRemapEvent event) {
-        TileEMCCrafter.postEnergyValueChange();
+    	EMCCraftingGrid.energyEvent();
     }
 
     @Override
