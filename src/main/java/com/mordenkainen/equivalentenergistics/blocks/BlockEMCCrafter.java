@@ -4,7 +4,7 @@ import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import cpw.mods.fml.relauncher.Side;

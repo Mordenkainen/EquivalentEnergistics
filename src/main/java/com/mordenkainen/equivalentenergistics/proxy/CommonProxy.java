@@ -6,11 +6,11 @@ import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserAdv;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserExt;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserUlt;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 

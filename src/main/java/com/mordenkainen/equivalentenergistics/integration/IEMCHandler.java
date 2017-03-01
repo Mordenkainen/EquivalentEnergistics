@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.integration;
 import java.util.List;
 import java.util.UUID;
 
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 
 import net.minecraft.item.ItemStack;
 

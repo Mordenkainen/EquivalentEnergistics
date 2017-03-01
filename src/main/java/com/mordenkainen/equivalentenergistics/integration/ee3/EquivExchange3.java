@@ -11,7 +11,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMC
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 import com.pahimar.ee3.api.event.EnergyValueEvent;
 import com.pahimar.ee3.api.event.PlayerKnowledgeEvent;
 import com.pahimar.ee3.api.exchange.EnergyValue;
@@ -56,7 +56,7 @@ public class EquivExchange3 implements IEMCHandler {
         final Iterator<ItemStack> iter = transmutations.iterator();
         while (iter.hasNext()) {
             final ItemStack currentItem = iter.next();
-            if (currentItem == null || ItemEnum.EMCCRYSTAL.isSameItem(currentItem) || ItemEnum.EMCCRYSTALOLD.isSameItem(currentItem)) {
+            if (currentItem == null || ItemEnum.isCrystal(currentItem)) {
                 iter.remove();
             }
         }

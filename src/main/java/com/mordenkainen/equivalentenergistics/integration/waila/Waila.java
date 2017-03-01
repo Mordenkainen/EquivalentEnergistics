@@ -1,7 +1,7 @@
 package com.mordenkainen.equivalentenergistics.integration.waila;
 
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserBase;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaRegistrar;

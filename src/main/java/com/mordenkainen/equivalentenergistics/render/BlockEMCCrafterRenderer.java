@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.render;
 import org.lwjgl.opengl.GL11;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;

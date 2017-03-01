@@ -12,7 +12,7 @@ import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.util.CompItemStack;
 
 import appeng.api.networking.IGrid;
@@ -73,9 +73,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 		addCrystalPatterns();
 		for (final TileEMCCrafter crafter : crafters.keySet()) {
 			for (final ItemStack stack : crafter.getTransmutations()) {
-				if (!ItemEnum.isCrystal(stack)) {
-					addPattern(stack);
-				}
+				addPattern(stack);
 			}
 		}
 		grid.postEvent(new MENetworkCraftingPatternChange(null, null));
@@ -83,14 +81,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 	
 	private void addPattern(final ItemStack stack) {
 		final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(stack);
-		if (!patternList.containsKey(wrappedStack)) {
-			final EMCCraftingPattern pattern = new EMCCraftingPattern(wrappedStack.get());
-			if (pattern.valid) {
-				patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
-			} else {
-				EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
-			}
-        }
+		createPattern(wrappedStack);
 		if (patternList.containsKey(wrappedStack)) {
 			patterns.put(wrappedStack, patternList.get(wrappedStack));
 		}
@@ -144,6 +135,14 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     }
 	public static EMCCraftingPattern getPattern(final ItemStack stack) {
 		final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(stack);
+		createPattern(wrappedStack);
+		if (patternList.containsKey(wrappedStack)) {
+			return patternList.get(wrappedStack);
+		}
+		return null;
+	}
+	
+	private static void createPattern(final Equivalence.Wrapper<ItemStack> wrappedStack) {
 		if (!patternList.containsKey(wrappedStack)) {
 			final EMCCraftingPattern pattern = new EMCCraftingPattern(wrappedStack.get());
 			if (pattern.valid) {
@@ -152,9 +151,5 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 				EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
 			}
         }
-		if (patternList.containsKey(wrappedStack)) {
-			return patternList.get(wrappedStack);
-		}
-		return null;
 	}
 }

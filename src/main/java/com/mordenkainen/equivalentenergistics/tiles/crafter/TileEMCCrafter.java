@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.tiles;
+package com.mordenkainen.equivalentenergistics.tiles.crafter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +11,20 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEBase;
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
 import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -34,18 +32,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWailaNBTProvider, IDropItems {
+public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGridTickable, IWailaNBTProvider, IDropItems, ICraftingMonitor {
 
-    private boolean isCrafting;
-    private ItemStack currentTome, outputStack;
-    private int craftTickCounter;
+    private ItemStack currentTome;
     public float currentEMC;
     public ItemStack displayStack;
+    private boolean sleeping;
+    private final CraftingManager manager;
 
     public TileEMCCrafter() {
         super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCRAFTER.getBlock())));
         gridProxy.setIdlePowerUsage(BlockEMCCrafter.idlePower);
         gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+        manager = new CraftingManager(BlockEMCCrafter.craftingTime, 1, this, getProxy(), mySource);
     }
 
     @Override
@@ -58,74 +57,67 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
     }
     
     @Override
-    public void updateEntity() {
-        if (worldObj.isRemote || !isActive()) {
-            return;
+	public TickingRequest getTickingRequest(final IGridNode node) {
+		return new TickingRequest(1, 20, sleeping, true);
+	}
+    
+    @Override
+	public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
+    	sleeping = false;
+    	if (isActive()) {
+    		injectEMC();
+
+            if (manager.isCrafting()) {
+                manager.craftingTick();
+                return TickRateModulation.URGENT;
+            }
         }
 
-        injectEMC();
-
-        if (isCrafting) {
-            craftingTick();
-        }
+    	sleeping = true;
+        return TickRateModulation.SLEEP;
     }
-
+    
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        isCrafting = data.getBoolean("Crafting");
         currentEMC = data.getFloat("CurrentEMC");
-        if (data.hasKey("Tome")) {
-            currentTome = ItemStack.loadItemStackFromNBT((NBTTagCompound) data.getTag("Tome"));
+        currentTome = data.hasKey("Tome") ? ItemStack.loadItemStackFromNBT((NBTTagCompound) data.getTag("Tome")) : null;
+        sleeping = data.getBoolean("Sleeping");
+        manager.readFromNBT(data);
+        if (manager.isCrafting()) {
+        	setDisplayStack(manager.getCurrentJobs().get(0));
         } else {
-            currentTome = null;
-        }
-        if (data.hasKey("Output")) {
-            outputStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) data.getTag("Output"));
-        } else {
-            outputStack = null;
-        }
-        if (isCrafting) {
-            displayStack = outputStack.copy();
-            displayStack.stackSize = 1;
-        } else {
-            displayStack = currentTome;
+        	setDisplayStack(null);
         }
     }
 
     @Override
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
-        data.setBoolean("Crafting", isCrafting);
         data.setFloat("CurrentEMC", currentEMC);
         if (currentTome != null) {
             final NBTTagCompound tome = new NBTTagCompound();
             currentTome.writeToNBT(tome);
             data.setTag("Tome", tome);
         }
-        if (outputStack != null) {
-            final NBTTagCompound output = new NBTTagCompound();
-            outputStack.writeToNBT(output);
-            data.setTag("Output", output);
-        }
+        data.setBoolean("Sleeping", sleeping);
+        manager.writeToNBT(data);
     }
     
     @Override
     public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
-        if (!isCrafting && patternDetails instanceof EMCCraftingPattern) {
-            isCrafting = true;
-            craftTickCounter = 0;
-            outputStack = patternDetails.getOutputs()[0].getItemStack();
-            currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
-            setDisplayStack(outputStack);
-            return true;
+        if (patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].getItemStack())) {
+    		currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
+    		GridUtils.alertDevice(getProxy(), getProxy().getNode());
+    		setDisplayStack(manager.getCurrentJobs().get(0));
+    		return true;
         }
         return false;
     }
 
     @Override
     public boolean isBusy() {
-        return isCrafting;
+        return manager.isBusy();
     }
     
     @Override
@@ -153,39 +145,6 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
 		}
     }
 
-    private void craftingTick() {
-        if (outputStack == null) {
-            isCrafting = false;
-            setDisplayStack(null);
-        }
-
-        try {
-            if (craftTickCounter >= (outputStack.getItem() == ItemEnum.EMCCRYSTAL.getItem() ? -1 : BlockEMCCrafter.craftingTime)) {
-                final IStorageGrid storageGrid = GridUtils.getStorage(getProxy());
-
-                final IAEItemStack rejected = storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.SIMULATE, mySource);
-
-                if (rejected == null || rejected.getStackSize() == 0) {
-                    storageGrid.getItemInventory().injectItems(AEApi.instance().storage().createItemStack(outputStack), Actionable.MODULATE, mySource);
-
-                    isCrafting = false;
-                    outputStack = null;
-                    setDisplayStack(null);
-                }
-            } else {
-                final IEnergyGrid eGrid = GridUtils.getEnergy(getProxy());
-                final double powerExtracted = eGrid.extractAEPower(BlockEMCCrafter.activePower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-
-                if (powerExtracted - BlockEMCCrafter.activePower >= 0.0D) {
-                    eGrid.extractAEPower(BlockEMCCrafter.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                    craftTickCounter++;
-                }
-            }
-        } catch (final GridAccessException e) {
-            CommonUtils.debugLog("TileEMCCrafter:craftingTick: Error accessing grid:", e);
-        }
-    }
-
     private void setDisplayStack(final ItemStack stack) {
         if (stack == null) {
             displayStack = currentTome;
@@ -208,7 +167,7 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
     }
 
     public boolean canPlayerInteract(final EntityPlayer player) {
-        return checkPermissions(player) && !isCrafting;
+        return checkPermissions(player) && !manager.isCrafting();
     }
 
     private void injectEMC() {
@@ -249,4 +208,12 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IWa
 	public List<ItemStack> getTransmutations() {
 		return currentTome == null ? new ArrayList<ItemStack>() : Integration.emcHandler.getTransmutations(this);
 	}
+
+	@Override
+	public void craftingFinished(final ItemStack outputStack) {
+		if (!manager.isCrafting()) {
+			setDisplayStack(null);
+		}
+	}
+	
 }

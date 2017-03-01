@@ -10,7 +10,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMC
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
 import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.api.ProjectEAPI;
@@ -49,7 +49,7 @@ public class ProjectE implements IEMCHandler {
         final Iterator<ItemStack> iter = transmutations.iterator();
         while (iter.hasNext()) {
             final ItemStack currentItem = iter.next();
-            if (currentItem == null || ItemEnum.EMCCRYSTAL.isSameItem(currentItem) || ItemEnum.EMCCRYSTALOLD.isSameItem(currentItem)) {
+            if (currentItem == null || ItemEnum.isCrystal(currentItem)) {
                 iter.remove();
             }
         }

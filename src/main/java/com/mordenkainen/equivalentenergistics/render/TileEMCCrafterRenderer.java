@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mordenkainen.equivalentenergistics.lib.Reference;
 import com.mordenkainen.equivalentenergistics.models.ModelEMCCrafter;
-import com.mordenkainen.equivalentenergistics.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
 
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
