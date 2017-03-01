@@ -26,7 +26,7 @@ public abstract class BlockContainerBase extends BlockContainer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(final IIconRegister register) {}
 
 	@Override
 	public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
