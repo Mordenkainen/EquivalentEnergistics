@@ -43,43 +43,43 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
 
     @Override
     public TileEntity createNewTileEntity(final World world, final int meta) {
-    	switch (meta) {
-    		case 0:
-    			return new TileEMCCondenser();
-    		case 1:
-    			return new TileEMCCondenserAdv();
-    		case 2:
-    			return new TileEMCCondenserExt();
-    		default:
-    			return new TileEMCCondenserUlt();
-    	}
+        switch (meta) {
+            case 0:
+                return new TileEMCCondenser();
+            case 1:
+                return new TileEMCCondenserAdv();
+            case 2:
+                return new TileEMCCondenserExt();
+            default:
+                return new TileEMCCondenserUlt();
+        }
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(final IBlockAccess world, final int x, final int y, final int z, final int side) {
         final int meta = world.getBlockMetadata(x, y, z);
         if (meta > 1) {
-	    	final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
-	    	if (tileCondenser != null) {
-	    		final int sideData = tileCondenser.getSide(side);
-	    		if (sideData == 0) {
-	    			return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? (meta - 2) * 4 : (meta - 2) * 4 + 1);
-	    		} else {
-	    			return TextureEnum.EMCCONDENSERADV.getTexture((meta - 2) * 4 + sideData);
-	    		}
-	    	}
-    	}
+            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
+            if (tileCondenser != null) {
+                final int sideData = tileCondenser.getSide(side);
+                if (sideData == 0) {
+                    return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? (meta - 2) * 4 : (meta - 2) * 4 + 1);
+                } else {
+                    return TextureEnum.EMCCONDENSERADV.getTexture((meta - 2) * 4 + sideData);
+                }
+            }
+        }
         return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(final int side, final int meta) {
-    	if (meta < 2) {
-    		return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
-    	}
-    	return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? (meta - 2) * 4 : (meta - 2) * 4 + 1);
+        if (meta < 2) {
+            return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
+        }
+        return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? (meta - 2) * 4 : (meta - 2) * 4 + 1);
     }
 
     @Override
@@ -90,85 +90,85 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
         if (tileCondenser == null) {
             return;
         }
-        
+
         String particle = null;
         switch (tileCondenser.getState()) {
-	        case BLOCKED:
-	        	particle = "reddust";
-				break;
-			case MISSING_CHANNEL:
-				particle = "largesmoke";
-				break;
-			case UNPOWERED:
-				particle = "angryVillager";
-				break;
-			default:
-				break;
+            case BLOCKED:
+                particle = "reddust";
+                break;
+            case MISSING_CHANNEL:
+                particle = "largesmoke";
+                break;
+            case UNPOWERED:
+                particle = "angryVillager";
+                break;
+            default:
+                break;
         }
 
         if (particle != null) {
-	        for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-	            if (world.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ).isOpaqueCube()) {
-	                continue;
-	            }
-	
-	            CommonUtils.spawnParticle(world, x, y, z, dir, particle, random);
-	        }
+            for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+                if (world.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ).isOpaqueCube()) {
+                    continue;
+                }
+
+                CommonUtils.spawnParticle(world, x, y, z, dir, particle, random);
+            }
         }
-    }
-    
-    @Override
-	public boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
-		if (player == null) {
-			return false;
-		}
-    	
-    	if (player.getHeldItem() == null) {
-    		final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
-    		if (tileCondenser != null && !world.isRemote) {
-    			tileCondenser.toggleSide(side);
-    		}
-    		return true;
-    	} else if (player.getHeldItem().getItem() == Items.redstone) {
-			final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
-    		if (tileCondenser != null && !world.isRemote) {
-        		tileCondenser.nextMode();
-        		player.addChatComponentMessage(new ChatComponentText(tileCondenser.getMode().description()));
-        	}
-    		return true;
-    	}
-		
-    	return false;
-    }
-    
-    @Override
-	public boolean canConnectRedstone(final IBlockAccess world, final int x, final int y, final int z, final int side) {
-    	final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
-    	return tileCondenser != null && tileCondenser.getMode() != RedstoneMode.NONE;
-    }
-    
-    @Override
-	public int isProvidingStrongPower(final IBlockAccess world, final int x, final int y, final int z, final int side) {
-    	final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
-    	return tileCondenser != null && tileCondenser.isProducingPower() ? 15 : 0;
     }
 
     @Override
-	public int isProvidingWeakPower(final IBlockAccess world, final int x, final int y, final int z, final int side) {
-    	return isProvidingStrongPower(world, x, y, z, side);
+    public boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
+        if (player == null) {
+            return false;
+        }
+
+        if (player.getHeldItem() == null) {
+            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
+            if (tileCondenser != null && !world.isRemote) {
+                tileCondenser.toggleSide(side);
+            }
+            return true;
+        } else if (player.getHeldItem().getItem() == Items.redstone) {
+            final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
+            if (tileCondenser != null && !world.isRemote) {
+                tileCondenser.nextMode();
+                player.addChatComponentMessage(new ChatComponentText(tileCondenser.getMode().description()));
+            }
+            return true;
+        }
+
+        return false;
     }
-    
+
+    @Override
+    public boolean canConnectRedstone(final IBlockAccess world, final int x, final int y, final int z, final int side) {
+        final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
+        return tileCondenser != null && tileCondenser.getMode() != RedstoneMode.NONE;
+    }
+
+    @Override
+    public int isProvidingStrongPower(final IBlockAccess world, final int x, final int y, final int z, final int side) {
+        final TileEMCCondenserAdv tileCondenser = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
+        return tileCondenser != null && tileCondenser.isProducingPower() ? 15 : 0;
+    }
+
+    @Override
+    public int isProvidingWeakPower(final IBlockAccess world, final int x, final int y, final int z, final int side) {
+        return isProvidingStrongPower(world, x, y, z, side);
+    }
+
     @Override
     public boolean shouldCheckWeakPower(final IBlockAccess world, final int x, final int y, final int z, final int side) {
         return false;
     }
-    
+
     @Override
     public void loadConfig(final Configuration config) {
         idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
         activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
         emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", 8192).getDouble(8192);
-        
+
         final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
         condenserCat.remove("CrystalsProducedPerTick");
         condenserCat.remove("ItemsCondensedPerTick");

@@ -93,12 +93,12 @@ public class ProjectE implements IEMCHandler {
 
     @SubscribeEvent
     public void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
-    	EMCCraftingGrid.knowledgeEvent(event.playerUUID);
+        EMCCraftingGrid.knowledgeEvent(event.playerUUID);
     }
 
     @SubscribeEvent
     public void onEnergyValueChange(final EMCRemapEvent event) {
-    	EMCCraftingGrid.energyEvent();
+        EMCCraftingGrid.energyEvent();
     }
 
     @Override

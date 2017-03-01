@@ -19,7 +19,7 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     private final EMCGridCrystalHandler crystalHandler = new EMCGridCrystalHandler(this);
 
     public EMCStorageGrid(final IGrid grid) {
-        this.grid = grid; 
+        this.grid = grid;
     }
 
     @MENetworkEventSubscribe
@@ -49,7 +49,7 @@ public class EMCStorageGrid implements IEMCStorageGrid {
 
     @Override
     public float injectEMC(final float emc, final Actionable mode) {
-    	return cellHandler.injectEMC(emc, mode);
+        return cellHandler.injectEMC(emc, mode);
     }
 
     @Override
@@ -58,40 +58,40 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     }
 
     @Override
-	public float getCurrentEMC() {
-		return pool.getCurrentEMC();
-	}
-    
+    public float getCurrentEMC() {
+        return pool.getCurrentEMC();
+    }
+
     @Override
-	public float getMaxEMC() {
-		return pool.getMaxEMC();
-	}
-    
+    public float getMaxEMC() {
+        return pool.getMaxEMC();
+    }
+
     @Override
-	public float getAvail() {
-		return pool.getAvail();
-	}
-	
-	@Override
-	public boolean isFull() {
-		return pool.isFull();
-	}
-	
-	@Override
-	public boolean isEmpty() {
-		return pool.isEmpty();
-	}
-	
-	public EMCPool getPool() {
-		return pool;
-	}
-	
-	public void markDirty() {
-		crystalHandler.markDirty();
-	}
-	
-	public IGrid getGrid() {
-		return grid;
-	}
+    public float getAvail() {
+        return pool.getAvail();
+    }
+
+    @Override
+    public boolean isFull() {
+        return pool.isFull();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return pool.isEmpty();
+    }
+
+    public EMCPool getPool() {
+        return pool;
+    }
+
+    public void markDirty() {
+        crystalHandler.markDirty();
+    }
+
+    public IGrid getGrid() {
+        return grid;
+    }
 
 }

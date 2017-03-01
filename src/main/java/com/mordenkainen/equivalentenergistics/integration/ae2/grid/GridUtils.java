@@ -21,56 +21,57 @@ import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.item.ItemStack;
 
 public final class GridUtils {
-	private GridUtils() {}
-	
-	private static <T extends IGridCache> T getCache(final Class<T> cacheType, final IGridProxy proxy) throws GridAccessException {
-		final IGrid grid = proxy.getGrid();
+
+    private GridUtils() {}
+
+    private static <T extends IGridCache> T getCache(final Class<T> cacheType, final IGridProxy proxy) throws GridAccessException {
+        final IGrid grid = proxy.getGrid();
         if (grid == null) {
             throw new GridAccessException();
         }
-        
+
         final T cache = grid.getCache(cacheType);
-        
+
         if (cache == null) {
             throw new GridAccessException();
         }
 
-        return (T) cache;
-	}
-	
-	public static IPathingGrid getPath(final IGridProxy proxy) throws GridAccessException {
+        return cache;
+    }
+
+    public static IPathingGrid getPath(final IGridProxy proxy) throws GridAccessException {
         return getCache(IPathingGrid.class, proxy);
-	}
+    }
 
-	public static IStorageGrid getStorage(final IGridProxy proxy) throws GridAccessException {
-		return getCache(IStorageGrid.class, proxy);
-	}
+    public static IStorageGrid getStorage(final IGridProxy proxy) throws GridAccessException {
+        return getCache(IStorageGrid.class, proxy);
+    }
 
-	public static ISecurityGrid getSecurity(final IGridProxy proxy) throws GridAccessException {
-		return getCache(ISecurityGrid.class, proxy);
-	}
+    public static ISecurityGrid getSecurity(final IGridProxy proxy) throws GridAccessException {
+        return getCache(ISecurityGrid.class, proxy);
+    }
 
-	public static ICraftingGrid getCrafting(final IGridProxy proxy) throws GridAccessException {
-		return getCache(ICraftingGrid.class, proxy);
-	}
+    public static ICraftingGrid getCrafting(final IGridProxy proxy) throws GridAccessException {
+        return getCache(ICraftingGrid.class, proxy);
+    }
 
-	public static IEnergyGrid getEnergy(final IGridProxy proxy) throws GridAccessException {
-		return getCache(IEnergyGrid.class, proxy);
-	}
+    public static IEnergyGrid getEnergy(final IGridProxy proxy) throws GridAccessException {
+        return getCache(IEnergyGrid.class, proxy);
+    }
 
-	public static ITickManager getTick(final IGridProxy proxy) throws GridAccessException {
-		return getCache(ITickManager.class, proxy);
-	}
+    public static ITickManager getTick(final IGridProxy proxy) throws GridAccessException {
+        return getCache(ITickManager.class, proxy);
+    }
 
-	public static IEMCStorageGrid getEMCStorage(final IGridProxy proxy) throws GridAccessException {
-		return getCache(IEMCStorageGrid.class, proxy);
-	}
-	
-	public static IEMCCraftingGrid getEMCCrafting(final IGridProxy proxy) throws GridAccessException {
-		return getCache(IEMCCraftingGrid.class, proxy);
-	}
-	
-	public static double getAEMaxEnergy(final IGridProxy proxy) {
+    public static IEMCStorageGrid getEMCStorage(final IGridProxy proxy) throws GridAccessException {
+        return getCache(IEMCStorageGrid.class, proxy);
+    }
+
+    public static IEMCCraftingGrid getEMCCrafting(final IGridProxy proxy) throws GridAccessException {
+        return getCache(IEMCCraftingGrid.class, proxy);
+    }
+
+    public static double getAEMaxEnergy(final IGridProxy proxy) {
         try {
             return getEnergy(proxy).getMaxStoredPower();
         } catch (final GridAccessException e) {
@@ -87,7 +88,7 @@ public final class GridUtils {
         }
         return 0.0;
     }
-    
+
     public static double getAEDemand(final IGridProxy proxy, final double amount) {
         try {
             return getEnergy(proxy).getEnergyDemand(amount);
@@ -106,7 +107,7 @@ public final class GridUtils {
         }
         return 0.0;
     }
-    
+
     public static double extractAEPower(final IGridProxy proxy, final double amount, final Actionable mode, final PowerMultiplier multiplier) {
         try {
             return getEnergy(proxy).extractAEPower(amount, mode, multiplier);
@@ -115,7 +116,7 @@ public final class GridUtils {
         }
         return 0.0;
     }
-    
+
     public static ItemStack injectItemsForPower(final IGridProxy proxy, final ItemStack stack, final MachineSource source) {
         final IAEItemStack toInject = AEApi.instance().storage().createItemStack(stack.copy());
         try {
@@ -155,22 +156,22 @@ public final class GridUtils {
 
         return stack;
     }
-    
+
     public static ItemStack injectItems(final IGridProxy proxy, final ItemStack stack, final Actionable mode, final MachineSource source) {
-		try {
-			final IAEItemStack rejected = getStorage(proxy).getItemInventory().injectItems(AEApi.instance().storage().createItemStack(stack), mode, source);
-			return rejected == null || rejected.getStackSize() == 0 ? null : rejected.getItemStack();
-		} catch (GridAccessException e) {
-			CommonUtils.debugLog("GridUtils:injectItems: Error accessing grid:", e);
-			return stack;
-		}
+        try {
+            final IAEItemStack rejected = getStorage(proxy).getItemInventory().injectItems(AEApi.instance().storage().createItemStack(stack), mode, source);
+            return rejected == null || rejected.getStackSize() == 0 ? null : rejected.getItemStack();
+        } catch (GridAccessException e) {
+            CommonUtils.debugLog("GridUtils:injectItems: Error accessing grid:", e);
+            return stack;
+        }
     }
-    
+
     public static void alertDevice(final IGridProxy proxy, final IGridNode device) {
-    	try {
-			getTick(proxy).alertDevice(device);
-		} catch (GridAccessException e) {
-			CommonUtils.debugLog("GridUtils:alertDevice: Error accessing grid:", e);
-		}
+        try {
+            getTick(proxy).alertDevice(device);
+        } catch (GridAccessException e) {
+            CommonUtils.debugLog("GridUtils:alertDevice: Error accessing grid:", e);
+        }
     }
 }

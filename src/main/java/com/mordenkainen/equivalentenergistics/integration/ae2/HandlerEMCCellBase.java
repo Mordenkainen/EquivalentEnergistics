@@ -68,7 +68,7 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
     }
 
     public abstract float addEMC(final float amount);
-    
+
     public abstract float extractEMC(final float amount);
 
     public abstract int getCellStatus();
@@ -78,5 +78,5 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
     public abstract float getEMC();
 
     public abstract float getAvail();
-    
+
 }

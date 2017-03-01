@@ -74,7 +74,7 @@ public interface IGridProxy extends IGridBlock {
     boolean isReady();
 
     boolean isPowered();
-    
+
     boolean meetsChannelRequirements();
 
     void setOwner(EntityPlayer player);
@@ -82,7 +82,7 @@ public interface IGridProxy extends IGridBlock {
     IGridNode getNode();
 
     IGrid getGrid() throws GridAccessException;
-    
+
     boolean isActive();
 
     static IGridProxy getDefaultProxy(final ItemStack repItem, final IGridProxyable host) {

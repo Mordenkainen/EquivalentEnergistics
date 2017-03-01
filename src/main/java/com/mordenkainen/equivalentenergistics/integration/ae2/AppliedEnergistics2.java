@@ -41,7 +41,7 @@ public final class AppliedEnergistics2 {
             blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTAL.getItem()), OreDictionary.WILDCARD_VALUE);
             blackList.invoke(null, Item.getIdFromItem(ItemEnum.EMCCRYSTALOLD.getItem()), OreDictionary.WILDCARD_VALUE);
         } catch (final IllegalArgumentException | IllegalAccessException | InvocationTargetException | ClassNotFoundException | NoSuchMethodException | SecurityException e) {
-        	CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
+            CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
         }
     }
 

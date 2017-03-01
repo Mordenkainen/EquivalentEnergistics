@@ -105,10 +105,10 @@ public class NullProxy implements IGridProxy {
     public boolean isPowered() {
         return false;
     }
-    
+
     @Override
-	public boolean meetsChannelRequirements() {
-    	return false;
+    public boolean meetsChannelRequirements() {
+        return false;
     }
 
     @Override

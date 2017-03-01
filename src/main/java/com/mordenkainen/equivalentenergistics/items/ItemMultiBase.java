@@ -9,15 +9,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public abstract class ItemMultiBase extends ItemBase {
-	public int itemCount;
-	
-	public ItemMultiBase(final int itemCount) {
-		super();
-		this.itemCount = itemCount;
-		setHasSubtypes(true);
-	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+
+    public int itemCount;
+
+    public ItemMultiBase(final int itemCount) {
+        super();
+        this.itemCount = itemCount;
+        setHasSubtypes(true);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(final Item item, final CreativeTabs tab, final List list) {
@@ -25,8 +26,8 @@ public abstract class ItemMultiBase extends ItemBase {
             list.add(new ItemStack(item, 1, i));
         }
     }
-	
-	@Override
+
+    @Override
     public String getUnlocalizedName(final ItemStack stack) {
         return super.getUnlocalizedName() + "." + stack.getItemDamage();
     }

@@ -180,14 +180,14 @@ public class NetworkProxy implements IGridProxy {
             return false;
         }
     }
-    
+
     @Override
-	public boolean meetsChannelRequirements() {
-    	if (getNode() == null) {
-    		return false;
-    	}
-    	
-    	return getNode().meetsChannelRequirements();
+    public boolean meetsChannelRequirements() {
+        if (getNode() == null) {
+            return false;
+        }
+
+        return getNode().meetsChannelRequirements();
     }
 
     @Override
@@ -225,13 +225,13 @@ public class NetworkProxy implements IGridProxy {
     @Override
     public IGrid getGrid() throws GridAccessException {
         if (node != null) {
-        	final IGrid grid = node.getGrid();
+            final IGrid grid = node.getGrid();
 
             if (grid != null) {
                 return grid;
             }
         }
-        
+
         throw new GridAccessException();
     }
 

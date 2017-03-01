@@ -76,7 +76,7 @@ public final class CommonUtils {
         final TileEntity tile = world.getTileEntity(x, y, z);
         return type.isInstance(tile) ? (T) tile : null;
     }
-    
+
     public static void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final String particle, final Random random) {
         double d1 = x + random.nextFloat();
         double d2 = y + random.nextFloat();
@@ -107,16 +107,16 @@ public final class CommonUtils {
 
         world.spawnParticle(particle, d1, d2, d3, 0.0D, 0.0D, 0.0D);
     }
-    
+
     public static boolean isSameItem(final ItemStack stack1, final ItemStack stack2) {
-		return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage() && stack1.stackTagCompound == stack2.stackTagCompound;
-	}
-    
-    public static ItemStack filterForEmpty(final ItemStack stack) {
-    	return stack.stackSize <=0 ? null : stack;
+        return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage() && stack1.stackTagCompound == stack2.stackTagCompound;
     }
 
-	public static void debugLog(final String message) {
+    public static ItemStack filterForEmpty(final ItemStack stack) {
+        return stack.stackSize <= 0 ? null : stack;
+    }
+
+    public static void debugLog(final String message) {
         if (ConfigManager.debug) {
             EquivalentEnergistics.logger.debug(message);
         }

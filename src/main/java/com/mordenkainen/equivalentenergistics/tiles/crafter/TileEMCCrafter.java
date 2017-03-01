@@ -55,17 +55,17 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
         }
         return tag;
     }
-    
+
     @Override
-	public TickingRequest getTickingRequest(final IGridNode node) {
-		return new TickingRequest(1, 20, sleeping, true);
-	}
-    
+    public TickingRequest getTickingRequest(final IGridNode node) {
+        return new TickingRequest(1, 20, sleeping, true);
+    }
+
     @Override
-	public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-    	sleeping = false;
-    	if (isActive()) {
-    		injectEMC();
+    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
+        sleeping = false;
+        if (isActive()) {
+            injectEMC();
 
             if (manager.isCrafting()) {
                 manager.craftingTick();
@@ -73,10 +73,10 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
             }
         }
 
-    	sleeping = true;
+        sleeping = true;
         return TickRateModulation.SLEEP;
     }
-    
+
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
@@ -85,9 +85,9 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
         sleeping = data.getBoolean("Sleeping");
         manager.readFromNBT(data);
         if (manager.isCrafting()) {
-        	setDisplayStack(manager.getCurrentJobs().get(0));
+            setDisplayStack(manager.getCurrentJobs().get(0));
         } else {
-        	setDisplayStack(null);
+            setDisplayStack(null);
         }
     }
 
@@ -103,14 +103,14 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
         data.setBoolean("Sleeping", sleeping);
         manager.writeToNBT(data);
     }
-    
+
     @Override
     public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
         if (patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].getItemStack())) {
-    		currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
-    		GridUtils.alertDevice(getProxy(), getProxy().getNode());
-    		setDisplayStack(manager.getCurrentJobs().get(0));
-    		return true;
+            currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
+            GridUtils.alertDevice(getProxy(), getProxy().getNode());
+            setDisplayStack(manager.getCurrentJobs().get(0));
+            return true;
         }
         return false;
     }
@@ -119,16 +119,16 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
     public boolean isBusy() {
         return manager.isBusy();
     }
-    
+
     @Override
     public void provideCrafting(final ICraftingProviderHelper craftingTracker) {
-    	try {
-			for (final EMCCraftingPattern pattern : GridUtils.getEMCCrafting(getProxy()).getPatterns()) {
-				craftingTracker.addCraftingOption(this, pattern);
-			}
-		} catch (GridAccessException e) {
-			CommonUtils.debugLog("provideCrafting: Error accessing grid:", e);
-		}
+        try {
+            for (final EMCCraftingPattern pattern : GridUtils.getEMCCrafting(getProxy()).getPatterns()) {
+                craftingTracker.addCraftingOption(this, pattern);
+            }
+        } catch (GridAccessException e) {
+            CommonUtils.debugLog("provideCrafting: Error accessing grid:", e);
+        }
     }
 
     public ItemStack getCurrentTome() {
@@ -139,10 +139,10 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
         currentTome = heldItem;
         setDisplayStack(null);
         try {
-			GridUtils.getEMCCrafting(getProxy()).updatePatterns();
-		} catch (GridAccessException e) {
-			CommonUtils.debugLog("setCurrentTome: Error accessing grid:", e);
-		}
+            GridUtils.getEMCCrafting(getProxy()).updatePatterns();
+        } catch (GridAccessException e) {
+            CommonUtils.debugLog("setCurrentTome: Error accessing grid:", e);
+        }
     }
 
     private void setDisplayStack(final ItemStack stack) {
@@ -180,40 +180,40 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
         }
     }
 
-	@Override
-	public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
-		if (currentTome != null) {
-			drops.add(currentTome);
-		}
-	}
+    @Override
+    public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
+        if (currentTome != null) {
+            drops.add(currentTome);
+        }
+    }
 
-	@Override
-	protected void getPacketData(final NBTTagCompound nbttagcompound) {
-		if (displayStack != null) {
+    @Override
+    protected void getPacketData(final NBTTagCompound nbttagcompound) {
+        if (displayStack != null) {
             final NBTTagCompound stackTags = new NBTTagCompound();
             displayStack.writeToNBT(stackTags);
             nbttagcompound.setTag("displayStack", stackTags);
         }
-	}
+    }
 
-	@Override
-	protected void readPacketData(final NBTTagCompound nbttagcompound) {
-		displayStack = nbttagcompound.hasKey("displayStack") ? ItemStack.loadItemStackFromNBT((NBTTagCompound) nbttagcompound.getTag("displayStack")) : null;
-	}
+    @Override
+    protected void readPacketData(final NBTTagCompound nbttagcompound) {
+        displayStack = nbttagcompound.hasKey("displayStack") ? ItemStack.loadItemStackFromNBT((NBTTagCompound) nbttagcompound.getTag("displayStack")) : null;
+    }
 
-	public String getPlayerUUID() {
-		return currentTome == null ? null : Integration.emcHandler.getTomeUUID(currentTome).toString();
-	}
+    public String getPlayerUUID() {
+        return currentTome == null ? null : Integration.emcHandler.getTomeUUID(currentTome).toString();
+    }
 
-	public List<ItemStack> getTransmutations() {
-		return currentTome == null ? new ArrayList<ItemStack>() : Integration.emcHandler.getTransmutations(this);
-	}
+    public List<ItemStack> getTransmutations() {
+        return currentTome == null ? new ArrayList<ItemStack>() : Integration.emcHandler.getTransmutations(this);
+    }
 
-	@Override
-	public void craftingFinished(final ItemStack outputStack) {
-		if (!manager.isCrafting()) {
-			setDisplayStack(null);
-		}
-	}
-	
+    @Override
+    public void craftingFinished(final ItemStack outputStack) {
+        if (!manager.isCrafting()) {
+            setDisplayStack(null);
+        }
+    }
+
 }

@@ -23,14 +23,9 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum ItemEnum {
 
-    EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE.getTest()),
-    EMCPATTERN("EMCPattern", new ItemPattern(), true),
-    EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()),
-    EMCCRYSTALOLD("EMCCrystal", new ItemEMCCrystalOld()),
-    EMCCELL("EMCCell", new ItemEMCCell()),
-    EMCCELLCREATIVE("EMCCellCreative", new ItemEMCCellCreative()),
-    MISCITEM("ItemMisc", new ItemMisc()),
-    CELLCOMPONENT("EMCStorageComponent", new ItemStorageComponent());
+    EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE.getTest()), EMCPATTERN("EMCPattern", new ItemPattern(), true), EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()), EMCCRYSTALOLD(
+            "EMCCrystal", new ItemEMCCrystalOld()), EMCCELL("EMCCell", new ItemEMCCell()), EMCCELLCREATIVE("EMCCellCreative",
+                    new ItemEMCCellCreative()), MISCITEM("ItemMisc", new ItemMisc()), CELLCOMPONENT("EMCStorageComponent", new ItemStorageComponent());
 
     private final String internalName;
 
@@ -120,26 +115,26 @@ public enum ItemEnum {
     public boolean isHidden() {
         return hidden;
     }
-    
+
     public boolean isSameItem(final ItemStack stack) {
-    	if (stack == null || stack.getItem() == null) {
-    		return false;
-    	}
-    	return stack.getItem() == item;
+        if (stack == null || stack.getItem() == null) {
+            return false;
+        }
+        return stack.getItem() == item;
     }
 
     public static void loadConfig(final Configuration config) {
-    	for (final ItemEnum current : ItemEnum.values()) {
-    		if (current.configKey != null) {
-    			current.enabled = config.get("Items", current.configKey, true).getBoolean(true);
+        for (final ItemEnum current : ItemEnum.values()) {
+            if (current.configKey != null) {
+                current.enabled = config.get("Items", current.configKey, true).getBoolean(true);
             }
             if (current.item instanceof IConfigurable) {
                 ((IConfigurable) current.item).loadConfig(config);
             }
             if (current.isEnabled() && !current.isHidden()) {
-            	current.item.setCreativeTab(EquivalentEnergistics.tabEE);
+                current.item.setCreativeTab(EquivalentEnergistics.tabEE);
             }
-    	}
+        }
     }
 
     public static void registerItems() {
@@ -149,9 +144,9 @@ public enum ItemEnum {
             }
         }
     }
-    
+
     public static boolean isCrystal(final ItemStack stack) {
         return EMCCRYSTAL.isSameItem(stack) || EMCCRYSTALOLD.isSameItem(stack);
     }
-    
+
 }

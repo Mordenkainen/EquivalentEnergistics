@@ -21,19 +21,19 @@ import appeng.api.storage.data.IItemList;
 
 public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler<IAEItemStack> {
 
-	private final EMCStorageGrid hostGrid;
-	private boolean dirty = true;
+    private final EMCStorageGrid hostGrid;
+    private boolean dirty = true;
     private IItemList<IAEItemStack> cachedList = AEApi.instance().storage().createItemList();
-	
-	public EMCGridCrystalHandler(final EMCStorageGrid hostGrid) {
-		this.hostGrid = hostGrid;
-	}
 
-	@Override
-	public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
-		float itemEMC = 0;
-		
-		// TODO fix this?
+    public EMCGridCrystalHandler(final EMCStorageGrid hostGrid) {
+        this.hostGrid = hostGrid;
+    }
+
+    @Override
+    public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
+        float itemEMC = 0;
+
+        // TODO fix this?
         if (ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack())) {
             itemEMC = Integration.emcHandler.getCrystalEMC(stack.getItemDamage());
         } else if (ItemEnum.EMCCRYSTALOLD.isSameItem(stack.getItemStack())) {
@@ -41,7 +41,7 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
         }
 
         final EMCPool pool = hostGrid.getPool();
-        
+
         if (itemEMC > 0) {
             final int toAdd = (int) Math.min(stack.getStackSize(), (pool.getAvail()) / itemEMC);
             if (toAdd > 0) {
@@ -51,12 +51,12 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
         }
 
         return stack;
-	}
+    }
 
-	@Override
-	public IAEItemStack extractItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
+    @Override
+    public IAEItemStack extractItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
         float itemEMC = 0;
-        
+
         // TODO fix this?
         if (ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack())) {
             itemEMC = Integration.emcHandler.getCrystalEMC(stack.getItemDamage());
@@ -75,71 +75,71 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
         return null;
     }
 
-	@Override
-	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> items) {
-		for (final IAEItemStack stack : cachedList) {
+    @Override
+    public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> items) {
+        for (final IAEItemStack stack : cachedList) {
             items.add(stack);
         }
 
         return items;
-	}
+    }
 
-	@Override
-	public StorageChannel getChannel() {
-		return StorageChannel.ITEMS;
-	}
+    @Override
+    public StorageChannel getChannel() {
+        return StorageChannel.ITEMS;
+    }
 
-	@Override
-	public AccessRestriction getAccess() {
-		return AccessRestriction.READ_WRITE;
-	}
+    @Override
+    public AccessRestriction getAccess() {
+        return AccessRestriction.READ_WRITE;
+    }
 
-	@Override
-	public boolean isPrioritized(final IAEItemStack stack) {
-		return ItemEnum.isCrystal(stack.getItemStack());
-	}
+    @Override
+    public boolean isPrioritized(final IAEItemStack stack) {
+        return ItemEnum.isCrystal(stack.getItemStack());
+    }
 
-	@Override
-	public boolean canAccept(final IAEItemStack stack) {
-		return ItemEnum.isCrystal(stack.getItemStack());
-	}
+    @Override
+    public boolean canAccept(final IAEItemStack stack) {
+        return ItemEnum.isCrystal(stack.getItemStack());
+    }
 
-	@Override
-	public int getSlot() {
-		return 0;
-	}
+    @Override
+    public int getSlot() {
+        return 0;
+    }
 
-	@Override
-	public boolean validForPass(final int pass) {
-		return pass == 1;
-	}
+    @Override
+    public boolean validForPass(final int pass) {
+        return pass == 1;
+    }
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
-		final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
+    @SuppressWarnings("rawtypes")
+    @Override
+    public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
+        final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
 
         if (channel == StorageChannel.ITEMS) {
             list.add(this);
         }
 
         return list;
-	}
+    }
 
-	@Override
-	public int getPriority() {
-		return Integer.MAX_VALUE - 1;
-	}
-	
-	public void markDirty() {
-		dirty = true;
-	}
-	
-	public void updateDisplay() {
-		if (!dirty) {
-			return;
-		}
-		
+    @Override
+    public int getPriority() {
+        return Integer.MAX_VALUE - 1;
+    }
+
+    public void markDirty() {
+        dirty = true;
+    }
+
+    public void updateDisplay() {
+        if (!dirty) {
+            return;
+        }
+
         dirty = false;
         for (final IAEItemStack stack : cachedList) {
             stack.setStackSize(-stack.getStackSize());
@@ -151,7 +151,7 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
         if (pool.getCurrentEMC() > 0) {
             float remainingEMC = pool.getCurrentEMC();
             for (int i = 4; i >= 0; i--) {
-            	final float crystalEMC = Integration.emcHandler.getCrystalEMC(i);
+                final float crystalEMC = Integration.emcHandler.getCrystalEMC(i);
                 final long crystalcount = (long) (remainingEMC / crystalEMC);
                 if (crystalcount > 0) {
                     cachedList.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(i)).setStackSize(crystalcount));

@@ -6,14 +6,13 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockMulti extends ItemBlockWithMetadata {
 
-	public ItemBlockMulti(final Block block) {
-		super(block, block);
-	}
+    public ItemBlockMulti(final Block block) {
+        super(block, block);
+    }
 
-	@Override
-	public String getUnlocalizedName(final ItemStack stack)
-    {
+    @Override
+    public String getUnlocalizedName(final ItemStack stack) {
         return this.getUnlocalizedName() + "." + stack.getItemDamage();
     }
-	
+
 }

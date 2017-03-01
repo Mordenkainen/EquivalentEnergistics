@@ -20,10 +20,10 @@ public class ItemEMCCrystal extends ItemMultiBase implements IEnergyValueProvide
     public ItemEMCCrystal() {
         super(5);
     }
-    
+
     @Override
     public EnumRarity getRarity(final ItemStack stack) {
-    	final int damage = stack.getItemDamage();
+        final int damage = stack.getItemDamage();
         return damage <= 1 ? EnumRarity.common : EnumRarity.values()[damage - 1];
     }
 
@@ -32,7 +32,7 @@ public class ItemEMCCrystal extends ItemMultiBase implements IEnergyValueProvide
     public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCCRYSTAL.getTexture(damage);
     }
-   
+
     @Optional.Method(modid = "EE3")
     @Override
     public EnergyValue getEnergyValue(final ItemStack stack) {

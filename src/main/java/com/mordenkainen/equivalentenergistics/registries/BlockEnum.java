@@ -18,8 +18,9 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum BlockEnum {
 
-    EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), ItemBlockCondenser.class, Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCondenser", false),
-    EMCCRAFTER("EMCCrafter", new BlockEMCCrafter(), Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCrafter");
+    EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), ItemBlockCondenser.class,
+            Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCondenser", false), EMCCRAFTER("EMCCrafter",
+                    new BlockEMCCrafter(), Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCrafter");
 
     private final String internalName;
 
@@ -64,13 +65,13 @@ public enum BlockEnum {
     }
 
     BlockEnum(final String internalName, final Block block, final Class<? extends ItemBlock> itemBlockClass, final Predicate<?> requirements, final String configKey, final boolean hidden) {
-    	this.internalName = internalName;
-    	this.block = block;
-    	this.block.setBlockName(Reference.MOD_ID + ":" + internalName);
-    	this.itemBlockClass = itemBlockClass;
-    	this.requirements = requirements;
-    	this.configKey = configKey;
-    	this.hidden = hidden;
+        this.internalName = internalName;
+        this.block = block;
+        this.block.setBlockName(Reference.MOD_ID + ":" + internalName);
+        this.itemBlockClass = itemBlockClass;
+        this.requirements = requirements;
+        this.configKey = configKey;
+        this.hidden = hidden;
     }
 
     public Block getBlock() {
@@ -102,17 +103,17 @@ public enum BlockEnum {
     }
 
     public static void loadConfig(final Configuration config) {
-    	for (final BlockEnum current : BlockEnum.values()) {
-    		if (current.configKey != null) {
-    			current.enabled = config.get("Blocks", current.configKey, true).getBoolean(true);
+        for (final BlockEnum current : BlockEnum.values()) {
+            if (current.configKey != null) {
+                current.enabled = config.get("Blocks", current.configKey, true).getBoolean(true);
             }
             if (current.block instanceof IConfigurable) {
                 ((IConfigurable) current.block).loadConfig(config);
             }
             if (current.isEnabled() && !current.isHidden()) {
-            	current.block.setCreativeTab(EquivalentEnergistics.tabEE);
+                current.block.setCreativeTab(EquivalentEnergistics.tabEE);
             }
-    	}
+        }
     }
 
     public static void registerBlocks() {
@@ -122,5 +123,5 @@ public enum BlockEnum {
             }
         }
     }
-    
+
 }

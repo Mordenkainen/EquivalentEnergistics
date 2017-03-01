@@ -47,14 +47,14 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     public EnumRarity getRarity(final ItemStack stack) {
         return EnumRarity.values()[stack.getItemDamage() / 2];
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCCELL.getTexture(damage);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" }) //NOPMD
+    @SuppressWarnings({ "unchecked", "rawtypes" }) // NOPMD
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean param4) {
@@ -72,7 +72,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     @Override
     public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
         if (stack != null && isEmpty(stack) && player != null && player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
-        	return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
+            return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
         }
 
         return stack;
@@ -113,7 +113,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     public double cellIdleDrain(final ItemStack stack, final IMEInventory handler) {
         return DRAIN[stack.getItemDamage()];
     }
-    
+
     @Override
     public double addEmc(final ItemStack stack, final double toAdd) {
         if (ConfigManager.useEE3 || !isCell(stack)) {
@@ -163,7 +163,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
 
         final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = Math.min(emc, currentEMC);
-        
+
         stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
         if (isEmpty(stack)) {
             stack.getTagCompound().removeTag(EMC_TAG);
@@ -171,7 +171,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
                 stack.setTagCompound(null);
             }
         }
-        
+
         return toRemove;
     }
 

@@ -15,34 +15,34 @@ import net.minecraft.tileentity.TileEntity;
 
 public abstract class TileAEBase extends TileEntity implements IGridProxyable {
 
-	protected final IGridProxy gridProxy;
-	protected MachineSource mySource;
+    protected final IGridProxy gridProxy;
+    protected MachineSource mySource;
 
-	public TileAEBase(final ItemStack repItem) {
-		super();
-		mySource = new MachineSource(this);
-		gridProxy = IGridProxy.getDefaultProxy(repItem, this);
-	}
+    public TileAEBase(final ItemStack repItem) {
+        super();
+        mySource = new MachineSource(this);
+        gridProxy = IGridProxy.getDefaultProxy(repItem, this);
+    }
 
-	@Override
-	public void onChunkUnload() {
-	    super.onChunkUnload();
-	    IGridProxyable.super.onChunkUnload();
-	}
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        IGridProxyable.super.onChunkUnload();
+    }
 
-	@Override
-	public void invalidate() {
-	    super.invalidate();
-	    IGridProxyable.super.invalidate();
-	}
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        IGridProxyable.super.invalidate();
+    }
 
-	@Override
-	public void validate() {
-	    super.validate();
-	    IGridProxyable.super.validate();
-	}
-	
-	@Override
+    @Override
+    public void validate() {
+        super.validate();
+        IGridProxyable.super.validate();
+    }
+
+    @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
         IGridProxyable.super.readFromNBT(data);
@@ -54,38 +54,38 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
         IGridProxyable.super.writeToNBT(data);
     }
 
-	@Override
-	public IGridProxy getProxy() {
-		return gridProxy;
-	}
+    @Override
+    public IGridProxy getProxy() {
+        return gridProxy;
+    }
 
-	@Override
-	public DimensionalCoord getLocation() {
-	    return new DimensionalCoord(this);
-	}
-	
-	@Override
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(this);
+    }
+
+    @Override
     public void securityBreak() {
         CommonUtils.destroyAndDrop(worldObj, xCoord, yCoord, zCoord);
     }
 
-	@Override
-	public void gridChanged() {}
+    @Override
+    public void gridChanged() {}
 
-	@Override
-	public Packet getDescriptionPacket() {
-	    final NBTTagCompound nbttagcompound = new NBTTagCompound();
-	    getPacketData(nbttagcompound);
-	    return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
-	}
+    @Override
+    public Packet getDescriptionPacket() {
+        final NBTTagCompound nbttagcompound = new NBTTagCompound();
+        getPacketData(nbttagcompound);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
+    }
 
-	protected abstract void getPacketData(final NBTTagCompound nbttagcompound);
+    protected abstract void getPacketData(final NBTTagCompound nbttagcompound);
 
-	@Override
-	public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
-		final NBTTagCompound nbttagcompound = pkt.func_148857_g();
-	    readPacketData(nbttagcompound);
-	}
-	
-	protected abstract void readPacketData(final NBTTagCompound nbttagcompound);
+    @Override
+    public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
+        final NBTTagCompound nbttagcompound = pkt.func_148857_g();
+        readPacketData(nbttagcompound);
+    }
+
+    protected abstract void readPacketData(final NBTTagCompound nbttagcompound);
 }

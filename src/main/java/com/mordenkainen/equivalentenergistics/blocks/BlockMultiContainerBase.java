@@ -11,25 +11,25 @@ import net.minecraft.item.ItemStack;
 
 public abstract class BlockMultiContainerBase extends BlockContainerBase {
 
-	protected int numBlocks = 1;
+    protected int numBlocks = 1;
 
-	public BlockMultiContainerBase(final Material material, final int numBlocks) {
-		super(material);
-		this.numBlocks = numBlocks;
-	}
+    public BlockMultiContainerBase(final Material material, final int numBlocks) {
+        super(material);
+        this.numBlocks = numBlocks;
+    }
 
-	@Override
-	public int damageDropped(final int meta) {
-		return meta;
-	}
+    @Override
+    public int damageDropped(final int meta) {
+        return meta;
+    }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final Item item, final CreativeTabs tab, final List list) {
-	    for (int i = 0; i < numBlocks; i++) {
-	    	list.add(new ItemStack(item, 1, i));
-	    }
-	}
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(final Item item, final CreativeTabs tab, final List list) {
+        for (int i = 0; i < numBlocks; i++) {
+            list.add(new ItemStack(item, 1, i));
+        }
+    }
 
 }

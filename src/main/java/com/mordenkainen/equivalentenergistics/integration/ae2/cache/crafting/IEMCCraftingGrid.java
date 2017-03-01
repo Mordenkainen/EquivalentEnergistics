@@ -5,8 +5,8 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.cache.ICacheBase;
 
 public interface IEMCCraftingGrid extends ICacheBase {
 
-	EMCCraftingPattern[] getPatterns();
-	
-	void updatePatterns();
-	
+    EMCCraftingPattern[] getPatterns();
+
+    void updatePatterns();
+
 }

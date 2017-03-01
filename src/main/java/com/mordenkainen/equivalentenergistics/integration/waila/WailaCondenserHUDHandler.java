@@ -16,27 +16,29 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
 public class WailaCondenserHUDHandler extends WailaHUDBase {
-	private final static String EMC_TAG = "CurrentEMC";
-    
-	@Override
+
+    private final static String EMC_TAG = "CurrentEMC";
+
+    @Override
     public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         final NBTTagCompound tag = accessor.getNBTData();
-        
+
         if (tag.hasKey(TAG_NAME)) {
-        	final NBTTagCompound innerTag = tag.getCompoundTag(TAG_NAME);
-        	if (innerTag.hasKey(EMC_TAG)) {
-        		currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + SpecialChars.RED + CommonUtils.formatEMC(innerTag.getFloat(EMC_TAG)) + SpecialChars.RESET);
-        	}
+            final NBTTagCompound innerTag = tag.getCompoundTag(TAG_NAME);
+            if (innerTag.hasKey(EMC_TAG)) {
+                currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + SpecialChars.RED + CommonUtils.formatEMC(innerTag.getFloat(EMC_TAG)) + SpecialChars.RESET);
+            }
         }
-        
+
         final CondenserState state = ((TileEMCCondenserBase) accessor.getTileEntity()).getState();
-        currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED) + state.getName() + SpecialChars.RESET);
-        
-        if(accessor.getMetadata() > 0) {
-	        final RedstoneMode mode = ((TileEMCCondenserAdv) accessor.getTileEntity()).getMode();
-	        currenttip.add(StatCollector.translateToLocal("tooltip.mode.name") + " " + mode.description());
+        currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED)
+                + state.getName() + SpecialChars.RESET);
+
+        if (accessor.getMetadata() > 0) {
+            final RedstoneMode mode = ((TileEMCCondenserAdv) accessor.getTileEntity()).getMode();
+            currenttip.add(StatCollector.translateToLocal("tooltip.mode.name") + " " + mode.description());
         }
-	        
+
         return currenttip;
     }
 

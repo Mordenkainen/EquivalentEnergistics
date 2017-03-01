@@ -24,90 +24,92 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 public class EMCCraftingGrid implements IEMCCraftingGrid {
-	
-	private static Equivalence<ItemStack> eq = new CompItemStack();
+
+    private static Equivalence<ItemStack> eq = new CompItemStack();
     private static Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patternList = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
     private static int patternVer;
     private static Map<EMCCraftingGrid, Boolean> craftingGrids = new WeakHashMap<EMCCraftingGrid, Boolean>();
-    
+
     private final IGrid grid;
     private final Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
     private final Map<TileEMCCrafter, String> crafters = new WeakHashMap<TileEMCCrafter, String>();
-    private int lastPatternVer = -1;  
-    
-	public EMCCraftingGrid(final IGrid grid) {
-		this.grid = grid;
-		craftingGrids.put(this, true);
-	}
+    private int lastPatternVer = -1;
 
-	@Override
-	public void onUpdateTick() {
-		if (lastPatternVer != patternVer) {
-			updatePatterns();
-			lastPatternVer = patternVer;
-		}
-	}
+    public EMCCraftingGrid(final IGrid grid) {
+        this.grid = grid;
+        craftingGrids.put(this, true);
+    }
 
-	@Override
-	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-		if (machine instanceof TileEMCCrafter) {
-			crafters.remove((TileEMCCrafter) machine);
-			if (!((TileEMCCrafter) machine).getTransmutations().isEmpty()) {
-				lastPatternVer = -1;
-			}
-		}
-	}
+    @Override
+    public void onUpdateTick() {
+        if (lastPatternVer != patternVer) {
+            updatePatterns();
+            lastPatternVer = patternVer;
+        }
+    }
 
-	@Override
-	public void addNode(final IGridNode gridNode, final IGridHost machine) {
-		if (machine instanceof TileEMCCrafter) {
-			crafters.put((TileEMCCrafter) machine, ((TileEMCCrafter) machine).getPlayerUUID());
-			if (!((TileEMCCrafter) machine).getTransmutations().isEmpty()) {
-				lastPatternVer = -1;
-			}
-		}
-	}
+    @Override
+    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+        if (machine instanceof TileEMCCrafter) {
+            crafters.remove(machine);
+            if (!((TileEMCCrafter) machine).getTransmutations().isEmpty()) {
+                lastPatternVer = -1;
+            }
+        }
+    }
 
-	public void updatePatterns() {
-		patterns.clear();
-		addCrystalPatterns();
-		for (final TileEMCCrafter crafter : crafters.keySet()) {
-			for (final ItemStack stack : crafter.getTransmutations()) {
-				addPattern(stack);
-			}
-		}
-		grid.postEvent(new MENetworkCraftingPatternChange(null, null));
-	}
-	
-	private void addPattern(final ItemStack stack) {
-		final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(stack);
-		createPattern(wrappedStack);
-		if (patternList.containsKey(wrappedStack)) {
-			patterns.put(wrappedStack, patternList.get(wrappedStack));
-		}
-	}
+    @Override
+    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+        if (machine instanceof TileEMCCrafter) {
+            crafters.put((TileEMCCrafter) machine, ((TileEMCCrafter) machine).getPlayerUUID());
+            if (!((TileEMCCrafter) machine).getTransmutations().isEmpty()) {
+                lastPatternVer = -1;
+            }
+        }
+    }
 
-	private void addCrystalPatterns() {
-		for (int i = 0; i < 4; i++) {
-			final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(ItemEnum.EMCCRYSTAL.getStack(64, i));
-			if (!patternList.containsKey(wrappedStack)) {
-				patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
-	        }
-			patterns.put(wrappedStack, patternList.get(wrappedStack));
-		}
-	}
-	
-	private void postKnowledgeEvent(final UUID playerUUID) {
-		if (crafters.values().contains(playerUUID.toString())) {
-			lastPatternVer = -1;
-		}
-	}
-	
-	public EMCCraftingPattern[] getPatterns() {
-		return patterns.isEmpty() ? new EMCCraftingPattern[0] : patterns.values().toArray(new EMCCraftingPattern[0]);
-	}
+    @Override
+    public void updatePatterns() {
+        patterns.clear();
+        addCrystalPatterns();
+        for (final TileEMCCrafter crafter : crafters.keySet()) {
+            for (final ItemStack stack : crafter.getTransmutations()) {
+                addPattern(stack);
+            }
+        }
+        grid.postEvent(new MENetworkCraftingPatternChange(null, null));
+    }
 
-	public static void energyEvent() {
+    private void addPattern(final ItemStack stack) {
+        final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(stack);
+        createPattern(wrappedStack);
+        if (patternList.containsKey(wrappedStack)) {
+            patterns.put(wrappedStack, patternList.get(wrappedStack));
+        }
+    }
+
+    private void addCrystalPatterns() {
+        for (int i = 0; i < 4; i++) {
+            final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(ItemEnum.EMCCRYSTAL.getStack(64, i));
+            if (!patternList.containsKey(wrappedStack)) {
+                patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
+            }
+            patterns.put(wrappedStack, patternList.get(wrappedStack));
+        }
+    }
+
+    private void postKnowledgeEvent(final UUID playerUUID) {
+        if (crafters.values().contains(playerUUID.toString())) {
+            lastPatternVer = -1;
+        }
+    }
+
+    @Override
+    public EMCCraftingPattern[] getPatterns() {
+        return patterns.isEmpty() ? new EMCCraftingPattern[0] : patterns.values().toArray(new EMCCraftingPattern[0]);
+    }
+
+    public static void energyEvent() {
         final Iterator<Wrapper<ItemStack>> iter = patternList.keySet().iterator();
         while (iter.hasNext()) {
             final Wrapper<ItemStack> wrappedStack = iter.next();
@@ -115,41 +117,46 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
                 final EMCCraftingPattern pattern = patternList.get(wrappedStack);
                 pattern.rebuildPattern();
                 if (!pattern.valid) {
-                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
+                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: "
+                            + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: "
+                            + String.format("%f", pattern.outputEMC));
                     iter.remove();
                 }
             } else {
                 iter.remove();
             }
         }
-        
+
         patternVer++;
     }
-	
-	public static final void knowledgeEvent(final UUID playerUUID) {
+
+    public static final void knowledgeEvent(final UUID playerUUID) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-        	for (final EMCCraftingGrid craftingGrid : craftingGrids.keySet()) {
-        		craftingGrid.postKnowledgeEvent(playerUUID);
-        	}
+            for (final EMCCraftingGrid craftingGrid : craftingGrids.keySet()) {
+                craftingGrid.postKnowledgeEvent(playerUUID);
+            }
         }
     }
-	public static EMCCraftingPattern getPattern(final ItemStack stack) {
-		final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(stack);
-		createPattern(wrappedStack);
-		if (patternList.containsKey(wrappedStack)) {
-			return patternList.get(wrappedStack);
-		}
-		return null;
-	}
-	
-	private static void createPattern(final Equivalence.Wrapper<ItemStack> wrappedStack) {
-		if (!patternList.containsKey(wrappedStack)) {
-			final EMCCraftingPattern pattern = new EMCCraftingPattern(wrappedStack.get());
-			if (pattern.valid) {
-				patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
-			} else {
-				EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
-			}
+
+    public static EMCCraftingPattern getPattern(final ItemStack stack) {
+        final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(stack);
+        createPattern(wrappedStack);
+        if (patternList.containsKey(wrappedStack)) {
+            return patternList.get(wrappedStack);
         }
-	}
+        return null;
+    }
+
+    private static void createPattern(final Equivalence.Wrapper<ItemStack> wrappedStack) {
+        if (!patternList.containsKey(wrappedStack)) {
+            final EMCCraftingPattern pattern = new EMCCraftingPattern(wrappedStack.get());
+            if (pattern.valid) {
+                patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
+            } else {
+                EquivalentEnergistics.logger.warn(
+                        "Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name")
+                                + " EMC: " + String.format("%f", pattern.outputEMC));
+            }
+        }
+    }
 }

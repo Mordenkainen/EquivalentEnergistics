@@ -23,7 +23,7 @@ public class ItemPattern extends ItemBase implements ICraftingPatternItem {
     public ICraftingPatternDetails getPatternForItem(final ItemStack stack, final World world) {
         return EMCCraftingGrid.getPattern(ItemStack.loadItemStackFromNBT(stack.getTagCompound()));
     }
-   
+
     public static ItemStack getItemForPattern(final ItemStack target) {
         final ItemStack pattern = new ItemStack(ItemEnum.EMCPATTERN.getItem());
         pattern.setTagCompound(new NBTTagCompound());

@@ -7,6 +7,6 @@ import net.minecraft.world.World;
 
 public interface IDropItems {
 
-	void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops);
-	
+    void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops);
+
 }

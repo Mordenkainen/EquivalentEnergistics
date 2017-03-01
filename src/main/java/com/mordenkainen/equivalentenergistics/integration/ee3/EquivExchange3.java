@@ -98,7 +98,7 @@ public class EquivExchange3 implements IEMCHandler {
 
     @SubscribeEvent
     public void onEnergyValueChange(final EnergyValueEvent event) {
-    	EMCCraftingGrid.energyEvent();
+        EMCCraftingGrid.energyEvent();
     }
 
     @Override
@@ -108,12 +108,12 @@ public class EquivExchange3 implements IEMCHandler {
 
     @Override
     public float getStoredEMC(final ItemStack stack) {
-    	return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).getStoredCellEMC(stack) : 0;
+        return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).getStoredCellEMC(stack) : 0;
     }
 
     @Override
     public float extractEMC(final ItemStack stack, final float toStore) {
-    	return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).extractCellEMC(stack, toStore) : 0;
+        return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).extractCellEMC(stack, toStore) : 0;
     }
 
     public static void postPlayerLearn(final String player) {

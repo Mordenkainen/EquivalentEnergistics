@@ -14,7 +14,7 @@ public class ItemStorageComponent extends ItemMultiBase {
         super(8);
         setMaxStackSize(1);
     }
-    
+
     @Override
     public EnumRarity getRarity(final ItemStack stack) {
         return EnumRarity.values()[stack.getItemDamage() / 2];

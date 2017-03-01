@@ -13,19 +13,19 @@ import net.minecraft.world.World;
 
 public abstract class TileAEInv extends TileAEBase implements IInventoryInt, IDropItems {
 
-	protected InternalInventory internalInventory;
+    protected InternalInventory internalInventory;
 
-	public TileAEInv(final ItemStack repItem) {
-		super(repItem);
-	}
+    public TileAEInv(final ItemStack repItem) {
+        super(repItem);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends InternalInventory> T getInventory() {
-	    return (T) internalInventory;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends InternalInventory> T getInventory() {
+        return (T) internalInventory;
+    }
 
-	@Override
+    @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
         IInventoryInt.super.readFromNBT(data);
@@ -36,10 +36,10 @@ public abstract class TileAEInv extends TileAEBase implements IInventoryInt, IDr
         super.writeToNBT(data);
         IInventoryInt.super.writeToNBT(data);
     }
-	
+
     @Override
     public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
         drops.addAll(InvUtils.getInvAsList(getInventory()));
     }
-    
+
 }

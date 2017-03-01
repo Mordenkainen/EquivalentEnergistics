@@ -28,15 +28,15 @@ public final class CraftingManager {
         } else {
             dust = new ItemStack(GameRegistry.findItem("ProjectE", "item.pe_covalence_dust"), 1, 2);
         }
-        
+
         if (BlockEnum.EMCCONDENSER.isEnabled()) {
             initCondenserRecipies();
         }
-        
+
         if (BlockEnum.EMCCRAFTER.isEnabled()) {
-        	initCrafterRecipies();
+            initCrafterRecipies();
         }
-        
+
         if (!ConfigManager.useEE3) {
             GameRegistry.addShapedRecipe(ItemEnum.EMCBOOK.getSizedStack(1), new Object[] { " D ", "DBD", " D ", 'D', dust, 'B', Items.book });
         }
@@ -44,8 +44,8 @@ public final class CraftingManager {
         initCellRecipies();
     }
 
-	private static void initCellRecipies() {
-		// Cell + Housing
+    private static void initCellRecipies() {
+        // Cell + Housing
         for (int i = 0; i < NUM_CELLS; i++) {
             GameRegistry.addShapelessRecipe(ItemEnum.EMCCELL.getDamagedStack(i), ItemEnum.MISCITEM.getDamagedStack(0), ItemEnum.CELLCOMPONENT.getDamagedStack(i));
         }
@@ -53,30 +53,37 @@ public final class CraftingManager {
         // Components
         GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "DCD", "CLC", "DCD", 'D', dust, 'C', new ItemStack(aeMaterial, 1), 'L', new ItemStack(aeMaterial, 1, 22)); // NOPMD
         for (int i = 1; i < 4; i++) {
-            GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "DCD", "SGS", "DSD", 'D', dust, 'C', new ItemStack(aeMaterial, 1, 23), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
+            GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "DCD", "SGS", "DSD", 'D', dust, 'C', new ItemStack(aeMaterial, 1, 23), 'S',
+                    ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
         }
         for (int i = 4; i < 6; i++) {
-            GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "DED", "SGS", "DSD", 'D', dust, 'E', new ItemStack(aeMaterial, 1, 24), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
+            GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "DED", "SGS", "DSD", 'D', dust, 'E', new ItemStack(aeMaterial, 1, 24), 'S',
+                    ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
         }
         for (int i = 6; i < NUM_CELLS; i++) {
-            GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "NEN", "SGS", "NSN", 'N', new ItemStack(Items.nether_star), 'E', new ItemStack(aeMaterial, 1, 24), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
+            GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "NEN", "SGS", "NSN", 'N', new ItemStack(Items.nether_star), 'E', new ItemStack(aeMaterial, 1, 24), 'S',
+                    ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
         }
 
         // Cells
         for (int i = 0; i < NUM_CELLS; i++) {
-            GameRegistry.addShapedRecipe(ItemEnum.EMCCELL.getDamagedStack(i), "GRG", "RSR", "III", 'G', new ItemStack(aeGlass, 1), 'R', new ItemStack(Items.redstone), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i), 'I', new ItemStack(Items.iron_ingot));
+            GameRegistry.addShapedRecipe(ItemEnum.EMCCELL.getDamagedStack(i), "GRG", "RSR", "III", 'G', new ItemStack(aeGlass, 1), 'R', new ItemStack(Items.redstone), 'S',
+                    ItemEnum.CELLCOMPONENT.getDamagedStack(i), 'I', new ItemStack(Items.iron_ingot));
         }
-	}
+    }
 
-	private static void initCrafterRecipies() {
-		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[] { "CDC", "DFD", "CDC", 'C', base, 'D', dust, 'F', new ItemStack(aeMaterial, 1, 43) });
-	}
+    private static void initCrafterRecipies() {
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[] { "CDC", "DFD", "CDC", 'C', base, 'D', dust, 'F', new ItemStack(aeMaterial, 1, 43) });
+    }
 
-	private static void initCondenserRecipies() {
-		GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), new Object[] { "BDB", "BAB", "BDB", 'B', base, 'D', dust, 'A', new ItemStack(aeMaterial, 1, 44) });
-    	GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1 ), new Object[] { "DDD", "DCD", "DDD", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), 'D', Items.diamond});
-    	GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2 ), new Object[] { "EEE", "ECE", "EEE", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1), 'E', Items.emerald});
-    	GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 3 ), new Object[] { "NNN", "NCN", "NNN", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2), 'N', Items.nether_star});
-	}
+    private static void initCondenserRecipies() {
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), new Object[] { "BDB", "BAB", "BDB", 'B', base, 'D', dust, 'A', new ItemStack(aeMaterial, 1, 44) });
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1),
+                new Object[] { "DDD", "DCD", "DDD", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), 'D', Items.diamond });
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2),
+                new Object[] { "EEE", "ECE", "EEE", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1), 'E', Items.emerald });
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 3),
+                new Object[] { "NNN", "NCN", "NNN", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2), 'N', Items.nether_star });
+    }
 
 }

@@ -6,6 +6,7 @@ import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.ModMetadata;
 
 public class EqECore extends DummyModContainer {
+
     public EqECore() {
         super(new ModMetadata());
         final ModMetadata metadata = getMetadata();

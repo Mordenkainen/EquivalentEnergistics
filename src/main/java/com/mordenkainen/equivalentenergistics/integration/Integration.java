@@ -19,11 +19,7 @@ public final class Integration {
     public static IEMCHandler emcHandler;
 
     public enum Mods {
-        WAILA("Waila"),
-        NEI("NotEnoughItems", Side.CLIENT),
-        EE3("EE3", "EquivalentExchange3"),
-        PROJECTE("ProjectE"),
-        AE2("appliedenergistics2", false);
+        WAILA("Waila"), NEI("NotEnoughItems", Side.CLIENT), EE3("EE3", "EquivalentExchange3"), PROJECTE("ProjectE"), AE2("appliedenergistics2", false);
 
         private final String modID;
 
@@ -100,6 +96,7 @@ public final class Integration {
 
         public Predicate<Mods> getTest() {
             return new Predicate<Mods>() {
+
                 @Override
                 public boolean apply(final Mods input) {
                     return isEnabled();

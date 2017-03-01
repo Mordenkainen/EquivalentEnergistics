@@ -5,19 +5,19 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.cache.ICacheBase;
 import appeng.api.config.Actionable;
 
 public interface IEMCStorageGrid extends ICacheBase {
-    
-	float injectEMC(float emc, Actionable mode);
 
-	float extractEMC(float emc, Actionable mode);
+    float injectEMC(float emc, Actionable mode);
 
-	float getCurrentEMC();
+    float extractEMC(float emc, Actionable mode);
 
-	float getMaxEMC();
+    float getCurrentEMC();
 
-	float getAvail();
+    float getMaxEMC();
 
-	boolean isFull();
+    float getAvail();
 
-	boolean isEmpty();
-	
+    boolean isFull();
+
+    boolean isEmpty();
+
 }

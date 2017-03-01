@@ -4,6 +4,6 @@ import net.minecraft.item.ItemStack;
 
 public interface ICraftingMonitor {
 
-	void craftingFinished (ItemStack outputStack);
-	
+    void craftingFinished(ItemStack outputStack);
+
 }

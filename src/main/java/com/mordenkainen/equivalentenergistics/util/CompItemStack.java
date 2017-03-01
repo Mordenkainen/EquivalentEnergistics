@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class CompItemStack extends Equivalence<ItemStack> {
+
     private static final int PRIME = 31;
 
     @Override

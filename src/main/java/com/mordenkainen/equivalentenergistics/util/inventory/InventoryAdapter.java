@@ -8,86 +8,100 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
 public class InventoryAdapter implements ISidedInventory {
-	private final IInventory inv;
-	private final int[] slots;
-	
-	public InventoryAdapter(final IInventory inv) {
-		this.inv = inv;
-		slots = IntStream.rangeClosed(0, inv.getSizeInventory() - 1).toArray();
-	}
-	
-	public int getSizeInventory() {
-		return inv.getSizeInventory();
-	}
 
-	public ItemStack getStackInSlot(final int slot) {
-		return inv.getStackInSlot(slot);
-	}
+    private final IInventory inv;
+    private final int[] slots;
 
-	public ItemStack decrStackSize(final int slot, final int amount) {
-		return inv.decrStackSize(slot, amount);
-	}
+    public InventoryAdapter(final IInventory inv) {
+        this.inv = inv;
+        slots = IntStream.rangeClosed(0, inv.getSizeInventory() - 1).toArray();
+    }
 
-	public ItemStack getStackInSlotOnClosing(final int slot) {
-		return inv.getStackInSlotOnClosing(slot);
-	}
+    @Override
+    public int getSizeInventory() {
+        return inv.getSizeInventory();
+    }
 
-	public void setInventorySlotContents(final int slot, final ItemStack stack) {
-		inv.setInventorySlotContents(slot, stack);
-	}
+    @Override
+    public ItemStack getStackInSlot(final int slot) {
+        return inv.getStackInSlot(slot);
+    }
 
-	public String getInventoryName() {
-		return inv.getInventoryName();
-	}
+    @Override
+    public ItemStack decrStackSize(final int slot, final int amount) {
+        return inv.decrStackSize(slot, amount);
+    }
 
-	public boolean hasCustomInventoryName() {
-		return inv.hasCustomInventoryName();
-	}
+    @Override
+    public ItemStack getStackInSlotOnClosing(final int slot) {
+        return inv.getStackInSlotOnClosing(slot);
+    }
 
-	public int getInventoryStackLimit() {
-		return inv.getInventoryStackLimit();
-	}
+    @Override
+    public void setInventorySlotContents(final int slot, final ItemStack stack) {
+        inv.setInventorySlotContents(slot, stack);
+    }
 
-	public void markDirty() {
-		inv.markDirty();
-	}
+    @Override
+    public String getInventoryName() {
+        return inv.getInventoryName();
+    }
 
-	public boolean isUseableByPlayer(final EntityPlayer player) {
-		return inv.isUseableByPlayer(player);
-	}
+    @Override
+    public boolean hasCustomInventoryName() {
+        return inv.hasCustomInventoryName();
+    }
 
-	public void openInventory() {
-		inv.openInventory();
-	}
+    @Override
+    public int getInventoryStackLimit() {
+        return inv.getInventoryStackLimit();
+    }
 
-	public void closeInventory() {
-		inv.closeInventory();
-	}
+    @Override
+    public void markDirty() {
+        inv.markDirty();
+    }
 
-	public boolean isItemValidForSlot(final int slot, final ItemStack stack) {
-		return inv.isItemValidForSlot(slot, stack);
-	}
+    @Override
+    public boolean isUseableByPlayer(final EntityPlayer player) {
+        return inv.isUseableByPlayer(player);
+    }
 
-	@Override
-	public int[] getAccessibleSlotsFromSide(final int side) {
-		return slots.clone();
-	}
+    @Override
+    public void openInventory() {
+        inv.openInventory();
+    }
 
-	@Override
-	public boolean canInsertItem(final int slot, final ItemStack stack, final int side) {
-		return isItemValidForSlot(slot, stack);
-	}
+    @Override
+    public void closeInventory() {
+        inv.closeInventory();
+    }
 
-	@Override
-	public boolean canExtractItem(final int slot, final ItemStack stack, final int side) {
-		return true;
-	}
-	
-	public static ISidedInventory getAdapter(final IInventory inv) {
-		if (inv instanceof ISidedInventory) {
-			return (ISidedInventory) inv;
-		} else {
-			return new InventoryAdapter(inv);
-		}
-	}
+    @Override
+    public boolean isItemValidForSlot(final int slot, final ItemStack stack) {
+        return inv.isItemValidForSlot(slot, stack);
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(final int side) {
+        return slots.clone();
+    }
+
+    @Override
+    public boolean canInsertItem(final int slot, final ItemStack stack, final int side) {
+        return isItemValidForSlot(slot, stack);
+    }
+
+    @Override
+    public boolean canExtractItem(final int slot, final ItemStack stack, final int side) {
+        return true;
+    }
+
+    public static ISidedInventory getAdapter(final IInventory inv) {
+        if (inv instanceof ISidedInventory) {
+            return (ISidedInventory) inv;
+        } else {
+            return new InventoryAdapter(inv);
+        }
+    }
 }

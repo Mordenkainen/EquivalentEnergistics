@@ -18,51 +18,51 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.config.Configuration;
 
 public class ItemEMCCellCreative extends ItemEMCCellBase implements IConfigurable {
-	
-	private static final String GROUP = "Storage Cells";
-	
-	public static float capacity = 16384000000f;
-			
-	public ItemEMCCellCreative() {
-		super(1);
-	}
-	
-	@Override
+
+    private static final String GROUP = "Storage Cells";
+
+    public static float capacity = 16384000000f;
+
+    public ItemEMCCellCreative() {
+        super(1);
+    }
+
+    @Override
     public EnumRarity getRarity(final ItemStack stack) {
         return EnumRarity.epic;
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int damage) {
         return TextureEnum.EMCCELLCREATIVE.getTexture();
     }
 
-	@Optional.Method(modid = "appliedenergistics2")
-	@SuppressWarnings("rawtypes")
-	@Override
-	public IMEInventoryHandler getCellInventory(final ItemStack stack, final ISaveProvider host, final StorageChannel channel) {
-		if (channel == StorageChannel.ITEMS && isCell(stack)) {
+    @Optional.Method(modid = "appliedenergistics2")
+    @SuppressWarnings("rawtypes")
+    @Override
+    public IMEInventoryHandler getCellInventory(final ItemStack stack, final ISaveProvider host, final StorageChannel channel) {
+        if (channel == StorageChannel.ITEMS && isCell(stack)) {
             return new HandlerEMCCellCreative(host);
         }
         return null;
-	}
+    }
 
-	@Optional.Method(modid = "appliedenergistics2")
-	@SuppressWarnings("rawtypes")
-	@Override
-	public int getStatusForCell(final ItemStack is, final IMEInventory handler) {
-		return 1;
-	}
+    @Optional.Method(modid = "appliedenergistics2")
+    @SuppressWarnings("rawtypes")
+    @Override
+    public int getStatusForCell(final ItemStack is, final IMEInventory handler) {
+        return 1;
+    }
 
-	@Optional.Method(modid = "appliedenergistics2")
-	@SuppressWarnings("rawtypes")
-	@Override
-	public double cellIdleDrain(final ItemStack is, final IMEInventory handler) {
-		return 0;
-	}
+    @Optional.Method(modid = "appliedenergistics2")
+    @SuppressWarnings("rawtypes")
+    @Override
+    public double cellIdleDrain(final ItemStack is, final IMEInventory handler) {
+        return 0;
+    }
 
-	@Override
+    @Override
     public void loadConfig(final Configuration config) {
         try {
             capacity = Float.valueOf(config.get(GROUP, "Creative_Capacity", String.format("%.0f", capacity)).getString());
@@ -70,5 +70,5 @@ public class ItemEMCCellCreative extends ItemEMCCellBase implements IConfigurabl
             EquivalentEnergistics.logger.warn("Creative Storage Cell Creative_Capacity configured for invalid value! Default will be used!");
         }
     }
-	
+
 }

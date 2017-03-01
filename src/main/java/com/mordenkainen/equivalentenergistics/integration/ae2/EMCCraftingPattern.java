@@ -86,10 +86,10 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
             createItemPattern(craftingResult);
         }
     }
-    
+
     public void rebuildPattern() {
-    	buildPattern(this.result[0].getItemStack());
-	}
+        buildPattern(this.result[0].getItemStack());
+    }
 
     private void createCrystalPattern(final int tier) {
         valid = true;
