@@ -47,7 +47,7 @@ public abstract class ItemEMCCellBase extends ItemMultiBase implements ICellHand
     @SuppressWarnings("rawtypes")
     @Override
     public void openChestGui(final EntityPlayer player, final IChestOrDrive chest, final ICellHandler handler, final IMEInventoryHandler inv, final ItemStack stack, final StorageChannel channel) {
-        player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.cell.chestwarning")));
+        player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("amessage.cell.chestwarning")));
     }
     
 }
