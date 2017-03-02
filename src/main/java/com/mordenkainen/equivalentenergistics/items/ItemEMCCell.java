@@ -58,20 +58,18 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean param4) {
-        if (isCell(stack)) {
-            final float curEMC = getStoredCellEMC(stack);
-
-            if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + String.format("%.2f", curEMC) + " / " + String.format("%.2f", CAPACITIES[stack.getItemDamage()]));
-            } else {
-                list.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(CAPACITIES[stack.getItemDamage()]));
-            }
+        final float curEMC = getStoredCellEMC(stack);
+        final String tooltip = StatCollector.translateToLocal("tooltip.emc.name") + " ";
+        if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            list.add(tooltip + String.format("%.2f", curEMC) + " / " + String.format("%.2f", CAPACITIES[stack.getItemDamage()]));
+        } else {
+            list.add(tooltip + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(CAPACITIES[stack.getItemDamage()]));
         }
     }
 
     @Override
     public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
-        if (stack != null && isEmpty(stack) && player != null && player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
+        if (isEmpty(stack) && player != null && player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
             return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
         }
 
@@ -116,7 +114,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
 
     @Override
     public double addEmc(final ItemStack stack, final double toAdd) {
-        if (ConfigManager.useEE3 || !isCell(stack)) {
+        if (ConfigManager.useEE3) {
             return 0;
         }
 
@@ -157,10 +155,6 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     }
 
     public float extractCellEMC(final ItemStack stack, final float emc) {
-        if (!isCell(stack) || isEmpty(stack)) {
-            return 0;
-        }
-
         final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = Math.min(emc, currentEMC);
 

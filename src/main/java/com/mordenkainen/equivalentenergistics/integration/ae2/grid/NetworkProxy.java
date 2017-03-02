@@ -53,8 +53,7 @@ public class NetworkProxy implements IGridProxy {
 
         if (node != null) {
             try {
-                final IGrid grid = getGrid();
-                grid.postEvent(new MENetworkPowerIdleChange(node));
+                getGrid().postEvent(new MENetworkPowerIdleChange(node));
             } catch (final GridAccessException e) {
                 CommonUtils.debugLog("NetworkProxy:setIdlePowerUsage: Error accessing grid:", e);
             }
@@ -138,11 +137,11 @@ public class NetworkProxy implements IGridProxy {
     @Override
     public void readFromNBT(final NBTTagCompound tag) {
         if (tag.hasKey(nbtName)) {
-            nbt = tag;
-        }
-        if (node != null && nbt != null) {
-            node.loadFromNBT(nbtName, nbt);
-            nbt = null;
+            if (node == null) {
+                nbt = tag;
+            } else {
+                node.loadFromNBT(nbtName, tag);
+            }
         }
     }
 
@@ -162,8 +161,7 @@ public class NetworkProxy implements IGridProxy {
 
     @Override
     public boolean onReady() {
-        ready = true;
-        return getNode() != null;
+        return getNode() != null && (ready = true);
     }
 
     @Override
