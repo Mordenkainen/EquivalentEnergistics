@@ -23,9 +23,14 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum ItemEnum {
 
-    EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE.getTest()), EMCPATTERN("EMCPattern", new ItemPattern(), true), EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()), EMCCRYSTALOLD(
-            "EMCCrystal", new ItemEMCCrystalOld()), EMCCELL("EMCCell", new ItemEMCCell()), EMCCELLCREATIVE("EMCCellCreative",
-                    new ItemEMCCellCreative()), MISCITEM("ItemMisc", new ItemMisc()), CELLCOMPONENT("EMCStorageComponent", new ItemStorageComponent());
+    EMCBOOK("EMCBook", new ItemEMCBook(), Integration.Mods.PROJECTE.getTest()),
+    EMCPATTERN("EMCPattern", new ItemPattern(), true),
+    EMCCRYSTAL("EMCStorageItem", new ItemEMCCrystal()),
+    EMCCRYSTALOLD("EMCCrystal", new ItemEMCCrystalOld()),
+    EMCCELL("EMCCell", new ItemEMCCell()),
+    EMCCELLCREATIVE("EMCCellCreative", new ItemEMCCellCreative()),
+    MISCITEM("ItemMisc", new ItemMisc()),
+    CELLCOMPONENT("EMCStorageComponent", new ItemStorageComponent());
 
     private final String internalName;
 

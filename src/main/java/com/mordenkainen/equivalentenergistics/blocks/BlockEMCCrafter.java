@@ -73,8 +73,7 @@ public class BlockEMCCrafter extends BlockContainerBase implements IConfigurable
         if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
             tileCrafter.setCurrentTome(player.getHeldItem().copy());
             if (!player.capabilities.isCreativeMode) {
-                player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize == 0 ? null
-                        : player.inventory.mainInventory[player.inventory.currentItem];
+                player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize == 0 ? null : player.inventory.mainInventory[player.inventory.currentItem];
             }
             return true;
         } else if (existingTome != null) {

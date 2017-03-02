@@ -18,9 +18,8 @@ import net.minecraftforge.common.config.Configuration;
 
 public enum BlockEnum {
 
-    EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), ItemBlockCondenser.class,
-            Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCondenser", false), EMCCRAFTER("EMCCrafter",
-                    new BlockEMCCrafter(), Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCrafter");
+    EMCCONDENSER("EMCCondenser", new BlockEMCCondenser(), ItemBlockCondenser.class, Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCondenser", false),
+    EMCCRAFTER("EMCCrafter", new BlockEMCCrafter(), Predicates.and(Integration.Mods.AE2.getTest(), Predicates.or(Integration.Mods.EE3.getTest(), Integration.Mods.PROJECTE.getTest())), "EMCCrafter");
 
     private final String internalName;
 

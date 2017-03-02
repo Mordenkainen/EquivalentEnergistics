@@ -25,10 +25,11 @@ public class EqECoreTransformer implements IClassTransformer {
     private static BiPredicate<AbstractInsnNode, Integer> forgetAllTest = (n, i) -> n.getOpcode() == i && ((VarInsnNode) n).var == 0;
 
     private enum patches {
-        LEARN("teachPlayer", "(Ljava/lang/String;Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL, standardTest, true, "postPlayerLearn"), LEARNCOL("teachPlayer",
-                "(Ljava/lang/String;Ljava/util/Collection;)V", Opcodes.GOTO, standardTest, false, "postPlayerLearn"), FORGET("makePlayerForget", "(Ljava/lang/String;Ljava/lang/Object;)V",
-                        Opcodes.INVOKEVIRTUAL, standardTest, true, "postPlayerForget"), FORGETCOL("makePlayerForget", "(Ljava/lang/String;Ljava/util/Collection;)V", Opcodes.GOTO, standardTest, false,
-                                "postPlayerForget"), FORGETALL("makePlayerForgetAll", "(Ljava/lang/String;)V", Opcodes.ALOAD, forgetAllTest, true, "postPlayerForget");
+        LEARN("teachPlayer", "(Ljava/lang/String;Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL, standardTest, true, "postPlayerLearn"),
+        LEARNCOL("teachPlayer", "(Ljava/lang/String;Ljava/util/Collection;)V", Opcodes.GOTO, standardTest, false, "postPlayerLearn"),
+        FORGET("makePlayerForget", "(Ljava/lang/String;Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL, standardTest, true, "postPlayerForget"),
+        FORGETCOL("makePlayerForget", "(Ljava/lang/String;Ljava/util/Collection;)V", Opcodes.GOTO, standardTest, false, "postPlayerForget"),
+        FORGETALL("makePlayerForgetAll", "(Ljava/lang/String;)V", Opcodes.ALOAD, forgetAllTest, true, "postPlayerForget");
 
         public String method;
         public String desc;

@@ -31,8 +31,7 @@ public class WailaCondenserHUDHandler extends WailaHUDBase {
         }
 
         final CondenserState state = ((TileEMCCondenserBase) accessor.getTileEntity()).getState();
-        currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED)
-                + state.getName() + SpecialChars.RESET);
+        currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED) + state.getName() + SpecialChars.RESET);
 
         if (accessor.getMetadata() > 0) {
             final RedstoneMode mode = ((TileEMCCondenserAdv) accessor.getTileEntity()).getMode();

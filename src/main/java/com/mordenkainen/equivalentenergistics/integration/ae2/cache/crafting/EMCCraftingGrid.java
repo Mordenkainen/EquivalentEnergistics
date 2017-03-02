@@ -117,9 +117,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
                 final EMCCraftingPattern pattern = patternList.get(wrappedStack);
                 pattern.rebuildPattern();
                 if (!pattern.valid) {
-                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: "
-                            + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: "
-                            + String.format("%f", pattern.outputEMC));
+                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
                     iter.remove();
                 }
             } else {
@@ -153,9 +151,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
             if (pattern.valid) {
                 patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
             } else {
-                EquivalentEnergistics.logger.warn(
-                        "Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name")
-                                + " EMC: " + String.format("%f", pattern.outputEMC));
+                EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
             }
         }
     }

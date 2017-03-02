@@ -19,8 +19,7 @@ public class ItemBlockCondenser extends ItemBlockMulti {
     }
 
     @Override
-    public boolean onItemUseFirst(final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY,
-            final float hitZ) {
+    public boolean onItemUseFirst(final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ) {
         final int blockMeta = world.getBlockMetadata(x, y, z);
         if (player == null || blockMeta == stack.getItemDamage()) {
             return super.onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
@@ -49,8 +48,7 @@ public class ItemBlockCondenser extends ItemBlockMulti {
     }
 
     @Override
-    public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY,
-            final float hitZ, final int metadata) {
+    public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ, final int metadata) {
         if (world.isRemote && !canPlace) {
             canPlace = true;
             return false;

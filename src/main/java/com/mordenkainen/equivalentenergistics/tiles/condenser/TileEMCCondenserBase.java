@@ -33,9 +33,11 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
     protected final EnumSet<CondenserState> failedStates = EnumSet.of(CondenserState.MISSING_CHANNEL, CondenserState.UNPOWERED);
 
     public enum CondenserState {
-        IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle"), ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active"), BLOCKED(TickRateModulation.IDLE,
-                "message.condenser.statename.blocked"), UNPOWERED(TickRateModulation.IDLE,
-                        "message.condenser.statename.no_power"), MISSING_CHANNEL(TickRateModulation.IDLE, "message.condenser.statename.missing_channel");
+        IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle"),
+        ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active"),
+        BLOCKED(TickRateModulation.IDLE, "message.condenser.statename.blocked"),
+        UNPOWERED(TickRateModulation.IDLE, "message.condenser.statename.no_power"),
+        MISSING_CHANNEL(TickRateModulation.IDLE, "message.condenser.statename.missing_channel");
 
         private final String name;
         private final TickRateModulation tickRate;

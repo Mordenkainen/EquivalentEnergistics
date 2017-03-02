@@ -17,9 +17,12 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
     protected RedstoneMode mode = RedstoneMode.NONE;
 
     public enum RedstoneMode {
-        NONE("message.condenser.redstonemode.none"), BLOCKED("message.condenser.redstonemode.blocked", CondenserState.BLOCKED), ACTIVE("message.condenser.redstonemode.active",
-                CondenserState.ACTIVE), IDLE("message.condenser.redstonemode.idle",
-                        CondenserState.IDLE), DISABLE("message.condenser.redstonemode.disabled"), ENABLE("message.condenser.redstonemode.enabled");
+        NONE("message.condenser.redstonemode.none"),
+        BLOCKED("message.condenser.redstonemode.blocked", CondenserState.BLOCKED),
+        ACTIVE("message.condenser.redstonemode.active", CondenserState.ACTIVE),
+        IDLE("message.condenser.redstonemode.idle", CondenserState.IDLE),
+        DISABLE("message.condenser.redstonemode.disabled"),
+        ENABLE("message.condenser.redstonemode.enabled");
 
         final private String description;
         final private CondenserState targetState;
