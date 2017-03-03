@@ -17,7 +17,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -104,16 +103,10 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
     }
 
     protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
-        try {
-            final IEnergyGrid eGrid = GridUtils.getEnergy(getProxy());
-            final double powerPerItem = emcValue * BlockEMCCondenser.activePower;
-            final double powerRequired = stackSize * powerPerItem;
-            final double powerAvail = eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-            return (int) (powerAvail / (powerPerItem));
-        } catch (final GridAccessException e) {
-            CommonUtils.debugLog("getMaxItemsForPower: Error accessing grid:", e);
-            return 0;
-        }
+        final double powerPerItem = emcValue * BlockEMCCondenser.activePower;
+        final double powerRequired = stackSize * powerPerItem;
+        final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+        return (int) (powerAvail / powerPerItem);
     }
 
     protected float processItems(final int slot, final float remainingEMC, final boolean usePower) {
@@ -197,10 +190,8 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
             if (Integration.emcHandler.isEMCStorage(stack)) {
                 remainingEMC = processStorage(slot, remainingEMC);
-            } else if (ItemEnum.isCrystal(stack)) {
-                remainingEMC = processItems(slot, remainingEMC, false);
             } else if (Integration.emcHandler.hasEMC(stack)) {
-                remainingEMC = processItems(slot, remainingEMC, true);
+                remainingEMC = processItems(slot, remainingEMC, !ItemEnum.isCrystal(stack));
             } else {
                 getInventory().setInventorySlotContents(slot, ejectItem(stack));
                 if (getInventory().getStackInSlot(slot) != null) {
