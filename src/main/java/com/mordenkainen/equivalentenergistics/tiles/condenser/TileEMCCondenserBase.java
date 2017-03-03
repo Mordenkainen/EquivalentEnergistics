@@ -23,7 +23,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 
 public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTickable {
 
@@ -31,30 +30,6 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     protected CondenserState state = CondenserState.IDLE;
     protected final EnumSet<CondenserState> failedStates = EnumSet.of(CondenserState.MISSING_CHANNEL, CondenserState.UNPOWERED);
-
-    public enum CondenserState {
-        IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle"),
-        ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active"),
-        BLOCKED(TickRateModulation.IDLE, "message.condenser.statename.blocked"),
-        UNPOWERED(TickRateModulation.IDLE, "message.condenser.statename.no_power"),
-        MISSING_CHANNEL(TickRateModulation.IDLE, "message.condenser.statename.missing_channel");
-
-        private final String name;
-        private final TickRateModulation tickRate;
-
-        CondenserState(final TickRateModulation tickRate, final String name) {
-            this.name = StatCollector.translateToLocal(name);
-            this.tickRate = tickRate;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public TickRateModulation getTickRate() {
-            return tickRate;
-        }
-    }
 
     protected class CondenserInventory extends InternalInventory {
 
@@ -131,9 +106,10 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
     protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
         try {
             final IEnergyGrid eGrid = GridUtils.getEnergy(getProxy());
-            final double powerRequired = emcValue * stackSize * BlockEMCCondenser.activePower;
+            final double powerPerItem = emcValue * BlockEMCCondenser.activePower;
+            final double powerRequired = stackSize * powerPerItem;
             final double powerAvail = eGrid.extractAEPower(powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-            return (int) (powerAvail / (emcValue * BlockEMCCondenser.activePower));
+            return (int) (powerAvail / (powerPerItem));
         } catch (final GridAccessException e) {
             CommonUtils.debugLog("getMaxItemsForPower: Error accessing grid:", e);
             return 0;
@@ -168,9 +144,9 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
             if (usePower) {
                 GridUtils.getEnergy(getProxy()).extractAEPower(toStore * BlockEMCCondenser.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
-            emcGrid.injectEMC(maxToDo * itemEMC, Actionable.MODULATE);
+            emcGrid.injectEMC(toStore, Actionable.MODULATE);
             stack.stackSize -= maxToDo;
-            getInventory().setInventorySlotContents(slot, stack.stackSize > 0 ? stack : null);
+            getInventory().setInventorySlotContents(slot, CommonUtils.filterForEmpty(stack));
 
             return remainingEMC - toStore;
         } catch (GridAccessException e) {

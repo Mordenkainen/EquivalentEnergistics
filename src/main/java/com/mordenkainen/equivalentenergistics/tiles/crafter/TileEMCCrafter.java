@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 
 public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGridTickable, IWailaNBTProvider, IDropItems, ICraftingMonitor {
 
-    private ItemStack currentTome;
+    private ItemStack transmutationItem;
     public float currentEMC;
     public ItemStack displayStack;
     private boolean sleeping;
@@ -50,8 +50,8 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
     @Override
     public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
         tag.setFloat("currentEMC", currentEMC);
-        if (currentTome != null) {
-            tag.setString("owner", Integration.emcHandler.getTomeOwner(currentTome));
+        if (transmutationItem != null) {
+            tag.setString("owner", Integration.emcHandler.getTomeOwner(transmutationItem));
         }
         return tag;
     }
@@ -81,7 +81,7 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
         currentEMC = data.getFloat("CurrentEMC");
-        currentTome = data.hasKey("Tome") ? ItemStack.loadItemStackFromNBT((NBTTagCompound) data.getTag("Tome")) : null;
+        transmutationItem = data.hasKey("Tome") ? ItemStack.loadItemStackFromNBT((NBTTagCompound) data.getTag("Tome")) : null;
         sleeping = data.getBoolean("Sleeping");
         manager.readFromNBT(data);
         if (manager.isCrafting()) {
@@ -95,9 +95,9 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         data.setFloat("CurrentEMC", currentEMC);
-        if (currentTome != null) {
+        if (transmutationItem != null) {
             final NBTTagCompound tome = new NBTTagCompound();
-            currentTome.writeToNBT(tome);
+            transmutationItem.writeToNBT(tome);
             data.setTag("Tome", tome);
         }
         data.setBoolean("Sleeping", sleeping);
@@ -132,11 +132,11 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
     }
 
     public ItemStack getCurrentTome() {
-        return currentTome;
+        return transmutationItem;
     }
 
     public void setCurrentTome(final ItemStack heldItem) {
-        currentTome = heldItem;
+        transmutationItem = heldItem;
         setDisplayStack(null);
         try {
             GridUtils.getEMCCrafting(getProxy()).updatePatterns();
@@ -147,7 +147,7 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
 
     private void setDisplayStack(final ItemStack stack) {
         if (stack == null) {
-            displayStack = currentTome;
+            displayStack = transmutationItem;
         } else {
             displayStack = stack.copy();
             displayStack.stackSize = 1;
@@ -182,8 +182,8 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
 
     @Override
     public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
-        if (currentTome != null) {
-            drops.add(currentTome);
+        if (transmutationItem != null) {
+            drops.add(transmutationItem);
         }
     }
 
@@ -202,11 +202,11 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
     }
 
     public String getPlayerUUID() {
-        return currentTome == null ? null : Integration.emcHandler.getTomeUUID(currentTome).toString();
+        return transmutationItem == null ? null : Integration.emcHandler.getTomeUUID(transmutationItem).toString();
     }
 
     public List<ItemStack> getTransmutations() {
-        return currentTome == null ? new ArrayList<ItemStack>() : Integration.emcHandler.getTransmutations(this);
+        return transmutationItem == null ? new ArrayList<ItemStack>() : Integration.emcHandler.getTransmutations(this);
     }
 
     @Override

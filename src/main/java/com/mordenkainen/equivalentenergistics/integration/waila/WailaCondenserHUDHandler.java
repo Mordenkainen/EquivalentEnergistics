@@ -2,10 +2,10 @@ package com.mordenkainen.equivalentenergistics.integration.waila;
 
 import java.util.List;
 
+import com.mordenkainen.equivalentenergistics.tiles.condenser.CondenserState;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserAdv;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserAdv.RedstoneMode;
 import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserBase;
-import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserBase.CondenserState;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -31,7 +31,7 @@ public class WailaCondenserHUDHandler extends WailaHUDBase {
         }
 
         final CondenserState state = ((TileEMCCondenserBase) accessor.getTileEntity()).getState();
-        currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED) + state.getName() + SpecialChars.RESET);
+        currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED) + state.getStateName() + SpecialChars.RESET);
 
         if (accessor.getMetadata() > 0) {
             final RedstoneMode mode = ((TileEMCCondenserAdv) accessor.getTileEntity()).getMode();

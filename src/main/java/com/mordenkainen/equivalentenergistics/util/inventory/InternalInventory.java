@@ -68,7 +68,9 @@ public class InternalInventory implements IInventory {
 
     @Override
     public ItemStack getStackInSlotOnClosing(final int slotId) {
-        return slots[slotId];
+        final ItemStack stack = getStackInSlot(slotId);
+        setInventorySlotContents(slotId, null);
+        return stack;
     }
 
     @Override

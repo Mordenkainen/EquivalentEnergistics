@@ -161,7 +161,8 @@ public class NetworkProxy implements IGridProxy {
 
     @Override
     public boolean onReady() {
-        return getNode() != null && (ready = true);
+        ready = true;
+        return getNode() != null;
     }
 
     @Override
@@ -181,11 +182,11 @@ public class NetworkProxy implements IGridProxy {
 
     @Override
     public boolean meetsChannelRequirements() {
-        if (getNode() == null) {
+        if (node == null) {
             return false;
         }
 
-        return getNode().meetsChannelRequirements();
+        return node.meetsChannelRequirements();
     }
 
     @Override
