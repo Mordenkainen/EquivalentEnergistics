@@ -1,11 +1,16 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.tiles;
 
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxy;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxyable;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.util.DimensionalCoord;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -79,13 +84,24 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
     }
 
-    protected abstract void getPacketData(final NBTTagCompound nbttagcompound);
-
     @Override
     public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
         final NBTTagCompound nbttagcompound = pkt.func_148857_g();
         readPacketData(nbttagcompound);
     }
+    
+    protected boolean checkPermissions(final EntityPlayer player) {
+        try {
+            final ISecurityGrid sGrid = GridUtils.getSecurity(getProxy());
 
+            return sGrid.hasPermission(player, SecurityPermissions.INJECT) && sGrid.hasPermission(player, SecurityPermissions.EXTRACT) && sGrid.hasPermission(player, SecurityPermissions.BUILD);
+        } catch (final GridAccessException e) {
+            CommonUtils.debugLog("TileAEBase:checkPermissions: Error accessing grid:", e);
+        }
+        return true;
+    }
+
+    protected abstract void getPacketData(final NBTTagCompound nbttagcompound);
+    
     protected abstract void readPacketData(final NBTTagCompound nbttagcompound);
 }

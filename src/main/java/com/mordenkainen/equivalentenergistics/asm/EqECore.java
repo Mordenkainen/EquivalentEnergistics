@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.asm;
 
-import com.mordenkainen.equivalentenergistics.lib.Reference;
+import com.mordenkainen.equivalentenergistics.core.Reference;
 
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.ModMetadata;

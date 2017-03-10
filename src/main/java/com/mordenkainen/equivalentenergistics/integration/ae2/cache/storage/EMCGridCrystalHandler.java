@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
 import appeng.api.AEApi;

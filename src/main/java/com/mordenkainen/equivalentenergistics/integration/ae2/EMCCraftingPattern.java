@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
+import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
 
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;

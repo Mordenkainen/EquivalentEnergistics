@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;

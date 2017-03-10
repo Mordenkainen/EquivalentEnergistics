@@ -5,12 +5,11 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.config.ConfigManager;
-import com.mordenkainen.equivalentenergistics.config.IConfigurable;
+import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.core.config.IConfigurable;
+import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCellBase;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.storage.IMEInventory;

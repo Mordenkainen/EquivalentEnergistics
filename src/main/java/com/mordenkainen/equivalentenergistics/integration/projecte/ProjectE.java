@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import moze_intel.projecte.api.ProjectEAPI;

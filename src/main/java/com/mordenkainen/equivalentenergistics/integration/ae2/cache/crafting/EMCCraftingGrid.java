@@ -11,8 +11,7 @@ import com.google.common.base.Equivalence.Wrapper;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
-import com.mordenkainen.equivalentenergistics.tiles.crafter.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CompItemStack;
 
 import appeng.api.networking.IGrid;
@@ -32,7 +31,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 
     private final IGrid grid;
     private final Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
-    private final Map<TileEMCCrafter, String> crafters = new WeakHashMap<TileEMCCrafter, String>();
+    private final Map<ITransProvider, String> patternProviders = new WeakHashMap<ITransProvider, String>();
     private int lastPatternVer = -1;
 
     public EMCCraftingGrid(final IGrid grid) {
@@ -50,9 +49,9 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof TileEMCCrafter) {
-            crafters.remove(machine);
-            if (!((TileEMCCrafter) machine).getTransmutations().isEmpty()) {
+        if (machine instanceof ITransProvider) {
+            patternProviders.remove(machine);
+            if (!((ITransProvider) machine).getTransmutations().isEmpty()) {
                 lastPatternVer = -1;
             }
         }
@@ -60,9 +59,9 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 
     @Override
     public void addNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof TileEMCCrafter) {
-            crafters.put((TileEMCCrafter) machine, ((TileEMCCrafter) machine).getPlayerUUID());
-            if (!((TileEMCCrafter) machine).getTransmutations().isEmpty()) {
+        if (machine instanceof ITransProvider) {
+            patternProviders.put((ITransProvider) machine, ((ITransProvider) machine).getPlayerUUID());
+            if (!((ITransProvider) machine).getTransmutations().isEmpty()) {
                 lastPatternVer = -1;
             }
         }
@@ -72,8 +71,8 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     public void updatePatterns() {
         patterns.clear();
         addCrystalPatterns();
-        for (final TileEMCCrafter crafter : crafters.keySet()) {
-            for (final ItemStack stack : crafter.getTransmutations()) {
+        for (final ITransProvider provider : patternProviders.keySet()) {
+            for (final ItemStack stack : provider.getTransmutations()) {
                 addPattern(stack);
             }
         }
@@ -99,7 +98,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     }
 
     private void postKnowledgeEvent(final UUID playerUUID) {
-        if (crafters.values().contains(playerUUID.toString())) {
+        if (patternProviders.values().contains(playerUUID.toString())) {
             lastPatternVer = -1;
         }
     }

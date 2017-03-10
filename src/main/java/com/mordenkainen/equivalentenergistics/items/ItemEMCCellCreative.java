@@ -1,9 +1,9 @@
 package com.mordenkainen.equivalentenergistics.items;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.config.IConfigurable;
+import com.mordenkainen.equivalentenergistics.core.config.IConfigurable;
+import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
 import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCellCreative;
-import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
 
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;

@@ -7,7 +7,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMC
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.IEMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.EMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;

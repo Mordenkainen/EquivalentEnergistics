@@ -2,10 +2,10 @@ package com.mordenkainen.equivalentenergistics;
 
 import org.apache.logging.log4j.Logger;
 
-import com.mordenkainen.equivalentenergistics.config.ConfigManager;
-import com.mordenkainen.equivalentenergistics.lib.CreativeTabEE;
-import com.mordenkainen.equivalentenergistics.lib.Reference;
-import com.mordenkainen.equivalentenergistics.proxy.CommonProxy;
+import com.mordenkainen.equivalentenergistics.core.CreativeTabEE;
+import com.mordenkainen.equivalentenergistics.core.Reference;
+import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.core.proxy.CommonProxy;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;

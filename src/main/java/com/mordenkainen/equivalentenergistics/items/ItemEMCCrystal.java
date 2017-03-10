@@ -1,7 +1,7 @@
 package com.mordenkainen.equivalentenergistics.items;
 
-import com.mordenkainen.equivalentenergistics.config.ConfigManager;
-import com.mordenkainen.equivalentenergistics.registries.TextureEnum;
+import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
 import com.pahimar.ee3.api.exchange.EnergyValue;
 import com.pahimar.ee3.api.exchange.IEnergyValueProvider;
 

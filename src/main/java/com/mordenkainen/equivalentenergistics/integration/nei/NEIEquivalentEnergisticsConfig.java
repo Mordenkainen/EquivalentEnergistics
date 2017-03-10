@@ -1,9 +1,9 @@
 package com.mordenkainen.equivalentenergistics.integration.nei;
 
+import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
+import com.mordenkainen.equivalentenergistics.core.Reference;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
-import com.mordenkainen.equivalentenergistics.lib.Reference;
-import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
-import com.mordenkainen.equivalentenergistics.registries.ItemEnum;
+import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;

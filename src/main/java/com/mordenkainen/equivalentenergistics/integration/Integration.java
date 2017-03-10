@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.integration;
 
 import com.google.common.base.Predicate;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.config.ConfigManager;
+import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.integration.ae2.AppliedEnergistics2;
 import com.mordenkainen.equivalentenergistics.integration.ee3.EquivExchange3;
 import com.mordenkainen.equivalentenergistics.integration.projecte.ProjectE;

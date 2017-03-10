@@ -1,7 +1,7 @@
 package com.mordenkainen.equivalentenergistics.items.itemblocks;
 
-import com.mordenkainen.equivalentenergistics.registries.BlockEnum;
-import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserBase;
+import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import net.minecraft.block.Block;

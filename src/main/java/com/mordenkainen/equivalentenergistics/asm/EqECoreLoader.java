@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.asm;
 
 import java.util.Map;
 
-import com.mordenkainen.equivalentenergistics.lib.Reference;
+import com.mordenkainen.equivalentenergistics.core.Reference;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 

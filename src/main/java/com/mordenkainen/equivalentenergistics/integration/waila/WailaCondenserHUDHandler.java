@@ -2,10 +2,10 @@ package com.mordenkainen.equivalentenergistics.integration.waila;
 
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.tiles.condenser.CondenserState;
-import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserAdv;
-import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserAdv.RedstoneMode;
-import com.mordenkainen.equivalentenergistics.tiles.condenser.TileEMCCondenserBase;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv.RedstoneMode;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
