@@ -3,7 +3,9 @@ package com.mordenkainen.equivalentenergistics.blocks.condenser;
 import java.util.Locale;
 import java.util.Random;
 
+import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.blocks.BlockMultiContainerBase;
+import com.mordenkainen.equivalentenergistics.blocks.ILayeredBlock;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
@@ -29,12 +31,22 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfigurable {
+public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfigurable, ILayeredBlock {
 
     private static final String GROUP = "Condenser";
     public static float emcPerTick;
     public static double idlePower;
     public static double activePower;
+    
+    @Override
+    public int getRenderBlockPass() {
+        return 1;
+    }
+
+    @Override
+    public boolean canRenderInPass(final int pass) {
+        return pass == 1;
+    }
 
     public BlockEMCCondenser() {
         super(Material.rock, 4);
@@ -42,6 +54,16 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
         setStepSound(Block.soundTypeStone);
     }
 
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return EquivalentEnergistics.proxy.layeredRenderer;
+    }
+    
     @Override
     public TileEntity createNewTileEntity(final World world, final int meta) {
         switch (meta) {
@@ -60,27 +82,14 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     @Override
     public IIcon getIcon(final IBlockAccess world, final int x, final int y, final int z, final int side) {
         final int meta = world.getBlockMetadata(x, y, z);
-        if (meta > 1) {
-            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
-            if (tileCondenser != null) {
-                final int sideData = tileCondenser.getSide(side);
-                if (sideData == 0) {
-                    return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? (meta - 2) * 4 : (meta - 2) * 4 + 1);
-                } else {
-                    return TextureEnum.EMCCONDENSERADV.getTexture((meta - 2) * 4 + sideData);
-                }
-            }
-        }
+        TextureEnum.EMCCONDENSER.getTexture(meta);
         return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(final int side, final int meta) {
-        if (meta < 2) {
-            return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
-        }
-        return TextureEnum.EMCCONDENSERADV.getTexture(side == 0 || side == 1 ? (meta - 2) * 4 : (meta - 2) * 4 + 1);
+        return TextureEnum.EMCCONDENSER.getTexture(meta);
     }
 
     @Override
@@ -173,6 +182,34 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
         final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
         condenserCat.remove("CrystalsProducedPerTick");
         condenserCat.remove("ItemsCondensedPerTick");
+    }
+
+    @Override
+    public int numLayers(final Block block, final int meta) {
+        return 0;
+    }
+
+    @Override
+    public int numLayers(final IBlockAccess world, final Block block, final int x, final int y, final int z, final int meta) {
+        return 1;
+    }
+
+    @Override
+    public IIcon getLayer(final Block block, final int side, final int meta, final int layer) {
+        return null;
+    }
+
+    @Override
+    public IIcon getLayer(final IBlockAccess world, final Block block, final int x, final int y, final int z, final int side, final int meta, final int layer) {
+        final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
+        if (tileCondenser != null) {
+            if (tileCondenser.getSide(side) == 2) {
+                return TextureEnum.EMCCONDENSEROVL.getTexture();
+            } else if (tileCondenser.getSide(side) == 3) {
+                return TextureEnum.EMCCONDENSEROVL.getTexture(1);
+            }
+        }
+        return null;
     }
 
 }

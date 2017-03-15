@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.core.proxy;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
+import com.mordenkainen.equivalentenergistics.blocks.LayeredBlockRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.render.BlockEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.render.TileEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
@@ -38,6 +39,8 @@ public class ClientProxy extends CommonProxy {
             ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new TileEMCCrafterRenderer());
             crafterRenderer = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(new BlockEMCCrafterRenderer());
+            layeredRenderer = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(new LayeredBlockRenderer());
         }
     }
 

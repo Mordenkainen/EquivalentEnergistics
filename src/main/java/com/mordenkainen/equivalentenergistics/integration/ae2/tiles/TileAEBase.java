@@ -22,6 +22,7 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
 
     protected final IGridProxy gridProxy;
     protected MachineSource mySource;
+    protected boolean nodeDirty;
 
     public TileAEBase(final ItemStack repItem) {
         super();
@@ -75,7 +76,9 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
     }
 
     @Override
-    public void gridChanged() {}
+    public void gridChanged() {
+        nodeDirty = true;
+    }
 
     @Override
     public Packet getDescriptionPacket() {

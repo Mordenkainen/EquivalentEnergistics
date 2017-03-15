@@ -17,6 +17,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class CommonProxy {
 
     public int crafterRenderer;
+    public int layeredRenderer;
 
     public void preInit() {
         Integration.preInit();

@@ -67,6 +67,10 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
+        if (nodeDirty && gridProxy.isReady()) {
+            gridProxy.getNode().updateState();
+            nodeDirty = false;
+        }
         CondenserState newState = state;
 
         newState = checkRequirements();

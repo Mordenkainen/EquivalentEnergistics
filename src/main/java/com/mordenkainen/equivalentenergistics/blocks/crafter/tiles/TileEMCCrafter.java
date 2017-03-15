@@ -58,11 +58,15 @@ public class TileEMCCrafter extends TileAEBase implements ICraftingProvider, IGr
 
     @Override
     public TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(1, 20, sleeping, true);
+        return new TickingRequest(1, 20, false, true);
     }
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
+        if (nodeDirty && gridProxy.isReady()) {
+            gridProxy.getNode().updateState();
+            nodeDirty = false;
+        }
         sleeping = false;
         if (isActive()) {
             injectEMC();
