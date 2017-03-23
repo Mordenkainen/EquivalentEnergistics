@@ -14,7 +14,7 @@
   ],
   "cache": {
     "directories": [
-      "./libs\"
+      "./libs\",
       "$HOME/.gradle/caches"
     ]
   },
