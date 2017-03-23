@@ -12,9 +12,9 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.Type;
 
 import com.mordenkainen.equivalentenergistics.integration.ee3.EquivExchange3;
-import com.sun.xml.internal.ws.org.objectweb.asm.Type;
 
 import cpw.mods.fml.common.Loader;
 import net.minecraft.launchwrapper.IClassTransformer;
