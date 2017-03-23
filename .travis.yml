@@ -14,15 +14,14 @@
   ],
   "cache": {
     "directories": [
-      "./libs\",
+      "./libs\",",
       "$HOME/.gradle/caches"
     ]
   },
-  "before_install": "chmod +x gradlew"
+  "before_install": "chmod +x gradlew",
   "install": [
     "./gradlew setupCIWorkspace"
   ],
   "script": [
     "./gradlew build"
   ]
-}
