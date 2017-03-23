@@ -1,0 +1,22 @@
+{
+  "language": "java",
+  "before_install": [
+    "chmod +x gradlew"
+  ],
+  "install": "./gradlew setupCIWorkspace",
+  "script": [
+    "./gradlew build",
+    "rm -f $HOME/.gradle/caches/modules-2/modules-2.lock"
+  ],
+  "sudo": false,
+  "cache": {
+    "directories": [
+      "./libs",
+      "$HOME/.gradle/caches"
+    ]
+  },
+  "global_env": "TERM=dumb",
+  "group": "stable",
+  "dist": "precise",
+  "os": "linux"
+}

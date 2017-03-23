@@ -119,7 +119,7 @@ public class InternalInventory implements IInventory {
 
     @Override
     public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-        return false;
+        return true;
     }
 
     public final void loadFromNBT(final NBTTagCompound data, final String tagName) {

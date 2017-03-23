@@ -57,6 +57,7 @@ dependencies {
     compile ("appeng:appliedenergistics2:${ae2_version}:api"){
         transitive = false
     }
+
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
@@ -70,6 +71,14 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+}
+
+sourceSets {
+    api {
+        java {
+            srcDir 'src/api'
+        }
+    }
 }
 
 processResources

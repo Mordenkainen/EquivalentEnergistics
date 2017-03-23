@@ -1,5 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks;
 
+import java.util.EnumSet;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
@@ -15,7 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
-
+    
     @Override
     public void renderInventoryBlock(final Block block, final int metadata, final int modelId, final RenderBlocks renderer) {
         final Tessellator tessellator = Tessellator.instance;
@@ -40,28 +42,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
         for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             tessellator.startDrawingQuads();
             tessellator.setNormal(dir.offsetX, dir.offsetY, dir.offsetZ);
-            switch (dir) {
-                case DOWN:
-                    renderFaceYNegInv(renderer, block, metadata);
-                    break;
-                case UP:
-                    renderFaceYPosInv(renderer, block, metadata);
-                    break;
-                case NORTH:
-                    renderFaceZNegInv(renderer, block, metadata);
-                    break;
-                case SOUTH:
-                    renderFaceZPosInv(renderer, block, metadata);
-                    break;
-                case WEST:
-                    renderFaceXNegInv(renderer, block, metadata);
-                    break;
-                case EAST:
-                    renderFaceXPosInv(renderer, block, metadata);
-                    break;
-                default:
-                    break;
-            }
+            renderFaceWithLayers(renderer, block, metadata, dir, 0.0D, 0.0D, 0.0D, true);
             tessellator.draw();
         }
 
@@ -86,6 +67,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
         }
 
         return Minecraft.isAmbientOcclusionEnabled() && block.getLightValue() == 0 ? renderLayeredBlockWithAmbientOcclusion(renderer, block, meta, x, y, z, f, f1, f2) : renderLayeredBlockWithColorMultiplier(renderer, block, meta, x, y, z, f, f1, f2);
+        //return Minecraft.isAmbientOcclusionEnabled() && block.getLightValue() == 0 ? renderLayeredBlockWithAmbientOcclusionNew(renderer, block, meta, x, y, z, f, f1, f2) : renderLayeredBlockWithColorMultiplier(renderer, block, meta, x, y, z, f, f1, f2);
     }
 
     @Override
@@ -96,6 +78,85 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
     @Override
     public int getRenderId() {
         return EquivalentEnergistics.proxy.layeredRenderer;
+    }
+    
+    private boolean renderLayeredBlockWithAmbientOcclusionNew(final RenderBlocks renderer, final Block block, final int metadata, final int x, final int y, final int z, final float r, final float g, final float b) {
+        boolean rendered = false;
+        renderer.enableAO = true;
+        final int blockBrightness = block.getMixedBrightnessForBlock(renderer.blockAccess, x, y, z);
+        Tessellator.instance.setBrightness(983055);
+        
+        final boolean boundryTest[] = {renderer.renderMinY <= 0.0D, renderer.renderMaxY >= 1.0D, renderer.renderMinZ <= 0.0D, renderer.renderMaxZ >= 1.0D, renderer.renderMinX <= 0.0D, renderer.renderMaxX >= 1.0D};
+        final int corners[][][] = {{{-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1}},
+                            {{-1, 1, -1}, {1, 1, -1}, {1, 1, 1}, {-1, 1, 1}},
+                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}},
+                            {{-1, -1, 1}, {1, -1, 1}, {1, -1, 1}, {-1, -1, 1}},
+                            {{-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
+                            {{1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
+        
+        for (final ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
+            if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x + face.offsetX, y + face.offsetY, z +face.offsetZ, face.ordinal())) {
+                int offset = 0;
+                if (boundryTest[face.ordinal()]) {
+                    offset = 1;
+                }
+                int brightnesses[] = new int[8];
+                float occlusionValues[] = new float[8];
+                boolean transparencies[] = new boolean[4];
+                
+                final ForgeDirection sides[] = EnumSet.complementOf(EnumSet.of(face, face.getOpposite(), ForgeDirection.UNKNOWN)).toArray(new ForgeDirection[0]);
+                for (int i = 0; i < 4; i++) {
+                    final int x1 = x + sides[i].offsetX + (face.offsetX * offset);
+                    final int y1 = y + sides[i].offsetY + (face.offsetY * offset);
+                    final int z1 = z + sides[i].offsetZ + (face.offsetZ * offset);
+                    brightnesses[i] = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 , y1, z1);
+                    occlusionValues[i] = renderer.blockAccess.getBlock(x1, y1, z1).getAmbientOcclusionLightValue();
+                    transparencies[i] = renderer.blockAccess.getBlock(x1, y1, z1).getCanBlockGrass();
+                }
+                
+                if (transparencies[0] || transparencies[2]) {
+                    brightnesses[4] = block.getMixedBrightnessForBlock(renderer.blockAccess, x + corners[face.ordinal()][0][0], y + corners[face.ordinal()][0][1], z + corners[face.ordinal()][0][2]);
+                    occlusionValues[4] = renderer.blockAccess.getBlock(x + corners[face.ordinal()][0][0], y + corners[face.ordinal()][0][1], z + corners[face.ordinal()][0][2]).getAmbientOcclusionLightValue();
+                } else {
+                    brightnesses[4] = (brightnesses[0] + brightnesses[2]) / 2;
+                    occlusionValues[4] = (occlusionValues[0] + occlusionValues[2]) / 2.0F;
+                }
+                
+                if (transparencies[1] || transparencies[2]) {
+                    brightnesses[5] = block.getMixedBrightnessForBlock(renderer.blockAccess, x + corners[face.ordinal()][1][0], y + corners[face.ordinal()][1][1], z + corners[face.ordinal()][1][2]);
+                    occlusionValues[5] = renderer.blockAccess.getBlock(x + corners[face.ordinal()][1][0], y + corners[face.ordinal()][1][1], z + corners[face.ordinal()][1][2]).getAmbientOcclusionLightValue();
+                } else {
+                    brightnesses[5] = (brightnesses[1] + brightnesses[2]) / 2;
+                    occlusionValues[5] = (occlusionValues[1] + occlusionValues[2]) / 2.0F;
+                }
+                
+                if (transparencies[1] || transparencies[3]) {
+                    brightnesses[6] = block.getMixedBrightnessForBlock(renderer.blockAccess, x + corners[face.ordinal()][2][0], y + corners[face.ordinal()][2][1], z + corners[face.ordinal()][2][2]);
+                    occlusionValues[6] = renderer.blockAccess.getBlock(x + corners[face.ordinal()][2][0], y + corners[face.ordinal()][2][1], z + corners[face.ordinal()][2][2]).getAmbientOcclusionLightValue();
+                } else {
+                    brightnesses[6] = (brightnesses[1] + brightnesses[3]) / 2;
+                    occlusionValues[6] = (occlusionValues[1] + occlusionValues[3]) / 2.0F;
+                }
+                
+                if (transparencies[0] || transparencies[3]) {
+                    brightnesses[7] = block.getMixedBrightnessForBlock(renderer.blockAccess, x + corners[face.ordinal()][3][0],  y + corners[face.ordinal()][3][1], z + corners[face.ordinal()][3][2]);
+                    occlusionValues[7] = renderer.blockAccess.getBlock(x + corners[face.ordinal()][3][0], y + corners[face.ordinal()][3][1], z + corners[face.ordinal()][3][2]).getAmbientOcclusionLightValue();
+                } else {
+                    brightnesses[7] = (brightnesses[0] + brightnesses[3]) / 2;
+                    occlusionValues[7] = (occlusionValues[0] + occlusionValues[3]) / 2.0F;
+                }
+                
+                
+                
+                
+                
+                
+                rendered = true;
+            }
+        }
+        
+        renderer.enableAO = false;
+        return rendered;
     }
 
     private boolean renderLayeredBlockWithAmbientOcclusion(final RenderBlocks renderer, final Block block, final int metadata, final int x, final int y, final int z, final float r, final float g, final float b) {
@@ -137,10 +198,10 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
             renderer.aoLightValueScratchYZNN = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getAmbientOcclusionLightValue();
             renderer.aoLightValueScratchYZNP = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getAmbientOcclusionLightValue();
             renderer.aoLightValueScratchXYPN = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getAmbientOcclusionLightValue();
-            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1 - 1, z1).getCanBlockGrass();
-            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1 - 1, z1).getCanBlockGrass();
-            flag4 = renderer.blockAccess.getBlock(x1, y1 - 1, z1 + 1).getCanBlockGrass();
-            flag5 = renderer.blockAccess.getBlock(x1, y1 - 1, z1 - 1).getCanBlockGrass();
+            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1 , z1).getCanBlockGrass();
+            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1, z1).getCanBlockGrass();
+            flag4 = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getCanBlockGrass();
+            flag5 = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getCanBlockGrass();
 
             if (flag5 || flag3) {
                 renderer.aoLightValueScratchXYZNNN = renderer.blockAccess.getBlock(x1 - 1, y1, z1 - 1).getAmbientOcclusionLightValue();
@@ -194,29 +255,9 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
             renderer.brightnessBottomRight = renderer.getAoBrightness(renderer.aoBrightnessYZNN, renderer.aoBrightnessXYPN, renderer.aoBrightnessXYZPNN, i1);
             renderer.brightnessBottomLeft = renderer.getAoBrightness(renderer.aoBrightnessXYNN, renderer.aoBrightnessXYZNNN, renderer.aoBrightnessYZNN, i1);
 
-            if (flag1) {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r * 0.5F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g * 0.5F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b * 0.5F;
-            } else {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = 0.5F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = 0.5F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = 0.5F;
-            }
-
-            renderer.colorRedTopLeft *= f3;
-            renderer.colorGreenTopLeft *= f3;
-            renderer.colorBlueTopLeft *= f3;
-            renderer.colorRedBottomLeft *= f4;
-            renderer.colorGreenBottomLeft *= f4;
-            renderer.colorBlueBottomLeft *= f4;
-            renderer.colorRedBottomRight *= f5;
-            renderer.colorGreenBottomRight *= f5;
-            renderer.colorBlueBottomRight *= f5;
-            renderer.colorRedTopRight *= f6;
-            renderer.colorGreenTopRight *= f6;
-            renderer.colorBlueTopRight *= f6;
-            renderFaceYNeg(renderer, block, metadata, (double) x1, (double) y1, (double) z1);
+            setRendererColors(renderer, r, g, b, 0.5F, f3, f4, f5, f6, flag1);
+            
+            renderFaceWithLayers(renderer, block, metadata, ForgeDirection.DOWN, (double) x1, (double) y1, (double) z1, false);
             flag = true;
         }
 
@@ -233,10 +274,10 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
             renderer.aoLightValueScratchXYPP = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getAmbientOcclusionLightValue();
             renderer.aoLightValueScratchYZPN = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getAmbientOcclusionLightValue();
             renderer.aoLightValueScratchYZPP = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getAmbientOcclusionLightValue();
-            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1 + 1, z1).getCanBlockGrass();
-            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1 + 1, z1).getCanBlockGrass();
-            flag4 = renderer.blockAccess.getBlock(x1, y1 + 1, z1 + 1).getCanBlockGrass();
-            flag5 = renderer.blockAccess.getBlock(x1, y1 + 1, z1 - 1).getCanBlockGrass();
+            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getCanBlockGrass();
+            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1, z1).getCanBlockGrass();
+            flag4 = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getCanBlockGrass();
+            flag5 = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getCanBlockGrass();
 
             if (flag5 || flag3) {
                 renderer.aoLightValueScratchXYZNPN = renderer.blockAccess.getBlock(x1 - 1, y1, z1 - 1).getAmbientOcclusionLightValue();
@@ -246,20 +287,20 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZNPN = renderer.aoBrightnessXYNP;
             }
 
-            if (flag5 || flag2) {
-                renderer.aoLightValueScratchXYZPPN = renderer.blockAccess.getBlock(x1 + 1, y1, z1 - 1).getAmbientOcclusionLightValue();
-                renderer.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1, z1 - 1);
-            } else {
-                renderer.aoLightValueScratchXYZPPN = renderer.aoLightValueScratchXYPP;
-                renderer.aoBrightnessXYZPPN = renderer.aoBrightnessXYPP;
-            }
-
             if (flag4 || flag3) {
                 renderer.aoLightValueScratchXYZNPP = renderer.blockAccess.getBlock(x1 - 1, y1, z1 + 1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZNPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 - 1, y1, z1 + 1);
             } else {
                 renderer.aoLightValueScratchXYZNPP = renderer.aoLightValueScratchXYNP;
                 renderer.aoBrightnessXYZNPP = renderer.aoBrightnessXYNP;
+            }
+            
+            if (flag5 || flag2) {
+                renderer.aoLightValueScratchXYZPPN = renderer.blockAccess.getBlock(x1 + 1, y1, z1 - 1).getAmbientOcclusionLightValue();
+                renderer.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1, z1 - 1);
+            } else {
+                renderer.aoLightValueScratchXYZPPN = renderer.aoLightValueScratchXYPP;
+                renderer.aoBrightnessXYZPPN = renderer.aoBrightnessXYPP;
             }
 
             if (flag4 || flag2) {
@@ -289,22 +330,10 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
             renderer.brightnessTopLeft = renderer.getAoBrightness(renderer.aoBrightnessYZPP, renderer.aoBrightnessXYZPPP, renderer.aoBrightnessXYPP, i1);
             renderer.brightnessBottomLeft = renderer.getAoBrightness(renderer.aoBrightnessYZPN, renderer.aoBrightnessXYPP, renderer.aoBrightnessXYZPPN, i1);
             renderer.brightnessBottomRight = renderer.getAoBrightness(renderer.aoBrightnessXYNP, renderer.aoBrightnessXYZNPN, renderer.aoBrightnessYZPN, i1);
-            renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r;
-            renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g;
-            renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b;
-            renderer.colorRedTopLeft *= f3;
-            renderer.colorGreenTopLeft *= f3;
-            renderer.colorBlueTopLeft *= f3;
-            renderer.colorRedBottomLeft *= f4;
-            renderer.colorGreenBottomLeft *= f4;
-            renderer.colorBlueBottomLeft *= f4;
-            renderer.colorRedBottomRight *= f5;
-            renderer.colorGreenBottomRight *= f5;
-            renderer.colorBlueBottomRight *= f5;
-            renderer.colorRedTopRight *= f6;
-            renderer.colorGreenTopRight *= f6;
-            renderer.colorBlueTopRight *= f6;
-            renderFaceYPos(renderer, block, metadata, (double) x1, (double) y1, (double) z1);
+            
+            setRendererColors(renderer, r, g, b, 1.0F, f3, f4, f5, f6, true);
+            
+            renderFaceWithLayers(renderer, block, metadata, ForgeDirection.UP, (double) x1, (double) y1, (double) z1, false);
             flag = true;
         }
         
@@ -322,20 +351,20 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 --z1;
             }
 
-            renderer.aoLightValueScratchXZNN = renderer.blockAccess.getBlock(x1 - 1, y1, z1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchYZNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchYZPN = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXZPN = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getAmbientOcclusionLightValue();
             renderer.aoBrightnessXZNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 - 1, y1, z1);
             renderer.aoBrightnessYZNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1);
             renderer.aoBrightnessYZPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1);
             renderer.aoBrightnessXZPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1, z1);
-            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1, z1 - 1).getCanBlockGrass();
-            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1, z1 - 1).getCanBlockGrass();
-            flag4 = renderer.blockAccess.getBlock(x1, y1 + 1, z1 - 1).getCanBlockGrass();
-            flag5 = renderer.blockAccess.getBlock(x1, y1 - 1, z1 - 1).getCanBlockGrass();
+            renderer.aoLightValueScratchXZNN = renderer.blockAccess.getBlock(x1 - 1, y1, z1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchYZNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchYZPN = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXZPN = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getAmbientOcclusionLightValue();
+            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getCanBlockGrass();
+            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1, z1).getCanBlockGrass();
+            flag4 = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getCanBlockGrass();
+            flag5 = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getCanBlockGrass();
 
-            if (flag3 || flag5) {
+            if (flag5 || flag3) {
                 renderer.aoLightValueScratchXYZNNN = renderer.blockAccess.getBlock(x1 - 1, y1 - 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZNNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 - 1, y1 - 1, z1);
             } else {
@@ -343,7 +372,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZNNN = renderer.aoBrightnessXZNN;
             }
 
-            if (flag3 || flag4) {
+            if (flag4 || flag3) {
                 renderer.aoLightValueScratchXYZNPN = renderer.blockAccess.getBlock(x1 - 1, y1 + 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZNPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 - 1, y1 + 1, z1);
             } else {
@@ -351,7 +380,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZNPN = renderer.aoBrightnessXZNN;
             }
 
-            if (flag2 || flag5) {
+            if (flag5 || flag2) {
                 renderer.aoLightValueScratchXYZPNN = renderer.blockAccess.getBlock(x1 + 1, y1 - 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1 - 1, z1);
             } else {
@@ -359,7 +388,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZPNN = renderer.aoBrightnessXZPN;
             }
 
-            if (flag2 || flag4) {
+            if (flag4 || flag2) {
                 renderer.aoLightValueScratchXYZPPN = renderer.blockAccess.getBlock(x1 + 1, y1 + 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1 + 1, z1);
             } else {
@@ -407,29 +436,9 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.brightnessTopRight = renderer.getAoBrightness(renderer.aoBrightnessXYZNNN, renderer.aoBrightnessXZNN, renderer.aoBrightnessYZNN, i1);
             }
             
-            if (flag1) {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r * 0.8F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g * 0.8F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b * 0.8F;
-            } else {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = 0.8F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = 0.8F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = 0.8F;
-            }
-
-            renderer.colorRedTopLeft *= f3;
-            renderer.colorGreenTopLeft *= f3;
-            renderer.colorBlueTopLeft *= f3;
-            renderer.colorRedBottomLeft *= f4;
-            renderer.colorGreenBottomLeft *= f4;
-            renderer.colorBlueBottomLeft *= f4;
-            renderer.colorRedBottomRight *= f5;
-            renderer.colorGreenBottomRight *= f5;
-            renderer.colorBlueBottomRight *= f5;
-            renderer.colorRedTopRight *= f6;
-            renderer.colorGreenTopRight *= f6;
-            renderer.colorBlueTopRight *= f6;
-            renderFaceZNeg(renderer, block, metadata, (double) x1, (double) y1, (double) z1);
+            setRendererColors(renderer, r, g, b, 0.8F, f3, f4, f5, f6, flag1);
+            
+            renderFaceWithLayers(renderer, block, metadata, ForgeDirection.NORTH, (double) x1, (double) y1, (double) z1, false);
             flag = true;
         }
 
@@ -446,12 +455,12 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
             renderer.aoBrightnessXZPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1, z1);
             renderer.aoBrightnessYZNP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1);
             renderer.aoBrightnessYZPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1);
-            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1, z1 + 1).getCanBlockGrass();
-            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1, z1 + 1).getCanBlockGrass();
-            flag4 = renderer.blockAccess.getBlock(x1, y1 + 1, z1 + 1).getCanBlockGrass();
-            flag5 = renderer.blockAccess.getBlock(x1, y1 - 1, z1 + 1).getCanBlockGrass();
+            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1, z1).getCanBlockGrass();
+            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1, z1).getCanBlockGrass();
+            flag4 = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getCanBlockGrass();
+            flag5 = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getCanBlockGrass();
 
-            if (flag3 || flag5) {
+            if (flag5 || flag3) {
                 renderer.aoLightValueScratchXYZNNP = renderer.blockAccess.getBlock(x1 - 1, y1 - 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZNNP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 - 1, y1 - 1, z1);
             } else {
@@ -459,7 +468,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZNNP = renderer.aoBrightnessXZNP;
             }
 
-            if (flag3 || flag4) {
+            if (flag4 || flag3) {
                 renderer.aoLightValueScratchXYZNPP = renderer.blockAccess.getBlock(x1 - 1, y1 + 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZNPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 - 1, y1 + 1, z1);
             } else {
@@ -467,7 +476,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZNPP = renderer.aoBrightnessXZNP;
             }
 
-            if (flag2 || flag5) {
+            if (flag5 || flag2) {
                 renderer.aoLightValueScratchXYZPNP = renderer.blockAccess.getBlock(x1 + 1, y1 - 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPNP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1 - 1, z1);
             } else {
@@ -475,7 +484,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZPNP = renderer.aoBrightnessXZPP;
             }
 
-            if (flag2 || flag4) {
+            if (flag4 || flag2) {
                 renderer.aoLightValueScratchXYZPPP = renderer.blockAccess.getBlock(x1 + 1, y1 + 1, z1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1 + 1, y1 + 1, z1);
             } else {
@@ -523,29 +532,9 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.brightnessBottomLeft = renderer.getAoBrightness(renderer.aoBrightnessXYZNNP, renderer.aoBrightnessXZNP, renderer.aoBrightnessYZNP, i1);
             }
 
-            if (flag1) {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r * 0.8F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g * 0.8F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b * 0.8F;
-            } else {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = 0.8F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = 0.8F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = 0.8F;
-            }
+            setRendererColors(renderer, r, g, b, 0.8F, f3, f4, f5, f6, flag1);
 
-            renderer.colorRedTopLeft *= f3;
-            renderer.colorGreenTopLeft *= f3;
-            renderer.colorBlueTopLeft *= f3;
-            renderer.colorRedBottomLeft *= f4;
-            renderer.colorGreenBottomLeft *= f4;
-            renderer.colorBlueBottomLeft *= f4;
-            renderer.colorRedBottomRight *= f5;
-            renderer.colorGreenBottomRight *= f5;
-            renderer.colorBlueBottomRight *= f5;
-            renderer.colorRedTopRight *= f6;
-            renderer.colorGreenTopRight *= f6;
-            renderer.colorBlueTopRight *= f6;
-            renderFaceZPos(renderer, block, metadata, (double) x1, (double) y1, (double) z1);
+            renderFaceWithLayers(renderer, block, metadata, ForgeDirection.SOUTH, (double) x1, (double) y1, (double) z1, false);
             flag = true;
         }
 
@@ -554,26 +543,18 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 --x1;
             }
 
-            renderer.aoLightValueScratchXYNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXZNN = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXZNP = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXYNP = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getAmbientOcclusionLightValue();
             renderer.aoBrightnessXYNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1);
             renderer.aoBrightnessXZNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1, z1 - 1);
             renderer.aoBrightnessXZNP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1, z1 + 1);
             renderer.aoBrightnessXYNP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1);
-            flag2 = renderer.blockAccess.getBlock(x1 - 1, y1 + 1, z1).getCanBlockGrass();
-            flag3 = renderer.blockAccess.getBlock(x1 - 1, y1 - 1, z1).getCanBlockGrass();
-            flag4 = renderer.blockAccess.getBlock(x1 - 1, y1, z1 - 1).getCanBlockGrass();
-            flag5 = renderer.blockAccess.getBlock(x1 - 1, y1, z1 + 1).getCanBlockGrass();
-
-            if (flag4 || flag3) {
-                renderer.aoLightValueScratchXYZNNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1 - 1).getAmbientOcclusionLightValue();
-                renderer.aoBrightnessXYZNNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1 - 1);
-            } else {
-                renderer.aoLightValueScratchXYZNNN = renderer.aoLightValueScratchXZNN;
-                renderer.aoBrightnessXYZNNN = renderer.aoBrightnessXZNN;
-            }
+            renderer.aoLightValueScratchXYNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXZNN = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXZNP = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXYNP = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getAmbientOcclusionLightValue();
+            flag2 = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getCanBlockGrass();
+            flag3 = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getCanBlockGrass();
+            flag4 = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getCanBlockGrass();
+            flag5 = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getCanBlockGrass();
 
             if (flag5 || flag3) {
                 renderer.aoLightValueScratchXYZNNP = renderer.blockAccess.getBlock(x1, y1 - 1, z1 + 1).getAmbientOcclusionLightValue();
@@ -582,13 +563,13 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoLightValueScratchXYZNNP = renderer.aoLightValueScratchXZNP;
                 renderer.aoBrightnessXYZNNP = renderer.aoBrightnessXZNP;
             }
-
-            if (flag4 || flag2) {
-                renderer.aoLightValueScratchXYZNPN = renderer.blockAccess.getBlock(x1, y1 + 1, z1 - 1).getAmbientOcclusionLightValue();
-                renderer.aoBrightnessXYZNPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1 - 1);
+            
+            if (flag4 || flag3) {
+                renderer.aoLightValueScratchXYZNNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1 - 1).getAmbientOcclusionLightValue();
+                renderer.aoBrightnessXYZNNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1 - 1);
             } else {
-                renderer.aoLightValueScratchXYZNPN = renderer.aoLightValueScratchXZNN;
-                renderer.aoBrightnessXYZNPN = renderer.aoBrightnessXZNN;
+                renderer.aoLightValueScratchXYZNNN = renderer.aoLightValueScratchXZNN;
+                renderer.aoBrightnessXYZNNN = renderer.aoBrightnessXZNN;
             }
 
             if (flag5 || flag2) {
@@ -597,6 +578,14 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
             } else {
                 renderer.aoLightValueScratchXYZNPP = renderer.aoLightValueScratchXZNP;
                 renderer.aoBrightnessXYZNPP = renderer.aoBrightnessXZNP;
+            }
+            
+            if (flag4 || flag2) {
+                renderer.aoLightValueScratchXYZNPN = renderer.blockAccess.getBlock(x1, y1 + 1, z1 - 1).getAmbientOcclusionLightValue();
+                renderer.aoBrightnessXYZNPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1 - 1);
+            } else {
+                renderer.aoLightValueScratchXYZNPN = renderer.aoLightValueScratchXZNN;
+                renderer.aoBrightnessXYZNPN = renderer.aoBrightnessXZNN;
             }
 
             if (renderer.renderMinX <= 0.0D) {
@@ -639,29 +628,9 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.brightnessBottomRight = renderer.getAoBrightness(renderer.aoBrightnessXYZNNN, renderer.aoBrightnessXYNN, renderer.aoBrightnessXZNN, i1);
             }
 
-            if (flag1) {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r * 0.6F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g * 0.6F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b * 0.6F;
-            } else {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = 0.6F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = 0.6F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = 0.6F;
-            }
+            setRendererColors(renderer, r, g, b, 0.6F, f3, f4, f5, f6, flag1);
 
-            renderer.colorRedTopLeft *= f3;
-            renderer.colorGreenTopLeft *= f3;
-            renderer.colorBlueTopLeft *= f3;
-            renderer.colorRedBottomLeft *= f4;
-            renderer.colorGreenBottomLeft *= f4;
-            renderer.colorBlueBottomLeft *= f4;
-            renderer.colorRedBottomRight *= f5;
-            renderer.colorGreenBottomRight *= f5;
-            renderer.colorBlueBottomRight *= f5;
-            renderer.colorRedTopRight *= f6;
-            renderer.colorGreenTopRight *= f6;
-            renderer.colorBlueTopRight *= f6;
-            renderFaceXNeg(renderer, block, metadata, (double) x1, (double) y1, (double) z1);
+            renderFaceWithLayers(renderer, block, metadata, ForgeDirection.WEST, (double) x1, (double) y1, (double) z1, false);
             flag = true;
         }
 
@@ -670,20 +639,20 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 ++x1;
             }
 
-            renderer.aoLightValueScratchXYPN = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXZPN = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXZPP = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getAmbientOcclusionLightValue();
-            renderer.aoLightValueScratchXYPP = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getAmbientOcclusionLightValue();
             renderer.aoBrightnessXYPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1);
             renderer.aoBrightnessXZPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1, z1 - 1);
             renderer.aoBrightnessXZPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1, z1 + 1);
             renderer.aoBrightnessXYPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1);
-            flag2 = renderer.blockAccess.getBlock(x1 + 1, y1 + 1, z1).getCanBlockGrass();
-            flag3 = renderer.blockAccess.getBlock(x1 + 1, y1 - 1, z1).getCanBlockGrass();
-            flag4 = renderer.blockAccess.getBlock(x1 + 1, y1, z1 + 1).getCanBlockGrass();
-            flag5 = renderer.blockAccess.getBlock(x1 + 1, y1, z1 - 1).getCanBlockGrass();
+            renderer.aoLightValueScratchXYPN = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXZPN = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXZPP = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getAmbientOcclusionLightValue();
+            renderer.aoLightValueScratchXYPP = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getAmbientOcclusionLightValue();
+            flag2 = renderer.blockAccess.getBlock(x1, y1 + 1, z1).getCanBlockGrass();
+            flag3 = renderer.blockAccess.getBlock(x1, y1 - 1, z1).getCanBlockGrass();
+            flag4 = renderer.blockAccess.getBlock(x1, y1, z1 + 1).getCanBlockGrass();
+            flag5 = renderer.blockAccess.getBlock(x1, y1, z1 - 1).getCanBlockGrass();
 
-            if (flag3 || flag5) {
+            if (flag5 || flag3) {
                 renderer.aoLightValueScratchXYZPNN = renderer.blockAccess.getBlock(x1, y1 - 1, z1 - 1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPNN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1 - 1);
             } else {
@@ -691,7 +660,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZPNN = renderer.aoBrightnessXZPN;
             }
 
-            if (flag3 || flag4) {
+            if (flag4 || flag3) {
                 renderer.aoLightValueScratchXYZPNP = renderer.blockAccess.getBlock(x1, y1 - 1, z1 + 1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPNP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 - 1, z1 + 1);
             } else {
@@ -699,7 +668,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZPNP = renderer.aoBrightnessXZPP;
             }
 
-            if (flag2 || flag5) {
+            if (flag5 || flag2) {
                 renderer.aoLightValueScratchXYZPPN = renderer.blockAccess.getBlock(x1, y1 + 1, z1 - 1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1 - 1);
             } else {
@@ -707,7 +676,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.aoBrightnessXYZPPN = renderer.aoBrightnessXZPN;
             }
 
-            if (flag2 || flag4) {
+            if (flag4 || flag2) {
                 renderer.aoLightValueScratchXYZPPP = renderer.blockAccess.getBlock(x1, y1 + 1, z1 + 1).getAmbientOcclusionLightValue();
                 renderer.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderer.blockAccess, x1, y1 + 1, z1 + 1);
             } else {
@@ -755,29 +724,9 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
                 renderer.brightnessBottomLeft = renderer.getAoBrightness(renderer.aoBrightnessXYZPNN, renderer.aoBrightnessXYPN, renderer.aoBrightnessXZPN, i1);
             }
 
-            if (flag1) {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r * 0.6F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g * 0.6F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b * 0.6F;
-            } else {
-                renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = 0.6F;
-                renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = 0.6F;
-                renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = 0.6F;
-            }
-
-            renderer.colorRedTopLeft *= f3;
-            renderer.colorGreenTopLeft *= f3;
-            renderer.colorBlueTopLeft *= f3;
-            renderer.colorRedBottomLeft *= f4;
-            renderer.colorGreenBottomLeft *= f4;
-            renderer.colorBlueBottomLeft *= f4;
-            renderer.colorRedBottomRight *= f5;
-            renderer.colorGreenBottomRight *= f5;
-            renderer.colorBlueBottomRight *= f5;
-            renderer.colorRedTopRight *= f6;
-            renderer.colorGreenTopRight *= f6;
-            renderer.colorBlueTopRight *= f6;
-            renderFaceXPos(renderer, block, metadata, (double) x1, (double) y1, (double) z1);
+            setRendererColors(renderer, r, g, b, 0.6F, f3, f4, f5, f6, flag1);
+            
+            renderFaceWithLayers(renderer, block, metadata, ForgeDirection.EAST, (double) x1, (double) y1, (double) z1, false);
             flag = true;
         }
 
@@ -785,193 +734,88 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
         return flag;
     }
 
+    private void setRendererColors(final RenderBlocks renderer, final float r, final float g, final float b, final float sideMult, final float multTopLeft, final float multBotLeft, final float multBotRight, final float multTopRight, final boolean flag) {
+        if (flag) {
+            renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = r * sideMult;
+            renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = g * sideMult;
+            renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = b * sideMult;
+        } else {
+            renderer.colorRedTopLeft = renderer.colorRedBottomLeft = renderer.colorRedBottomRight = renderer.colorRedTopRight = sideMult;
+            renderer.colorGreenTopLeft = renderer.colorGreenBottomLeft = renderer.colorGreenBottomRight = renderer.colorGreenTopRight = sideMult;
+            renderer.colorBlueTopLeft = renderer.colorBlueBottomLeft = renderer.colorBlueBottomRight = renderer.colorBlueTopRight = sideMult;
+        }
+
+        renderer.colorRedTopLeft *= multTopLeft;
+        renderer.colorGreenTopLeft *= multTopLeft;
+        renderer.colorBlueTopLeft *= multTopLeft;
+        renderer.colorRedBottomLeft *= multBotLeft;
+        renderer.colorGreenBottomLeft *= multBotLeft;
+        renderer.colorBlueBottomLeft *= multBotLeft;
+        renderer.colorRedBottomRight *= multBotRight;
+        renderer.colorGreenBottomRight *= multBotRight;
+        renderer.colorBlueBottomRight *= multBotRight;
+        renderer.colorRedTopRight *= multTopRight;
+        renderer.colorGreenTopRight *= multTopRight;
+        renderer.colorBlueTopRight *= multTopRight;
+    }
+    
     private boolean renderLayeredBlockWithColorMultiplier(final RenderBlocks renderer, final Block block, final int metadata, final int x, final int y, final int z, final float r, final float g, final float b) {
         renderer.enableAO = false;
         final Tessellator tessellator = Tessellator.instance;
         boolean flag = false;
-        final float f7 = 1.0F * r;
-        final float f8 = 1.0F * g;
-        final float f9 = 1.0F * b;
-        final float f10 = 0.5F * r;
-        final float f11 = 0.8F * r;
-        final float f12 = 0.6F * r;
-        final float f13 = 0.5F * g;
-        final float f14 = 0.8F * g;
-        final float f15 = 0.6F * g;
-        final float f16 = 0.5F * b;
-        final float f17 = 0.8F * b;
-        final float f18 = 0.6F * b;
 
         final int l = block.getMixedBrightnessForBlock(renderer.blockAccess, x, y, z);
+        
+        final boolean[] blockTests = {renderer.renderMinY > 0.0D, renderer.renderMaxY < 1.0D, renderer.renderMinZ > 0.0D, renderer.renderMaxZ < 1.0D, renderer.renderMinX > 0.0D, renderer.renderMaxX < 1.0D};
+        final float[] brightnesses = {0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F};
 
-        if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x, y - 1, z, 0)) {
-            tessellator.setBrightness(renderer.renderMinY > 0.0D ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x, y - 1, z));
-            tessellator.setColorOpaque_F(f10, f13, f16);
-            renderFaceYNeg(renderer, block, metadata, (double) x, (double) y, (double) z);
-            flag = true;
-        }
-
-        if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x, y + 1, z, 1)) {
-            tessellator.setBrightness(renderer.renderMaxY < 1.0D ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x, y + 1, z));
-            tessellator.setColorOpaque_F(f7, f8, f9);
-            renderFaceYPos(renderer, block, metadata, (double) x, (double) y, (double) z);
-            flag = true;
-        }
-
-        if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x, y, z - 1, 2)) {
-            tessellator.setBrightness(renderer.renderMinZ > 0.0D ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x, y, z - 1));
-            tessellator.setColorOpaque_F(f11, f14, f17);
-            renderFaceZNeg(renderer, block, metadata, (double) x, (double) y, (double) z);
-            flag = true;
-        }
-
-        if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x, y, z + 1, 3)) {
-            tessellator.setBrightness(renderer.renderMaxZ < 1.0D ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x, y, z + 1));
-            tessellator.setColorOpaque_F(f11, f14, f17);
-            renderFaceZPos(renderer, block, metadata, (double) x, (double) y, (double) z);
-            flag = true;
-        }
-
-        if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x - 1, y, z, 4)) {
-            tessellator.setBrightness(renderer.renderMinX > 0.0D ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x - 1, y, z));
-            tessellator.setColorOpaque_F(f12, f15, f18);
-            renderFaceXNeg(renderer, block, metadata, (double) x, (double) y, (double) z);
-            flag = true;
-        }
-
-        if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x + 1, y, z, 5)) {
-            tessellator.setBrightness(renderer.renderMaxX < 1.0D ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x + 1, y, z));
-            tessellator.setColorOpaque_F(f12, f15, f18);
-            renderFaceXPos(renderer, block, metadata, (double) x, (double) y, (double) z);
-            flag = true;
+        for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+            if (renderer.renderAllFaces || block.shouldSideBeRendered(renderer.blockAccess, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.ordinal())) {
+                tessellator.setBrightness(blockTests[dir.ordinal()] ? l : block.getMixedBrightnessForBlock(renderer.blockAccess, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ));
+                final float brightness = brightnesses[dir.ordinal()];
+                tessellator.setColorOpaque_F(brightness * r, brightness * g, brightness * b);
+                renderFaceWithLayers(renderer, block, metadata, dir, (double) x, (double) y, (double) z, false);
+                flag = true;
+            }
         }
 
         return flag;
     }
     
-    private void renderFaceYNeg(final RenderBlocks renderer, final Block block, final int metadata, final double x, final double y, final double z) {
+    private void renderFaceWithLayers(final RenderBlocks renderer, final Block block, final int metadata, final ForgeDirection dir, final double x, final double y, final double z, final boolean inv) {
         final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceYNeg(block, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
-        for (int i = 1; i <= layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata); i++) {
-            final IIcon layer = layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, 0, metadata, i);
+        renderFaceByDir(renderer, block, dir, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, dir.ordinal(), metadata));
+        final int numLayers = inv ? layers.numLayers(block, metadata) : layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata);
+        for (int i = 1; i <= numLayers; i++) {
+            final IIcon layer = inv ? layers.getLayer(block, dir.ordinal(), metadata, i) : layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, dir.ordinal(), metadata, i);
             if (layer != null) {
-                renderer.renderFaceYNeg(block, x, y - i * 0.00001D, z, layer);
-            }
-        }
-    }
-
-    private void renderFaceYPos(final RenderBlocks renderer, final Block block, final int metadata, final double x, final double y, final double z) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceYPos(block, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, 1, metadata));
-        for (int i = 1; i <= layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata); i++) {
-            final IIcon layer = layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, 1, metadata, i);
-            if (layer != null) {
-                renderer.renderFaceYPos(block, x, y + i * 0.00001D, z, layer);
-            }
-        }
-    }
-
-    private void renderFaceZNeg(final RenderBlocks renderer, final Block block, final int metadata, final double x, final double y, final double z) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceZNeg(block, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, 2, metadata));
-        for (int i = 1; i <= layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata); i++) {
-            final IIcon layer = layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, 2, metadata, i);
-            if (layer != null) {
-                renderer.renderFaceZNeg(block, x, y, z - i * 0.00001D, layer);
+                renderFaceByDir(renderer, block, dir, x + ((dir.offsetX * i) * 0.00001D), y + ((dir.offsetY * i) * 0.00001D), z + ((dir.offsetZ * i) * 0.00001D), layer);
             }
         }
     }
     
-    private void renderFaceZPos(final RenderBlocks renderer, final Block block, final int metadata, final double x, final double y, final double z) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceZPos(block, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, 3, metadata));
-        for (int i = 1; i <= layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata); i++) {
-            final IIcon layer = layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, 3, metadata, i);
-            if (layer != null) {
-                renderer.renderFaceZPos(block, x, y, z + i * 0.00001D, layer);
-            }
-        }
-    }
-    
-    private void renderFaceXNeg(final RenderBlocks renderer, final Block block, final int metadata, final double x, final double y, final double z) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceXNeg(block, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, 4, metadata));
-        for (int i = 1; i <= layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata); i++) {
-            final IIcon layer = layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, 4, metadata, i);
-            if (layer != null) {
-                renderer.renderFaceXNeg(block, x - i * 0.00001D, y, z, layer);
-            }
-        }
-    }
-    
-    private void renderFaceXPos(final RenderBlocks renderer, final Block block, final int metadata, final double x, final double y, final double z) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceXPos(block, x, y, z, renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
-        for (int i = 1; i <= layers.numLayers(renderer.blockAccess, block, (int) x, (int) y, (int) z, metadata); i++) {
-            final IIcon layer = layers.getLayer(renderer.blockAccess, block, (int) x, (int) y, (int) z, 5, metadata, i);
-            if (layer != null) {
-                renderer.renderFaceXPos(block, x + i * 0.00001D, y, z, layer);
-            }
-        }
-    }
-    
-    private void renderFaceYNegInv(final RenderBlocks renderer, final Block block, final int metadata) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
-        for (int i = 1; i <= layers.numLayers(block, metadata); i++) {
-            if (layers.getLayer(block, 0, metadata, i) != null) {
-                renderer.renderFaceYNeg(block, 0.0D, 0.0D - i * 0.00001D, 0.0D, layers.getLayer(block, 0, metadata, i));
-            }
-        }
-    }
-
-    private void renderFaceYPosInv(final RenderBlocks renderer, final Block block, final int metadata) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 1, metadata));
-        for (int i = 1; i <= layers.numLayers(block, metadata); i++) {
-            if (layers.getLayer(block, 1, metadata, i) != null) {
-                renderer.renderFaceYPos(block, 0.0D, 0.0D + i * 0.00001D, 0.0D, layers.getLayer(block, 1, metadata, i));
-            }
-        }
-    }
-
-    private void renderFaceZNegInv(final RenderBlocks renderer, final Block block, final int metadata) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 2, metadata));
-        for (int i = 1; i <= layers.numLayers(block, metadata); i++) {
-            if (layers.getLayer(block, 2, metadata, i) != null) {
-                renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D - i * 0.00001D, layers.getLayer(block, 2, metadata, i));
-            }
-        }
-    }
-    
-    private void renderFaceZPosInv(final RenderBlocks renderer, final Block block, final int metadata) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 3, metadata));
-        for (int i = 1; i <= layers.numLayers(block, metadata); i++) {
-            if (layers.getLayer(block, 3, metadata, i) != null) {
-                renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D + i * 0.00001D, layers.getLayer(block, 3, metadata, i));
-            }
-        }
-    }
-    
-    private void renderFaceXNegInv(final RenderBlocks renderer, final Block block, final int metadata) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 4, metadata));
-        for (int i = 1; i <= layers.numLayers(block, metadata); i++) {
-            if (layers.getLayer(block, 4, metadata, i) != null) {
-                renderer.renderFaceXNeg(block, 0.0D - i * 0.00001D, 0.0D, 0.0D, layers.getLayer(block, 4, metadata, i));
-            }
-        }
-    }
-    
-    private void renderFaceXPosInv(final RenderBlocks renderer, final Block block, final int metadata) {
-        final ILayeredBlock layers = (ILayeredBlock) block;
-        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
-        for (int i = 1; i <= layers.numLayers(block, metadata); i++) {
-            if (layers.getLayer(block, 5, metadata, i) != null) {
-                renderer.renderFaceXPos(block, 0.0D + i * 0.00001D, 0.0D, 0.0D, layers.getLayer(block, 5, metadata, i));
-            }
+    private void renderFaceByDir(final RenderBlocks renderer, final Block block, final ForgeDirection dir, final double x, final double y, final double z, final IIcon icon) {
+        switch (dir) {
+            case DOWN:
+                renderer.renderFaceYNeg(block, x, y, z, icon);
+                break;
+            case UP:
+                renderer.renderFaceYPos(block, x, y, z, icon);
+                break;
+            case NORTH:
+                renderer.renderFaceZNeg(block, x, y, z, icon);
+                break;
+            case SOUTH:
+                renderer.renderFaceZPos(block, x, y, z, icon);
+                break;
+            case WEST:
+                renderer.renderFaceXNeg(block, x, y, z, icon);
+                break;
+            case EAST:
+                renderer.renderFaceXPos(block, x, y, z, icon);
+                break;
+            default:
+                break;
         }
     }
 
