@@ -80,7 +80,7 @@ public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
         return EquivalentEnergistics.proxy.layeredRenderer;
     }
     
-    private boolean renderLayeredBlockWithAmbientOcclusion(final RenderBlocks renderer, final Block block, final int metadata, final int x, final int y, final int z, final float r, final float g, final float b) {
+    private boolean renderLayeredBlockWithAmbientOcclusion(final RenderBlocks renderer, final Block block, final int metadata, final int x, final int y, final int z, final float r, final float g, final float b) { // NOPMD
         boolean rendered = false;
         renderer.enableAO = true;
         final int blockBrightness = block.getMixedBrightnessForBlock(renderer.blockAccess, x, y, z);

@@ -70,7 +70,7 @@ public class InternalInventory implements IInventory {
     public ItemStack getStackInSlotOnClosing(final int slotId) { 
         final ItemStack stack = getStackInSlot(slotId);
         setInventorySlotContents(slotId, null);
-        return stack; //NOPMD
+        return stack; // NOPMD
     }
 
     @Override
