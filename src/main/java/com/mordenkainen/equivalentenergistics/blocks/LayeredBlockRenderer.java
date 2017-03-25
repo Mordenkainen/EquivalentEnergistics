@@ -17,7 +17,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler {
+public class LayeredBlockRenderer implements ISimpleBlockRenderingHandler { // NOPMD
     
     @Override
     public void renderInventoryBlock(final Block block, final int metadata, final int modelId, final RenderBlocks renderer) {
