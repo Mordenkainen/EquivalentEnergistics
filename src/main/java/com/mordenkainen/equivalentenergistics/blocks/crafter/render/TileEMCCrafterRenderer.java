@@ -1,21 +1,27 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter.render;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mordenkainen.equivalentenergistics.blocks.crafter.model.ModelEMCCrafter;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
 import com.mordenkainen.equivalentenergistics.core.Reference;
+import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
 
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -24,18 +30,87 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
 
     private static final ModelEMCCrafter MODEL = new ModelEMCCrafter();
-    private static final ResourceLocation MODELTEXTURE = new ResourceLocation(Reference.MOD_ID + ":textures/models/EMCCrafter.png");
+    private static final ResourceLocation[] MODELTEXTURES = {
+            new ResourceLocation(Reference.MOD_ID + ":textures/models/EMCCrafter.png"),
+            new ResourceLocation(Reference.MOD_ID + ":textures/models/EMCCrafterAdv.png"),
+            new ResourceLocation(Reference.MOD_ID + ":textures/models/EMCCrafterExt.png"),
+            new ResourceLocation(Reference.MOD_ID + ":textures/models/EMCCrafterUlt.png")
+    };
 
     @Override
     public void renderTileEntityAt(final TileEntity tile, final double x, final double y, final double z, final float partialTicks) {
-        if (!(tile instanceof TileEMCCrafter)) {
+        if (!(tile instanceof TileEMCCrafterBase)) {
             return;
         }
+                
+        renderCrafter(x, y, z, tile.getBlockMetadata());
+        
+        if (((TileEMCCrafterBase) tile).isActive()) {
+            renderLights(tile, x, y, z);
+        }
+        
+        renderConnectors(tile, x, y, z);
+
+        renderContent((TileEMCCrafterBase) tile, x, y, z, partialTicks);
+    }
+    
+    private void renderCrafter(final double x, final double y, final double z, final int metaData) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x, (float) y, (float) z);
         GL11.glScalef(-1F, -1F, 1F);
-        bindTexture(MODELTEXTURE);
+        bindTexture(MODELTEXTURES[metaData]);
         MODEL.render();
+        GL11.glPopMatrix();
+    }
+    
+    private void renderLights(final TileEntity tile, final double x, final double y, final double z) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float) x, (float) y, (float) z);
+        bindTexture(TextureMap.locationBlocksTexture);
+        final IIcon tex = ((TileEMCCrafterBase) tile).isErrored() ? TextureEnum.EMCASSEMBLER.getTexture(1) : TextureEnum.EMCASSEMBLER.getTexture(0);
+        Tessellator.instance.startDrawingQuads();
+        Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
+        Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
+        
+        Tessellator.instance.addVertexWithUV(1.0625, -0.0625, 0.9375, tex.getMaxU(), tex.getMaxV());
+        Tessellator.instance.addVertexWithUV(1.0625, 1.0625, 0.9375, tex.getMaxU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(-0.0625, 1.0625, 0.9375, tex.getMinU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(-0.0625, -0.0625, 0.9375, tex.getMinU(), tex.getMaxV());
+        
+        Tessellator.instance.addVertexWithUV(-0.0625, -0.0625, 0.0625, tex.getMaxU(), tex.getMaxV());
+        Tessellator.instance.addVertexWithUV(-0.0625, 1.0625, 0.0625, tex.getMaxU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(1.0625, 1.0625, 0.0625, tex.getMinU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(1.0625, -0.0625, 0.0625, tex.getMinU(), tex.getMaxV());
+        
+        Tessellator.instance.addVertexWithUV(0.9375, -0.0625, -0.0625, tex.getMaxU(), tex.getMaxV());
+        Tessellator.instance.addVertexWithUV(0.9375, 1.0625, -0.0625, tex.getMaxU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(0.9375, 1.0625, 1.0625, tex.getMinU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(0.9375, -0.0625, 1.0625, tex.getMinU(), tex.getMaxV());
+        
+        Tessellator.instance.addVertexWithUV(0.0625, -0.0625, 1.0625, tex.getMaxU(), tex.getMaxV());
+        Tessellator.instance.addVertexWithUV(0.0625, 1.0625, 1.0625, tex.getMaxU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(0.0625, 1.0625, -0.0625, tex.getMinU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(0.0625, -0.0625, -0.0625, tex.getMinU(), tex.getMaxV());
+        
+        Tessellator.instance.addVertexWithUV(1.0625, 0.9375, 1.0625, tex.getMaxU(), tex.getMaxV());
+        Tessellator.instance.addVertexWithUV(1.0625, 0.9375, -0.0625, tex.getMaxU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(-0.0625, 0.9375, -0.0625, tex.getMinU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(-0.0625, 0.9375, 1.0625, tex.getMinU(), tex.getMaxV());
+        
+        Tessellator.instance.addVertexWithUV(-0.0625, 0.0625, 1.0625, tex.getMaxU(), tex.getMaxV());
+        Tessellator.instance.addVertexWithUV(-0.0625, 0.0625, -0.0625, tex.getMaxU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(1.0625, 0.0625, -0.0625, tex.getMinU(), tex.getMinV());
+        Tessellator.instance.addVertexWithUV(1.0625, 0.0625, 1.0625, tex.getMinU(), tex.getMaxV());
+        
+        Tessellator.instance.draw();
+        GL11.glPopMatrix();
+    }
+    
+    private void renderConnectors(final TileEntity tile, final double x, final double y, final double z) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GL11.glScalef(-1F, -1F, 1F);
+        bindTexture(MODELTEXTURES[tile.getBlockMetadata()]);
         if (tile.getWorldObj() != null) {
             for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
                 if (isCableConnected(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, side)) {
@@ -44,31 +119,34 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
             }
         }
         GL11.glPopMatrix();
-
-        if (!((TileEMCCrafter) tile).displayStacks.isEmpty()) {
-            final double time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
-            if (((TileEMCCrafter) tile).displayStacks.size() > 1) {
-                float[] angles = new float[((TileEMCCrafter) tile).displayStacks.size()];
-
-                final float anglePer = 360F / ((TileEMCCrafter) tile).displayStacks.size();
-                float totalAngle = 0F;
-                for(int i = 0; i < angles.length; i++) {
-                    angles[i] = totalAngle += anglePer;
+    }
+    
+    private void renderContent(final TileEMCCrafterBase tile, final double x, final double y, final double z, final float partialTicks) {
+        final List<ItemStack> stacks = tile.getDisplayStacks();
+        final float time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
+        if(tile.isCrafting() && tile.maxJobs > 1){
+            final float anglePer = 360F / tile.maxJobs;
+            
+            for(int i = 0; i < stacks.size(); i++) {
+                final ItemStack stack = stacks.get(i);
+                if (stack == null) {
+                    continue;
                 }
-                
-                for(int i = 0; i < angles.length; i++) {
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
-                    GL11.glScalef(0.5F, 0.5F, 0.5F);
-                    GL11.glRotatef(angles[i] + (float) time, 0F, 1F, 0F);
-                    GL11.glTranslatef(0.2F, 0F, 0.5F);
-                    renderItem(tile.getWorldObj(), ((TileEMCCrafter) tile).displayStacks.get(i), (float) time);
-                    GL11.glPopMatrix();
-                }
-            } else {
+                GL11.glPushMatrix();
+                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.45F, (float) z + 0.5F);
+                GL11.glScalef(0.5F, 0.5F, 0.5F);
+                GL11.glRotatef(anglePer * i + time, 0F, 1F, 0F);
+                GL11.glTranslatef(0.2F, 0F, 0.25F);
+                renderItem(tile.getWorldObj(), stack, time);
+                GL11.glPopMatrix();
+            }
+            
+        } else {
+            final ItemStack stack = tile.isCrafting() ? stacks.get(0) : tile.getCurrentTome();
+            if(stack != null) {
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float) x + 0.5F, (float) y + 0.3F, (float) z + 0.5F);
-                renderItem(tile.getWorldObj(), ((TileEMCCrafter) tile).displayStacks.get(0), (float) time);
+                renderItem(tile.getWorldObj(), stack, time);
                 GL11.glPopMatrix();
             }
         }
@@ -96,9 +174,7 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
         final IPart part = host.getPart(ForgeDirection.UNKNOWN);
         if (part instanceof IPartCable) {
             final IPartCable cable = (IPartCable) part;
-            if (cable.isConnected(side.getOpposite())) {
-                return true;
-            }
+            return cable.isConnected(side.getOpposite());
         }
 
         return false;

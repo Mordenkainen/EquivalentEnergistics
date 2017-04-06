@@ -1,9 +1,9 @@
-package com.mordenkainen.equivalentenergistics.blocks;
+package com.mordenkainen.equivalentenergistics.blocks.common;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxyable;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
@@ -48,7 +48,7 @@ public abstract class BlockContainerBase extends BlockContainer {
 
     @Override
     public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack) {
-        final IGridProxyable tile = CommonUtils.getTE(IGridProxyable.class, world, x, y, z);
+        final IAEProxyHost tile = CommonUtils.getTE(IAEProxyHost.class, world, x, y, z);
 
         if (tile != null && player instanceof EntityPlayer) {
             tile.setOwner((EntityPlayer) player);

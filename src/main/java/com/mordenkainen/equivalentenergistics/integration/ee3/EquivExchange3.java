@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
 import com.mordenkainen.equivalentenergistics.integration.IEMCHandler;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
@@ -48,7 +48,7 @@ public class EquivExchange3 implements IEMCHandler {
     }
 
     @Override
-    public List<ItemStack> getTransmutations(final TileEMCCrafter tile) {
+    public List<ItemStack> getTransmutations(final TileEMCCrafterBase tile) {
         List<ItemStack> transmutations;
 
         transmutations = new ArrayList<ItemStack>(PlayerKnowledgeRegistryProxy.getKnownItemStacks(ItemStackUtils.getOwnerName(tile.getCurrentTome())));

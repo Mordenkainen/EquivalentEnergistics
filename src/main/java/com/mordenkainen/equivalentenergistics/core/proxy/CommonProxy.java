@@ -6,13 +6,19 @@ import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCond
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserExt;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserUlt;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterAdv;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterExt;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterUlt;
 import com.mordenkainen.equivalentenergistics.core.Reference;
+import com.mordenkainen.equivalentenergistics.core.TickHandler;
 import com.mordenkainen.equivalentenergistics.core.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.core.exceptions.ServerUnmetDependencyException;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.common.MinecraftForge;
 
 public class CommonProxy {
 
@@ -33,6 +39,8 @@ public class CommonProxy {
         ItemEnum.registerItems();
         initRenderers();
         CraftingManager.initRecipes();
+        FMLCommonHandler.instance().bus().register(TickHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(TickHandler.INSTANCE);
     }
 
     public void postInit() {
@@ -56,6 +64,9 @@ public class CommonProxy {
         }
         if (BlockEnum.EMCCRAFTER.isEnabled()) {
             GameRegistry.registerTileEntity(TileEMCCrafter.class, Reference.MOD_ID + "TileEMCCrafter");
+            GameRegistry.registerTileEntity(TileEMCCrafterAdv.class, Reference.MOD_ID + "TileEMCCrafterAdv");
+            GameRegistry.registerTileEntity(TileEMCCrafterExt.class, Reference.MOD_ID + "TileEMCCrafterExt");
+            GameRegistry.registerTileEntity(TileEMCCrafterUlt.class, Reference.MOD_ID + "TileEMCCrafterUlt");
         }
     }
 

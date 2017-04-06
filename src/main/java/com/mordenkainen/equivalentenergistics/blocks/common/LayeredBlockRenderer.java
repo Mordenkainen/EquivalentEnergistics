@@ -1,5 +1,5 @@
 // TODO: Partial block rendering?
-package com.mordenkainen.equivalentenergistics.blocks;
+package com.mordenkainen.equivalentenergistics.blocks.common;
 
 import java.util.EnumSet;
 

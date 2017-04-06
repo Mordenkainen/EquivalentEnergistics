@@ -4,8 +4,8 @@ import java.util.Locale;
 import java.util.Random;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.blocks.BlockMultiContainerBase;
-import com.mordenkainen.equivalentenergistics.blocks.ILayeredBlock;
+import com.mordenkainen.equivalentenergistics.blocks.common.BlockMultiContainerBase;
+import com.mordenkainen.equivalentenergistics.blocks.common.ILayeredBlock;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
@@ -38,6 +38,12 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     public static double idlePower;
     public static double activePower;
     
+    public BlockEMCCondenser() {
+        super(Material.rock, 4);
+        setHardness(1.5f);
+        setStepSound(Block.soundTypeStone);
+    }
+
     @Override
     public int getRenderBlockPass() {
         return 1;
@@ -46,12 +52,6 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     @Override
     public boolean canRenderInPass(final int pass) {
         return pass == 1;
-    }
-
-    public BlockEMCCondenser() {
-        super(Material.rock, 4);
-        setHardness(1.5f);
-        setStepSound(Block.soundTypeStone);
     }
 
     @Override
@@ -76,14 +76,6 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
             default:
                 return new TileEMCCondenserUlt();
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIcon(final IBlockAccess world, final int x, final int y, final int z, final int side) {
-        final int meta = world.getBlockMetadata(x, y, z);
-        TextureEnum.EMCCONDENSER.getTexture(meta);
-        return TextureEnum.EMCCONDENSER.getTexture(side == 0 || side == 1 ? meta * 2 : meta * 2 + 1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -174,17 +166,6 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     }
 
     @Override
-    public void loadConfig(final Configuration config) {
-        idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
-        activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
-        emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", 8192).getDouble(8192);
-
-        final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
-        condenserCat.remove("CrystalsProducedPerTick");
-        condenserCat.remove("ItemsCondensedPerTick");
-    }
-
-    @Override
     public int numLayers(final Block block, final int meta) {
         return 0;
     }
@@ -210,6 +191,17 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
             }
         }
         return null;
+    }
+    
+    @Override
+    public void loadConfig(final Configuration config) {
+        idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
+        activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
+        emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", 8192).getDouble(8192);
+
+        final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
+        condenserCat.remove("CrystalsProducedPerTick");
+        condenserCat.remove("ItemsCondensedPerTick");
     }
 
 }

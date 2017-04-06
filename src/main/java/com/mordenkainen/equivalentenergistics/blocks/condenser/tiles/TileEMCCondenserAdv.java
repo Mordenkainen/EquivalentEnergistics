@@ -62,9 +62,10 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
     }
 
     @Override
-    protected void readPacketData(final NBTTagCompound nbttagcompound) {
-        super.readPacketData(nbttagcompound);
+    protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
+        final boolean flag = super.readPacketData(nbttagcompound);
         setMode(RedstoneMode.values()[nbttagcompound.getInteger(MODE_TAG)]);
+        return flag;
     }
 
     @Override
@@ -100,7 +101,7 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
         if (state != newState) {
             state = newState;
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, blockType);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markForUpdate();
             return true;
         }
         return false;
@@ -122,7 +123,7 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
         if (newMode != null && newMode != mode) {
             mode = newMode;
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, blockType);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markForUpdate();
         }
     }
 

@@ -52,12 +52,19 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     @Override
     protected void getPacketData(final NBTTagCompound nbttagcompound) {
+        super.getPacketData(nbttagcompound);
         nbttagcompound.setInteger(STATE_TAG, state.ordinal());
     }
 
     @Override
-    protected void readPacketData(final NBTTagCompound nbttagcompound) {
-        state = CondenserState.values()[nbttagcompound.getInteger(STATE_TAG)];
+    protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
+        boolean flag = super.readPacketData(nbttagcompound);
+        final CondenserState newState = CondenserState.values()[nbttagcompound.getInteger(STATE_TAG)];
+        if (newState != state) {
+            state = newState;
+            flag = true;
+        }
+        return flag;
     }
 
     @Override
@@ -67,10 +74,6 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        if (nodeDirty && gridProxy.isReady()) {
-            gridProxy.getNode().updateState();
-            nodeDirty = false;
-        }
         CondenserState newState = state;
 
         newState = checkRequirements();
@@ -100,7 +103,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
             return CondenserState.MISSING_CHANNEL;
         }
 
-        if (!gridProxy.isPowered()) {
+        if (!isPowered()) {
             return CondenserState.UNPOWERED;
         }
 
@@ -211,7 +214,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
     protected boolean updateState(final CondenserState newState) {
         if (state != newState) {
             state = newState;
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markForUpdate();
             return true;
         }
         return false;

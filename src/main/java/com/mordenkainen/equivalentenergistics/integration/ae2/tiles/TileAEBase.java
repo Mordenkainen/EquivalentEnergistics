@@ -1,67 +1,74 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.tiles;
 
+import com.mordenkainen.equivalentenergistics.blocks.common.EqETileBase;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.AEProxy;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
-import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxy;
-import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxyable;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.util.DimensionalCoord;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileAEBase extends TileEntity implements IGridProxyable {
+public abstract class TileAEBase extends EqETileBase implements IAEProxyHost {
 
-    protected final IGridProxy gridProxy;
+    private final static String POWERED_TAG = "powered";
+    private final static String ACTIVE_TAG = "active";
+    
+    protected final AEProxy gridProxy;
     protected MachineSource mySource;
-    protected boolean nodeDirty;
+    protected boolean active;
+    protected boolean powered;
 
     public TileAEBase(final ItemStack repItem) {
         super();
         mySource = new MachineSource(this);
-        gridProxy = IGridProxy.getDefaultProxy(repItem, this);
+        gridProxy = new AEProxy(this, "node0", repItem, true);
     }
 
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-        IGridProxyable.super.onChunkUnload();
+        IAEProxyHost.super.onChunkUnload();
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-        IGridProxyable.super.invalidate();
+        IAEProxyHost.super.invalidate();
     }
 
     @Override
     public void validate() {
         super.validate();
-        IGridProxyable.super.validate();
+        IAEProxyHost.super.validate();
+    }
+    
+    @Override
+    public void onReady() {
+        IAEProxyHost.super.onReady();
     }
 
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        IGridProxyable.super.readFromNBT(data);
+        IAEProxyHost.super.readFromNBT(data);
     }
 
     @Override
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
-        IGridProxyable.super.writeToNBT(data);
+        IAEProxyHost.super.writeToNBT(data);
     }
 
     @Override
-    public IGridProxy getProxy() {
+    public AEProxy getProxy() {
         return gridProxy;
     }
 
@@ -74,24 +81,6 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
     public void securityBreak() {
         CommonUtils.destroyAndDrop(worldObj, xCoord, yCoord, zCoord);
     }
-
-    @Override
-    public void gridChanged() {
-        nodeDirty = true;
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        final NBTTagCompound nbttagcompound = new NBTTagCompound();
-        getPacketData(nbttagcompound);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -999, nbttagcompound);
-    }
-
-    @Override
-    public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity pkt) {
-        final NBTTagCompound nbttagcompound = pkt.func_148857_g();
-        readPacketData(nbttagcompound);
-    }
     
     protected boolean checkPermissions(final EntityPlayer player) {
         try {
@@ -103,8 +92,56 @@ public abstract class TileAEBase extends TileEntity implements IGridProxyable {
         }
         return true;
     }
-
-    protected abstract void getPacketData(final NBTTagCompound nbttagcompound);
     
-    protected abstract void readPacketData(final NBTTagCompound nbttagcompound);
+    public boolean isActive() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return active;
+        } else {
+            return gridProxy.isReady() && gridProxy.isActive();
+        }
+    }
+    
+    public boolean isPowered() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return powered;
+        } else {
+            return gridProxy.isReady() && gridProxy.isPowered();
+        }
+    }
+
+    protected void getPacketData(final NBTTagCompound nbttagcompound) {
+        nbttagcompound.setBoolean(POWERED_TAG, isPowered());
+        nbttagcompound.setBoolean(ACTIVE_TAG, isActive());
+    }
+    
+    protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
+        boolean flag = false;
+        boolean newState = nbttagcompound.getBoolean(POWERED_TAG);
+        if(newState != powered) {
+            powered = newState;
+            flag = true;
+        }
+        newState = nbttagcompound.getBoolean(ACTIVE_TAG);
+        if(newState != active) {
+            active = newState;
+            flag = true;
+        }
+        return flag;
+    }
+    
+    protected boolean refreshNetworkState() {
+        boolean flag = false;
+        boolean newState = isPowered();
+        if(newState != powered) {
+            powered = newState;
+            flag = true;
+        }
+        newState = isActive();
+        if(newState != active) {
+            active = newState;
+            flag = true;
+        }
+        return flag;
+    }
+    
 }

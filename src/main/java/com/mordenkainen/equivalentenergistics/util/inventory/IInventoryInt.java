@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface IInventoryInt extends IInventory {
 
-    String INVSLOTS = "items";
+    String INVENTORY_TAG = "items";
 
     <T extends InternalInventory> T getInventory();
 
@@ -72,10 +72,10 @@ public interface IInventoryInt extends IInventory {
     }
 
     default void readFromNBT(final NBTTagCompound data) {
-        getInventory().loadFromNBT(data, INVSLOTS);
+        getInventory().loadFromNBT(data, INVENTORY_TAG);
     }
 
     default void writeToNBT(final NBTTagCompound data) {
-        getInventory().saveToNBT(data, INVSLOTS);
+        getInventory().saveToNBT(data, INVENTORY_TAG);
     }
 }

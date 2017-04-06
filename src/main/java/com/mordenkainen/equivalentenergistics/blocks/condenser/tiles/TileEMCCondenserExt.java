@@ -111,9 +111,10 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         nbttagcompound.setTag(SIDE_TAG, list);
     }
 
+    // TODO: Fix side handling!
     @Override
-    protected void readPacketData(final NBTTagCompound nbttagcompound) {
-        super.readPacketData(nbttagcompound);
+    protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
+        final boolean flag = super.readPacketData(nbttagcompound);
         sides.clear();
         final NBTTagCompound list = (NBTTagCompound) nbttagcompound.getTag(SIDE_TAG);
         for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
@@ -121,7 +122,8 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
                 sides.put(side, list.getBoolean(side.name()));
             }
         }
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        markForUpdate();
+        return flag;
     }
 
     @Override
@@ -161,7 +163,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         } else {
             sides.put(ForgeDirection.getOrientation(side), false);
         }
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        markForUpdate();
     }
 
     public int getSide(final int side) {

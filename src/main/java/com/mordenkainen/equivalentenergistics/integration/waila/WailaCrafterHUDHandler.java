@@ -8,18 +8,22 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 public class WailaCrafterHUDHandler extends WailaHUDBase {
 
-    private final static String TAG_NAME = "TileData";
+    private final static String EMC_TAG = "CurrentEMC";
+    private final static String OWNER_TAG = "Owner";
 
     @Override
     public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.hasKey(TAG_NAME)) {
-            currenttip.add("Stored EMC: " + CommonUtils.formatEMC(tag.getCompoundTag(TAG_NAME).getFloat("currentEMC")));
-            if (tag.getCompoundTag(TAG_NAME).hasKey("owner")) {
-                currenttip.add("Owner: " + tag.getCompoundTag(TAG_NAME).getString("owner"));
+        if (accessor.getNBTData().hasKey(TAG_NAME)) {
+            final NBTTagCompound tag = accessor.getNBTData().getCompoundTag(TAG_NAME);
+            if (tag.hasKey(EMC_TAG)) {
+                currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(tag.getFloat(EMC_TAG)));
+            }
+            if (tag.hasKey(OWNER_TAG)) {
+                currenttip.add(StatCollector.translateToLocal("tooltip.owner.name") + " " + tag.getString(OWNER_TAG));
             }
         }
         return currenttip;

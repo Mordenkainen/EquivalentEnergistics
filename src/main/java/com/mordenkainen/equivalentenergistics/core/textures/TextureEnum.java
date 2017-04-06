@@ -15,7 +15,8 @@ public enum TextureEnum {
     EMCCELL(TextureType.ITEM, "EMCCellTier0", "EMCCellTier1", "EMCCellTier2", "EMCCellTier3", "EMCCellTier4", "EMCCellTier5", "EMCCellTier6", "EMCCellTier7"),
     EMCCELLCREATIVE(TextureType.ITEM, "EMCCellCreative"),
     MISCITEM(TextureType.ITEM, "EMCCellHousing", "EMCTotal"),
-    EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7");
+    EMCSTORAGECOMPONENT(TextureType.ITEM, "EMCStorageComponent0", "EMCStorageComponent1", "EMCStorageComponent2", "EMCStorageComponent3", "EMCStorageComponent4", "EMCStorageComponent5", "EMCStorageComponent6", "EMCStorageComponent7"),
+    EMCASSEMBLER(TextureType.BLOCK, "EMCAssemblerLights", "EMCAssemblerError");
 
     private enum TextureType {
         ITEM(1),

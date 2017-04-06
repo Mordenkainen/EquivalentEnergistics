@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.integration;
 import java.util.List;
 import java.util.UUID;
 
-import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
 
 import net.minecraft.item.ItemStack;
 
@@ -15,7 +15,7 @@ public interface IEMCHandler {
 
     float getCrystalEMC(int tier);
 
-    List<ItemStack> getTransmutations(TileEMCCrafter tile);
+    List<ItemStack> getTransmutations(TileEMCCrafterBase tile);
 
     boolean isValidTome(ItemStack itemStack);
 

@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class InternalInventory implements IInventory {
 
-    private static final String NBT_KEY_SLOT = "Slot";
+    private static final String SLOT_TAG = "Slot";
 
     public ItemStack[] slots;
     public String customName;
@@ -138,7 +138,7 @@ public class InternalInventory implements IInventory {
         for (int index = 0; index < invList.tagCount(); index++) {
             final NBTTagCompound nbtCompound = invList.getCompoundTagAt(index);
 
-            final int slotIndex = nbtCompound.getByte(InternalInventory.NBT_KEY_SLOT) & 0xFF;
+            final int slotIndex = nbtCompound.getByte(InternalInventory.SLOT_TAG) & 0xFF;
 
             if (slotIndex >= 0 && slotIndex < slots.length) {
                 slots[slotIndex] = ItemStack.loadItemStackFromNBT(nbtCompound);
@@ -157,7 +157,7 @@ public class InternalInventory implements IInventory {
             if (slots[slotIndex] != null) {
                 final NBTTagCompound nbtCompound = new NBTTagCompound();
 
-                nbtCompound.setByte(InternalInventory.NBT_KEY_SLOT, (byte) slotIndex);
+                nbtCompound.setByte(InternalInventory.SLOT_TAG, (byte) slotIndex);
 
                 slots[slotIndex].writeToNBT(nbtCompound);
 

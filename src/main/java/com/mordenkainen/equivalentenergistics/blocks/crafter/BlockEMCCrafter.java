@@ -1,8 +1,12 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.blocks.BlockContainerBase;
+import com.mordenkainen.equivalentenergistics.blocks.common.BlockMultiContainerBase;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterAdv;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterExt;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterUlt;
 import com.mordenkainen.equivalentenergistics.core.config.IConfigurable;
 import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
@@ -21,16 +25,16 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class BlockEMCCrafter extends BlockContainerBase implements IConfigurable {
+public class BlockEMCCrafter extends BlockMultiContainerBase implements IConfigurable {
 
     private static final String GROUP = "Crafter";
 
     public static double idlePower;
-    public static double activePower;
+    public static double powerPerEMC;
     public static double craftingTime;
 
     public BlockEMCCrafter() {
-        super(Material.rock);
+        super(Material.rock, 4);
         setHardness(1.5f);
         setStepSound(Block.soundTypeStone);
         setLightOpacity(1);
@@ -38,7 +42,16 @@ public class BlockEMCCrafter extends BlockContainerBase implements IConfigurable
 
     @Override
     public TileEntity createNewTileEntity(final World world, final int meta) {
-        return new TileEMCCrafter();
+        switch (meta) {
+            case 0:
+                return new TileEMCCrafter();
+            case 1:
+                return new TileEMCCrafterAdv();
+            case 2:
+                return new TileEMCCrafterExt();
+            default:
+                return new TileEMCCrafterUlt();
+        }
     }
 
     @Override
@@ -64,7 +77,7 @@ public class BlockEMCCrafter extends BlockContainerBase implements IConfigurable
 
     @Override
     public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
-        final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, x, y, z);
+        final TileEMCCrafterBase tileCrafter = CommonUtils.getTE(TileEMCCrafterBase.class, world, x, y, z);
 
         if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
             return false;
@@ -92,8 +105,8 @@ public class BlockEMCCrafter extends BlockContainerBase implements IConfigurable
     @Override
     public void loadConfig(final Configuration config) {
         idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
-        activePower = config.get(GROUP, "PowerDrainPerCraftingTick", 1.5).getDouble(1.5);
-        craftingTime = config.get(GROUP, "TicksPerCrafting", 7).getInt(7);
+        powerPerEMC = config.get(GROUP, "PowerDrainPerEMC", 0.01).getDouble(0.01);
+        craftingTime = config.get(GROUP, "TicksPerCrafting", 20).getInt(20);
     }
 
 }

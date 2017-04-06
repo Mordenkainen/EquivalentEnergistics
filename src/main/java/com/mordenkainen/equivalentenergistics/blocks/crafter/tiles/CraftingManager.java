@@ -1,10 +1,9 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter.tiles;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IGridProxy;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.AEProxy;
 import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 
 import appeng.api.networking.security.MachineSource;
@@ -16,71 +15,94 @@ public class CraftingManager {
     private final double craftingTime;
     private final int maxJobs;
     private final ICraftingMonitor monitor;
-    private final List<CraftingJob> jobs = new ArrayList<CraftingJob>();
-    private final IGridProxy proxy;
+    private final CraftingJob[] jobs;
+    private final AEProxy proxy;
     private final MachineSource source;
 
-    public CraftingManager(final double craftingTime, final int maxJobs, final ICraftingMonitor monitor, final IGridProxy proxy, final MachineSource source) {
+    public CraftingManager(final double craftingTime, final int maxJobs, final ICraftingMonitor monitor, final AEProxy proxy, final MachineSource source) {
         super();
         this.craftingTime = craftingTime;
         this.maxJobs = maxJobs;
         this.monitor = monitor;
         this.proxy = proxy;
         this.source = source;
+        jobs = new CraftingJob[maxJobs];
     }
 
     public boolean isBusy() {
-        return jobs.size() >= maxJobs;
+        for (int i = 0; i < maxJobs; i ++) {
+            if (jobs[i] == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isCrafting() {
-        return !jobs.isEmpty();
-    }
-
-    public boolean addJob(final ItemStack outputStack) {
-        if (!isBusy()) {
-            jobs.add(new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : craftingTime, outputStack, proxy, source));
-            return true;
+        for (int i = 0; i < maxJobs; i ++) {
+            if (jobs[i] != null) {
+                return true;
+            }
         }
         return false;
     }
 
-    public void craftingTick() {
-        final Iterator<CraftingJob> iter = jobs.iterator();
-        while (iter.hasNext()) {
-            final CraftingJob job = iter.next();
-            job.craftingTick();
-            if (job.isFinished()) {
-                iter.remove();
-                monitor.craftingFinished(job.getOutput());
+    public boolean addJob(final ItemStack outputStack, final double emc, final double powerPerEMC) {
+        if (!isBusy()) {
+            for (int i = 0; i < maxJobs; i++) {
+                if (jobs[i] == null) {
+                    jobs[i] = new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : craftingTime, outputStack, (emc / craftingTime) * powerPerEMC, proxy, source);
+                    return true;
+                }
             }
         }
+        return false;
+    }
+
+    public boolean craftingTick() {
+        for (int i = 0; i < maxJobs; i ++) {
+            if (jobs[i] != null) {
+                if (!jobs[i].craftingTick()) {
+                    return false;
+                }
+                if (jobs[i].isFinished()) {
+                    final ItemStack output = jobs[i].getOutput();
+                    jobs[i] = null;
+                    monitor.craftingFinished(output);
+                }
+            }
+        }
+        return true;
     }
 
     public List<ItemStack> getCurrentJobs() {
         final List<ItemStack> result = new ArrayList<ItemStack>();
         for (final CraftingJob job : jobs) {
-            result.add(job.getOutput());
+            result.add(job == null ? null : job.getOutput());
         }
         return result;
     }
 
     public void writeToNBT(final NBTTagCompound tag) {
-        for (int i = 0; i < jobs.size(); i++) {
-            final CraftingJob job = jobs.get(i);
-            final NBTTagCompound itemStack = new NBTTagCompound();
-            job.getOutput().writeToNBT(itemStack);
-            itemStack.setDouble("RemainingTicks", job.getRemainingTicks());
-            tag.setTag("Job" + i, itemStack);
+        for (int i = 0; i < jobs.length; i++) {
+            final CraftingJob job = jobs[i];
+            if (job != null) {
+                final NBTTagCompound itemStack = new NBTTagCompound();
+                job.getOutput().writeToNBT(itemStack);
+                itemStack.setDouble("RemainingTicks", job.getRemainingTicks());
+                itemStack.setDouble("PowerPerTick", job.getCost());
+                tag.setTag("Job" + i, itemStack);
+            }
         }
     }
 
     public void readFromNBT(final NBTTagCompound tag) {
-        jobs.clear();
         for (int i = 0; i < maxJobs; i++) {
             if (tag.hasKey("Job" + i)) {
                 final ItemStack outputStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.getTag("Job" + i));
-                jobs.add(new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : tag.getDouble("RemainingTicks"), outputStack, proxy, source));
+                jobs[i] = new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : tag.getDouble("RemainingTicks"), outputStack, tag.getDouble("PowerPerTick"), proxy, source);
+            } else {
+                jobs[i] = null;
             }
         }
     }

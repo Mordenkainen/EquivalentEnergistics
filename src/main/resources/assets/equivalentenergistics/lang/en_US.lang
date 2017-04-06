@@ -39,7 +39,10 @@ tile.equivalentenergistics:EMCCondenser.0.name=EMC Condenser
 tile.equivalentenergistics:EMCCondenser.1.name=Advanced EMC Condenser
 tile.equivalentenergistics:EMCCondenser.2.name=Improved EMC Condenser
 tile.equivalentenergistics:EMCCondenser.3.name=Ultimate EMC Condenser
-tile.equivalentenergistics:EMCCrafter.name=EMC Assembler
+tile.equivalentenergistics:EMCCrafter.0.name=EMC Assembler
+tile.equivalentenergistics:EMCCrafter.1.name=Advanced EMC Assembler
+tile.equivalentenergistics:EMCCrafter.2.name=Improved EMC Assembler
+tile.equivalentenergistics:EMCCrafter.3.name=Ultimate EMC Assembler
 
 # Messages
 message.book.clear=Owner Cleared!
@@ -64,3 +67,7 @@ message.condenser.redstonemode.enabled=Enabled by redstone
 tooltip.emc.name=Stored EMC:
 tooltip.status.name=Status:
 tooltip.mode.name=Redstone mode:
+tooltip.owner.name=Owner:
+tooltip.deviceonline=Device Online
+tooltip.deviceoffline=Device Offline
+tooltip.devicemissingchannel=Device Missing Channel
