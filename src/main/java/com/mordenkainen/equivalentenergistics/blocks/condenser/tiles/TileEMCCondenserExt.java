@@ -114,7 +114,6 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     // TODO: Fix side handling!
     @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
-        final boolean flag = super.readPacketData(nbttagcompound);
         sides.clear();
         final NBTTagCompound list = (NBTTagCompound) nbttagcompound.getTag(SIDE_TAG);
         for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
@@ -123,7 +122,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             }
         }
         markForUpdate();
-        return flag;
+        return super.readPacketData(nbttagcompound);
     }
 
     @Override

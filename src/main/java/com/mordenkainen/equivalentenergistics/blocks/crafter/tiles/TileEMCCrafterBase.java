@@ -190,7 +190,6 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
     // TODO: Fix this!
     @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
-        final boolean flag = super.readPacketData(nbttagcompound);
         displayStacks = new ArrayList<ItemStack>();
         if (nbttagcompound.hasKey(DISPLAY_TAG)) {
             final NBTTagCompound invList = nbttagcompound.getCompoundTag(DISPLAY_TAG);
@@ -211,7 +210,7 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
         
         crafting = nbttagcompound.getBoolean(CRAFTING_TAG);
         errored = nbttagcompound.getBoolean("Errored");
-        return flag;
+        return super.readPacketData(nbttagcompound);
     }
 
     @Override

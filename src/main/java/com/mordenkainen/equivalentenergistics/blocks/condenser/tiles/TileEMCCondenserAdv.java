@@ -63,9 +63,8 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
 
     @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
-        final boolean flag = super.readPacketData(nbttagcompound);
         setMode(RedstoneMode.values()[nbttagcompound.getInteger(MODE_TAG)]);
-        return flag;
+        return super.readPacketData(nbttagcompound);
     }
 
     @Override
