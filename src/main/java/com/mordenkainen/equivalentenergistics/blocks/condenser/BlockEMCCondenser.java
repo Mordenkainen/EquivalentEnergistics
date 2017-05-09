@@ -10,6 +10,7 @@ import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCond
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserExt;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserExt.SideSetting;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserUlt;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv.RedstoneMode;
 import com.mordenkainen.equivalentenergistics.core.config.IConfigurable;
@@ -93,28 +94,13 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
             return;
         }
 
-        String particle = null;
-        switch (tileCondenser.getState()) {
-            case BLOCKED:
-                particle = "reddust";
-                break;
-            case MISSING_CHANNEL:
-                particle = "largesmoke";
-                break;
-            case UNPOWERED:
-                particle = "angryVillager";
-                break;
-            default:
-                break;
-        }
-
-        if (particle != null) {
+        if (tileCondenser.getState().isError()) {
             for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
                 if (world.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ).isOpaqueCube()) {
                     continue;
                 }
 
-                CommonUtils.spawnParticle(world, x, y, z, dir, particle, random);
+                CommonUtils.spawnParticle(world, x, y, z, dir, "reddust", random);
             }
         }
     }
@@ -172,7 +158,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
 
     @Override
     public int numLayers(final IBlockAccess world, final Block block, final int x, final int y, final int z, final int meta) {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -182,12 +168,16 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
 
     @Override
     public IIcon getLayer(final IBlockAccess world, final Block block, final int x, final int y, final int z, final int side, final int meta, final int layer) {
-        final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
+        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(TileEMCCondenserBase.class, world, x, y, z);
         if (tileCondenser != null) {
-            if (tileCondenser.getSide(side) == 2) {
-                return TextureEnum.EMCCONDENSEROVL.getTexture();
-            } else if (tileCondenser.getSide(side) == 3) {
-                return TextureEnum.EMCCONDENSEROVL.getTexture(1);
+            if (layer == 1 && tileCondenser.isActive()) {
+                return TextureEnum.EMCCONDENSEROVL.getTexture(2);
+            } else if (tileCondenser instanceof TileEMCCondenserExt) {
+                if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.INPUT) {
+                    return TextureEnum.EMCCONDENSEROVL.getTexture();
+                } else if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.OUTPUT) {
+                    return TextureEnum.EMCCONDENSEROVL.getTexture(1);
+                }
             }
         }
         return null;

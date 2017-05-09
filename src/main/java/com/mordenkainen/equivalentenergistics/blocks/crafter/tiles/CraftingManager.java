@@ -12,6 +12,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class CraftingManager {
 
+    private static final String TICK_TAG = "RemainingTicks";
+    private static final String POWER_TAG = "PowerPerTick";
+    private static final String JOB_TAG = "Job";
+    
     private final double craftingTime;
     private final int maxJobs;
     private final ICraftingMonitor monitor;
@@ -89,18 +93,18 @@ public class CraftingManager {
             if (job != null) {
                 final NBTTagCompound itemStack = new NBTTagCompound();
                 job.getOutput().writeToNBT(itemStack);
-                itemStack.setDouble("RemainingTicks", job.getRemainingTicks());
-                itemStack.setDouble("PowerPerTick", job.getCost());
-                tag.setTag("Job" + i, itemStack);
+                itemStack.setDouble(TICK_TAG, job.getRemainingTicks());
+                itemStack.setDouble(POWER_TAG, job.getCost());
+                tag.setTag(JOB_TAG + i, itemStack);
             }
         }
     }
 
     public void readFromNBT(final NBTTagCompound tag) {
         for (int i = 0; i < maxJobs; i++) {
-            if (tag.hasKey("Job" + i)) {
-                final ItemStack outputStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.getTag("Job" + i));
-                jobs[i] = new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : tag.getDouble("RemainingTicks"), outputStack, tag.getDouble("PowerPerTick"), proxy, source);
+            if (tag.hasKey(JOB_TAG + i)) {
+                final ItemStack outputStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.getTag(JOB_TAG + i));
+                jobs[i] = new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : tag.getDouble(TICK_TAG), outputStack, tag.getDouble(POWER_TAG), proxy, source);
             } else {
                 jobs[i] = null;
             }

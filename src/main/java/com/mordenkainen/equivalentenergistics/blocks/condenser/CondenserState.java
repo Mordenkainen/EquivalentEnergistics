@@ -4,18 +4,20 @@ import appeng.api.networking.ticking.TickRateModulation;
 import net.minecraft.util.StatCollector;
 
 public enum CondenserState {
-    IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle"),
-    ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active"),
-    BLOCKED(TickRateModulation.IDLE, "message.condenser.statename.blocked"),
-    UNPOWERED(TickRateModulation.IDLE, "message.condenser.statename.no_power"),
-    MISSING_CHANNEL(TickRateModulation.IDLE, "message.condenser.statename.missing_channel");
+    IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle", false),
+    ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active", false),
+    NOEMCSTORAGE(TickRateModulation.IDLE, "message.condenser.statename.noemcstorage", true),
+    NOITEMSTORAGE(TickRateModulation.IDLE, "message.condenser.statename.noitemstorage", true),
+    NOPOWER(TickRateModulation.IDLE, "message.condenser.statename.nopower", true);
 
-    public final String stateName;
-    public final TickRateModulation tickRate;
+    private final String stateName;
+    private final TickRateModulation tickRate;
+    private final boolean errorCondition;
 
-    CondenserState(final TickRateModulation tickRate, final String stateName) {
+    CondenserState(final TickRateModulation tickRate, final String stateName, final boolean errorCondition) {
         this.stateName = StatCollector.translateToLocal(stateName);
         this.tickRate = tickRate;
+        this.errorCondition = errorCondition;
     }
     
     public String getStateName() {
@@ -25,5 +27,9 @@ public enum CondenserState {
     
     public TickRateModulation getTickRate() {
         return tickRate;
+    }
+    
+    public boolean isError() {
+        return errorCondition;
     }
 }

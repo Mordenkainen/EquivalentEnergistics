@@ -70,6 +70,9 @@ public final class CraftingManager {
 
     private static void initCrafterRecipies() {
         GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[] { "CDC", "DFD", "CDC", 'C', base, 'D', dust, 'F', new ItemStack(aeMaterial, 1, 43) });
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 1), new Object[] { "GGG", "GRG", "GGG", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), 'G', Items.diamond });
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 2), new Object[] { "MMM", "MRM", "MMM", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 1), 'M', Items.emerald });
+        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 3), new Object[] { "SSS", "SRS", "SSS", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 2), 'S', Items.nether_star });
     }
 
     private static void initCondenserRecipies() {

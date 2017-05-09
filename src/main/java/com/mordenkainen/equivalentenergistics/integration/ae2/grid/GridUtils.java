@@ -180,11 +180,13 @@ public final class GridUtils {
     
     public static float injectEMC(final AEProxy proxy, final float emc, final Actionable mode) {
         try {
-            return getEMCStorage(proxy).injectEMC(emc, mode);
+            if (emc > 0) {
+                return getEMCStorage(proxy).injectEMC(emc, mode);
+            }
         } catch (final GridAccessException e) {
             CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);
-            return 0;
         }
+        return 0;
     }
     
     public static void addPatterns(final AEProxy proxy, final ICraftingMedium medium, final ICraftingProviderHelper tracker) {

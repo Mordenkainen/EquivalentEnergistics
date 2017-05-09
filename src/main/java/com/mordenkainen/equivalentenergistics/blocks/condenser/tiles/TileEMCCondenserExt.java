@@ -6,7 +6,6 @@ import java.util.Map;
 import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
-import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.inventory.InternalInventory;
 import com.mordenkainen.equivalentenergistics.util.inventory.InvUtils;
@@ -23,8 +22,22 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 
     private final static String SIDE_TAG = "sides";
 
-    private final Map<ForgeDirection, Boolean> sides = new HashMap<ForgeDirection, Boolean>();
-
+    private final Map<ForgeDirection, SideSetting> sides = new HashMap<ForgeDirection, SideSetting>();
+    
+    public enum SideSetting {
+        NONE,
+        INPUT,
+        OUTPUT;
+        
+        public SideSetting getNext() {
+            int setting = this.ordinal() + 1;
+            if (setting >= 3) {
+                setting = 0;
+            }
+            return SideSetting.values()[setting];
+        }
+    }
+    
     public TileEMCCondenserExt() {
         this(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock()), 1, 2));
     }
@@ -32,17 +45,26 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     public TileEMCCondenserExt(final ItemStack repItem) {
         super(repItem);
         internalInventory = new InternalInventory("EMCCondenserInventory", 4, 64);
+        for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
+            sides.put(side, SideSetting.NONE);
+        }
     }
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        final boolean powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-        if (mode == RedstoneMode.DISABLE && powered || mode == RedstoneMode.ENABLE && !powered) {
-            updateState(CondenserState.IDLE);
-            return TickRateModulation.IDLE;
+        if (refreshNetworkState()) {
+            markForUpdate();
         }
-
-        importItems();
+        
+        if (isActive()) {
+            final boolean powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+            if (mode == RedstoneMode.DISABLE && powered || mode == RedstoneMode.ENABLE && !powered) {
+                updateState(CondenserState.IDLE);
+                return TickRateModulation.IDLE;
+            }
+    
+            importItems();
+        }
 
         return super.tickingRequest(node, ticksSinceLast);
     }
@@ -50,11 +72,11 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     protected void importItems() {
         int numItems = itemsToTransfer();
 
-        outerLoop: for (int slot = 0; slot < getInventory().getSizeInventory(); slot++) {
+        for (int slot = 0; slot < getInventory().getSizeInventory() && numItems > 0; slot++) {
             final ItemStack slotContent = getInventory().getStackInSlot(slot);
             if (slotContent == null || slotContent.stackSize < slotContent.getMaxStackSize()) {
                 for (final ForgeDirection side : sides.keySet()) {
-                    if (sides.get(side)) {
+                    if (sides.get(side) != SideSetting.INPUT) {
                         continue;
                     }
                     final IInventory sourceInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
@@ -62,7 +84,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
                         numItems -= InvUtils.importFromAdjInv(side.getOpposite(), sourceInv, getInventory(), slot, numItems);
                     }
                     if (numItems <= 0) {
-                        break outerLoop;
+                        break;
                     }
                 }
             }
@@ -79,7 +101,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         int numItems = itemsToTransfer();
 
         for (final ForgeDirection side : sides.keySet()) {
-            if (!sides.get(side)) {
+            if (sides.get(side) != SideSetting.OUTPUT) {
                 continue;
             }
             final IInventory destInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
@@ -95,7 +117,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         }
 
         if (stack.stackSize > 0) {
-            return GridUtils.injectItemsForPower(getProxy(), stack, mySource);
+            return super.ejectItem(stack);
         } else {
             return null;
         }
@@ -106,38 +128,32 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         super.getPacketData(nbttagcompound);
         final NBTTagCompound list = new NBTTagCompound();
         for (final ForgeDirection side : sides.keySet()) {
-            list.setBoolean(side.name(), sides.get(side));
+            list.setInteger(side.name(), sides.get(side).ordinal());
         }
         nbttagcompound.setTag(SIDE_TAG, list);
     }
 
-    // TODO: Fix side handling!
     @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
-        sides.clear();
+        boolean flag = super.readPacketData(nbttagcompound);
         final NBTTagCompound list = (NBTTagCompound) nbttagcompound.getTag(SIDE_TAG);
-        for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
-            if (list.hasKey(side.name())) {
-                sides.put(side, list.getBoolean(side.name()));
+        for (final ForgeDirection side : sides.keySet()) {
+            final SideSetting newData = SideSetting.values()[list.getInteger(side.name())];
+            if (newData != sides.get(side)) {
+                sides.put(side, newData);
+                flag = true;
             }
+            
         }
-        markForUpdate();
-        return super.readPacketData(nbttagcompound);
+        return flag;
     }
 
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        sides.clear();
         final NBTTagCompound list = (NBTTagCompound) data.getTag(SIDE_TAG);
-        if (list == null) {
-            return;
-        }
-
-        for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
-            if (list.hasKey(side.name())) {
-                sides.put(side, list.getBoolean(side.name()));
-            }
+        for (final ForgeDirection side : sides.keySet()) {
+            sides.put(side, SideSetting.values()[list.getInteger(side.name())]);
         }
     }
 
@@ -146,31 +162,19 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         super.writeToNBT(data);
         final NBTTagCompound list = new NBTTagCompound();
         for (final ForgeDirection side : sides.keySet()) {
-            list.setBoolean(side.name(), sides.get(side));
+            list.setInteger(side.name(), sides.get(side).ordinal());
         }
         data.setTag(SIDE_TAG, list);
     }
 
     public void toggleSide(final int side) {
-        if (sides.containsKey(ForgeDirection.getOrientation(side))) {
-            final boolean state = sides.get(ForgeDirection.getOrientation(side));
-            if (state) {
-                sides.remove(ForgeDirection.getOrientation(side));
-            } else {
-                sides.put(ForgeDirection.getOrientation(side), true);
-            }
-        } else {
-            sides.put(ForgeDirection.getOrientation(side), false);
-        }
+        final ForgeDirection forgeSide = ForgeDirection.getOrientation(side);
+        sides.put(forgeSide, sides.get(forgeSide).getNext());
         markForUpdate();
     }
 
-    public int getSide(final int side) {
-        if (sides.containsKey(ForgeDirection.getOrientation(side))) {
-            return sides.get(ForgeDirection.getOrientation(side)) ? 2 : 3;
-        } else {
-            return 0;
-        }
+    public SideSetting getSide(final int side) {
+        return sides.get(ForgeDirection.getOrientation(side));
     }
 
     protected int itemsToTransfer() {

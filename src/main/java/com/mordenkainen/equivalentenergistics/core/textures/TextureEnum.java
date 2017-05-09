@@ -8,7 +8,7 @@ import net.minecraft.util.IIcon;
 public enum TextureEnum {
 
     EMCCONDENSER(TextureType.BLOCK, "EMCCondenser", "EMCCondenserAdv", "EMCCondenserExt", "EMCCondenserUlt"),
-    EMCCONDENSEROVL(TextureType.BLOCK, "EMCCondenserInput", "EMCCondenserOutput"),
+    EMCCONDENSEROVL(TextureType.BLOCK, "EMCCondenserInput", "EMCCondenserOutput", "EMCCondenserLights"),
     EMCBOOK(TextureType.ITEM, "EMCBook"),
     EMCCRYSTAL(TextureType.ITEM, "EMCNugget", "EMCShard", "EMCCrystal", "DenseEMCCrystal", "SuperDenseEMCCrystal"),
     EMCCRYSTALOLD(TextureType.ITEM, "EMCCrystal"),

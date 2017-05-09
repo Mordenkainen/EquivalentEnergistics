@@ -14,7 +14,8 @@ import net.minecraft.world.World;
 public abstract class TileAEInv extends TileAEBase implements IInventoryInt, IDropItems {
 
     protected InternalInventory internalInventory;
-
+    private boolean doDrops = true;
+    
     public TileAEInv(final ItemStack repItem) {
         super(repItem);
     }
@@ -39,7 +40,14 @@ public abstract class TileAEInv extends TileAEBase implements IInventoryInt, IDr
 
     @Override
     public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
-        drops.addAll(InvUtils.getInvAsList(getInventory()));
+        if(doDrops) {
+            drops.addAll(InvUtils.getInvAsList(getInventory()));
+        }
+    }
+    
+    @Override
+    public void disableDrops() {
+        doDrops = false;
     }
 
 }

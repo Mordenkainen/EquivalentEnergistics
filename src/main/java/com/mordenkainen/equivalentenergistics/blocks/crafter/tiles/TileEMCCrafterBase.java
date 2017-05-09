@@ -37,6 +37,7 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
     private static final String CRAFTING_TAG = "Crafting";
     private static final String DISPLAY_TAG = "DisplayStacks";
     private static final String STACK_TAG = "Stack";
+    private static final String ERROR_TAG = "Errored";
     
     private ItemStack transmutationItem;
     private float currentEMC;
@@ -44,6 +45,7 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
     private final CraftingManager manager;
     private boolean crafting;
     private boolean errored;
+    private boolean doDrops = true;
     
     public final int maxJobs;
 
@@ -153,43 +155,47 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
     }
 
     private void injectEMC() {
-        if (currentEMC > 0) {
-            currentEMC -= GridUtils.injectEMC(getProxy(), currentEMC, Actionable.MODULATE);
-        }
+        currentEMC -= GridUtils.injectEMC(getProxy(), currentEMC, Actionable.MODULATE);
     }
 
     @Override
     public void getDrops(final World world, final int x, final int y, final int z, final List<ItemStack> drops) {
-        if (transmutationItem != null) {
+        if (doDrops && transmutationItem != null) {
             drops.add(transmutationItem);
         }
+    }
+    
+    @Override
+    public void disableDrops() {
+        doDrops = false;
     }
 
     @Override
     protected void getPacketData(final NBTTagCompound nbttagcompound) {
         super.getPacketData(nbttagcompound);
-        final NBTTagCompound displayTags = new NBTTagCompound();
-        for (int i = 0; i < displayStacks.size(); i++) {
-            if (displayStacks.get(i) != null) {
-                displayTags.setTag(STACK_TAG + i, displayStacks.get(i).writeToNBT(new NBTTagCompound())); 
+        nbttagcompound.setBoolean(CRAFTING_TAG, manager.isCrafting());
+        nbttagcompound.setBoolean(ERROR_TAG, errored);
+        
+        if (isCrafting()) {
+            final NBTTagCompound displayTags = new NBTTagCompound();
+            for (int i = 0; i < displayStacks.size(); i++) {
+                if (displayStacks.get(i) != null) {
+                    displayTags.setTag(STACK_TAG + i, displayStacks.get(i).writeToNBT(new NBTTagCompound())); 
+                }
             }
-        }
-        if (!displayTags.hasNoTags()) {
             nbttagcompound.setTag(DISPLAY_TAG, displayTags);
         }
         
         if (transmutationItem != null) {
             nbttagcompound.setTag(TOME_TAG, transmutationItem.writeToNBT(new NBTTagCompound()));
         }
-        
-        nbttagcompound.setBoolean(CRAFTING_TAG, manager.isCrafting());
-        
-        nbttagcompound.setBoolean("Errored", errored);
     }
 
-    // TODO: Fix this!
     @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
+        crafting = nbttagcompound.getBoolean(CRAFTING_TAG);
+        errored = nbttagcompound.getBoolean(ERROR_TAG);
+        
         displayStacks = new ArrayList<ItemStack>();
         if (nbttagcompound.hasKey(DISPLAY_TAG)) {
             final NBTTagCompound invList = nbttagcompound.getCompoundTag(DISPLAY_TAG);
@@ -202,14 +208,8 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
             }
         }
     
-        if (nbttagcompound.hasKey(TOME_TAG)) {
-            transmutationItem = ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag(TOME_TAG));
-        } else {
-            transmutationItem = null;
-        }
+        transmutationItem = nbttagcompound.hasKey(TOME_TAG) ? ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag(TOME_TAG)) : null;
         
-        crafting = nbttagcompound.getBoolean(CRAFTING_TAG);
-        errored = nbttagcompound.getBoolean("Errored");
         return super.readPacketData(nbttagcompound);
     }
 

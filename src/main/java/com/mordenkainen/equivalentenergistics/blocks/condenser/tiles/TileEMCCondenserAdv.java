@@ -1,5 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks.condenser.tiles;
 
+import java.util.function.Predicate;
+
 import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
@@ -19,23 +21,24 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
 
     public enum RedstoneMode {
         NONE("message.condenser.redstonemode.none"),
-        BLOCKED("message.condenser.redstonemode.blocked", CondenserState.BLOCKED),
-        ACTIVE("message.condenser.redstonemode.active", CondenserState.ACTIVE),
-        IDLE("message.condenser.redstonemode.idle", CondenserState.IDLE),
+        BLOCKED("message.condenser.redstonemode.blocked", state -> state.isError()),
+        NOTBLOCKED("message.condenser.redstonemode.notblocked", state -> !state.isError()),
+        ACTIVE("message.condenser.redstonemode.active", state -> state == CondenserState.ACTIVE),
+        IDLE("message.condenser.redstonemode.idle", state -> state == CondenserState.IDLE),
         DISABLE("message.condenser.redstonemode.disabled"),
         ENABLE("message.condenser.redstonemode.enabled");
 
         final private String description;
-        final private CondenserState targetState;
+        final private Predicate<CondenserState> stateTest;
 
-        RedstoneMode(final String description, final CondenserState targetState) {
+        RedstoneMode(final String description, final Predicate<CondenserState> stateTest) {
             this.description = StatCollector.translateToLocal(description);
-            this.targetState = targetState;
+            this.stateTest = stateTest;
         }
 
         RedstoneMode(final String description) {
             this.description = StatCollector.translateToLocal(description);
-            this.targetState = null;
+            stateTest = null;
         }
 
         public String description() {
@@ -43,7 +46,10 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
         }
 
         public boolean isTarget(final CondenserState state) {
-            return state == targetState;
+            if (stateTest == null) {
+                return false;
+            }
+            return stateTest.test(state);
         }
     }
 
@@ -63,7 +69,10 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
 
     @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
-        setMode(RedstoneMode.values()[nbttagcompound.getInteger(MODE_TAG)]);
+        final RedstoneMode newMode = RedstoneMode.values()[nbttagcompound.getInteger(MODE_TAG)];
+        if (newMode != mode) {
+            setMode(newMode);
+        }
         return super.readPacketData(nbttagcompound);
     }
 
@@ -86,10 +95,16 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        final boolean powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-        if (mode == RedstoneMode.DISABLE && powered || mode == RedstoneMode.ENABLE && !powered) {
-            updateState(CondenserState.IDLE);
-            return TickRateModulation.IDLE;
+        if (refreshNetworkState()) {
+            markForUpdate();
+        }
+        
+        if (isActive()) {
+            final boolean powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+            if (mode == RedstoneMode.DISABLE && powered || mode == RedstoneMode.ENABLE && !powered) {
+                updateState(CondenserState.IDLE);
+                return TickRateModulation.IDLE;
+            }
         }
 
         return super.tickingRequest(node, ticksSinceLast);
@@ -107,7 +122,7 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
     }
 
     public void nextMode() {
-        setMode(RedstoneMode.values()[(mode.ordinal() + 1) % 6]);
+        setMode(RedstoneMode.values()[(mode.ordinal() + 1) % 7]);
     }
 
     public RedstoneMode getMode() {

@@ -42,16 +42,20 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
         if (!(tile instanceof TileEMCCrafterBase)) {
             return;
         }
+        
+        final TileEMCCrafterBase crafter = (TileEMCCrafterBase) tile;
                 
-        renderCrafter(x, y, z, tile.getBlockMetadata());
+        renderCrafter(x, y, z, crafter.getBlockMetadata());
         
-        if (((TileEMCCrafterBase) tile).isActive()) {
-            renderLights(tile, x, y, z);
+        if (crafter.getWorldObj() != null) {
+            if (crafter.isActive()) {
+                renderLights(crafter, x, y, z);
+            }
+            
+            renderConnectors(crafter, x, y, z);
+            
+            renderContent(crafter, x, y, z, partialTicks);
         }
-        
-        renderConnectors(tile, x, y, z);
-
-        renderContent((TileEMCCrafterBase) tile, x, y, z, partialTicks);
     }
     
     private void renderCrafter(final double x, final double y, final double z, final int metaData) {
@@ -63,11 +67,11 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
     
-    private void renderLights(final TileEntity tile, final double x, final double y, final double z) {
+    private void renderLights(final TileEMCCrafterBase tile, final double x, final double y, final double z) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x, (float) y, (float) z);
         bindTexture(TextureMap.locationBlocksTexture);
-        final IIcon tex = ((TileEMCCrafterBase) tile).isErrored() ? TextureEnum.EMCASSEMBLER.getTexture(1) : TextureEnum.EMCASSEMBLER.getTexture(0);
+        final IIcon tex = tile.isErrored() ? TextureEnum.EMCASSEMBLER.getTexture(1) : TextureEnum.EMCASSEMBLER.getTexture(0);
         Tessellator.instance.startDrawingQuads();
         Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
         Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
@@ -106,16 +110,14 @@ public class TileEMCCrafterRenderer extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
     
-    private void renderConnectors(final TileEntity tile, final double x, final double y, final double z) {
+    private void renderConnectors(final TileEMCCrafterBase tile, final double x, final double y, final double z) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x, (float) y, (float) z);
         GL11.glScalef(-1F, -1F, 1F);
         bindTexture(MODELTEXTURES[tile.getBlockMetadata()]);
-        if (tile.getWorldObj() != null) {
-            for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
-                if (isCableConnected(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, side)) {
-                    MODEL.renderConnector(side);
-                }
+        for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
+            if (isCableConnected(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, side)) {
+                MODEL.renderConnector(side);
             }
         }
         GL11.glPopMatrix();

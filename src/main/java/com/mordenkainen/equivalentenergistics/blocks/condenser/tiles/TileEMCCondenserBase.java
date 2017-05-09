@@ -1,7 +1,5 @@
 package com.mordenkainen.equivalentenergistics.blocks.condenser.tiles;
 
-import java.util.EnumSet;
-
 import com.mordenkainen.equivalentenergistics.blocks.condenser.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
@@ -29,7 +27,6 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
     private final static String STATE_TAG = "state";
 
     protected CondenserState state = CondenserState.IDLE;
-    protected final EnumSet<CondenserState> failedStates = EnumSet.of(CondenserState.MISSING_CHANNEL, CondenserState.UNPOWERED);
 
     protected class CondenserInventory extends InternalInventory {
 
@@ -39,8 +36,9 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
         @Override
         public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-            return Integration.emcHandler.hasEMC(itemStack) || itemStack.getItem() instanceof ItemEMCCell;
+            return Integration.emcHandler.hasEMC(itemStack) && Integration.emcHandler.getSingleEnergyValue(itemStack) <= getEMCPerTick() || itemStack.getItem() instanceof ItemEMCCell;
         }
+        
     }
 
     public TileEMCCondenserBase(final ItemStack repItem) {
@@ -74,21 +72,19 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        CondenserState newState = state;
-
-        newState = checkRequirements();
-
-        if (newState != CondenserState.IDLE && updateState(newState) || failedStates.contains(newState)) {
-            return state.getTickRate();
+        if (refreshNetworkState()) {
+            markForUpdate();
         }
-
-        if (!getInventory().isEmpty()) {
+        
+        CondenserState newState = state;
+    
+        if (!isActive() || getInventory().isEmpty()) {
+            updateState(CondenserState.IDLE);
+        } else {
             newState = processInv();
             updateState(newState);
-            return state.getTickRate();
         }
 
-        updateState(CondenserState.IDLE);
         return state.getTickRate();
     }
 
@@ -96,18 +92,6 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     public CondenserState getState() {
         return state;
-    }
-
-    protected CondenserState checkRequirements() {
-        if (!gridProxy.meetsChannelRequirements()) {
-            return CondenserState.MISSING_CHANNEL;
-        }
-
-        if (!isPowered()) {
-            return CondenserState.UNPOWERED;
-        }
-
-        return CondenserState.IDLE;
     }
 
     protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
@@ -138,7 +122,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
             }
 
             if (maxToDo <= 0) {
-                return -1;
+                return -3;
             }
 
             final float toStore = itemEMC * maxToDo;
@@ -177,7 +161,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
             if (Integration.emcHandler.getStoredEMC(stack) <= 0) {
                 getInventory().setInventorySlotContents(slot, ejectItem(stack));
                 if (getInventory().getStackInSlot(slot) != null) {
-                    return -1;
+                    return -2;
                 }
             }
 
@@ -203,12 +187,21 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
             } else {
                 getInventory().setInventorySlotContents(slot, ejectItem(stack));
                 if (getInventory().getStackInSlot(slot) != null) {
-                    remainingEMC = -1;
+                    remainingEMC = -2;
                 }
             }
         }
-
-        return remainingEMC == -1 ? CondenserState.BLOCKED : CondenserState.ACTIVE;
+        
+        switch ((int) remainingEMC) {
+            case -1:
+                return CondenserState.NOEMCSTORAGE;
+            case -2:
+                return CondenserState.NOITEMSTORAGE;
+            case -3:
+                return CondenserState.NOPOWER;
+            default:
+                return CondenserState.ACTIVE;
+        }
     }
 
     protected boolean updateState(final CondenserState newState) {
