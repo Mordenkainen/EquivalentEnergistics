@@ -79,7 +79,9 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        setMode(RedstoneMode.values()[data.getInteger(MODE_TAG)]);
+        if (data.hasKey(MODE_TAG)) {
+            setMode(RedstoneMode.values()[data.getInteger(MODE_TAG)]);
+        }
     }
 
     @Override

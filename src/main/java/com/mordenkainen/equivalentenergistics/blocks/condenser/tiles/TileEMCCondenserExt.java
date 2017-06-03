@@ -152,8 +152,10 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
         final NBTTagCompound list = (NBTTagCompound) data.getTag(SIDE_TAG);
-        for (final ForgeDirection side : sides.keySet()) {
-            sides.put(side, SideSetting.values()[list.getInteger(side.name())]);
+        if (list != null) {
+            for (final ForgeDirection side : sides.keySet()) {
+                sides.put(side, SideSetting.values()[list.getInteger(side.name())]);
+            }
         }
     }
 

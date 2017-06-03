@@ -81,7 +81,7 @@ public final class InvUtils {
                     inv.setInventorySlotContents(slot, destStack);
                 }
             }
-            if (remainingItems <= 0) {
+            if (remainingItems <= 0 || sourceStack.stackSize <= 0) {
                 break;
             }
         }

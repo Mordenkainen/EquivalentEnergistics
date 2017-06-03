@@ -109,7 +109,7 @@ public final class CommonUtils {
     }
 
     public static boolean isSameItem(final ItemStack stack1, final ItemStack stack2) {
-        return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage() && stack1.stackTagCompound == stack2.stackTagCompound;
+        return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage() && ItemStack.areItemStackTagsEqual(stack1, stack2);
     }
 
     public static ItemStack filterForEmpty(final ItemStack stack) {

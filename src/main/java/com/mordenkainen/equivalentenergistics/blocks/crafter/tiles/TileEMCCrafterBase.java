@@ -176,7 +176,7 @@ public abstract class TileEMCCrafterBase extends TileAEBase implements ICrafting
         nbttagcompound.setBoolean(CRAFTING_TAG, manager.isCrafting());
         nbttagcompound.setBoolean(ERROR_TAG, errored);
         
-        if (isCrafting()) {
+        if (manager.isCrafting()) {
             final NBTTagCompound displayTags = new NBTTagCompound();
             for (int i = 0; i < displayStacks.size(); i++) {
                 if (displayStacks.get(i) != null) {

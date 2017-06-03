@@ -82,7 +82,12 @@ public class CraftingManager {
     public List<ItemStack> getCurrentJobs() {
         final List<ItemStack> result = new ArrayList<ItemStack>();
         for (final CraftingJob job : jobs) {
-            result.add(job == null ? null : job.getOutput());
+            ItemStack outputStack = null;
+            if (job != null) {
+                outputStack = job.getOutput().copy();
+                outputStack.stackSize = 1;
+            }
+            result.add(outputStack);
         }
         return result;
     }
