@@ -14,6 +14,7 @@ public final class ConfigManager {
     public static Configuration config;
     public static boolean useEE3;
     public static boolean debug;
+    public static float maxStackEMC = 131072;
 
     private ConfigManager() {}
 
@@ -34,6 +35,8 @@ public final class ConfigManager {
         useEE3 = config.get("General", "UseEE3", useEE3).getBoolean(useEE3);
 
         debug = config.get("General", "Debug", debug).getBoolean(false);
+        
+        maxStackEMC = (float) config.get("General", "MaxEMCForAStack", maxStackEMC).getDouble(131072);
 
         if (config.hasChanged()) {
             config.save();

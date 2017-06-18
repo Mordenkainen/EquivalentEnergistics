@@ -2,6 +2,7 @@ package com.mordenkainen.equivalentenergistics.integration.ae2;
 
 import java.util.ArrayList;
 
+import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemEnum;
@@ -99,8 +100,13 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
     }
 
     private void createItemPattern(final ItemStack craftingResult) {
-        result[0] = AEApi.instance().storage().createItemStack(craftingResult).setStackSize(1);
-        float remainingEMC = outputEMC = Integration.emcHandler.getSingleEnergyValue(craftingResult);
+        int stackSize = 1;
+        final float singleItemValue = Integration.emcHandler.getSingleEnergyValue(craftingResult);
+        if (singleItemValue <= ConfigManager.maxStackEMC) {
+            stackSize = (int) Math.min(64, ConfigManager.maxStackEMC / singleItemValue);
+        }
+        result[0] = AEApi.instance().storage().createItemStack(craftingResult).setStackSize(stackSize);
+        float remainingEMC = outputEMC = singleItemValue * stackSize;
         inputEMC = 0;
         valid = false;
         final ArrayList<IAEItemStack> crystals = new ArrayList<IAEItemStack>();
