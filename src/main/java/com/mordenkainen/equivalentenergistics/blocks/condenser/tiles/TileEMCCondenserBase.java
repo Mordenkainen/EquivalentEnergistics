@@ -118,7 +118,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
             int maxToDo = Math.min(stack.stackSize, Math.min((int) (availEMC / itemEMC), (int) (remainingEMC / itemEMC)));
             if (usePower) {
-                maxToDo = getMaxItemsForPower(maxToDo, itemEMC);
+                maxToDo = Math.min(getMaxItemsForPower(maxToDo, itemEMC), maxToDo);
             }
 
             if (maxToDo <= 0) {
