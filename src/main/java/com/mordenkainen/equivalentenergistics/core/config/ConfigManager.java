@@ -36,7 +36,7 @@ public final class ConfigManager {
 
         debug = config.get("General", "Debug", debug).getBoolean(false);
         
-        maxStackEMC = (float) config.get("General", "MaxEMCForAStack", maxStackEMC).getDouble(131072);
+        maxStackEMC = (float) config.get("General", "MaxEMCForAStack", maxStackEMC).getDouble(maxStackEMC);
 
         if (config.hasChanged()) {
             config.save();
