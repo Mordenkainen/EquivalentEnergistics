@@ -133,13 +133,13 @@ public final class GridUtils {
             }
 
             final IEnergyGrid eGrid = getEnergy(proxy);
-            final double availablePower = eGrid.extractAEPower(stored, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            final long availablePower = (long) eGrid.extractAEPower(stored, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
-            final long itemToAdd = Math.min((long) (availablePower + 0.9), stored);
+            final long itemToAdd = Math.min(availablePower, stored);
             if (itemToAdd <= 0) {
                 return stack;
             }
-            eGrid.extractAEPower(stored, Actionable.MODULATE, PowerMultiplier.CONFIG);
+            eGrid.extractAEPower(itemToAdd, Actionable.MODULATE, PowerMultiplier.CONFIG);
 
             if (itemToAdd < toInject.getStackSize()) {
                 final IAEItemStack split = toInject.copy();

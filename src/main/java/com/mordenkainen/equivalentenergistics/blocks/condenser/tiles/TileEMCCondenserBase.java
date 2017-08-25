@@ -127,7 +127,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
             final float toStore = itemEMC * maxToDo;
             if (usePower) {
-                GridUtils.getEnergy(getProxy()).extractAEPower(toStore * BlockEMCCondenser.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                GridUtils.extractAEPower(getProxy(), toStore * BlockEMCCondenser.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
             emcGrid.injectEMC(toStore, Actionable.MODULATE);
             stack.stackSize -= maxToDo;
