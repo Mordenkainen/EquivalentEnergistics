@@ -10,6 +10,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 @IFMLLoadingPlugin.Name(Reference.MOD_NAME + " Core")
 public class EqECoreLoader implements IFMLLoadingPlugin {
 
+    public static boolean DEOBF = false;
+    
     @Override
     public String[] getASMTransformerClass() {
         return new String[] { EqECoreTransformer.class.getName() };
@@ -26,7 +28,9 @@ public class EqECoreLoader implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(final Map<String, Object> data) {}
+    public void injectData(final Map<String, Object> data) {
+        DEOBF = !(Boolean) data.get("runtimeDeobfuscationEnabled");
+    }
 
     @Override
     public String getAccessTransformerClass() {

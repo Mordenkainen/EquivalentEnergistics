@@ -157,11 +157,13 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
         final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = Math.min(emc, currentEMC);
 
-        stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
-        if (isEmpty(stack)) {
-            stack.getTagCompound().removeTag(EMC_TAG);
-            if (stack.getTagCompound().hasNoTags()) {
-                stack.setTagCompound(null);
+        if (hasEMCTag(stack)) {
+            stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
+            if (isEmpty(stack)) {
+                stack.getTagCompound().removeTag(EMC_TAG);
+                if (stack.getTagCompound().hasNoTags()) {
+                    stack.setTagCompound(null);
+                }
             }
         }
 
