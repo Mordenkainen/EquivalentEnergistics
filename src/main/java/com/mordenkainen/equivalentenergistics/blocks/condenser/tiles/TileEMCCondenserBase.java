@@ -7,7 +7,6 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMC
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEInv;
-import com.mordenkainen.equivalentenergistics.items.ItemEMCCell;
 import com.mordenkainen.equivalentenergistics.items.ItemEnum;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.inventory.InternalInventory;
@@ -36,7 +35,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
         @Override
         public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-            return Integration.emcHandler.hasEMC(itemStack) && Integration.emcHandler.getSingleEnergyValue(itemStack) <= getEMCPerTick() || itemStack.getItem() instanceof ItemEMCCell;
+            return Integration.emcHandler.isEMCStorage(itemStack) || Integration.emcHandler.hasEMC(itemStack) && Integration.emcHandler.getSingleEnergyValue(itemStack) <= getEMCPerTick();
         }
         
     }

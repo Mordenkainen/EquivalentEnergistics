@@ -122,42 +122,30 @@ public final class GridUtils {
 
     public static ItemStack injectItemsForPower(final AEProxy proxy, final ItemStack stack, final MachineSource source) {
         final IAEItemStack toInject = AEApi.instance().storage().createItemStack(stack.copy());
+        final long orgSize = toInject.getStackSize();
+        IAEItemStack rejected;
+        
         try {
             final IStorageGrid storageGrid = getStorage(proxy);
 
-            IAEItemStack rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.SIMULATE, source);
-
-            long stored = toInject.getStackSize();
-            if (rejected != null) {
-                stored -= rejected.getStackSize();
+            rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.SIMULATE, source);
+            if (rejected == null) {
+                rejected = AEApi.instance().storage().createItemStack(stack.copy()).setStackSize(0);
             }
-
-            final IEnergyGrid eGrid = getEnergy(proxy);
-            final long availablePower = (long) eGrid.extractAEPower(stored, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-
-            final long itemToAdd = Math.min(availablePower, stored);
-            if (itemToAdd <= 0) {
-                return stack;
+            
+            toInject.setStackSize(toInject.getStackSize() - rejected.getStackSize());
+            toInject.setStackSize((long) Math.min(extractAEPower(proxy, toInject.getStackSize(), Actionable.SIMULATE, PowerMultiplier.CONFIG) + 0.9, toInject.getStackSize()));
+            
+            if (toInject.getStackSize() > 0) {
+                rejected.add(storageGrid.getItemInventory().injectItems(toInject, Actionable.MODULATE, source));
+                extractAEPower(proxy, orgSize - rejected.getStackSize(), Actionable.MODULATE, PowerMultiplier.CONFIG);
+                return rejected.getStackSize() == 0 ? null : rejected.getItemStack();
             }
-            eGrid.extractAEPower(itemToAdd, Actionable.MODULATE, PowerMultiplier.CONFIG);
-
-            if (itemToAdd < toInject.getStackSize()) {
-                final IAEItemStack split = toInject.copy();
-                split.decStackSize(itemToAdd);
-                toInject.setStackSize(itemToAdd);
-                split.add(storageGrid.getItemInventory().injectItems(toInject, Actionable.MODULATE, source));
-
-                return split.getItemStack();
-            }
-
-            rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.MODULATE, source);
-
-            return rejected == null ? null : rejected.getItemStack();
         } catch (final GridAccessException e) {
             CommonUtils.debugLog("GridUtils:injectItemsForPower: Error accessing grid:", e);
         }
 
-        return stack;
+        return stack;  
     }
 
     public static ItemStack injectItems(final AEProxy proxy, final ItemStack stack, final Actionable mode, final MachineSource source) {

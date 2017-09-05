@@ -48,8 +48,7 @@ public class CraftingJob {
                 return false;
             }
         } else {
-            final double powerExtracted = GridUtils.extractAEPower(proxy, cost, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-
+            final double powerExtracted = GridUtils.extractAEPower(proxy, cost, Actionable.SIMULATE, PowerMultiplier.CONFIG) + 0.9;
             if (powerExtracted - cost >= 0.0D) {
                 GridUtils.extractAEPower(proxy, cost, Actionable.MODULATE, PowerMultiplier.CONFIG);
                 craftingTicks--;
