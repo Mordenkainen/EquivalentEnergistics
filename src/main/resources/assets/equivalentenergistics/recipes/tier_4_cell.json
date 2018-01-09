@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_cell",
+    "data": 3
+  },
+  "pattern": [
+    "GRG",
+    "RSR",
+    "III"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "group": "tier4",
+  "key": {
+    "G": {
+      "item": "appliedenergistics2:quartz_glass",
+      "data": 0
+    },
+    "R": {
+      "item": "minecraft:redstone",
+      "data": 0
+    },
+    "I": {
+      "item": "minecraft:iron_ingot",
+      "data": 0
+    },
+    "S": {
+      "item": "equivalentenergistics:emc_storage_component",
+      "data": 3
+    }
+  }
+}

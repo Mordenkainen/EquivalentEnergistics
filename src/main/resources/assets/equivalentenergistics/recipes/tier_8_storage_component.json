@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_storage_component",
+    "data": 7
+  },
+  "pattern": [
+    "NCN",
+    "SGS",
+    "NSN"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "appliedenergistics2:material",
+      "data": 24
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "S": {
+      "item": "equivalentenergistics:emc_storage_component",
+      "data": 6
+    },
+    "G": {
+      "item": "appliedenergistics2:quartz_glass",
+      "data": 0
+    }
+  }
+}

@@ -1,0 +1,149 @@
+package com.mordenkainen.equivalentenergistics.blocks.condenser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mordenkainen.equivalentenergistics.blocks.base.block.BlockMultiAE;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.TE;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.TEList;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenser;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserExt;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserUlt;
+import com.mordenkainen.equivalentenergistics.core.Names;
+import com.mordenkainen.equivalentenergistics.core.Reference;
+import com.mordenkainen.equivalentenergistics.integration.ae2.NetworkLights;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
+import com.mordenkainen.equivalentenergistics.util.IDropItems;
+
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+@TEList({
+@TE(tileEntityClass = TileEMCCondenser.class, registryName = Reference.MOD_ID + ".emc_condenser"),
+@TE(tileEntityClass = TileEMCCondenserAdv.class, registryName = Reference.MOD_ID + ".emc_condenser_adv"),
+@TE(tileEntityClass = TileEMCCondenserExt.class, registryName = Reference.MOD_ID + ".emc_condenser_ext"),
+@TE(tileEntityClass = TileEMCCondenserUlt.class, registryName = Reference.MOD_ID + ".emc_condenser_ult")
+})
+public class BlockEMCCondenser extends BlockMultiAE {
+	
+	public BlockEMCCondenser() {
+		super(Material.ROCK, Names.CONDENSER, 4);
+		setHardness(1.5f);
+        blockSoundType = SoundType.STONE;
+	}
+	
+	@Deprecated
+	@Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		IBlockState tmpState = super.getActualState(state, world, pos);
+        TileEMCCondenser tile = CommonUtils.getTE(world, pos);
+        if (tile != null) {
+        	if (tile.getState().isError()) {
+        		return state.withProperty(LIGHTS, NetworkLights.ERROR);
+        	}
+        }
+        return tmpState;
+    }
+	
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		switch (meta) {
+        case 0:
+            return new TileEMCCondenser();
+        case 1:
+            return new TileEMCCondenserAdv();
+        case 2:
+            return new TileEMCCondenserExt();
+        default:
+            return new TileEMCCondenserUlt();
+		}
+	}
+	
+	@Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return state.getValue(TYPE) > 0;
+    }
+
+	@Override
+    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+        TileEMCCondenserAdv tile = CommonUtils.getTE(world, pos);
+		if (blockState.getActualState(world, pos).getValue(LIGHTS) == NetworkLights.NONE) {
+			return 0;
+		}
+		
+		switch (tile.getState()) {
+		case ACTIVE:
+			return 2;
+		case IDLE:
+			return 1;
+		case NOEMCSTORAGE:
+			return 3;
+		case NOITEMSTORAGE:
+			return 4;
+		case NOPOWER:
+			return 5;
+		}
+		
+		return 0;
+    }
+	
+	@Override
+    public boolean canConnectRedstone(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+        return world.getBlockState(pos).getValue(TYPE) > 0;
+    }
+	
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (player == null) {
+            return false;
+        }
+
+        if (player.getHeldItem(hand) == ItemStack.EMPTY) {
+            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, pos);
+            if (tileCondenser != null && !world.isRemote) {
+                tileCondenser.toggleSide(facing);
+            }
+            return true;
+        }
+
+        return false;
+	}
+	
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		final IAEProxyHost tile = CommonUtils.getTE(world, pos);
+
+        if (tile != null && placer instanceof EntityPlayer) {
+            tile.setOwner((EntityPlayer) placer);
+        }
+	}
+	
+	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+		if (!world.isRemote) {
+            final IDropItems tile = CommonUtils.getTE(world, pos);
+
+            if (tile != null) {
+                final List<ItemStack> drops = new ArrayList<ItemStack>();
+                tile.getDrops(world, pos, drops);
+
+                for (final ItemStack drop : drops) {
+                    CommonUtils.spawnEntItem(world, pos, drop);
+                }
+            }
+        }
+
+        super.breakBlock(world, pos, state);
+	}
+	
+}

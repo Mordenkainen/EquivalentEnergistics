@@ -1,0 +1,19 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "equivalentenergistics",
+    "name": "Equivalent Energistics",
+    "description": "EE3 Autocrafting for AE2.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Mordenkainen"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "requiredMods": [],
+    "dependencies": [],
+    "useDependencyInformation": "true"
+  }]
+}

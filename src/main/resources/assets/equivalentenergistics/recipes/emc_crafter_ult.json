@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_crafter",
+    "data": 3
+  },
+  "pattern": [
+    "DDD",
+    "DCD",
+    "DDD"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "equivalentenergistics:emc_crafter",
+      "data": 2
+    },
+    "D": {
+      "item": "minecraft:nether_star"
+    }
+  }
+}

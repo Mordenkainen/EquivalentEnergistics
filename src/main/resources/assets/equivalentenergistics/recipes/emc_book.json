@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_book"
+  },
+  "pattern": [
+    " D ",
+    "DBD",
+    " D "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "D": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    }
+  }
+}

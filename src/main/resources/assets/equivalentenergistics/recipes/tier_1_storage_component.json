@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_storage_component",
+    "data": 0
+  },
+  "pattern": [
+    "DCD",
+    "CLC",
+    "DCD"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "appliedenergistics2:material",
+      "data": 0
+    },
+    "D": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    },
+    "L": {
+      "item": "appliedenergistics2:material",
+      "data": 22
+    }
+  }
+}
