@@ -17,7 +17,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
 	@Override
 	public float getCurrentEMC() {
-		return Config.creative_Capacity / 2;
+		return Config.creativeCapacity / 2;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
 	@Override
 	public float getMaxEMC() {
-		return Config.creative_Capacity;
+		return Config.creativeCapacity;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
 	@Override
 	public float getAvail() {
-		return Config.creative_Capacity / 2;
+		return Config.creativeCapacity / 2;
 	}
 
 	@Override

@@ -46,26 +46,26 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+    public void addInformation(final ItemStack stack, final @Nullable World world, final List<String> tooltip, final ITooltipFlag flag) {
 		 tooltip.add(I18n.format("message.cell.capacity", new Object[0]) + " " + CommonUtils.formatEMC((float) getMaximumEmc(stack)));
 	}
 
 	@Override
-	public <T extends IAEStack<T>> double cellIdleDrain(ItemStack stack, IMEInventory<T> handler) {
-		return Config.cell_Drains[stack.getItemDamage()];
+	public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> handler) {
+		return Config.cellDrains[stack.getItemDamage()];
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider host, IStorageChannel<T> channel) {
+	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
 		if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
-            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, Config.cell_Capacities[stack.getItemDamage()]);
+            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, Config.cellCapacities[stack.getItemDamage()]);
         }
         return null;
 	}
 
 	@Override
-	public <T extends IAEStack<T>> int getStatusForCell(ItemStack stack, IMEInventory<T> handler) {
+	public <T extends IAEStack<T>> int getStatusForCell(final ItemStack stack, final IMEInventory<T> handler) {
 		return handler instanceof HandlerEMCCellBase ? ((HandlerEMCCellBase) handler).getCellStatus() : 0;
 	}
 	
@@ -85,7 +85,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
         return stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(EMC_TAG);
     }
 	
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
 		if (player != null && isEmpty(player.getHeldItem(hand)) && player.isSneaking() && player.inventory.addItemStackToInventory(new ItemStack(ModItems.MISC, 1, 0))) {
             return new ActionResult<ItemStack>(EnumActionResult.PASS, new ItemStack(ModItems.COMPONENT, 1, player.getHeldItem(hand).getItemDamage()));
         }
@@ -94,9 +94,9 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     }
 
 	@Override
-	public double addEmc(ItemStack stack, double toAdd) {
+	public double addEmc(final ItemStack stack, final double toAdd) {
 		final float currentEMC = getStoredCellEMC(stack);
-        final float amountToAdd = Math.min((float) toAdd, Config.cell_Capacities[stack.getItemDamage()] - currentEMC);
+        final float amountToAdd = Math.min((float) toAdd, Config.cellCapacities[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
@@ -109,7 +109,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 	}
 
 	@Override
-	public double extractEmc(ItemStack stack, double emc) {
+	public double extractEmc(final ItemStack stack, final double emc) {
 		final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = (float) Math.min(emc, currentEMC);
 
@@ -127,12 +127,12 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 	}
 
 	@Override
-	public double getMaximumEmc(ItemStack stack) {
-		return Config.cell_Capacities[stack.getItemDamage()];
+	public double getMaximumEmc(final ItemStack stack) {
+		return Config.cellCapacities[stack.getItemDamage()];
 	}
 
 	@Override
-	public double getStoredEmc(ItemStack stack) {
+	public double getStoredEmc(final ItemStack stack) {
 		return getStoredCellEMC(stack);
 	}
 }

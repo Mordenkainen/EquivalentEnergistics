@@ -53,12 +53,12 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 	
 	
 	public TileEMCCrafter() {
-		this(1, Config.crafter_Crafting_Time, 0);
+		this(1, Config.crafterCraftingTime, 0);
 	}
 	
 	public TileEMCCrafter(final int jobs, final double time, final int meta) {
 		super(new ItemStack(Item.getItemFromBlock(ModBlocks.CRAFTER), 1, meta));
-		gridProxy.setIdlePowerUsage(Config.crafter_Idle_Power);
+		gridProxy.setIdlePowerUsage(Config.crafterIdlePower);
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
 		displayStacks = NonNullList.withSize(jobs, ItemStack.EMPTY);
 		//maxJobs = jobs;
@@ -152,7 +152,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 
 	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting invCrafting) {
-		if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, Config.crafter_Power_Per_EMC)) {
+		if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, Config.crafterPowerPerEMC)) {
             currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
             displayStacks = manager.getCurrentJobs();
             markForUpdate();

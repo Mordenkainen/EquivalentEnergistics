@@ -33,7 +33,7 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     }
 	
 	@Override
-	public void addNode(IGridNode gridNode, IGridHost machine) {
+	public void addNode(final IGridNode gridNode, final IGridHost machine) {
 		cellHandler.addNode(gridNode, machine);
 	}
 
@@ -43,7 +43,7 @@ public class EMCStorageGrid implements IEMCStorageGrid {
 	}
 
 	@Override
-	public void removeNode(IGridNode gridNode, IGridHost machine) {
+	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
 		cellHandler.removeNode(gridNode, machine);
 	}
 	
@@ -77,32 +77,32 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     }
 
 	@Override
-	public void setCurrentEMC(float currentEMC) {
+	public void setCurrentEMC(final float currentEMC) {
 		pool.setCurrentEMC(currentEMC);
 	}
 
 	@Override
-	public void setMaxEMC(float maxEMC) {
+	public void setMaxEMC(final float maxEMC) {
 		pool.setMaxEMC(maxEMC);
 	}
 
 	@Override
-	public float addEMC(float emc) {
+	public float addEMC(final float emc) {
 		return pool.addEMC(emc);
 	}
 
 	@Override
-	public float extractEMC(float emc) {
+	public float extractEMC(final float emc) {
 		return pool.extractEMC(emc);
 	}
 	
 	@Override
-	public float addEMC(float emc, Actionable mode) {
+	public float addEMC(final float emc, final Actionable mode) {
 		return cellHandler.injectEMC(emc, mode);
 	}
 
 	@Override
-	public float extractEMC(float emc, Actionable mode) {
+	public float extractEMC(final float emc, final Actionable mode) {
 		return cellHandler.extractEMC(emc, mode);
 	}
 

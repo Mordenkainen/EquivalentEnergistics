@@ -5,7 +5,7 @@ import com.mordenkainen.equivalentenergistics.core.config.Config;
 public class TileEMCCrafterExt extends TileEMCCrafterAdv {
 
 	public TileEMCCrafterExt() {
-		this(8, Config.crafter_Crafting_Time, 2);
+		this(8, Config.crafterCraftingTime, 2);
 	}
 
 	public TileEMCCrafterExt(int jobs, double time, int meta) {

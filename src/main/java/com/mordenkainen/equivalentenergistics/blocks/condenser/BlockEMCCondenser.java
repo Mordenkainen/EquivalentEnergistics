@@ -46,19 +46,17 @@ public class BlockEMCCondenser extends BlockMultiAE {
 	
 	@Deprecated
 	@Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		IBlockState tmpState = super.getActualState(state, world, pos);
-        TileEMCCondenser tile = CommonUtils.getTE(world, pos);
-        if (tile != null) {
-        	if (tile.getState().isError()) {
-        		return state.withProperty(LIGHTS, NetworkLights.ERROR);
-        	}
+    public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+		final IBlockState tmpState = super.getActualState(state, world, pos);
+        final TileEMCCondenser tile = CommonUtils.getTE(world, pos);
+        if (tile != null && tile.getState().isError()) {
+        	return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
         }
         return tmpState;
     }
 	
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
+	public TileEntity createNewTileEntity(final World world, final int meta) {
 		switch (meta) {
         case 0:
             return new TileEMCCondenser();
@@ -72,12 +70,12 @@ public class BlockEMCCondenser extends BlockMultiAE {
 	}
 	
 	@Override
-    public boolean hasComparatorInputOverride(IBlockState state) {
+    public boolean hasComparatorInputOverride(final IBlockState state) {
         return state.getValue(TYPE) > 0;
     }
 
 	@Override
-    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+    public int getComparatorInputOverride(final IBlockState blockState, final World world, final BlockPos pos) {
         TileEMCCondenserAdv tile = CommonUtils.getTE(world, pos);
 		if (blockState.getActualState(world, pos).getValue(LIGHTS) == NetworkLights.NONE) {
 			return 0;
@@ -94,9 +92,9 @@ public class BlockEMCCondenser extends BlockMultiAE {
 			return 4;
 		case NOPOWER:
 			return 5;
+		default:
+			return 0;
 		}
-		
-		return 0;
     }
 	
 	@Override
@@ -104,7 +102,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
         return world.getBlockState(pos).getValue(TYPE) > 0;
     }
 	
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
 		if (player == null) {
             return false;
         }
@@ -121,7 +119,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+	public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
 		final IAEProxyHost tile = CommonUtils.getTE(world, pos);
 
         if (tile != null && placer instanceof EntityPlayer) {
@@ -129,7 +127,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
         }
 	}
 	
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+	public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
 		if (!world.isRemote) {
             final IDropItems tile = CommonUtils.getTE(world, pos);
 

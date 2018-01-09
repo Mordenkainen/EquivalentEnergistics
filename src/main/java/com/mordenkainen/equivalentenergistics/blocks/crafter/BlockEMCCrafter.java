@@ -47,7 +47,7 @@ public class BlockEMCCrafter extends BlockMultiAE {
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
+	public TileEntity createNewTileEntity(final World world, final int meta) {
 		switch (meta) {
         case 0:
             return new TileEMCCrafter();
@@ -62,19 +62,17 @@ public class BlockEMCCrafter extends BlockMultiAE {
 	
 	@Deprecated
 	@Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		IBlockState tmpState = super.getActualState(state, world, pos);
-        TileEMCCrafter tile = CommonUtils.getTE(world, pos);
-        if (tile != null) {
-        	if (tile.isErrored()) {
-        		return state.withProperty(LIGHTS, NetworkLights.ERROR);
-        	}
+    public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+		final IBlockState tmpState = super.getActualState(state, world, pos);
+		final TileEMCCrafter tile = CommonUtils.getTE(world, pos);
+        if (tile != null && tile.isErrored()) {
+        	return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
         }
         return tmpState;
     }
 	
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+	public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
 		final IAEProxyHost tile = CommonUtils.getTE(world, pos);
 
         if (tile != null && placer instanceof EntityPlayer) {
@@ -82,7 +80,7 @@ public class BlockEMCCrafter extends BlockMultiAE {
         }
 	}
 	
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+	public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
 		if (!world.isRemote) {
             final IDropItems tile = CommonUtils.getTE(world, pos);
 
@@ -99,7 +97,7 @@ public class BlockEMCCrafter extends BlockMultiAE {
         super.breakBlock(world, pos, state);
 	}
 	
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
 		final TileEMCCrafter tileCrafter = CommonUtils.getTE(world, pos);
 
         if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {

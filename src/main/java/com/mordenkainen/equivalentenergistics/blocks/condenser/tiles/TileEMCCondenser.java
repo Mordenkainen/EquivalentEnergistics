@@ -49,10 +49,10 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
 		this(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 0));
 	}
 	
-	public TileEMCCondenser(ItemStack stack ) {
+	public TileEMCCondenser(final ItemStack stack ) {
 		super(stack);
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-        gridProxy.setIdlePowerUsage(Config.condenser_Idle_Power);
+        gridProxy.setIdlePowerUsage(Config.condenserIdlePower);
 	}
 
 	@Override
@@ -121,14 +121,15 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
     
     @Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side) {
+	public boolean hasCapability(final @Nonnull Capability<?> cap, final EnumFacing side) {
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
-		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+	public <T> T getCapability(final @Nonnull Capability<T> cap, final EnumFacing side) {
+		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);
+		}
 		return super.getCapability(cap, side);
 	}
 	
@@ -219,7 +220,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
 	
 	protected float processItems(final int slot, final float remainingEMC, final boolean usePower) {
-        ItemStack stack = inv.getStackInSlot(slot);
+        final ItemStack stack = inv.getStackInSlot(slot);
         final float itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
         try {
             final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
@@ -244,7 +245,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
 
             final float toStore = itemEMC * maxToDo;
             if (usePower) {
-                GridUtils.extractAEPower(getProxy(), toStore * Config.condenser_Active_Power, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                GridUtils.extractAEPower(getProxy(), toStore * Config.condenserActivePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
             emcGrid.addEMC(toStore, Actionable.MODULATE);
             stack.shrink(maxToDo);
@@ -258,32 +259,32 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
 	
 	protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
-        final double powerPerItem = emcValue * Config.condenser_Active_Power;
+        final double powerPerItem = emcValue * Config.condenserActivePower;
         final double powerRequired = stackSize * powerPerItem;
         final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
         return (int) (powerAvail / powerPerItem);
     }
 	
     protected float getEMCPerTick() {
-        return Config.condenser_EMC_Per_Tick;
+        return Config.condenserEMCPerTick;
     }
     
-    protected boolean isValidItem(ItemStack stack) {
-    	return stack.getItem() instanceof IItemEmc || (ProjectEAPI.getEMCProxy().hasValue(stack) && ProjectEAPI.getEMCProxy().getValue(stack) <= getEMCPerTick());
+    protected boolean isValidItem(final ItemStack stack) {
+    	return stack.getItem() instanceof IItemEmc || ProjectEAPI.getEMCProxy().hasValue(stack) && ProjectEAPI.getEMCProxy().getValue(stack) <= getEMCPerTick();
     }
 	
 	protected static class CondenserInventoryHandler extends ItemStackHandler {
 		
 		private final TileEMCCondenser tile;
 		
-		public CondenserInventoryHandler(TileEMCCondenser tile) {
+		public CondenserInventoryHandler(final TileEMCCondenser tile) {
 			super(4);
 			this.tile = tile;
 		}
 		
 		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		public ItemStack insertItem(final int slot, final @Nonnull ItemStack stack, final boolean simulate) {
 			if(tile.isValidItem(stack)) {
 				return super.insertItem(slot, stack, simulate);
 			} else {
@@ -292,12 +293,12 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
 		}
 		
 		@Override
-		public void onContentsChanged(int slot) {
+		public void onContentsChanged(final int slot) {
 			tile.markDirty();
 		}
 		
 		public boolean isEmpty() {
-			for (ItemStack stack : stacks) {
+			for (final ItemStack stack : stacks) {
 				if (!stack.isEmpty()) {
 					return false;
 				}

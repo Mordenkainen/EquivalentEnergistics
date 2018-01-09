@@ -7,13 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class InvUtils {
+public final class InvUtils {
 
 	private InvUtils() {}
 	
-	public static boolean isFull(IItemHandler itemHandler) {
+	public static boolean isFull(final IItemHandler itemHandler) {
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
-            ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
+        	final ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
             if (stackInSlot.isEmpty() || stackInSlot.getCount() != stackInSlot.getMaxStackSize()) {
                 return false;
             }
@@ -21,9 +21,9 @@ public class InvUtils {
         return true;
     }
 	
-	public static boolean isEmpty(IItemHandler itemHandler) {
+	public static boolean isEmpty(final IItemHandler itemHandler) {
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
-            ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
+        	final ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
             if (stackInSlot.getCount() > 0) {
                 return false;
             }
@@ -35,18 +35,18 @@ public class InvUtils {
 	    return stack.getCount() <= 0 ? ItemStack.EMPTY : stack;
 	}
 
-	public static int extractWithCount(IItemHandler dest, IItemHandler src, int count) {
+	public static int extractWithCount(final IItemHandler dest, final IItemHandler src, final int count) {
 		int leftToMove = count;
 		for (int i = 0; i < dest.getSlots() && leftToMove > 0; i++) {
-			ItemStack destStack = dest.getStackInSlot(i);
+			final ItemStack destStack = dest.getStackInSlot(i);
 			if (!destStack.isEmpty() && (!destStack.isStackable() || destStack.getCount() >= destStack.getMaxStackSize())) {
 				continue;
 			}
 			
 			for (int j = 0; j < src.getSlots() && leftToMove > 0; j++) {
-				ItemStack srcStack = src.getStackInSlot(j);
+				final ItemStack srcStack = src.getStackInSlot(j);
 				if (!srcStack.isEmpty() && InvUtils.willStack(destStack, srcStack)) {
-					int toMove = Math.min(leftToMove, Math.min(srcStack.getCount(), destStack.getMaxStackSize() - destStack.getCount()));
+					final int toMove = Math.min(leftToMove, Math.min(srcStack.getCount(), destStack.getMaxStackSize() - destStack.getCount()));
 					dest.insertItem(i, ItemHandlerHelper.copyStackWithSize(srcStack, toMove), false);
 					src.extractItem(j, toMove, false);
 					leftToMove -= toMove;
@@ -57,7 +57,7 @@ public class InvUtils {
 		return count - leftToMove;
 	}
 
-	public static boolean willStack(ItemStack dest, ItemStack src) {
+	public static boolean willStack(final ItemStack dest, final ItemStack src) {
 		if(dest.isEmpty() && !src.isEmpty()) {
 			return true;
 		}else if (dest.getItem() != src.getItem()) {

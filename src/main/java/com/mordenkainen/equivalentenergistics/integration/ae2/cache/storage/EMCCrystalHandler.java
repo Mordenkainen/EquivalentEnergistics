@@ -24,17 +24,17 @@ import net.minecraft.item.ItemStack;
 public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAEItemStack> {
 
 	private final EMCStorageGrid hostGrid;
-	IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+	private final IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 	private IItemList<IAEItemStack> cachedList = storageChannel.createList();
 	private boolean dirty = true;
 	
-	public EMCCrystalHandler(EMCStorageGrid host) {
+	public EMCCrystalHandler(final EMCStorageGrid host) {
 		this.hostGrid = host;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel) {
+	public List<IMEInventoryHandler> getCellArray(final IStorageChannel<?> channel) {
 		if (channel == storageChannel) {
         	return new ArrayList<IMEInventoryHandler>(Arrays.asList(new IMEInventoryHandler[] {this}));
         }
@@ -61,7 +61,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> items) {
+	public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> items) {
 		for (final IAEItemStack stack : cachedList) {
             items.add(stack);
         }
@@ -75,7 +75,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack stack, Actionable mode, IActionSource src) {
+	public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final IActionSource src) {
 		if(stack.getItem() == ModItems.CRYSTAL) {
 			final int toAdd = (int) Math.min(stack.getStackSize(), (hostGrid.getAvail()) / ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]);
 			if (toAdd > 0) {
@@ -88,7 +88,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
 	}
 
 	@Override
-	public boolean canAccept(IAEItemStack stack) {
+	public boolean canAccept(final IAEItemStack stack) {
 		return ModItems.CRYSTAL == stack.getItem();
 	}
 
@@ -103,12 +103,12 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
 	}
 
 	@Override
-	public boolean isPrioritized(IAEItemStack stack) {
+	public boolean isPrioritized(final IAEItemStack stack) {
 		return ModItems.CRYSTAL == stack.getItem();
 	}
 
 	@Override
-	public boolean validForPass(int pass) {
+	public boolean validForPass(final int pass) {
 		return pass == 1;
 	}
 	
@@ -122,7 +122,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
         }
 
         dirty = false;
-        IStorageGrid storageGrid = ((IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class));
+        final IStorageGrid storageGrid = (IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class);
         
         for (final IAEItemStack stack : cachedList) {
             stack.setStackSize(-stack.getStackSize());

@@ -27,7 +27,7 @@ public abstract class BlockMulti extends BlockBase {
 	
 	private final BlockStateContainer multiBlockState;
 	
-	public BlockMulti(Material material, String name, int count) {
+	public BlockMulti(final Material material, final String name, final int count) {
 		super(material, name);
 		TYPE = PropertyInteger.create("type", 0, count - 1);
 		multiBlockState = createRealBlockState();
@@ -50,29 +50,29 @@ public abstract class BlockMulti extends BlockBase {
     }
 
 	@Override
-	public IBlockState getStateFromMeta(int meta) {
+	public IBlockState getStateFromMeta(final int meta) {
 		return getDefaultState().withProperty(TYPE, meta);
 	}
 	
 	@Override
-	public int getMetaFromState(IBlockState state) {
+	public int getMetaFromState(final IBlockState state) {
 		return state.getValue(TYPE);
 	}
 	
 	@Override
-	public int damageDropped(IBlockState state) {
+	public int damageDropped(final IBlockState state) {
 	    return getMetaFromState(state);
 	}
 	
 	@Override
-	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void getSubBlocks(final CreativeTabs tab, final NonNullList<ItemStack> list) {
 	    for (int i = 0; i < count; i++) {
 	    	list.add(new ItemStack(this, 1, i));
 	    }
 	}
 	
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+	public ItemStack getPickBlock(final IBlockState state, final RayTraceResult target, final World world, final BlockPos pos, final EntityPlayer player) {
 	    return new ItemStack(Item.getItemFromBlock(this), 1, getMetaFromState(world.getBlockState(pos)));
 	}
 	
@@ -82,7 +82,7 @@ public abstract class BlockMulti extends BlockBase {
 	}
 	
 	@Override
-	public void registerItemModel(Item itemBlock) {
+	public void registerItemModel(final Item itemBlock) {
 		for (int i = 0; i < count; i++) {
 			EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, i, name, "type=" + i);
 		}

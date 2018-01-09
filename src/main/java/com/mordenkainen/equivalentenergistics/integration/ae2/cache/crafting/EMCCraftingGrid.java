@@ -42,12 +42,12 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
         this.grid = grid;
         craftingGrids.put(this, true);
         Random rand = new Random();
-        refreshcounter = rand.nextInt(Config.crafter_Refresh_Time * 20);
+        refreshcounter = rand.nextInt(Config.crafterRefreshTime * 20);
     }
 
     @Override
     public void onUpdateTick() {
-    	if(++refreshcounter % (Config.crafter_Refresh_Time * 20) == 0) {
+    	if(++refreshcounter % (Config.crafterRefreshTime * 20) == 0) {
     		refreshcounter = 0;
     		lastPatternVer = -1;
     	}

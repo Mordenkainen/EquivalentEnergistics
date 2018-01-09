@@ -21,7 +21,7 @@ public abstract class BlockMultiAE extends BlockMultiTile {
 
 	public static final PropertyEnum<NetworkLights> LIGHTS = PropertyEnum.create("lights", NetworkLights.class);
 	
-	public BlockMultiAE(Material material, String name, int count) {
+	public BlockMultiAE(final Material material, final String name, final int count) {
 		super(material, name, count);
 		setDefaultState(getDefaultState().withProperty(LIGHTS, NetworkLights.NONE));
 	}
@@ -32,31 +32,31 @@ public abstract class BlockMultiAE extends BlockMultiTile {
 	}
 	
 	@Override
-	public IBlockState getStateFromMeta(int meta) {
+	public IBlockState getStateFromMeta(final int meta) {
 		return super.getStateFromMeta(meta).withProperty(LIGHTS, NetworkLights.NONE);
 	}
 	
 	@Override
-	public void registerItemModel(Item itemBlock) {
+	public void registerItemModel(final Item itemBlock) {
 		for (int i = 0; i < count; i++) {
 			EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, i, name, "lights=none,type=" + i);
 		}
 	}
 	
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
+	public EnumBlockRenderType getRenderType(final IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 	
 	@Override
 	@Deprecated
-	public boolean isOpaqueCube(IBlockState state) {
+	public boolean isOpaqueCube(final IBlockState state) {
 		return false;
 	}
 	
 	@Override
 	@Deprecated
-	public boolean isFullCube(IBlockState state) {
+	public boolean isFullCube(final IBlockState state) {
 		return false;
 	}
 
@@ -68,12 +68,12 @@ public abstract class BlockMultiAE extends BlockMultiTile {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+	public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
 		return layer == BlockRenderLayer.TRANSLUCENT;
 	}
 	
 	@Deprecated
-    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
 		TileAEBase tile = (TileAEBase) world.getTileEntity(pos);
 		if (tile != null) {
 			return state.withProperty(LIGHTS, tile.isPowered() ? NetworkLights.POWERED : NetworkLights.NONE);
