@@ -19,24 +19,24 @@ import appeng.api.storage.data.IAEItemStack;
 
 public class EMCGridCellHandler {
 
-	private static Field intHandler;
+    private static Field intHandler;
     private static Field extHandler;
-    
-	private final EMCStorageGrid hostGrid;
-	private final List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
-	IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
-	
-	public EMCGridCellHandler(final EMCStorageGrid hostGrid) {
+
+    private final EMCStorageGrid hostGrid;
+    private final List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
+    IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+
+    public EMCGridCellHandler(final EMCStorageGrid hostGrid) {
         this.hostGrid = hostGrid;
     }
-	
-	public void addNode(IGridNode gridNode, IGridHost machine) {
-		if (machine instanceof ICellProvider) {
+
+    public void addNode(IGridNode gridNode, IGridHost machine) {
+        if (machine instanceof ICellProvider) {
             driveBays.add((ICellProvider) machine);
         }
-	}
+    }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
         float newEMC = 0;
         float newMax = 0;
@@ -53,8 +53,8 @@ public class EMCGridCellHandler {
 
         updatePool(newMax, newEMC);
     }
-	
-	@SuppressWarnings({ "rawtypes", "unchecked", "unlikely-arg-type" })
+
+    @SuppressWarnings({ "rawtypes", "unchecked", "unlikely-arg-type" })
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ICellProvider && driveBays.remove(machine)) {
             float newEMC = hostGrid.getCurrentEMC();
@@ -70,7 +70,7 @@ public class EMCGridCellHandler {
             updatePool(newMax, newEMC);
         }
     }
-	
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public float injectEMC(final float emc, final Actionable mode) {
         final float toAdd = Math.min(emc, hostGrid.getAvail());
@@ -122,8 +122,8 @@ public class EMCGridCellHandler {
         hostGrid.extractEMC(extracted);
         return extracted;
     }
-	
-	@SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
     private HandlerEMCCellBase getHandler(final IMEInventoryHandler<IAEItemStack> cell) {
         if (cell instanceof HandlerEMCCellBase) {
             return (HandlerEMCCellBase) cell;
@@ -152,16 +152,16 @@ public class EMCGridCellHandler {
 
         return null;
     }
-	
-	private void updatePool(float newMax, float newCurrent) {
-		if (newMax != hostGrid.getMaxEMC() || newCurrent != hostGrid.getCurrentEMC()) {
-        	hostGrid.setMaxEMC(newMax);
-        	hostGrid.setCurrentEMC(newCurrent);
+
+    private void updatePool(float newMax, float newCurrent) {
+        if (newMax != hostGrid.getMaxEMC() || newCurrent != hostGrid.getCurrentEMC()) {
+            hostGrid.setMaxEMC(newMax);
+            hostGrid.setCurrentEMC(newCurrent);
             hostGrid.markDirty();
         }
-	}
-	
-	private static boolean reflectFields() {
+    }
+
+    private static boolean reflectFields() {
         try {
             Class<?> clazz;
             clazz = Class.forName("appeng.me.storage.MEInventoryHandler");
@@ -177,5 +177,5 @@ public class EMCGridCellHandler {
 
         return true;
     }
-	
+
 }

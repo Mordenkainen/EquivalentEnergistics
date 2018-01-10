@@ -25,12 +25,12 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-	public float getCurrentEMC() {
+    public float getCurrentEMC() {
         return currentEMC;
     }
 
     @Override
-	public void setCurrentEMC(final float currentEMC) {
+    public void setCurrentEMC(final float currentEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
         } else if (currentEMC < 0) {
@@ -40,13 +40,13 @@ public class EMCPool implements IEMCStorage {
         }
     }
 
-   @Override
-	public float getMaxEMC() {
+    @Override
+    public float getMaxEMC() {
         return maxEMC;
     }
 
     @Override
-	public void setMaxEMC(final float maxEMC) {
+    public void setMaxEMC(final float maxEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
         }
@@ -72,7 +72,7 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-	public float getAvail() {
+    public float getAvail() {
         if (currentEMC >= maxEMC) {
             return 0;
         }
@@ -80,17 +80,17 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-	public boolean isFull() {
+    public boolean isFull() {
         return currentEMC >= maxEMC;
     }
 
     @Override
-	public boolean isEmpty() {
+    public boolean isEmpty() {
         return currentEMC == 0;
     }
 
     @Override
-	public float addEMC(final float emc) {
+    public float addEMC(final float emc) {
         float toAdd = emc;
         if (!overflow) {
             toAdd = Math.min(toAdd, getAvail());
@@ -100,7 +100,7 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-	public float extractEMC(final float emc) {
+    public float extractEMC(final float emc) {
         final float toExtract = Math.min(emc, currentEMC);
         currentEMC -= toExtract;
         return toExtract;

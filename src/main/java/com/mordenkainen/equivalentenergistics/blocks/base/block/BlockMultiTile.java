@@ -19,13 +19,13 @@ import net.minecraft.world.World;
 
 public abstract class BlockMultiTile extends BlockMulti implements ITileEntityProvider {
 
-	public BlockMultiTile(final Material material, final String name, final int count) {
-		super(material, name, count);
-		hasTileEntity = true;
-	}
-	
-	@Override
-	public void harvestBlock(final World world, final EntityPlayer player, final BlockPos pos, final IBlockState state, final @Nullable TileEntity te, final ItemStack stack) {
+    public BlockMultiTile(final Material material, final String name, final int count) {
+        super(material, name, count);
+        hasTileEntity = true;
+    }
+
+    @Override
+    public void harvestBlock(final World world, final EntityPlayer player, final BlockPos pos, final IBlockState state, final @Nullable TileEntity te, final ItemStack stack) {
         if (te instanceof IWorldNameable && ((IWorldNameable)te).hasCustomName()) {
             player.addStat(StatList.getBlockStats(this));
             player.addExhaustion(0.005F);
@@ -49,12 +49,12 @@ public abstract class BlockMultiTile extends BlockMulti implements ITileEntityPr
         }
     }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean eventReceived(final IBlockState state, final World world, final BlockPos pos, final int id, final int param) {
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean eventReceived(final IBlockState state, final World world, final BlockPos pos, final int id, final int param) {
         super.eventReceived(state, world, pos, id, param);
         final TileEntity tileentity = world.getTileEntity(pos);
         return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
     }
-	
+
 }

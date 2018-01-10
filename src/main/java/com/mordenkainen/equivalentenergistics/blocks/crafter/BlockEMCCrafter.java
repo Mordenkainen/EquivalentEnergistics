@@ -32,23 +32,23 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 @TEList({
-@TE(tileEntityClass = TileEMCCrafter.class, registryName = Reference.MOD_ID + ".emc_crafter"),
-@TE(tileEntityClass = TileEMCCrafterAdv.class, registryName = Reference.MOD_ID + ".emc_crafter_adv"),
-@TE(tileEntityClass = TileEMCCrafterExt.class, registryName = Reference.MOD_ID + ".emc_crafter_ext"),
-@TE(tileEntityClass = TileEMCCrafterUlt.class, registryName = Reference.MOD_ID + ".emc_crafter_ult")
+    @TE(tileEntityClass = TileEMCCrafter.class, registryName = Reference.MOD_ID + ".emc_crafter"),
+    @TE(tileEntityClass = TileEMCCrafterAdv.class, registryName = Reference.MOD_ID + ".emc_crafter_adv"),
+    @TE(tileEntityClass = TileEMCCrafterExt.class, registryName = Reference.MOD_ID + ".emc_crafter_ext"),
+    @TE(tileEntityClass = TileEMCCrafterUlt.class, registryName = Reference.MOD_ID + ".emc_crafter_ult")
 })
 public class BlockEMCCrafter extends BlockMultiAE {
-	
-	public BlockEMCCrafter() {
-		super(Material.ROCK, Names.CRAFTER, 4);
-		setHardness(1.5f);
+
+    public BlockEMCCrafter() {
+        super(Material.ROCK, Names.CRAFTER, 4);
+        setHardness(1.5f);
         blockSoundType = SoundType.STONE;
         setLightOpacity(1);
-	}
-	
-	@Override
-	public TileEntity createNewTileEntity(final World world, final int meta) {
-		switch (meta) {
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(final World world, final int meta) {
+        switch (meta) {
         case 0:
             return new TileEMCCrafter();
         case 1:
@@ -57,31 +57,32 @@ public class BlockEMCCrafter extends BlockMultiAE {
             return new TileEMCCrafterExt();
         default:
             return new TileEMCCrafterUlt();
-		}
-	}
-	
-	@Deprecated
-	@Override
+        }
+    }
+
+    @Deprecated
+    @Override
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
-		final IBlockState tmpState = super.getActualState(state, world, pos);
-		final TileEMCCrafter tile = CommonUtils.getTE(world, pos);
+        final IBlockState tmpState = super.getActualState(state, world, pos);
+        final TileEMCCrafter tile = CommonUtils.getTE(world, pos);
         if (tile != null && tile.isErrored()) {
-        	return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
+            return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
         }
         return tmpState;
     }
-	
-	@Override
-	public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-		final IAEProxyHost tile = CommonUtils.getTE(world, pos);
+
+    @Override
+    public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+        final IAEProxyHost tile = CommonUtils.getTE(world, pos);
 
         if (tile != null && placer instanceof EntityPlayer) {
             tile.setOwner((EntityPlayer) placer);
         }
-	}
-	
-	public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-		if (!world.isRemote) {
+    }
+
+    @Override
+    public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+        if (!world.isRemote) {
             final IDropItems tile = CommonUtils.getTE(world, pos);
 
             if (tile != null) {
@@ -95,10 +96,11 @@ public class BlockEMCCrafter extends BlockMultiAE {
         }
 
         super.breakBlock(world, pos, state);
-	}
-	
-	public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-		final TileEMCCrafter tileCrafter = CommonUtils.getTE(world, pos);
+    }
+
+    @Override
+    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+        final TileEMCCrafter tileCrafter = CommonUtils.getTE(world, pos);
 
         if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
             return false;
@@ -108,7 +110,7 @@ public class BlockEMCCrafter extends BlockMultiAE {
         if (isValidTome(player.getHeldItem(hand)) && existingTome.isEmpty()) {
             tileCrafter.setCurrentTome(player.getHeldItem(hand).copy());
             if (!player.capabilities.isCreativeMode) {
-            	player.setHeldItem(hand, ItemStack.EMPTY);
+                player.setHeldItem(hand, ItemStack.EMPTY);
             }
             return true;
         } else if (!existingTome.isEmpty()) {
@@ -120,10 +122,10 @@ public class BlockEMCCrafter extends BlockMultiAE {
         }
 
         return false;
-	}
-	
-	private boolean isValidTome(final ItemStack itemStack) {
+    }
+
+    private boolean isValidTome(final ItemStack itemStack) {
         return itemStack != null && itemStack.getItem() == ModItems.EMC_BOOK && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("OwnerUUID");
     }
-	
+
 }

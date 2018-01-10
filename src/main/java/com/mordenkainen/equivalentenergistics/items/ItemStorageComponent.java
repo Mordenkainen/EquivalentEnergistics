@@ -8,13 +8,13 @@ import net.minecraft.item.ItemStack;
 
 public class ItemStorageComponent extends ItemMultiBase {
 
-	public ItemStorageComponent() {
-		super(Names.COMPONENT, 8);
-	}
+    public ItemStorageComponent() {
+        super(Names.COMPONENT, 8);
+    }
 
-	@Override
+    @Override
     public EnumRarity getRarity(final ItemStack stack) {
         return EnumRarity.values()[stack.getItemDamage() / 2];
     }
-	
+
 }

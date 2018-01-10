@@ -18,16 +18,16 @@ public enum CondenserState {
         this.tickRate = tickRate;
         this.errorCondition = errorCondition;
     }
-    
+
     /*public String getStateName() {
         return stateName;
     }*/
 
-    
+
     public TickRateModulation getTickRate() {
         return tickRate;
     }
-    
+
     public boolean isError() {
         return errorCondition;
     }

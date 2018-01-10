@@ -32,19 +32,19 @@ public final class CommonUtils {
             EquivalentEnergistics.logger.debug(message, t);
         }
     }
-    
+
     public static boolean destroyAndDrop(final World world, final BlockPos pos) {
         final IBlockState state = world.getBlockState(pos);
         if (!(state.getBlock().isAir(state, world, pos))) {
             if (!world.isRemote) {
-            	
-            	state.getBlock().breakBlock(world, pos, state);
+
+                state.getBlock().breakBlock(world, pos, state);
                 final NonNullList<ItemStack> drops = NonNullList.create();
                 state.getBlock().getDrops(drops, world, pos, state, 0);
                 for (final ItemStack stack : drops) {
-                	if (stack != ItemStack.EMPTY) {
-                		spawnEntItem(world, pos, stack);
-                	}
+                    if (stack != ItemStack.EMPTY) {
+                        spawnEntItem(world, pos, stack);
+                    }
                 }
             }
             world.setBlockToAir(pos);
@@ -53,7 +53,7 @@ public final class CommonUtils {
         }
         return false;
     }
-    
+
     public static void spawnEntItem(final World world, final BlockPos pos, final ItemStack item) {
         if (world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots && item != null && item.getCount() > 0) {
             final float rx = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -63,7 +63,7 @@ public final class CommonUtils {
             final EntityItem entityItem = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, new ItemStack(item.getItem(), item.getCount(), item.getItemDamage()));
 
             if (item.hasTagCompound()) {
-                entityItem.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                entityItem.getItem().setTagCompound(item.getTagCompound().copy());
             }
 
             entityItem.motionX = world.rand.nextGaussian() * 0.05F;
@@ -72,17 +72,17 @@ public final class CommonUtils {
             world.spawnEntity(entityItem);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <R extends TileEntity> R getTE(final IBlockAccess world, BlockPos pos) {
         final TileEntity tile = world instanceof ChunkCache ? ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
         try {
-        	return (R) tile;
+            return (R) tile;
         } catch (ClassCastException e) {
-        	return null;
+            return null;
         }
     }
-    
+
     public static String formatEMC(final float emc) {
         float displayValue = emc;
 
@@ -97,5 +97,5 @@ public final class CommonUtils {
         final DecimalFormat formatter = new DecimalFormat("#.###");
         return formatter.format(displayValue) + ' ' + level;
     }
-    
+
 }

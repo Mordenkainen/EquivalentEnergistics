@@ -16,43 +16,43 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public final class ModBlocks {
 
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.CRAFTER)
-	public static final BlockEMCCrafter CRAFTER = null;
-	@ObjectHolder(Reference.MOD_ID + ":" + Names.CONDENSER)
-	public static final BlockEMCCondenser CONDENSER = null;
-	
-	private ModBlocks() {}
-	
-	public static void register(final IForgeRegistry<Block> registry) {
-		registerBlock(registry, new BlockEMCCrafter());
-		registerBlock(registry, new BlockEMCCondenser());
-	}
-	
-	public static void registerItemBlocks(final IForgeRegistry<Item> registry) {
-		registry.register(CRAFTER.createItemBlock());
-		registry.register(CONDENSER.createItemBlock());
-	}
-	
-	public static void registerModels() {
-		CRAFTER.registerItemModel(Item.getItemFromBlock(CRAFTER));
-		CONDENSER.registerItemModel(Item.getItemFromBlock(CONDENSER));
-	}
+    @ObjectHolder(Reference.MOD_ID + ":" + Names.CRAFTER)
+    public static final BlockEMCCrafter CRAFTER = null;
+    @ObjectHolder(Reference.MOD_ID + ":" + Names.CONDENSER)
+    public static final BlockEMCCondenser CONDENSER = null;
 
-	public static void registerBlock(final IForgeRegistry<Block> registry, final Block block) {
-    	registry.register(block);
-    	if (block instanceof ITileEntityProvider) {
-    		final TE teInfo = block.getClass().getDeclaredAnnotation(TE.class);
-    		if (teInfo != null) {
-    			GameRegistry.registerTileEntity(teInfo.tileEntityClass(), teInfo.registryName());
-    		} else {
-    			final TEList teList = block.getClass().getDeclaredAnnotation(TEList.class);
-    			if (teList != null) {
-    				for (final TE te : teList.value()) {
-    					GameRegistry.registerTileEntity(te.tileEntityClass(), te.registryName());
-        			}
-    			}
-    		}
-    	}
+    private ModBlocks() {}
+
+    public static void register(final IForgeRegistry<Block> registry) {
+        registerBlock(registry, new BlockEMCCrafter());
+        registerBlock(registry, new BlockEMCCondenser());
     }
-	
+
+    public static void registerItemBlocks(final IForgeRegistry<Item> registry) {
+        registry.register(CRAFTER.createItemBlock());
+        registry.register(CONDENSER.createItemBlock());
+    }
+
+    public static void registerModels() {
+        CRAFTER.registerItemModel(Item.getItemFromBlock(CRAFTER));
+        CONDENSER.registerItemModel(Item.getItemFromBlock(CONDENSER));
+    }
+
+    public static void registerBlock(final IForgeRegistry<Block> registry, final Block block) {
+        registry.register(block);
+        if (block instanceof ITileEntityProvider) {
+            final TE teInfo = block.getClass().getDeclaredAnnotation(TE.class);
+            if (teInfo != null) {
+                GameRegistry.registerTileEntity(teInfo.tileEntityClass(), teInfo.registryName());
+            } else {
+                final TEList teList = block.getClass().getDeclaredAnnotation(TEList.class);
+                if (teList != null) {
+                    for (final TE te : teList.value()) {
+                        GameRegistry.registerTileEntity(te.tileEntityClass(), te.registryName());
+                    }
+                }
+            }
+        }
+    }
+
 }

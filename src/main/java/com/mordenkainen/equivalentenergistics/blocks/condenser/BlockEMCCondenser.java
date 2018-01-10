@@ -31,33 +31,33 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 @TEList({
-@TE(tileEntityClass = TileEMCCondenser.class, registryName = Reference.MOD_ID + ".emc_condenser"),
-@TE(tileEntityClass = TileEMCCondenserAdv.class, registryName = Reference.MOD_ID + ".emc_condenser_adv"),
-@TE(tileEntityClass = TileEMCCondenserExt.class, registryName = Reference.MOD_ID + ".emc_condenser_ext"),
-@TE(tileEntityClass = TileEMCCondenserUlt.class, registryName = Reference.MOD_ID + ".emc_condenser_ult")
+    @TE(tileEntityClass = TileEMCCondenser.class, registryName = Reference.MOD_ID + ".emc_condenser"),
+    @TE(tileEntityClass = TileEMCCondenserAdv.class, registryName = Reference.MOD_ID + ".emc_condenser_adv"),
+    @TE(tileEntityClass = TileEMCCondenserExt.class, registryName = Reference.MOD_ID + ".emc_condenser_ext"),
+    @TE(tileEntityClass = TileEMCCondenserUlt.class, registryName = Reference.MOD_ID + ".emc_condenser_ult")
 })
 public class BlockEMCCondenser extends BlockMultiAE {
-	
-	public BlockEMCCondenser() {
-		super(Material.ROCK, Names.CONDENSER, 4);
-		setHardness(1.5f);
+
+    public BlockEMCCondenser() {
+        super(Material.ROCK, Names.CONDENSER, 4);
+        setHardness(1.5f);
         blockSoundType = SoundType.STONE;
-	}
-	
-	@Deprecated
-	@Override
+    }
+
+    @Deprecated
+    @Override
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
-		final IBlockState tmpState = super.getActualState(state, world, pos);
+        final IBlockState tmpState = super.getActualState(state, world, pos);
         final TileEMCCondenser tile = CommonUtils.getTE(world, pos);
         if (tile != null && tile.getState().isError()) {
-        	return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
+            return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
         }
         return tmpState;
     }
-	
-	@Override
-	public TileEntity createNewTileEntity(final World world, final int meta) {
-		switch (meta) {
+
+    @Override
+    public TileEntity createNewTileEntity(final World world, final int meta) {
+        switch (meta) {
         case 0:
             return new TileEMCCondenser();
         case 1:
@@ -66,44 +66,45 @@ public class BlockEMCCondenser extends BlockMultiAE {
             return new TileEMCCondenserExt();
         default:
             return new TileEMCCondenserUlt();
-		}
-	}
-	
-	@Override
+        }
+    }
+
+    @Override
     public boolean hasComparatorInputOverride(final IBlockState state) {
         return state.getValue(TYPE) > 0;
     }
 
-	@Override
+    @Override
     public int getComparatorInputOverride(final IBlockState blockState, final World world, final BlockPos pos) {
         TileEMCCondenserAdv tile = CommonUtils.getTE(world, pos);
-		if (blockState.getActualState(world, pos).getValue(LIGHTS) == NetworkLights.NONE) {
-			return 0;
-		}
-		
-		switch (tile.getState()) {
-		case ACTIVE:
-			return 2;
-		case IDLE:
-			return 1;
-		case NOEMCSTORAGE:
-			return 3;
-		case NOITEMSTORAGE:
-			return 4;
-		case NOPOWER:
-			return 5;
-		default:
-			return 0;
-		}
+        if (blockState.getActualState(world, pos).getValue(LIGHTS) == NetworkLights.NONE) {
+            return 0;
+        }
+
+        switch (tile.getState()) {
+        case ACTIVE:
+            return 2;
+        case IDLE:
+            return 1;
+        case NOEMCSTORAGE:
+            return 3;
+        case NOITEMSTORAGE:
+            return 4;
+        case NOPOWER:
+            return 5;
+        default:
+            return 0;
+        }
     }
-	
-	@Override
+
+    @Override
     public boolean canConnectRedstone(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
         return world.getBlockState(pos).getValue(TYPE) > 0;
     }
-	
-	public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-		if (player == null) {
+
+    @Override
+    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+        if (player == null) {
             return false;
         }
 
@@ -116,19 +117,20 @@ public class BlockEMCCondenser extends BlockMultiAE {
         }
 
         return false;
-	}
-	
-	@Override
-	public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-		final IAEProxyHost tile = CommonUtils.getTE(world, pos);
+    }
+
+    @Override
+    public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+        final IAEProxyHost tile = CommonUtils.getTE(world, pos);
 
         if (tile != null && placer instanceof EntityPlayer) {
             tile.setOwner((EntityPlayer) placer);
         }
-	}
-	
-	public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-		if (!world.isRemote) {
+    }
+
+    @Override
+    public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+        if (!world.isRemote) {
             final IDropItems tile = CommonUtils.getTE(world, pos);
 
             if (tile != null) {
@@ -142,6 +144,6 @@ public class BlockEMCCondenser extends BlockMultiAE {
         }
 
         super.breakBlock(world, pos, state);
-	}
-	
+    }
+
 }

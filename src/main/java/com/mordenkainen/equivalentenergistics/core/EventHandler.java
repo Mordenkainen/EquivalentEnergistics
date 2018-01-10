@@ -25,34 +25,34 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public final class EventHandler {
-	
-	private final static Deque<EqETileBase> TILES = new LinkedList<EqETileBase>();
 
-	private EventHandler() {}
-	
-	@SubscribeEvent
-	public static void registerItems(final RegistryEvent.Register<Item> event) {
-		ModItems.register(event.getRegistry());
-		ModBlocks.registerItemBlocks(event.getRegistry());
-	}
-	
-	@SubscribeEvent
-	public static void registerModels(final ModelRegistryEvent event) {
-		ModItems.registerModels();
-		ModBlocks.registerModels();
-	}
-	
-	@SubscribeEvent
-	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-		ModBlocks.register(event.getRegistry());
-	}
-	
+    private final static Deque<EqETileBase> TILES = new LinkedList<EqETileBase>();
+
+    private EventHandler() {}
+
+    @SubscribeEvent
+    public static void registerItems(final RegistryEvent.Register<Item> event) {
+        ModItems.register(event.getRegistry());
+        ModBlocks.registerItemBlocks(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerModels(final ModelRegistryEvent event) {
+        ModItems.registerModels();
+        ModBlocks.registerModels();
+    }
+
+    @SubscribeEvent
+    public static void registerBlocks(final RegistryEvent.Register<Block> event) {
+        ModBlocks.register(event.getRegistry());
+    }
+
     public static void addInit(final EqETileBase tile) {
         if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             TILES.add(tile);
         }
     }
-    
+
     @SubscribeEvent
     public static void onChunkLoad(final ChunkEvent.Load load) {
         for(final Object te : load.getChunk().getTileEntityMap().values()) {
@@ -61,7 +61,7 @@ public final class EventHandler {
             }
         }
     }
-    
+
     @SubscribeEvent
     public static void onTick(final TickEvent ev) {
         if(ev.type == Type.SERVER && ev.phase == Phase.END) {
@@ -74,7 +74,7 @@ public final class EventHandler {
             }
         }
     }
-    
+
     @SubscribeEvent
     public void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
         EMCCraftingGrid.knowledgeEvent(event.getPlayerUUID());
@@ -84,5 +84,5 @@ public final class EventHandler {
     public void onEnergyValueChange(final EMCRemapEvent event) {
         EMCCraftingGrid.energyEvent();
     }
-    
+
 }

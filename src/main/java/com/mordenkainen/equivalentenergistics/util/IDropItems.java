@@ -11,5 +11,5 @@ public interface IDropItems {
     void getDrops(World world, BlockPos pos, List<ItemStack> drops);
 
     void disableDrops();
-    
+
 }

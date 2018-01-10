@@ -47,10 +47,10 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 
     @Override
     public void onUpdateTick() {
-    	if(++refreshcounter % (EqEConfig.emcAssembler.refreshTime * 20) == 0) {
-    		refreshcounter = 0;
-    		lastPatternVer = -1;
-    	}
+        if(++refreshcounter % (EqEConfig.emcAssembler.refreshTime * 20) == 0) {
+            refreshcounter = 0;
+            lastPatternVer = -1;
+        }
         if (lastPatternVer != patternVer) {
             updatePatterns();
             lastPatternVer = patternVer;
@@ -60,7 +60,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ITransProvider) {
-            patternProviders.remove((ITransProvider) machine);
+            patternProviders.remove(machine);
             if (!((ITransProvider) machine).getTransmutations().isEmpty()) {
                 lastPatternVer = -1;
             }
@@ -165,13 +165,13 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
         }
     }
 
-	@Override
-	public void onJoin(final IGridStorage arg0) {}
+    @Override
+    public void onJoin(final IGridStorage arg0) {}
 
-	@Override
-	public void onSplit(final IGridStorage arg0) {}
+    @Override
+    public void onSplit(final IGridStorage arg0) {}
 
-	@Override
-	public void populateGridStorage(final IGridStorage arg0) {}
-    
+    @Override
+    public void populateGridStorage(final IGridStorage arg0) {}
+
 }

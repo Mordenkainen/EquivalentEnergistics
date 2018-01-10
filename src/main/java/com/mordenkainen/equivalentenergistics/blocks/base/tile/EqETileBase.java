@@ -13,20 +13,20 @@ public abstract class EqETileBase extends TileEntity {
             validate();
         }
     }
-    
+
     @Override
     public NBTTagCompound getUpdateTag() {
-    	NBTTagCompound tag = writeToNBT(new NBTTagCompound());
-    	getPacketData(tag);
-    	return tag;
+        NBTTagCompound tag = writeToNBT(new NBTTagCompound());
+        getPacketData(tag);
+        return tag;
     }
-    
+
     @Override
     public void handleUpdateTag(NBTTagCompound tag) {
         readFromNBT(tag);
         readPacketData(tag);
     }
-    
+
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
         final NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -44,15 +44,15 @@ public abstract class EqETileBase extends TileEntity {
 
     public void markForUpdate() {
         if (getWorld() != null) {
-        	getWorld().notifyBlockUpdate(pos, getWorld().getBlockState(pos) , getWorld().getBlockState(pos), 3);
-        	getWorld().notifyNeighborsOfStateChange(pos, getWorld().getBlockState(pos).getBlock(), true);
+            getWorld().notifyBlockUpdate(pos, getWorld().getBlockState(pos) , getWorld().getBlockState(pos), 3);
+            getWorld().notifyNeighborsOfStateChange(pos, getWorld().getBlockState(pos).getBlock(), true);
         }
     }
 
     public abstract void onReady();
-    
+
     protected abstract boolean readPacketData(NBTTagCompound nbttagcompound);
-    
+
     protected abstract void getPacketData(NBTTagCompound nbttagcompound);
-    
+
 }

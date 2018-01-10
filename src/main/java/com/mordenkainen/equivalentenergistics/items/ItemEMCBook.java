@@ -22,26 +22,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemEMCBook extends ItemBase {
 
-	private static final String OWNER_TAG = "Owner";
-	private static final String UUID_TAG = "OwnerUUID";
-	
-	public ItemEMCBook() {
-		super(Names.BOOK);
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
+    private static final String OWNER_TAG = "Owner";
+    private static final String UUID_TAG = "OwnerUUID";
+
+    public ItemEMCBook() {
+        super(Names.BOOK);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
-			tooltip.add(I18n.format("message.book.owner", new Object[0]) + " " + stack.getTagCompound().getString(OWNER_TAG));
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
+            tooltip.add(I18n.format("message.book.owner", new Object[0]) + " " + stack.getTagCompound().getString(OWNER_TAG));
         } else {
-        	tooltip.add(I18n.format("message.book.no_owner", new Object[0]));
+            tooltip.add(I18n.format("message.book.no_owner", new Object[0]));
         }
-	}
-	
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-		if (!world.isRemote && player != null && !player.getHeldItem(hand).isEmpty()) {
-			ItemStack stack = player.getHeldItem(hand);
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        if (!world.isRemote && player != null && !player.getHeldItem(hand).isEmpty()) {
+            ItemStack stack = player.getHeldItem(hand);
             if (!stack.hasTagCompound()) {
                 stack.setTagCompound(new NBTTagCompound());
             }
@@ -54,14 +55,14 @@ public class ItemEMCBook extends ItemBase {
             }
             final String playerUUID = player.getUniqueID().toString();
             if (stackNBT.hasKey(UUID_TAG) && !stackNBT.getString(UUID_TAG).equals(playerUUID)) {
-            	player.sendStatusMessage(new TextComponentTranslation("message.book.wrongowner", new Object[0]), true);
+                player.sendStatusMessage(new TextComponentTranslation("message.book.wrongowner", new Object[0]), true);
                 return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
             }
             stackNBT.setString(OWNER_TAG, player.getName());
             stackNBT.setString(UUID_TAG, playerUUID);
             player.sendStatusMessage(new TextComponentTranslation("message.book.link", new Object[0]), true);
         }
-		return super.onItemRightClick(world, player, hand);
-	}
+        return super.onItemRightClick(world, player, hand);
+    }
 
 }

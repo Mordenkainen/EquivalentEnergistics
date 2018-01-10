@@ -19,66 +19,67 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class BlockMultiAE extends BlockMultiTile {
 
-	public static final PropertyEnum<NetworkLights> LIGHTS = PropertyEnum.create("lights", NetworkLights.class);
-	
-	public BlockMultiAE(final Material material, final String name, final int count) {
-		super(material, name, count);
-		setDefaultState(getDefaultState().withProperty(LIGHTS, NetworkLights.NONE));
-	}
-	
-	@Override
-	protected BlockStateContainer createRealBlockState() {
-	    return new BlockStateContainer(this, new IProperty[] {TYPE, LIGHTS});
-	}
-	
-	@Override
-	public IBlockState getStateFromMeta(final int meta) {
-		return super.getStateFromMeta(meta).withProperty(LIGHTS, NetworkLights.NONE);
-	}
-	
-	@Override
-	public void registerItemModel(final Item itemBlock) {
-		for (int i = 0; i < count; i++) {
-			EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, i, name, "lights=none,type=" + i);
-		}
-	}
-	
-	@Override
-	public EnumBlockRenderType getRenderType(final IBlockState state) {
+    public static final PropertyEnum<NetworkLights> LIGHTS = PropertyEnum.create("lights", NetworkLights.class);
+
+    public BlockMultiAE(final Material material, final String name, final int count) {
+        super(material, name, count);
+        setDefaultState(getDefaultState().withProperty(LIGHTS, NetworkLights.NONE));
+    }
+
+    @Override
+    protected BlockStateContainer createRealBlockState() {
+        return new BlockStateContainer(this, new IProperty[] {TYPE, LIGHTS});
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(final int meta) {
+        return super.getStateFromMeta(meta).withProperty(LIGHTS, NetworkLights.NONE);
+    }
+
+    @Override
+    public void registerItemModel(final Item itemBlock) {
+        for (int i = 0; i < count; i++) {
+            EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, i, name, "lights=none,type=" + i);
+        }
+    }
+
+    @Override
+    public EnumBlockRenderType getRenderType(final IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
-	
-	@Override
-	@Deprecated
-	public boolean isOpaqueCube(final IBlockState state) {
-		return false;
-	}
-	
-	@Override
-	@Deprecated
-	public boolean isFullCube(final IBlockState state) {
-		return false;
-	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public BlockRenderLayer getBlockLayer() {
-		return BlockRenderLayer.CUTOUT;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
-		return layer == BlockRenderLayer.TRANSLUCENT;
-	}
-	
-	@Deprecated
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(final IBlockState state) {
+        return false;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isFullCube(final IBlockState state) {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean canRenderInLayer(final IBlockState state, final BlockRenderLayer layer) {
+        return layer == BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
+    @Deprecated
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
-		TileAEBase tile = (TileAEBase) world.getTileEntity(pos);
-		if (tile != null) {
-			return state.withProperty(LIGHTS, tile.isPowered() ? NetworkLights.POWERED : NetworkLights.NONE);
-		}
-		return state;
-	}
+        TileAEBase tile = (TileAEBase) world.getTileEntity(pos);
+        if (tile != null) {
+            return state.withProperty(LIGHTS, tile.isPowered() ? NetworkLights.POWERED : NetworkLights.NONE);
+        }
+        return state;
+    }
 
 }

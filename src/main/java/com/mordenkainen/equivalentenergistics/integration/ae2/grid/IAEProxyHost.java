@@ -16,17 +16,17 @@ public interface IAEProxyHost extends IGridHost, IActionHost, IPowerChannelState
     default IGridNode getGridNode(final AEPartLocation arg0) {
         return getProxy().getNode();
     }
-    
+
     @Override
     default AECableType getCableConnectionType(final AEPartLocation arg0) {
         return AECableType.SMART;
     }
-    
+
     @Override
     default IGridNode getActionableNode() {
         return getProxy().getNode();
     }
-    
+
     default void setOwner(final EntityPlayer player) {
         getProxy().setOwner(player);
     }
@@ -38,15 +38,15 @@ public interface IAEProxyHost extends IGridHost, IActionHost, IPowerChannelState
     default void invalidate() {
         getProxy().invalidate();
     }
-    
+
     default void validate() {
         getProxy().validate();
     }
-    
+
     default void onReady() {
         getProxy().onReady();
     }
-    
+
     default void readFromNBT(final NBTTagCompound data) {
         getProxy().readFromNBT(data);
     }
@@ -55,12 +55,12 @@ public interface IAEProxyHost extends IGridHost, IActionHost, IPowerChannelState
         getProxy().writeToNBT(data);
         return data;
     }
-    
+
     default void gridChanged() {}
-    
+
     AEProxy getProxy();
 
     DimensionalCoord getLocation();
 
-    
+
 }

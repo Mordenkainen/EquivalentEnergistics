@@ -19,22 +19,22 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
 
-	public TextureAtlasSprite condenserInput;
-	public TextureAtlasSprite condenserOutput;
-	
-	@Override
-	public void preInit() {
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-	
-    @Override
-	public void init() {
-		super.init();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCondenserExt.class, new CondenserRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new CrafterRenderer());
-	}
+    public TextureAtlasSprite condenserInput;
+    public TextureAtlasSprite condenserOutput;
 
-	@Override
+    @Override
+    public void preInit() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCondenserExt.class, new CondenserRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new CrafterRenderer());
+    }
+
+    @Override
     public boolean isClient() {
         return true;
     }
@@ -46,14 +46,14 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerItemRenderer(Item item, int meta, String name) {
-    	ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Reference.MOD_ID + ":" + name, "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Reference.MOD_ID + ":" + name, "inventory"));
     }
-    
+
     @Override
     public void registerItemRenderer(Item item, int meta, String name, String variant) {
-    	ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Reference.MOD_ID + ":" + name, variant));
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Reference.MOD_ID + ":" + name, variant));
     }
-    
+
     @SubscribeEvent
     public void registerTextures(final TextureStitchEvent.Pre event) {
         final TextureMap map = event.getMap();

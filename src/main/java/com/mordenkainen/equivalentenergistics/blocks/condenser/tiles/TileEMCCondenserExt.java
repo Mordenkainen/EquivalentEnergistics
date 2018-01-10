@@ -21,15 +21,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 
-	private final static String SIDE_TAG = "sides";
+    private final static String SIDE_TAG = "sides";
 
     private final Map<EnumFacing, SideSetting> sides = new HashMap<EnumFacing, SideSetting>();
-    
+
     public enum SideSetting {
         NONE,
         INPUT,
         OUTPUT;
-        
+
         public SideSetting getNext() {
             int setting = this.ordinal() + 1;
             if (setting >= 3) {
@@ -38,51 +38,51 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             return SideSetting.values()[setting];
         }
     }
-    
-	public TileEMCCondenserExt() {
-		this(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 2));
-	}
 
-	public TileEMCCondenserExt(final ItemStack repItem) {
-		super(repItem);
-    	for (final EnumFacing side : EnumFacing.VALUES) {
+    public TileEMCCondenserExt() {
+        this(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 2));
+    }
+
+    public TileEMCCondenserExt(final ItemStack repItem) {
+        super(repItem);
+        for (final EnumFacing side : EnumFacing.VALUES) {
             sides.put(side, SideSetting.NONE);
         }
-	}
+    }
 
-	@Override
-	protected float getEMCPerTick() {
+    @Override
+    protected float getEMCPerTick() {
         return EqEConfig.emcCondenser.emcPerTick * 100;
     }
-	
-	@Override
-	protected boolean isValidItem(final ItemStack stack) {
-    	return true;
-    }
-	
-	@Override
-	public boolean hasFastRenderer() {
+
+    @Override
+    protected boolean isValidItem(final ItemStack stack) {
         return true;
     }
-	
-	@Override
+
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
+    }
+
+    @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
         if (refreshNetworkState()) {
             markForUpdate();
         }
-        
+
         if (isActive() && getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
-        	updateState(CondenserState.IDLE);
+            updateState(CondenserState.IDLE);
             return TickRateModulation.IDLE;
         }
-        
+
         importItems();
 
         return super.tickingRequest(node, ticksSinceLast);
-        
-	}
-	
-	public void toggleSide(final EnumFacing side) {
+
+    }
+
+    public void toggleSide(final EnumFacing side) {
         sides.put(side, sides.get(side).getNext());
         markForUpdate();
     }
@@ -90,7 +90,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     public SideSetting getSide(final EnumFacing side) {
         return sides.get(side);
     }
-    
+
     @Override
     protected void getPacketData(final NBTTagCompound nbttagcompound) {
         super.getPacketData(nbttagcompound);
@@ -111,11 +111,11 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
                 sides.put(side, newData);
                 flag = true;
             }
-            
+
         }
         return flag;
     }
-    
+
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
@@ -126,8 +126,8 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             }
         }
     }
-	
-	@Override
+
+    @Override
     public NBTTagCompound writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         final NBTTagCompound list = new NBTTagCompound();
@@ -137,43 +137,43 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         data.setTag(SIDE_TAG, list);
         return data;
     }
-	
-	protected int itemsToTransfer() {
+
+    protected int itemsToTransfer() {
         return 16;
     }
-	
-	@Override
-	protected ItemStack ejectItem(final ItemStack stack) {
-		if (stack.isEmpty()) {
-			return stack;
-		}
-		final int numItems = Math.min(itemsToTransfer(), stack.getCount());
-		final int overflow = stack.getCount() - numItems;
-		
-		ItemStack toStore = ItemHandlerHelper.copyStackWithSize(stack, numItems);
+
+    @Override
+    protected ItemStack ejectItem(final ItemStack stack) {
+        if (stack.isEmpty()) {
+            return stack;
+        }
+        final int numItems = Math.min(itemsToTransfer(), stack.getCount());
+        final int overflow = stack.getCount() - numItems;
+
+        ItemStack toStore = ItemHandlerHelper.copyStackWithSize(stack, numItems);
         for (final EnumFacing side : sides.keySet()) {
-        	if (sides.get(side) != SideSetting.OUTPUT) {
+            if (sides.get(side) != SideSetting.OUTPUT) {
                 continue;
             }
-        	TileEntity tile = getWorld().getTileEntity(pos.offset(side));
-        	if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) {
-        		IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
-        		toStore = ItemHandlerHelper.insertItemStacked(tileInv, toStore, false);
-        		if (toStore.isEmpty()) {
-        			break;
-        		}
-        	}
+            TileEntity tile = getWorld().getTileEntity(pos.offset(side));
+            if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) {
+                IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+                toStore = ItemHandlerHelper.insertItemStacked(tileInv, toStore, false);
+                if (toStore.isEmpty()) {
+                    break;
+                }
+            }
         }
-        
+
         if (overflow > 0) {
-        	toStore.grow(overflow);
+            toStore.grow(overflow);
         }
-        
-        
+
+
         return toStore.isEmpty() ? toStore : super.ejectItem(toStore);        
-	}
-	
-	protected void importItems() {
+    }
+
+    protected void importItems() {
         int numItems = itemsToTransfer();
         for (final EnumFacing side : sides.keySet()) {
             if (sides.get(side) != SideSetting.INPUT) {
@@ -181,14 +181,14 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             }
             TileEntity tile = getWorld().getTileEntity(pos.offset(side));
             if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) {
-            	IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
-            	numItems -= InvUtils.extractWithCount(inv, tileInv, numItems);
+                IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+                numItems -= InvUtils.extractWithCount(inv, tileInv, numItems);
             }
             if (numItems <= 0) {
-            	break;
+                break;
             }
         }
-        
-	}
-	
+
+    }
+
 }

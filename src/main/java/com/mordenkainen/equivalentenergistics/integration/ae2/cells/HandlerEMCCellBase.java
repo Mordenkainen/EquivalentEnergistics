@@ -15,12 +15,12 @@ import appeng.api.storage.data.IItemList;
 
 public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemStack>, IEMCStorage {
 
-	protected final ISaveProvider saveProvider;
+    protected final ISaveProvider saveProvider;
 
     public HandlerEMCCellBase(final ISaveProvider saveProvider) {
         this.saveProvider = saveProvider;
     }
-    
+
     @Override
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
         return input;
@@ -37,9 +37,9 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
+    @Override
     public IStorageChannel getChannel() {
-    	return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override
@@ -71,7 +71,7 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
     public boolean validForPass(final int pass) {
         return false;
     }
-    
+
     public abstract int getCellStatus();
-    
+
 }

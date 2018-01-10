@@ -32,7 +32,7 @@ public class CraftingJob {
     public ItemStack getOutput() {
         return outputStack;
     }
-    
+
     public double getCost() {
         return cost;
     }
@@ -56,7 +56,7 @@ public class CraftingJob {
                 return false;
             }
         }
-        
+
         return true;
     }
 

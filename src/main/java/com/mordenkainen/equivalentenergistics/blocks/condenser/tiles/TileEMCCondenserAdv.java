@@ -11,25 +11,25 @@ import net.minecraft.item.ItemStack;
 
 public class TileEMCCondenserAdv extends TileEMCCondenser {
 
-	public TileEMCCondenserAdv() {
-		super(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 1));
-	}
-	
-	public TileEMCCondenserAdv(ItemStack repItem) {
-		super(repItem);
-	}
+    public TileEMCCondenserAdv() {
+        super(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 1));
+    }
 
-	@Override
-	protected float getEMCPerTick() {
+    public TileEMCCondenserAdv(ItemStack repItem) {
+        super(repItem);
+    }
+
+    @Override
+    protected float getEMCPerTick() {
         return EqEConfig.emcCondenser.emcPerTick * 10;
     }
 
-	@Override
+    @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
         if (refreshNetworkState()) {
             markForUpdate();
         }
-        
+
         if (isActive()) {
             if (getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
                 updateState(CondenserState.IDLE);
@@ -39,5 +39,5 @@ public class TileEMCCondenserAdv extends TileEMCCondenser {
 
         return super.tickingRequest(node, ticksSinceLast);
     }
-	
+
 }

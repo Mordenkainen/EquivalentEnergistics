@@ -5,7 +5,7 @@ import appeng.api.networking.IGridStorage;
 
 public interface ICacheBase extends IGridCache {
 
-	@Override
+    @Override
     default void onSplit(final IGridStorage dstStorage) {}
 
     @Override
@@ -13,5 +13,5 @@ public interface ICacheBase extends IGridCache {
 
     @Override
     default void populateGridStorage(final IGridStorage dstStorage) {}
-    
+
 }

@@ -21,5 +21,5 @@ public class ItemBlockMulti extends ItemBlock {
     public String getUnlocalizedName(ItemStack stack) {
         return super.getUnlocalizedName(stack) + "_" + stack.getItemDamage();
     }
-	
+
 }

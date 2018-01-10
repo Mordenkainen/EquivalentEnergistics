@@ -15,7 +15,7 @@ public class CraftingManager {
     private static final String TICK_TAG = "RemainingTicks";
     private static final String POWER_TAG = "PowerPerTick";
     private static final String JOB_TAG = "Job";
-    
+
     private final double craftingTime;
     private final int maxJobs;
     private final ICraftingMonitor monitor;
@@ -86,7 +86,7 @@ public class CraftingManager {
             if (jobs[i] != null) {
                 outputStack = ItemHandlerHelper.copyStackWithSize(jobs[i].getOutput().copy(), 1);
             } else {
-            	outputStack = ItemStack.EMPTY;
+                outputStack = ItemStack.EMPTY;
             }
             result.set(i, outputStack);
         }

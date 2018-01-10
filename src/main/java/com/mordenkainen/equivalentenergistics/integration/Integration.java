@@ -19,32 +19,32 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class Integration {
-	
-	private Integration() {}
-	
-	public static void init() {
-		AEApi.instance().registries().gridCache().registerGridCache(IEMCStorageGrid.class, EMCStorageGrid.class);
-		AEApi.instance().registries().gridCache().registerGridCache(IEMCCraftingGrid.class, EMCCraftingGrid.class);
-        AEApi.instance().registries().cell().addCellHandler((ICellHandler) ModItems.CELL);
-        AEApi.instance().registries().cell().addCellHandler((ICellHandler) ModItems.CELL_CREATIVE);
-	}
-	
-	public static void postInit() {
-		ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 0), (int) ItemEMCCrystal.CRYSTAL_VALUES[0]);
+
+    private Integration() {}
+
+    public static void init() {
+        AEApi.instance().registries().gridCache().registerGridCache(IEMCStorageGrid.class, EMCStorageGrid.class);
+        AEApi.instance().registries().gridCache().registerGridCache(IEMCCraftingGrid.class, EMCCraftingGrid.class);
+        AEApi.instance().registries().cell().addCellHandler(ModItems.CELL);
+        AEApi.instance().registries().cell().addCellHandler(ModItems.CELL_CREATIVE);
+    }
+
+    public static void postInit() {
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 0), (int) ItemEMCCrystal.CRYSTAL_VALUES[0]);
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 1), (int) ItemEMCCrystal.CRYSTAL_VALUES[1]);
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 2), (int) ItemEMCCrystal.CRYSTAL_VALUES[2]);
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 3), (int) ItemEMCCrystal.CRYSTAL_VALUES[3]);
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 4), (int) ItemEMCCrystal.CRYSTAL_VALUES[4]);
-        
+
         try {
-			Class<?> cellInv;
-			cellInv = Class.forName("appeng.me.storage.CellInventory");
-			Method blackList;
-			blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
-			blackList.invoke(null, Item.getIdFromItem(ModItems.CRYSTAL), OreDictionary.WILDCARD_VALUE);
-		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
-		}
-	}
-	
+            Class<?> cellInv;
+            cellInv = Class.forName("appeng.me.storage.CellInventory");
+            Method blackList;
+            blackList = cellInv.getDeclaredMethod("addBasicBlackList", int.class, int.class);
+            blackList.invoke(null, Item.getIdFromItem(ModItems.CRYSTAL), OreDictionary.WILDCARD_VALUE);
+        } catch (NoSuchMethodException | SecurityException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            CommonUtils.debugLog("Failed to blacklist EMC Crystals from AE Cells", e);
+        }
+    }
+
 }

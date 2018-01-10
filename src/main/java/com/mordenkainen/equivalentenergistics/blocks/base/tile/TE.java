@@ -11,8 +11,8 @@ import net.minecraft.tileentity.TileEntity;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface TE {
-	
-	Class<? extends TileEntity> tileEntityClass();
-	String registryName();
-	
+
+    Class<? extends TileEntity> tileEntityClass();
+    String registryName();
+
 }

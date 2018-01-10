@@ -15,32 +15,32 @@ import net.minecraft.item.ItemStack;
 
 public class ItemCellCreative extends ItemCellBase {
 
-	public ItemCellCreative() {
-		super(Names.CELL_CREATIVE, 1);
-	}
+    public ItemCellCreative() {
+        super(Names.CELL_CREATIVE, 1);
+    }
 
-	@Override
+    @Override
     public EnumRarity getRarity(final ItemStack stack) {
         return EnumRarity.EPIC;
     }
 
-	@Override
-	public <T extends IAEStack<T>> double cellIdleDrain(ItemStack stack, IMEInventory<T> inv) {
-		return 0;
-	}
+    @Override
+    public <T extends IAEStack<T>> double cellIdleDrain(ItemStack stack, IMEInventory<T> inv) {
+        return 0;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider host, IStorageChannel<T> channel) {
-		if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider host, IStorageChannel<T> channel) {
+        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
             return (IMEInventoryHandler<T>) new HandlerEMCCellCreative(host);
         }
         return null;
-	}
+    }
 
-	@Override
-	public <T extends IAEStack<T>> int getStatusForCell(ItemStack stack, IMEInventory<T> inv) {
-		return 1;
-	}
-	
+    @Override
+    public <T extends IAEStack<T>> int getStatusForCell(ItemStack stack, IMEInventory<T> inv) {
+        return 1;
+    }
+
 }

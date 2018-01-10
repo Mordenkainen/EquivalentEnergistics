@@ -23,10 +23,10 @@ public class CommonProxy {
 
     public void initRenderers() {}
 
-	public void registerItemRenderer(Item item, int meta, String name) {}
-	
-	public void registerItemRenderer(Item item, int meta, String name, String variant) {}
-	
-	public void registerModelBakeryVariants() {}
+    public void registerItemRenderer(Item item, int meta, String name) {}
+
+    public void registerItemRenderer(Item item, int meta, String name, String variant) {}
+
+    public void registerModelBakeryVariants() {}
 
 }

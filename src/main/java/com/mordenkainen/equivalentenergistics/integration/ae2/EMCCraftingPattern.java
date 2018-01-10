@@ -19,91 +19,91 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class EMCCraftingPattern implements ICraftingPatternDetails {
 
-	private IAEItemStack[] ingredients;
+    private IAEItemStack[] ingredients;
     private final IAEItemStack[] result = new IAEItemStack[1];
     public float outputEMC;
     public float inputEMC;
     public boolean valid = true;
-    
-    private IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
-    
+
+    private final IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+
     public EMCCraftingPattern(final ItemStack craftingResult) {
         buildPattern(craftingResult);
     }
-    
-	@Override
-	public boolean canSubstitute() {
-		return false;
-	}
 
-	@Override
-	public IAEItemStack[] getCondensedInputs() {
-		return getInputs();
-	}
+    @Override
+    public boolean canSubstitute() {
+        return false;
+    }
 
-	@Override
-	public IAEItemStack[] getCondensedOutputs() {
-		return getOutputs();
-	}
+    @Override
+    public IAEItemStack[] getCondensedInputs() {
+        return getInputs();
+    }
 
-	@Override
-	public IAEItemStack[] getInputs() {
-		return ingredients.clone();
-	}
+    @Override
+    public IAEItemStack[] getCondensedOutputs() {
+        return getOutputs();
+    }
 
-	@Override
-	public ItemStack getOutput(final InventoryCrafting crafting, final World world) {
-		return null;
-	}
+    @Override
+    public IAEItemStack[] getInputs() {
+        return ingredients.clone();
+    }
 
-	@Override
-	public IAEItemStack[] getOutputs() {
-		return result.clone();
-	}
+    @Override
+    public ItemStack getOutput(final InventoryCrafting crafting, final World world) {
+        return null;
+    }
 
-	@Override
-	public ItemStack getPattern() {
-		return ItemPattern.getItemForPattern(result[0].createItemStack());
-	}
+    @Override
+    public IAEItemStack[] getOutputs() {
+        return result.clone();
+    }
 
-	@Override
-	public int getPriority() {
-		return -1;
-	}
+    @Override
+    public ItemStack getPattern() {
+        return ItemPattern.getItemForPattern(result[0].createItemStack());
+    }
 
-	@Override
-	public boolean isCraftable() {
-		return false;
-	}
+    @Override
+    public int getPriority() {
+        return -1;
+    }
 
-	@Override
-	public boolean isValidItemForSlot(final int slot, final ItemStack stack, final World world) {
-		return false;
-	}
+    @Override
+    public boolean isCraftable() {
+        return false;
+    }
 
-	@Override
-	public void setPriority(final int priority) {}
-	
-	private void buildPattern(final ItemStack craftingResult) {
+    @Override
+    public boolean isValidItemForSlot(final int slot, final ItemStack stack, final World world) {
+        return false;
+    }
+
+    @Override
+    public void setPriority(final int priority) {}
+
+    private void buildPattern(final ItemStack craftingResult) {
         if (craftingResult.getItem() == ModItems.CRYSTAL) {
             createCrystalPattern(craftingResult.getItemDamage());
         } else {
             createItemPattern(craftingResult);
         }
     }
-	
-	public void rebuildPattern() {
+
+    public void rebuildPattern() {
         buildPattern(this.result[0].createItemStack());
     }
-	
-	private void createCrystalPattern(final int tier) {
+
+    private void createCrystalPattern(final int tier) {
         valid = true;
         outputEMC = inputEMC = ItemEMCCrystal.CRYSTAL_VALUES[tier + 1];
         result[0] = storageChannel.createStack(new ItemStack(ModItems.CRYSTAL, 64, tier));
         ingredients = new IAEItemStack[] { storageChannel.createStack(new ItemStack(ModItems.CRYSTAL, 1, tier + 1)) };
     }
-	
-	private void createItemPattern(final ItemStack craftingResult) {
+
+    private void createItemPattern(final ItemStack craftingResult) {
         int stackSize = 1;
         final float singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
         if (singleItemValue <= EqEConfig.emcAssembler.maxStackEMC) {

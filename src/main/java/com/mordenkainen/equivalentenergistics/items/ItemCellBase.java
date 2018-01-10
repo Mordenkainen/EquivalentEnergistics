@@ -13,19 +13,19 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public abstract class ItemCellBase extends ItemMultiBase implements ICellHandler {
 
-	public ItemCellBase(String name, int count) {
-		super(name, count);
-		setMaxStackSize(1);
-	}
+    public ItemCellBase(String name, int count) {
+        super(name, count);
+        setMaxStackSize(1);
+    }
 
-	@Override
-	public boolean isCell(ItemStack stack) {
-		return stack != null && stack.getItem() == this;
-	}
+    @Override
+    public boolean isCell(ItemStack stack) {
+        return stack != null && stack.getItem() == this;
+    }
 
-	@Override
-	public <T extends IAEStack<T>> void openChestGui(EntityPlayer player, IChestOrDrive drive, ICellHandler handler, IMEInventoryHandler<T> inv, ItemStack stack, IStorageChannel<T> channel) {
-		player.sendStatusMessage(new TextComponentTranslation("message.cell.chestwarning", new Object[0]), true);
-	}
+    @Override
+    public <T extends IAEStack<T>> void openChestGui(EntityPlayer player, IChestOrDrive drive, ICellHandler handler, IMEInventoryHandler<T> inv, ItemStack stack, IStorageChannel<T> channel) {
+        player.sendStatusMessage(new TextComponentTranslation("message.cell.chestwarning", new Object[0]), true);
+    }
 
 }

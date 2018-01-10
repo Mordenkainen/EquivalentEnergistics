@@ -10,22 +10,22 @@ import net.minecraft.item.ItemBlock;
 
 public abstract class BlockBase extends Block {
 
-	protected String name;
-	
-	public BlockBase(Material material, String name) {
-		super(material);
-		this.name = name;
-		setUnlocalizedName(Reference.MOD_ID + ":" + name);
-		setRegistryName(name);
-		setCreativeTab(EquivalentEnergistics.tabEE);
-	}
+    protected String name;
 
-	public void registerItemModel(Item itemBlock) {
-		EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, 0, name);
-	}
-	
-	public Item createItemBlock() {
-		return new ItemBlock(this).setRegistryName(getRegistryName());
-	}
-	
+    public BlockBase(Material material, String name) {
+        super(material);
+        this.name = name;
+        setUnlocalizedName(Reference.MOD_ID + ":" + name);
+        setRegistryName(name);
+        setCreativeTab(EquivalentEnergistics.tabEE);
+    }
+
+    public void registerItemModel(Item itemBlock) {
+        EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, 0, name);
+    }
+
+    public Item createItemBlock() {
+        return new ItemBlock(this).setRegistryName(getRegistryName());
+    }
+
 }

@@ -13,45 +13,46 @@ import appeng.api.networking.storage.IStorageGrid;
 
 public class EMCStorageGrid implements IEMCStorageGrid {
 
-	private final IGrid grid;
-	private final EMCPool pool = new EMCPool();
-	private final EMCGridCellHandler cellHandler = new EMCGridCellHandler(this);
-	private final EMCCrystalHandler crystalHandler = new EMCCrystalHandler(this);
-	
-	public EMCStorageGrid(final IGrid grid) {
+    private final IGrid grid;
+    private final EMCPool pool = new EMCPool();
+    private final EMCGridCellHandler cellHandler = new EMCGridCellHandler(this);
+    private final EMCCrystalHandler crystalHandler = new EMCCrystalHandler(this);
+
+    public EMCStorageGrid(final IGrid grid) {
         this.grid = grid;
     }
-	
-	@MENetworkEventSubscribe
+
+    @MENetworkEventSubscribe
     public void afterCacheConstruction(final MENetworkPostCacheConstruction cacheConstruction) {
-		((IStorageGrid) grid.getCache(IStorageGrid.class)).registerCellProvider(crystalHandler);
+        ((IStorageGrid) grid.getCache(IStorageGrid.class)).registerCellProvider(crystalHandler);
     }
-	
-	@MENetworkEventSubscribe
+
+    @MENetworkEventSubscribe
     public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
-		cellHandler.cellUpdate(cellUpdate);
+        cellHandler.cellUpdate(cellUpdate);
     }
-	
-	@Override
-	public void addNode(final IGridNode gridNode, final IGridHost machine) {
-		cellHandler.addNode(gridNode, machine);
-	}
 
-	@Override
-	public void onUpdateTick() {
-		crystalHandler.updateDisplay();
-	}
+    @Override
+    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+        cellHandler.addNode(gridNode, machine);
+    }
 
-	@Override
-	public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-		cellHandler.removeNode(gridNode, machine);
-	}
-	
-	public IGrid getGrid() {
+    @Override
+    public void onUpdateTick() {
+        crystalHandler.updateDisplay();
+    }
+
+    @Override
+    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+        cellHandler.removeNode(gridNode, machine);
+    }
+
+    @Override
+    public IGrid getGrid() {
         return grid;
     }
 
-	@Override
+    @Override
     public float getCurrentEMC() {
         return pool.getCurrentEMC();
     }
@@ -76,38 +77,38 @@ public class EMCStorageGrid implements IEMCStorageGrid {
         return pool.isEmpty();
     }
 
-	@Override
-	public void setCurrentEMC(final float currentEMC) {
-		pool.setCurrentEMC(currentEMC);
-	}
+    @Override
+    public void setCurrentEMC(final float currentEMC) {
+        pool.setCurrentEMC(currentEMC);
+    }
 
-	@Override
-	public void setMaxEMC(final float maxEMC) {
-		pool.setMaxEMC(maxEMC);
-	}
+    @Override
+    public void setMaxEMC(final float maxEMC) {
+        pool.setMaxEMC(maxEMC);
+    }
 
-	@Override
-	public float addEMC(final float emc) {
-		return pool.addEMC(emc);
-	}
+    @Override
+    public float addEMC(final float emc) {
+        return pool.addEMC(emc);
+    }
 
-	@Override
-	public float extractEMC(final float emc) {
-		return pool.extractEMC(emc);
-	}
-	
-	@Override
-	public float addEMC(final float emc, final Actionable mode) {
-		return cellHandler.injectEMC(emc, mode);
-	}
+    @Override
+    public float extractEMC(final float emc) {
+        return pool.extractEMC(emc);
+    }
 
-	@Override
-	public float extractEMC(final float emc, final Actionable mode) {
-		return cellHandler.extractEMC(emc, mode);
-	}
+    @Override
+    public float addEMC(final float emc, final Actionable mode) {
+        return cellHandler.injectEMC(emc, mode);
+    }
 
-	public void markDirty() {
+    @Override
+    public float extractEMC(final float emc, final Actionable mode) {
+        return cellHandler.extractEMC(emc, mode);
+    }
+
+    public void markDirty() {
         crystalHandler.markDirty();
     }
-	
+
 }
