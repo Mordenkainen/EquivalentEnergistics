@@ -14,19 +14,21 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public class ModBlocks {
+public final class ModBlocks {
 
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.CRAFTER)
 	public static final BlockEMCCrafter CRAFTER = null;
 	@ObjectHolder(Reference.MOD_ID + ":" + Names.CONDENSER)
 	public static final BlockEMCCondenser CONDENSER = null;
 	
-	public static void register(IForgeRegistry<Block> registry) {
+	private ModBlocks() {}
+	
+	public static void register(final IForgeRegistry<Block> registry) {
 		registerBlock(registry, new BlockEMCCrafter());
 		registerBlock(registry, new BlockEMCCondenser());
 	}
 	
-	public static void registerItemBlocks(IForgeRegistry<Item> registry) {
+	public static void registerItemBlocks(final IForgeRegistry<Item> registry) {
 		registry.register(CRAFTER.createItemBlock());
 		registry.register(CONDENSER.createItemBlock());
 	}
@@ -36,16 +38,16 @@ public class ModBlocks {
 		CONDENSER.registerItemModel(Item.getItemFromBlock(CONDENSER));
 	}
 
-	public static void registerBlock(IForgeRegistry<Block> registry, Block block) {
+	public static void registerBlock(final IForgeRegistry<Block> registry, final Block block) {
     	registry.register(block);
     	if (block instanceof ITileEntityProvider) {
-    		TE teInfo = block.getClass().getDeclaredAnnotation(TE.class);
+    		final TE teInfo = block.getClass().getDeclaredAnnotation(TE.class);
     		if (teInfo != null) {
     			GameRegistry.registerTileEntity(teInfo.tileEntityClass(), teInfo.registryName());
     		} else {
-    			TEList teList = block.getClass().getDeclaredAnnotation(TEList.class);
+    			final TEList teList = block.getClass().getDeclaredAnnotation(TEList.class);
     			if (teList != null) {
-    				for (TE te : teList.value()) {
+    				for (final TE te : teList.value()) {
     					GameRegistry.registerTileEntity(te.tileEntityClass(), te.registryName());
         			}
     			}

@@ -19,13 +19,13 @@ import net.minecraft.world.World;
 
 public abstract class BlockMultiTile extends BlockMulti implements ITileEntityProvider {
 
-	public BlockMultiTile(Material material, String name, int count) {
+	public BlockMultiTile(final Material material, final String name, final int count) {
 		super(material, name, count);
 		hasTileEntity = true;
 	}
 	
 	@Override
-	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+	public void harvestBlock(final World world, final EntityPlayer player, final BlockPos pos, final IBlockState state, final @Nullable TileEntity te, final ItemStack stack) {
         if (te instanceof IWorldNameable && ((IWorldNameable)te).hasCustomName()) {
             player.addStat(StatList.getBlockStats(this));
             player.addExhaustion(0.005F);
@@ -34,14 +34,14 @@ public abstract class BlockMultiTile extends BlockMulti implements ITileEntityPr
                 return;
             }
 
-            int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
-            Item item = this.getItemDropped(state, world.rand, i);
+            final int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
+            final Item item = this.getItemDropped(state, world.rand, i);
 
             if (item == Items.AIR) {
                 return;
             }
 
-            ItemStack itemstack = new ItemStack(item, this.quantityDropped(world.rand));
+            final ItemStack itemstack = new ItemStack(item, this.quantityDropped(world.rand));
             itemstack.setStackDisplayName(((IWorldNameable)te).getName());
             spawnAsEntity(world, pos, itemstack);
         } else {
@@ -51,9 +51,9 @@ public abstract class BlockMultiTile extends BlockMulti implements ITileEntityPr
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean eventReceived(IBlockState state, World world, BlockPos pos, int id, int param) {
+	public boolean eventReceived(final IBlockState state, final World world, final BlockPos pos, final int id, final int param) {
         super.eventReceived(state, world, pos, id, param);
-        TileEntity tileentity = world.getTileEntity(pos);
+        final TileEntity tileentity = world.getTileEntity(pos);
         return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
     }
 	

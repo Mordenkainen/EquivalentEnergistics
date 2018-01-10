@@ -6,9 +6,7 @@ import net.minecraftforge.common.config.Config;
 
 @Config(modid = Reference.MOD_ID, name = Reference.MOD_ID)
 public final class EqEConfig {
-    
-    private EqEConfig() {}
-    
+     
     public static MiscSettings misc = new MiscSettings();
     
     public static EMCAssembler emcAssembler = new EMCAssembler();
@@ -20,6 +18,8 @@ public final class EqEConfig {
     
     @Config.Comment("EMC Cell power drain.")
 	public static EMCCellDrain cellPowerDrain = new EMCCellDrain();
+    
+    private EqEConfig() {}
     
 	public static class MiscSettings {
 

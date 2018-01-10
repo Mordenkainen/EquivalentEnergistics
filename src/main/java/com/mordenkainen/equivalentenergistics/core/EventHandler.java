@@ -24,32 +24,32 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-public class EventHandler {
+public final class EventHandler {
+	
+	private final static Deque<EqETileBase> TILES = new LinkedList<EqETileBase>();
 
 	private EventHandler() {}
 	
 	@SubscribeEvent
-	public static void registerItems(RegistryEvent.Register<Item> event) {
+	public static void registerItems(final RegistryEvent.Register<Item> event) {
 		ModItems.register(event.getRegistry());
 		ModBlocks.registerItemBlocks(event.getRegistry());
 	}
 	
 	@SubscribeEvent
-	public static void registerModels(ModelRegistryEvent event) {
+	public static void registerModels(final ModelRegistryEvent event) {
 		ModItems.registerModels();
 		ModBlocks.registerModels();
 	}
 	
 	@SubscribeEvent
-	public static void registerBlocks(RegistryEvent.Register<Block> event) {
+	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
 		ModBlocks.register(event.getRegistry());
 	}
 	
-	private final static Deque<EqETileBase> tiles = new LinkedList<EqETileBase>();
-    
     public static void addInit(final EqETileBase tile) {
         if(FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            tiles.add(tile);
+            TILES.add(tile);
         }
     }
     
@@ -65,9 +65,9 @@ public class EventHandler {
     @SubscribeEvent
     public static void onTick(final TickEvent ev) {
         if(ev.type == Type.SERVER && ev.phase == Phase.END) {
-            while( !tiles.isEmpty() )
+            while( !TILES.isEmpty() )
             {
-                final EqETileBase tile = tiles.poll();
+                final EqETileBase tile = TILES.poll();
                 if(!tile.isInvalid()) {
                     tile.onReady();
                 }

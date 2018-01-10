@@ -13,11 +13,11 @@ import net.minecraftforge.client.model.animation.FastTESR;
 
 public class CondenserRenderer extends FastTESR<TileEMCCondenserExt> {
     @Override
-    public void renderTileEntityFast(TileEMCCondenserExt te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer) {
-        BlockPos pos = te.getPos();
-        int lightCoords = Minecraft.getMinecraft().world.getBlockState(pos).getPackedLightmapCoords(Minecraft.getMinecraft().world, pos);
-        int lightX = lightCoords >> 16 & 65535;
-        int lightY = lightCoords & 65535;
+    public void renderTileEntityFast(final TileEMCCondenserExt te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float partial, final BufferBuilder buffer) {
+    	final BlockPos pos = te.getPos();
+    	final int lightCoords = Minecraft.getMinecraft().world.getBlockState(pos).getPackedLightmapCoords(Minecraft.getMinecraft().world, pos);
+    	final int lightX = lightCoords >> 16 & 65535;
+    	final int lightY = lightCoords & 65535;
         
         
         TextureAtlasSprite sprite = getTexForSide(te, EnumFacing.UP);
@@ -69,7 +69,7 @@ public class CondenserRenderer extends FastTESR<TileEMCCondenserExt> {
         }
     }
 
-	private TextureAtlasSprite getTexForSide(TileEMCCondenserExt te, EnumFacing side) {
+	private TextureAtlasSprite getTexForSide(final TileEMCCondenserExt te, final EnumFacing side) {
 		switch (te.getSide(side)) {
 		case INPUT:
 			return ((ClientProxy) EquivalentEnergistics.proxy).condenserInput;

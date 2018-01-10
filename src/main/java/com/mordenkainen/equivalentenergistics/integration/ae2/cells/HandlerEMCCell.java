@@ -10,8 +10,8 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 
 	private static final String EMC_TAG = "emc";
 
-    private final NBTTagCompound cellData;
-    private EMCPool pool = new EMCPool();
+	private final NBTTagCompound cellData;
+	private final EMCPool pool = new EMCPool();
     
 	public HandlerEMCCell(final ItemStack storageStack, final ISaveProvider saveProvider, final float capacity) {
         super(saveProvider);
@@ -43,7 +43,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 	}
 
 	@Override
-	public void setCurrentEMC(float currentEMC) {}
+	public void setCurrentEMC(final float currentEMC) {}
 
 	@Override
 	public float getMaxEMC() {
@@ -51,7 +51,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 	}
 
 	@Override
-	public void setMaxEMC(float maxEMC) {}
+	public void setMaxEMC(final float maxEMC) {}
 
 	@Override
 	public float getAvail() {
@@ -69,8 +69,8 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 	}
 
 	@Override
-	public float addEMC(float emc) {
-		float added = pool.addEMC(emc);
+	public float addEMC(final float emc) {
+		final float added = pool.addEMC(emc);
 		if (added > 0) {
 			updateEMC();
 		}
@@ -78,8 +78,8 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 	}
 
 	@Override
-	public float extractEMC(float emc) {
-		float extracted = pool.extractEMC(emc);
+	public float extractEMC(final float emc) {
+		final float extracted = pool.extractEMC(emc);
 		if (extracted > 0) {
 			updateEMC();
 		}

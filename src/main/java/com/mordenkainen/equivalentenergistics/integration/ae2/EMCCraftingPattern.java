@@ -25,7 +25,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
     public float inputEMC;
     public boolean valid = true;
     
-    IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    private IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
     
     public EMCCraftingPattern(final ItemStack craftingResult) {
         buildPattern(craftingResult);
@@ -52,7 +52,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 	}
 
 	@Override
-	public ItemStack getOutput(InventoryCrafting arg0, World arg1) {
+	public ItemStack getOutput(final InventoryCrafting crafting, final World world) {
 		return null;
 	}
 
@@ -77,12 +77,12 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 	}
 
 	@Override
-	public boolean isValidItemForSlot(int arg0, ItemStack arg1, World arg2) {
+	public boolean isValidItemForSlot(final int slot, final ItemStack stack, final World world) {
 		return false;
 	}
 
 	@Override
-	public void setPriority(int arg0) {}
+	public void setPriority(final int priority) {}
 	
 	private void buildPattern(final ItemStack craftingResult) {
         if (craftingResult.getItem() == ModItems.CRYSTAL) {
@@ -127,7 +127,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
         }
 
         if (remainingEMC > 0) {
-            if (crystals.size() > 0 && crystals.get(crystals.size() - 1).getItemDamage() == 0) {
+            if (!crystals.isEmpty() && crystals.get(crystals.size() - 1).getItemDamage() == 0) {
                 crystals.get(crystals.size() - 1).setStackSize(crystals.get(crystals.size() - 1).getStackSize() + 1);
             } else {
                 crystals.add(storageChannel.createStack(new ItemStack(ModItems.CRYSTAL, 1, 0)));

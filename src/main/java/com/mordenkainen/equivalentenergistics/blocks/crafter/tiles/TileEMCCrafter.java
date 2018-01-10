@@ -61,7 +61,6 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 		gridProxy.setIdlePowerUsage(EqEConfig.emcAssembler.idlePower);
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
 		displayStacks = NonNullList.withSize(jobs, ItemStack.EMPTY);
-		//maxJobs = jobs;
 		manager = new CraftingManager(time, jobs, this, getProxy(), mySource);
 	}
 
@@ -98,7 +97,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 		return displayStacks;
 	}
 
-	public boolean canPlayerInteract(EntityPlayer player) {
+	public boolean canPlayerInteract(final EntityPlayer player) {
 		return checkPermissions(player) && !manager.isCrafting();
 	}
 
@@ -106,14 +105,14 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 		return transmutationItem;
 	}
 
-	public void setCurrentTome(ItemStack heldItem) {
+	public void setCurrentTome(final ItemStack heldItem) {
 		transmutationItem = heldItem;
         GridUtils.updatePatterns(getProxy());
         markForUpdate();
 	}
 
 	@Override
-	public void getDrops(World world, BlockPos pos, List<ItemStack> drops) {
+	public void getDrops(final World world, final BlockPos pos, final List<ItemStack> drops) {
 		if (doDrops && !transmutationItem.isEmpty()) {
             drops.add(transmutationItem);
         }
@@ -151,7 +150,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 	}
 
 	@Override
-	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting invCrafting) {
+	public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting invCrafting) {
 		if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, EqEConfig.emcAssembler.powerPerEMC)) {
             currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
             displayStacks = manager.getCurrentJobs();
@@ -162,7 +161,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 	}
 
 	@Override
-	public void provideCrafting(ICraftingProviderHelper craftingProvider) {
+	public void provideCrafting(final ICraftingProviderHelper craftingProvider) {
 		GridUtils.addPatterns(getProxy(), this, craftingProvider);
 	}
 
@@ -242,7 +241,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     }
 
 	@Override
-	public void craftingFinished(ItemStack outputStack) {
+	public void craftingFinished(final ItemStack outputStack) {
 		displayStacks = manager.getCurrentJobs();
         markForUpdate();
 	}

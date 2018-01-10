@@ -43,7 +43,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 		this(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 2));
 	}
 
-	public TileEMCCondenserExt(ItemStack repItem) {
+	public TileEMCCondenserExt(final ItemStack repItem) {
 		super(repItem);
     	for (final EnumFacing side : EnumFacing.VALUES) {
             sides.put(side, SideSetting.NONE);
@@ -56,7 +56,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     }
 	
 	@Override
-	protected boolean isValidItem(ItemStack stack) {
+	protected boolean isValidItem(final ItemStack stack) {
     	return true;
     }
 	
@@ -71,11 +71,9 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             markForUpdate();
         }
         
-        if (isActive()) {
-            if (getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
-                updateState(CondenserState.IDLE);
-                return TickRateModulation.IDLE;
-            }
+        if (isActive() && getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
+        	updateState(CondenserState.IDLE);
+            return TickRateModulation.IDLE;
         }
         
         importItems();
@@ -149,8 +147,8 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 		if (stack.isEmpty()) {
 			return stack;
 		}
-		int numItems = Math.min(itemsToTransfer(), stack.getCount());
-		int overflow = stack.getCount() - numItems;
+		final int numItems = Math.min(itemsToTransfer(), stack.getCount());
+		final int overflow = stack.getCount() - numItems;
 		
 		ItemStack toStore = ItemHandlerHelper.copyStackWithSize(stack, numItems);
         for (final EnumFacing side : sides.keySet()) {
@@ -167,16 +165,8 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         	}
         }
         
-        if (toStore.isEmpty() && overflow == 0) {
-        	return ItemStack.EMPTY;
-        }
-        
         if (overflow > 0) {
-        	if (!toStore.isEmpty()) {
-            	toStore = ItemHandlerHelper.copyStackWithSize(stack, overflow);
-            } else {
-            	toStore.grow(overflow);
-            }
+        	toStore.grow(overflow);
         }
         
         

@@ -41,7 +41,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     public EMCCraftingGrid(final IGrid grid) {
         this.grid = grid;
         craftingGrids.put(this, true);
-        Random rand = new Random();
+        final Random rand = new Random();
         refreshcounter = rand.nextInt(EqEConfig.emcAssembler.refreshTime * 20);
     }
 
@@ -166,12 +166,12 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     }
 
 	@Override
-	public void onJoin(IGridStorage arg0) {}
+	public void onJoin(final IGridStorage arg0) {}
 
 	@Override
-	public void onSplit(IGridStorage arg0) {}
+	public void onSplit(final IGridStorage arg0) {}
 
 	@Override
-	public void populateGridStorage(IGridStorage arg0) {}
+	public void populateGridStorage(final IGridStorage arg0) {}
     
 }
