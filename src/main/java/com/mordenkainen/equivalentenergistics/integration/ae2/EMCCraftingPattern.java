@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.integration.ae2;
 
 import java.util.ArrayList;
 
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
 import com.mordenkainen.equivalentenergistics.items.ItemPattern;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
@@ -106,8 +106,8 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 	private void createItemPattern(final ItemStack craftingResult) {
         int stackSize = 1;
         final float singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
-        if (singleItemValue <= Config.maxStackEMC) {
-            stackSize = (int) Math.min(64, Config.maxStackEMC / singleItemValue);
+        if (singleItemValue <= EqEConfig.emcAssembler.maxStackEMC) {
+            stackSize = (int) Math.min(64, EqEConfig.emcAssembler.maxStackEMC / singleItemValue);
         }
         result[0] =storageChannel.createStack(craftingResult).setStackSize(stackSize);
         float remainingEMC = outputEMC = singleItemValue * stackSize;

@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
 import com.mordenkainen.equivalentenergistics.blocks.base.tile.TileAEBase;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
@@ -52,7 +52,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
 	public TileEMCCondenser(final ItemStack stack ) {
 		super(stack);
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-        gridProxy.setIdlePowerUsage(Config.condenserIdlePower);
+        gridProxy.setIdlePowerUsage(EqEConfig.emcCondenser.idlePower);
 	}
 
 	@Override
@@ -245,7 +245,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
 
             final float toStore = itemEMC * maxToDo;
             if (usePower) {
-                GridUtils.extractAEPower(getProxy(), toStore * Config.condenserActivePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                GridUtils.extractAEPower(getProxy(), toStore * EqEConfig.emcCondenser.powerPerEMC, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
             emcGrid.addEMC(toStore, Actionable.MODULATE);
             stack.shrink(maxToDo);
@@ -259,14 +259,14 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
 	
 	protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
-        final double powerPerItem = emcValue * Config.condenserActivePower;
+        final double powerPerItem = emcValue * EqEConfig.emcCondenser.powerPerEMC;
         final double powerRequired = stackSize * powerPerItem;
         final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
         return (int) (powerAvail / powerPerItem);
     }
 	
     protected float getEMCPerTick() {
-        return Config.condenserEMCPerTick;
+        return EqEConfig.emcCondenser.EMCPerTick;
     }
     
     protected boolean isValidItem(final ItemStack stack) {

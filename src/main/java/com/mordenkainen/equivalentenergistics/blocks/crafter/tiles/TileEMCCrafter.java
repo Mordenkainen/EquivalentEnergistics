@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
 import com.mordenkainen.equivalentenergistics.blocks.base.tile.TileAEBase;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.CraftingManager;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.ITransProvider;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
@@ -53,45 +53,45 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 	
 	
 	public TileEMCCrafter() {
-		this(1, Config.crafterCraftingTime, 0);
+		this(1, EqEConfig.emcAssembler.craftingTime, 0);
 	}
 	
 	public TileEMCCrafter(final int jobs, final double time, final int meta) {
 		super(new ItemStack(Item.getItemFromBlock(ModBlocks.CRAFTER), 1, meta));
-		gridProxy.setIdlePowerUsage(Config.crafterIdlePower);
+		gridProxy.setIdlePowerUsage(EqEConfig.emcAssembler.idlePower);
 		gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
 		displayStacks = NonNullList.withSize(jobs, ItemStack.EMPTY);
 		//maxJobs = jobs;
 		manager = new CraftingManager(time, jobs, this, getProxy(), mySource);
-	 }
+	}
 
 	@Override
-    public TickingRequest getTickingRequest(final IGridNode node) {
-        return new TickingRequest(1, 20, false, true);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        if (refreshNetworkState()) {
-            markForUpdate();
-        }
-        
-        if (!isActive()) {
-            return TickRateModulation.IDLE;
-        }
-        
-        injectEMC();
-        
-        if (manager.isCrafting()) {
-            final boolean newState = !manager.craftingTick();
-            if (newState != errored) {
-                errored = newState;
-                markForUpdate();
-            }
-            return TickRateModulation.URGENT;
-        }
-        
-        return TickRateModulation.SAME;
+	public TickingRequest getTickingRequest(final IGridNode node) {
+	    return new TickingRequest(1, 20, false, true);
+	}
+	
+	@Override
+	public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
+	    if (refreshNetworkState()) {
+	        markForUpdate();
+	    }
+	    
+	    if (!isActive()) {
+	        return TickRateModulation.IDLE;
+	    }
+	    
+	    injectEMC();
+	    
+	    if (manager.isCrafting()) {
+	        final boolean newState = !manager.craftingTick();
+	        if (newState != errored) {
+	            errored = newState;
+	            markForUpdate();
+	        }
+	        return TickRateModulation.URGENT;
+	    }
+	    
+	    return TickRateModulation.SAME;
     }
 
 	public NonNullList<ItemStack> getDisplayStacks() {
@@ -152,7 +152,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 
 	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting invCrafting) {
-		if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, Config.crafterPowerPerEMC)) {
+		if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, EqEConfig.emcAssembler.powerPerEMC)) {
             currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
             displayStacks = manager.getCurrentJobs();
             markForUpdate();

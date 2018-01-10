@@ -4,7 +4,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.mordenkainen.equivalentenergistics.core.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.core.Reference;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
 import com.mordenkainen.equivalentenergistics.core.proxy.CommonProxy;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 
@@ -33,7 +32,6 @@ public class EquivalentEnergistics {
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event) {
         logger = event.getModLog();
-        Config.init(event.getSuggestedConfigurationFile());
         proxy.preInit();
     }
 

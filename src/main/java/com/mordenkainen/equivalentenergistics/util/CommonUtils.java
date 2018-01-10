@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.util;
 import java.text.DecimalFormat;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -22,13 +22,13 @@ public final class CommonUtils {
     private CommonUtils() {}
 
     public static void debugLog(final String message) {
-        if (Config.debug) {
+        if (EqEConfig.misc.debug) {
             EquivalentEnergistics.logger.debug(message);
         }
     }
 
     public static void debugLog(final String message, final Throwable t) {
-        if (Config.debug) {
+        if (EqEConfig.misc.debug) {
             EquivalentEnergistics.logger.debug(message, t);
         }
     }

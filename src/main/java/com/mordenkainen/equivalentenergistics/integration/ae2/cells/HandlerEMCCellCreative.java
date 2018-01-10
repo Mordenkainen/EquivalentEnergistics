@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
 
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 
 import appeng.api.storage.ISaveProvider;
 
@@ -17,7 +17,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
 	@Override
 	public float getCurrentEMC() {
-		return Config.creativeCapacity / 2;
+		return EqEConfig.cellCapacities.creativeCell / 2;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
 	@Override
 	public float getMaxEMC() {
-		return Config.creativeCapacity;
+		return EqEConfig.cellCapacities.creativeCell;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
 	@Override
 	public float getAvail() {
-		return Config.creativeCapacity / 2;
+		return EqEConfig.cellCapacities.creativeCell / 2;
 	}
 
 	@Override

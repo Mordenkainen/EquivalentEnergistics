@@ -10,7 +10,7 @@ import java.util.Random;
 import com.google.common.base.Equivalence;
 import com.google.common.base.Equivalence.Wrapper;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CompItemStack;
@@ -42,12 +42,12 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
         this.grid = grid;
         craftingGrids.put(this, true);
         Random rand = new Random();
-        refreshcounter = rand.nextInt(Config.crafterRefreshTime * 20);
+        refreshcounter = rand.nextInt(EqEConfig.emcAssembler.refreshTime * 20);
     }
 
     @Override
     public void onUpdateTick() {
-    	if(++refreshcounter % (Config.crafterRefreshTime * 20) == 0) {
+    	if(++refreshcounter % (EqEConfig.emcAssembler.refreshTime * 20) == 0) {
     		refreshcounter = 0;
     		lastPatternVer = -1;
     	}

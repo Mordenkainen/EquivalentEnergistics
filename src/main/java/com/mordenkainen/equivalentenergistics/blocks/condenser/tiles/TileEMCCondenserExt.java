@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.util.InvUtils;
 
 import appeng.api.networking.IGridNode;
@@ -52,7 +52,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 
 	@Override
 	protected float getEMCPerTick() {
-        return Config.condenserEMCPerTick * 100;
+        return EqEConfig.emcCondenser.EMCPerTick * 100;
     }
 	
 	@Override

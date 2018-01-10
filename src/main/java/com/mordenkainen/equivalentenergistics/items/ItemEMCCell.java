@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mordenkainen.equivalentenergistics.core.Names;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCell;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCellBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
@@ -34,6 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
 	private static final String EMC_TAG = "emc";
+	private static final float cellCapacities[] = {EqEConfig.cellCapacities.tier1_Cell, EqEConfig.cellCapacities.tier2_Cell, EqEConfig.cellCapacities.tier3_Cell, EqEConfig.cellCapacities.tier4_Cell, EqEConfig.cellCapacities.tier5_Cell, EqEConfig.cellCapacities.tier6_Cell, EqEConfig.cellCapacities.tier7_Cell, EqEConfig.cellCapacities.tier8_Cell};
+	private static final double cellDrains[] = {EqEConfig.cellPowerDrain.tier1_Cell, EqEConfig.cellPowerDrain.tier2_Cell, EqEConfig.cellPowerDrain.tier3_Cell, EqEConfig.cellPowerDrain.tier4_Cell, EqEConfig.cellPowerDrain.tier5_Cell, EqEConfig.cellPowerDrain.tier6_Cell, EqEConfig.cellPowerDrain.tier7_Cell, EqEConfig.cellPowerDrain.tier8_Cell};
 	
 	public ItemEMCCell() {
 		super(Names.CELL, 8);
@@ -52,14 +54,14 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
 	@Override
 	public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> handler) {
-		return Config.cellDrains[stack.getItemDamage()];
+		return cellDrains[stack.getItemDamage()];
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
 		if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
-            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, Config.cellCapacities[stack.getItemDamage()]);
+            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, cellCapacities[stack.getItemDamage()]);
         }
         return null;
 	}
@@ -96,7 +98,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 	@Override
 	public double addEmc(final ItemStack stack, final double toAdd) {
 		final float currentEMC = getStoredCellEMC(stack);
-        final float amountToAdd = Math.min((float) toAdd, Config.cellCapacities[stack.getItemDamage()] - currentEMC);
+        final float amountToAdd = Math.min((float) toAdd, cellCapacities[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
@@ -128,7 +130,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
 	@Override
 	public double getMaximumEmc(final ItemStack stack) {
-		return Config.cellCapacities[stack.getItemDamage()];
+		return cellCapacities[stack.getItemDamage()];
 	}
 
 	@Override

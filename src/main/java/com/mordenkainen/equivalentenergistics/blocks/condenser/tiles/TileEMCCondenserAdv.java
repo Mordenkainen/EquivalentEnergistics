@@ -2,7 +2,7 @@ package com.mordenkainen.equivalentenergistics.blocks.condenser.tiles;
 
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
-import com.mordenkainen.equivalentenergistics.core.config.Config;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -21,7 +21,7 @@ public class TileEMCCondenserAdv extends TileEMCCondenser {
 
 	@Override
 	protected float getEMCPerTick() {
-        return Config.condenserEMCPerTick * 10;
+        return EqEConfig.emcCondenser.EMCPerTick * 10;
     }
 
 	@Override
