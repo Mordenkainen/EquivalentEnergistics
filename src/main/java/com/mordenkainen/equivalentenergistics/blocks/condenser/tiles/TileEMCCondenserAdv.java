@@ -21,7 +21,7 @@ public class TileEMCCondenserAdv extends TileEMCCondenser {
 
 	@Override
 	protected float getEMCPerTick() {
-        return EqEConfig.emcCondenser.EMCPerTick * 10;
+        return EqEConfig.emcCondenser.emcPerTick * 10;
     }
 
 	@Override

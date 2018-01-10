@@ -266,7 +266,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
 	
     protected float getEMCPerTick() {
-        return EqEConfig.emcCondenser.EMCPerTick;
+        return EqEConfig.emcCondenser.emcPerTick;
     }
     
     protected boolean isValidItem(final ItemStack stack) {

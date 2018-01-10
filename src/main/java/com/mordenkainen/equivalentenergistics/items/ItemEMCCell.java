@@ -34,8 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
 	private static final String EMC_TAG = "emc";
-	private static final float cellCapacities[] = {EqEConfig.cellCapacities.tier1_Cell, EqEConfig.cellCapacities.tier2_Cell, EqEConfig.cellCapacities.tier3_Cell, EqEConfig.cellCapacities.tier4_Cell, EqEConfig.cellCapacities.tier5_Cell, EqEConfig.cellCapacities.tier6_Cell, EqEConfig.cellCapacities.tier7_Cell, EqEConfig.cellCapacities.tier8_Cell};
-	private static final double cellDrains[] = {EqEConfig.cellPowerDrain.tier1_Cell, EqEConfig.cellPowerDrain.tier2_Cell, EqEConfig.cellPowerDrain.tier3_Cell, EqEConfig.cellPowerDrain.tier4_Cell, EqEConfig.cellPowerDrain.tier5_Cell, EqEConfig.cellPowerDrain.tier6_Cell, EqEConfig.cellPowerDrain.tier7_Cell, EqEConfig.cellPowerDrain.tier8_Cell};
+	private static final float CELL_CAPACITIES[] = {EqEConfig.cellCapacities.tier1Cell, EqEConfig.cellCapacities.tier2Cell, EqEConfig.cellCapacities.tier3Cell, EqEConfig.cellCapacities.tier4Cell, EqEConfig.cellCapacities.tier5Cell, EqEConfig.cellCapacities.tier6Cell, EqEConfig.cellCapacities.tier7Cell, EqEConfig.cellCapacities.tier8Cell};
+	private static final double CELL_DRAINS[] = {EqEConfig.cellPowerDrain.tier1Cell, EqEConfig.cellPowerDrain.tier2Cell, EqEConfig.cellPowerDrain.tier3Cell, EqEConfig.cellPowerDrain.tier4Cell, EqEConfig.cellPowerDrain.tier5Cell, EqEConfig.cellPowerDrain.tier6Cell, EqEConfig.cellPowerDrain.tier7Cell, EqEConfig.cellPowerDrain.tier8Cell};
 	
 	public ItemEMCCell() {
 		super(Names.CELL, 8);
@@ -54,14 +54,14 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
 	@Override
 	public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> handler) {
-		return cellDrains[stack.getItemDamage()];
+		return CELL_DRAINS[stack.getItemDamage()];
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
 		if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
-            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, cellCapacities[stack.getItemDamage()]);
+            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, CELL_CAPACITIES[stack.getItemDamage()]);
         }
         return null;
 	}
@@ -98,7 +98,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 	@Override
 	public double addEmc(final ItemStack stack, final double toAdd) {
 		final float currentEMC = getStoredCellEMC(stack);
-        final float amountToAdd = Math.min((float) toAdd, cellCapacities[stack.getItemDamage()] - currentEMC);
+        final float amountToAdd = Math.min((float) toAdd, CELL_CAPACITIES[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
@@ -130,7 +130,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
 	@Override
 	public double getMaximumEmc(final ItemStack stack) {
-		return cellCapacities[stack.getItemDamage()];
+		return CELL_CAPACITIES[stack.getItemDamage()];
 	}
 
 	@Override

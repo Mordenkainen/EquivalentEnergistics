@@ -9,15 +9,25 @@ public final class EqEConfig {
     
     private EqEConfig() {}
     
-    public static Misc misc = new Misc();
-	public static class Misc {
+    public static MiscSettings misc = new MiscSettings();
+    
+    public static EMCAssembler emcAssembler = new EMCAssembler();
+    
+    public static EMCCondenser emcCondenser = new EMCCondenser();
+    
+    @Config.Comment("EMC Cell capacities.")
+	public static EMCCellCaps cellCapacities = new EMCCellCaps();
+    
+    @Config.Comment("EMC Cell power drain.")
+	public static EMCCellDrain cellPowerDrain = new EMCCellDrain();
+    
+	public static class MiscSettings {
 
 		@Config.Comment("Enable debug logging.")
-		public boolean debug = false;
+		public boolean debug;
 		
 	}
 	
-	public static EMCAssembler emcAssembler = new EMCAssembler();
 	public static class EMCAssembler {
 
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
@@ -26,7 +36,7 @@ public final class EqEConfig {
 		
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
 		@Config.Comment("The amount of power the EMC Assembler will consume while sitting idle in AE.")
-		public double idlePower = 0.0;
+		public double idlePower;
 		
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
 		@Config.Comment("The amount of power the EMC Assembler will consume per EMC of items crafted in AE.")
@@ -42,12 +52,11 @@ public final class EqEConfig {
 		
 	}
 	
-	public static EMCCondenser emcCondenser = new EMCCondenser();
 	public static class EMCCondenser {
 
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
 		@Config.Comment("The amount of power the EMC Condenser will consume while sitting idle in AE.")
-		public double idlePower = 0.0;
+		public double idlePower;
 		
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
 		@Config.Comment("The amount of power the EMC Condenser will consume per EMC condensed in AE.")
@@ -55,38 +64,34 @@ public final class EqEConfig {
 		
 		@Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
 		@Config.Comment("The amount of EMC the basic EMC Condenser can convert per tick. This value is scaled by x10 for each tier of Condenser.")
-		public float EMCPerTick = 8192;
+		public float emcPerTick = 8192;
 		
 	}
 	
-	@Config.Comment("EMC Cell capacities.")
-	public static EMCCellCaps cellCapacities = new EMCCellCaps();
 	public static class EMCCellCaps {
 		
 		public float creativeCell = 16384000000F;
-		public float tier1_Cell = 1000000F;
-		public float tier2_Cell = 4000000F;
-		public float tier3_Cell = 16000000F;
-		public float tier4_Cell = 64000000F;
-		public float tier5_Cell = 256000000F;
-		public float tier6_Cell = 1024000000F;
-		public float tier7_Cell = 4096000000F;
-		public float tier8_Cell = 16384000000F;
+		public float tier1Cell = 1000000F;
+		public float tier2Cell = 4000000F;
+		public float tier3Cell = 16000000F;
+		public float tier4Cell = 64000000F;
+		public float tier5Cell = 256000000F;
+		public float tier6Cell = 1024000000F;
+		public float tier7Cell = 4096000000F;
+		public float tier8Cell = 16384000000F;
 		
 	}
 	
-	@Config.Comment("EMC Cell power drain.")
-	public static EMCCellDrain cellPowerDrain = new EMCCellDrain();
 	public static class EMCCellDrain {
 		
-		public double tier1_Cell = 0.1;
-		public double tier2_Cell = 0.2;
-		public double tier3_Cell = 0.4;
-		public double tier4_Cell = 0.8;
-		public double tier5_Cell = 1.6;
-		public double tier6_Cell = 3.2;
-		public double tier7_Cell = 6.4;
-		public double tier8_Cell = 12.8;
+		public double tier1Cell = 0.1;
+		public double tier2Cell = 0.2;
+		public double tier3Cell = 0.4;
+		public double tier4Cell = 0.8;
+		public double tier5Cell = 1.6;
+		public double tier6Cell = 3.2;
+		public double tier7Cell = 6.4;
+		public double tier8Cell = 12.8;
 		
 	}
 	
