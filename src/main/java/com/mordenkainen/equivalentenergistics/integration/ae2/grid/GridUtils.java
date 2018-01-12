@@ -26,10 +26,10 @@ import net.minecraft.item.ItemStack;
 
 public final class GridUtils {
 
-    private GridUtils() {}
-
     private static IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 
+    private GridUtils() {}
+    
     private static <T extends IGridCache> T getCache(final Class<T> cacheType, final AEProxy proxy) throws GridAccessException {
         final IGrid grid = proxy.getGrid();
         if (grid == null) {
