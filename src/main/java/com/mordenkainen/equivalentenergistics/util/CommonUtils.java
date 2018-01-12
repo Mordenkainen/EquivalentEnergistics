@@ -8,7 +8,6 @@ import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -74,7 +73,7 @@ public final class CommonUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <R extends TileEntity> R getTE(final IBlockAccess world, BlockPos pos) {
+    public static <R extends TileEntity> R getTE(final IBlockAccess world, final BlockPos pos) {
         final TileEntity tile = world instanceof ChunkCache ? ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
         try {
             return (R) tile;

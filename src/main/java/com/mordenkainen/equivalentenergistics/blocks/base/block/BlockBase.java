@@ -12,7 +12,7 @@ public abstract class BlockBase extends Block {
 
     protected String name;
 
-    public BlockBase(Material material, String name) {
+    public BlockBase(final Material material, final String name) {
         super(material);
         this.name = name;
         setUnlocalizedName(Reference.MOD_ID + ":" + name);
@@ -20,7 +20,7 @@ public abstract class BlockBase extends Block {
         setCreativeTab(EquivalentEnergistics.tabEE);
     }
 
-    public void registerItemModel(Item itemBlock) {
+    public void registerItemModel(final Item itemBlock) {
         EquivalentEnergistics.proxy.registerItemRenderer(itemBlock, 0, name);
     }
 

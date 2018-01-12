@@ -25,13 +25,13 @@ public class ItemCellCreative extends ItemCellBase {
     }
 
     @Override
-    public <T extends IAEStack<T>> double cellIdleDrain(ItemStack stack, IMEInventory<T> inv) {
+    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> inv) {
         return 0;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider host, IStorageChannel<T> channel) {
+    public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
         if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
             return (IMEInventoryHandler<T>) new HandlerEMCCellCreative(host);
         }
@@ -39,7 +39,7 @@ public class ItemCellCreative extends ItemCellBase {
     }
 
     @Override
-    public <T extends IAEStack<T>> int getStatusForCell(ItemStack stack, IMEInventory<T> inv) {
+    public <T extends IAEStack<T>> int getStatusForCell(final ItemStack stack, final IMEInventory<T> inv) {
         return 1;
     }
 

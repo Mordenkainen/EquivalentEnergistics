@@ -31,7 +31,7 @@ public class ItemEMCBook extends ItemBase {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
+    public void addInformation(final ItemStack stack, final @Nullable World world, final List<String> tooltip, final ITooltipFlag flag) {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
             tooltip.add(I18n.format("message.book.owner", new Object[0]) + " " + stack.getTagCompound().getString(OWNER_TAG));
         } else {
@@ -40,9 +40,9 @@ public class ItemEMCBook extends ItemBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
         if (!world.isRemote && player != null && !player.getHeldItem(hand).isEmpty()) {
-            ItemStack stack = player.getHeldItem(hand);
+            final ItemStack stack = player.getHeldItem(hand);
             if (!stack.hasTagCompound()) {
                 stack.setTagCompound(new NBTTagCompound());
             }

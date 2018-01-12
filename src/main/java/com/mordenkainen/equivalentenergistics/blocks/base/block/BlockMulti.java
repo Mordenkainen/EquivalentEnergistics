@@ -21,7 +21,7 @@ public abstract class BlockMulti extends BlockBase {
 
     public static final PropertyInteger DUMMYTYPE = PropertyInteger.create("type", 0, 15);
 
-    public PropertyInteger TYPE;
+    public PropertyInteger type;
 
     public final int count;
 
@@ -29,9 +29,9 @@ public abstract class BlockMulti extends BlockBase {
 
     public BlockMulti(final Material material, final String name, final int count) {
         super(material, name);
-        TYPE = PropertyInteger.create("type", 0, count - 1);
+        type = PropertyInteger.create("type", 0, count - 1);
         multiBlockState = createRealBlockState();
-        setDefaultState(multiBlockState.getBaseState().withProperty(TYPE, 0));
+        setDefaultState(multiBlockState.getBaseState().withProperty(type, 0));
         this.count = count;
     }
 
@@ -41,7 +41,7 @@ public abstract class BlockMulti extends BlockBase {
     }
 
     protected BlockStateContainer createRealBlockState() {
-        return new BlockStateContainer(this, new IProperty[] {TYPE});
+        return new BlockStateContainer(this, new IProperty[] {type});
     }
 
     @Override
@@ -51,12 +51,12 @@ public abstract class BlockMulti extends BlockBase {
 
     @Override
     public IBlockState getStateFromMeta(final int meta) {
-        return getDefaultState().withProperty(TYPE, meta);
+        return getDefaultState().withProperty(type, meta);
     }
 
     @Override
     public int getMetaFromState(final IBlockState state) {
-        return state.getValue(TYPE);
+        return state.getValue(type);
     }
 
     @Override

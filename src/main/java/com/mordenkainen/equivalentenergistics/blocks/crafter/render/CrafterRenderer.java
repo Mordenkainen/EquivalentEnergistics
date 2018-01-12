@@ -23,16 +23,16 @@ import net.minecraft.world.World;
 
 public class CrafterRenderer extends TileEntitySpecialRenderer<TileEMCCrafter> {
 
-    private static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID + ":" + "textures/models/emc_crafter_connector.png");
-    final CrafterConnector model = new CrafterConnector();
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID + ":" + "textures/models/emc_crafter_connector.png");
+    private final CrafterConnector model = new CrafterConnector();
 
     @Override
-    public void render(TileEMCCrafter te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(final TileEMCCrafter te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.scale(-1F, -1F, 1F);
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-        for(EnumFacing face : EnumFacing.VALUES) {
+        Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
+        for(final EnumFacing face : EnumFacing.VALUES) {
             if (isCableConnected(te.getWorld(), te.getPos(),  face)) {
                 model.renderConnector(face);
             }
@@ -75,7 +75,7 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<TileEMCCrafter> {
         }
     }
 
-    private boolean isCableConnected(World world, BlockPos pos, EnumFacing face) {
+    private boolean isCableConnected(final World world, final BlockPos pos, final EnumFacing face) {
         final int tileYPos = pos.getY() + face.getFrontOffsetY();
         if (tileYPos < 0 || tileYPos > 256) {
             return false;

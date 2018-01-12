@@ -24,13 +24,13 @@ public class EMCGridCellHandler {
 
     private final EMCStorageGrid hostGrid;
     private final List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
-    IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    private IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 
     public EMCGridCellHandler(final EMCStorageGrid hostGrid) {
         this.hostGrid = hostGrid;
     }
 
-    public void addNode(IGridNode gridNode, IGridHost machine) {
+    public void addNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ICellProvider) {
             driveBays.add((ICellProvider) machine);
         }
@@ -153,7 +153,7 @@ public class EMCGridCellHandler {
         return null;
     }
 
-    private void updatePool(float newMax, float newCurrent) {
+    private void updatePool(final float newMax, final float newCurrent) {
         if (newMax != hostGrid.getMaxEMC() || newCurrent != hostGrid.getCurrentEMC()) {
             hostGrid.setMaxEMC(newMax);
             hostGrid.setCurrentEMC(newCurrent);

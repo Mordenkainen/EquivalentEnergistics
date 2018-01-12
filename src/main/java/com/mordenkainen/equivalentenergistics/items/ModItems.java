@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public class ModItems {
+public final class ModItems {
 
     @ObjectHolder(Reference.MOD_ID + ":" + Names.CRYSTAL)
     public static final ItemEMCCrystal CRYSTAL = null;
@@ -24,7 +24,9 @@ public class ModItems {
     @ObjectHolder(Reference.MOD_ID + ":" + Names.EMC_PATTERN)
     public static final ItemPattern EMC_PATTERN = null;
 
-    public static void register(IForgeRegistry<Item> registry) {
+    private ModItems() {}
+    
+    public static void register(final IForgeRegistry<Item> registry) {
         registry.register(new ItemEMCCrystal());
         registry.register(new ItemStorageComponent());
         registry.register(new ItemEMCBook());

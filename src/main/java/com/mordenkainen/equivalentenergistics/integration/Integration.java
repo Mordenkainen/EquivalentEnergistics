@@ -12,13 +12,12 @@ import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
-import appeng.api.storage.ICellHandler;
 import moze_intel.projecte.api.ProjectEAPI;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class Integration {
+public final class Integration {
 
     private Integration() {}
 

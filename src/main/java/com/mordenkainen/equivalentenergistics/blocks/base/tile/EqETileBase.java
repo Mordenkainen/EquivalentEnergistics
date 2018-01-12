@@ -16,13 +16,13 @@ public abstract class EqETileBase extends TileEntity {
 
     @Override
     public NBTTagCompound getUpdateTag() {
-        NBTTagCompound tag = writeToNBT(new NBTTagCompound());
+        final NBTTagCompound tag = writeToNBT(new NBTTagCompound());
         getPacketData(tag);
         return tag;
     }
 
     @Override
-    public void handleUpdateTag(NBTTagCompound tag) {
+    public void handleUpdateTag(final NBTTagCompound tag) {
         readFromNBT(tag);
         readPacketData(tag);
     }

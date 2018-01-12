@@ -71,7 +71,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
 
     @Override
     public boolean hasComparatorInputOverride(final IBlockState state) {
-        return state.getValue(TYPE) > 0;
+        return state.getValue(type) > 0;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
 
     @Override
     public boolean canConnectRedstone(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
-        return world.getBlockState(pos).getValue(TYPE) > 0;
+        return world.getBlockState(pos).getValue(type) > 0;
     }
 
     @Override

@@ -28,7 +28,7 @@ public abstract class BlockMultiAE extends BlockMultiTile {
 
     @Override
     protected BlockStateContainer createRealBlockState() {
-        return new BlockStateContainer(this, new IProperty[] {TYPE, LIGHTS});
+        return new BlockStateContainer(this, new IProperty[] {type, LIGHTS});
     }
 
     @Override

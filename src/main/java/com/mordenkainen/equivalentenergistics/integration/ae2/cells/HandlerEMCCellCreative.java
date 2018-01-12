@@ -21,7 +21,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
     }
 
     @Override
-    public void setCurrentEMC(float currentEMC) {}
+    public void setCurrentEMC(final float currentEMC) {}
 
     @Override
     public float getMaxEMC() {
@@ -29,7 +29,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
     }
 
     @Override
-    public void setMaxEMC(float maxEMC) {}
+    public void setMaxEMC(final float maxEMC) {}
 
     @Override
     public float getAvail() {
@@ -47,12 +47,12 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
     }
 
     @Override
-    public float addEMC(float emc) {
+    public float addEMC(final float emc) {
         return emc;
     }
 
     @Override
-    public float extractEMC(float emc) {
+    public float extractEMC(final float emc) {
         return emc;
     }
 

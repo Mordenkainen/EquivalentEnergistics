@@ -15,7 +15,7 @@ public class TileEMCCondenserAdv extends TileEMCCondenser {
         super(new ItemStack(Item.getItemFromBlock(ModBlocks.CONDENSER), 1, 1));
     }
 
-    public TileEMCCondenserAdv(ItemStack repItem) {
+    public TileEMCCondenserAdv(final ItemStack repItem) {
         super(repItem);
     }
 
@@ -30,11 +30,9 @@ public class TileEMCCondenserAdv extends TileEMCCondenser {
             markForUpdate();
         }
 
-        if (isActive()) {
-            if (getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
-                updateState(CondenserState.IDLE);
-                return TickRateModulation.IDLE;
-            }
+        if (isActive() && getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
+            updateState(CondenserState.IDLE);
+            return TickRateModulation.IDLE;
         }
 
         return super.tickingRequest(node, ticksSinceLast);

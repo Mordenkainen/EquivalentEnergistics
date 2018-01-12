@@ -9,7 +9,8 @@ public abstract class ItemBase extends Item {
 
     protected String name;
 
-    public ItemBase(String name) {
+    public ItemBase(final String name) {
+        super();
         this.name = name;
         setUnlocalizedName(Reference.MOD_ID + ":" + name);
         setCreativeTab(EquivalentEnergistics.tabEE);

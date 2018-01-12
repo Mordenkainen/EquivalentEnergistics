@@ -8,31 +8,31 @@ import net.minecraft.util.NonNullList;
 
 public abstract class ItemMultiBase extends ItemBase {
 
-    public int item_count;
+    public int itemCount;
 
-    public ItemMultiBase(String name, int count) {
+    public ItemMultiBase(final String name, final int count) {
         super(name);
-        item_count = count;
+        itemCount = count;
         setHasSubtypes(true);
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+    public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> items) {
         if (this.isInCreativeTab(tab)) {
-            for (int i = 0; i < item_count; i++) {
+            for (int i = 0; i < itemCount; i++) {
                 items.add(new ItemStack(this, 1, i));
             }
         }
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getUnlocalizedName(final ItemStack stack) {
         return this.getUnlocalizedName() + "_" + stack.getItemDamage();
     }
 
     @Override
     public void registerItemModel() {
-        for (int i = 0; i < item_count; i++) {
+        for (int i = 0; i < itemCount; i++) {
             EquivalentEnergistics.proxy.registerItemRenderer(this, i, name + "_" + i);
         }
     }

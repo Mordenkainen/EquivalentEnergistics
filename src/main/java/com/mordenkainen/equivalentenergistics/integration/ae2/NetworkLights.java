@@ -7,11 +7,11 @@ public enum NetworkLights implements IStringSerializable {
     ERROR(1, "error"),
     POWERED(2, "powered");
 
-    private int ID;
+    private int id;
     private String name;
 
-    private NetworkLights(int ID, String name) {
-        this.ID = ID;
+    NetworkLights(final int id, final String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -21,7 +21,7 @@ public enum NetworkLights implements IStringSerializable {
     }
 
     public int getID() {
-        return ID;
+        return id;
     }
 
 }
