@@ -155,9 +155,9 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             if (sides.get(side) != SideSetting.OUTPUT) {
                 continue;
             }
-            TileEntity tile = getWorld().getTileEntity(pos.offset(side));
+            final TileEntity tile = getWorld().getTileEntity(pos.offset(side));
             if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) {
-                IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+                final IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
                 toStore = ItemHandlerHelper.insertItemStacked(tileInv, toStore, false);
                 if (toStore.isEmpty()) {
                     break;

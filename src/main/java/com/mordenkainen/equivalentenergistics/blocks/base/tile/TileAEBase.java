@@ -24,7 +24,7 @@ public abstract class TileAEBase extends EqETileBase implements IAEProxyHost {
     protected final AEProxy gridProxy;
     protected IActionSource mySource;
     protected boolean active;
-    protected boolean powered = false;
+    protected boolean powered;
 
     public TileAEBase(final ItemStack repItem) {
         super();

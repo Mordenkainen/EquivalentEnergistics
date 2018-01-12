@@ -14,7 +14,7 @@ public class ItemMisc extends ItemMultiBase {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+    public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> items) {
         if (this.isInCreativeTab(tab)) {
             items.add(new ItemStack(this, 1, 0));
         }

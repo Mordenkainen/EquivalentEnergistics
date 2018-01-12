@@ -42,15 +42,15 @@ public final class ModBlocks {
         registry.register(block);
         if (block instanceof ITileEntityProvider) {
             final TE teInfo = block.getClass().getDeclaredAnnotation(TE.class);
-            if (teInfo != null) {
-                GameRegistry.registerTileEntity(teInfo.tileEntityClass(), teInfo.registryName());
-            } else {
+            if (teInfo == null) {
                 final TEList teList = block.getClass().getDeclaredAnnotation(TEList.class);
                 if (teList != null) {
                     for (final TE te : teList.value()) {
                         GameRegistry.registerTileEntity(te.tileEntityClass(), te.registryName());
                     }
                 }
+            } else {
+                GameRegistry.registerTileEntity(teInfo.tileEntityClass(), teInfo.registryName());
             }
         }
     }

@@ -76,11 +76,12 @@ public class BlockEMCCondenser extends BlockMultiAE {
 
     @Override
     public int getComparatorInputOverride(final IBlockState blockState, final World world, final BlockPos pos) {
-        TileEMCCondenserAdv tile = CommonUtils.getTE(world, pos);
         if (blockState.getActualState(world, pos).getValue(LIGHTS) == NetworkLights.NONE) {
             return 0;
         }
 
+        final TileEMCCondenserAdv tile = CommonUtils.getTE(world, pos);
+        
         switch (tile.getState()) {
         case ACTIVE:
             return 2;

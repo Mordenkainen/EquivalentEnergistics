@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface TEList {
 
-    public TE[] value();
+    TE[] value();
 
 }

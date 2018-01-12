@@ -8,7 +8,7 @@ public class TileEMCCrafterExt extends TileEMCCrafterAdv {
         this(8, EqEConfig.emcAssembler.craftingTime, 2);
     }
 
-    public TileEMCCrafterExt(int jobs, double time, int meta) {
+    public TileEMCCrafterExt(final int jobs, final double time, final int meta) {
         super(jobs, time, meta);
     }
 

@@ -75,7 +75,7 @@ public abstract class BlockMultiAE extends BlockMultiTile {
     @Override
     @Deprecated
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
-        TileAEBase tile = (TileAEBase) world.getTileEntity(pos);
+        final TileAEBase tile = (TileAEBase) world.getTileEntity(pos);
         if (tile != null) {
             return state.withProperty(LIGHTS, tile.isPowered() ? NetworkLights.POWERED : NetworkLights.NONE);
         }

@@ -31,7 +31,7 @@ public class MachineSource implements IActionSource
     }
 
     @Override
-    public <T> Optional<T> context( Class<T> key )
+    public <T> Optional<T> context(final Class<T> key)
     {
         return Optional.empty();
     }

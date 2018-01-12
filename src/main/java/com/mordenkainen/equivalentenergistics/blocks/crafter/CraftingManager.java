@@ -83,10 +83,10 @@ public class CraftingManager {
         final NonNullList<ItemStack> result = NonNullList.withSize(maxJobs, ItemStack.EMPTY);
         for (int i = 0; i < jobs.length; i++) {
             ItemStack outputStack = null;
-            if (jobs[i] != null) {
-                outputStack = ItemHandlerHelper.copyStackWithSize(jobs[i].getOutput().copy(), 1);
-            } else {
+            if (jobs[i] == null) {
                 outputStack = ItemStack.EMPTY;
+            } else {
+                outputStack = ItemHandlerHelper.copyStackWithSize(jobs[i].getOutput().copy(), 1);
             }
             result.set(i, outputStack);
         }

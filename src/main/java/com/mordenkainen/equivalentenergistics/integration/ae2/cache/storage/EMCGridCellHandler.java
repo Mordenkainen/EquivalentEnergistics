@@ -24,7 +24,7 @@ public class EMCGridCellHandler {
 
     private final EMCStorageGrid hostGrid;
     private final List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
-    private IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    private final IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
 
     public EMCGridCellHandler(final EMCStorageGrid hostGrid) {
         this.hostGrid = hostGrid;
