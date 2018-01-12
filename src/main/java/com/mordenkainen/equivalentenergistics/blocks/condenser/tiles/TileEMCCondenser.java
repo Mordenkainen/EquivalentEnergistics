@@ -65,7 +65,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
         boolean flag = super.readPacketData(nbttagcompound);
         final CondenserState newState = CondenserState.values()[nbttagcompound.getInteger(STATE_TAG)];
-        if (newState != state) {
+        if (!newState.equals(state)) {
             state = newState;
             flag = true;
         }
@@ -112,7 +112,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
 
     protected boolean updateState(final CondenserState newState) {
-        if (state != newState) {
+        if (!state.equals(newState)) {
             state = newState;
             markForUpdate();
             return true;

@@ -54,9 +54,9 @@ public class EMCGridCellHandler {
         updatePool(newMax, newEMC);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked", "unlikely-arg-type" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof ICellProvider && driveBays.remove(machine)) {
+        if (machine instanceof ICellProvider && driveBays.remove((ICellProvider) machine)) {
             float newEMC = hostGrid.getCurrentEMC();
             float newMax = hostGrid.getMaxEMC();
             final List<IMEInventoryHandler> cells = ((ICellProvider) machine).getCellArray(storageChannel);

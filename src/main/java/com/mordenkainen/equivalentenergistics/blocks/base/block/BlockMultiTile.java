@@ -54,7 +54,7 @@ public abstract class BlockMultiTile extends BlockMulti implements ITileEntityPr
     public boolean eventReceived(final IBlockState state, final World world, final BlockPos pos, final int id, final int param) {
         super.eventReceived(state, world, pos, id, param);
         final TileEntity tileentity = world.getTileEntity(pos);
-        return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
+        return tileentity != null && tileentity.receiveClientEvent(id, param);
     }
 
 }

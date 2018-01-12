@@ -51,6 +51,16 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     public IGrid getGrid() {
         return grid;
     }
+    
+    @Override
+    public float addEMC(final float emc, final Actionable mode) {
+        return cellHandler.injectEMC(emc, mode);
+    }
+
+    @Override
+    public float extractEMC(final float emc, final Actionable mode) {
+        return cellHandler.extractEMC(emc, mode);
+    }
 
     @Override
     public float getCurrentEMC() {
@@ -95,16 +105,6 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     @Override
     public float extractEMC(final float emc) {
         return pool.extractEMC(emc);
-    }
-
-    @Override
-    public float addEMC(final float emc, final Actionable mode) {
-        return cellHandler.injectEMC(emc, mode);
-    }
-
-    @Override
-    public float extractEMC(final float emc, final Actionable mode) {
-        return cellHandler.extractEMC(emc, mode);
     }
 
     public void markDirty() {

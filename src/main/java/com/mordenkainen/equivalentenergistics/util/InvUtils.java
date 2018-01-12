@@ -60,13 +60,15 @@ public final class InvUtils {
     public static boolean willStack(final ItemStack dest, final ItemStack src) {
         if(dest.isEmpty() && !src.isEmpty()) {
             return true;
-        }else if (dest.getItem() != src.getItem()) {
-            return false;
-        } else if (dest.getMetadata() != src.getMetadata()) {
-            return false;
-        } else {
-            return ItemStack.areItemStackTagsEqual(dest, src);
         }
+        if (dest.getItem() != src.getItem()) {
+            return false;
+        }
+        if (dest.getMetadata() != src.getMetadata()) {
+            return false;
+        }
+        
+        return ItemStack.areItemStackTagsEqual(dest, src);
     }
 
     public static List<ItemStack> getInvAsList(final IItemHandler inv) {

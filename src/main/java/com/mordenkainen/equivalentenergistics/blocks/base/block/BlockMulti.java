@@ -25,12 +25,12 @@ public abstract class BlockMulti extends BlockBase {
 
     public final int count;
 
-    private final BlockStateContainer multiBlockState;
+    protected BlockStateContainer multiBlockState;
 
     public BlockMulti(final Material material, final String name, final int count) {
         super(material, name);
         type = PropertyInteger.create("type", 0, count - 1);
-        multiBlockState = createRealBlockState();
+        multiBlockState = new BlockStateContainer(this, new IProperty[] {type});
         setDefaultState(multiBlockState.getBaseState().withProperty(type, 0));
         this.count = count;
     }
@@ -38,10 +38,6 @@ public abstract class BlockMulti extends BlockBase {
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, new IProperty[] {DUMMYTYPE});
-    }
-
-    protected BlockStateContainer createRealBlockState() {
-        return new BlockStateContainer(this, new IProperty[] {type});
     }
 
     @Override

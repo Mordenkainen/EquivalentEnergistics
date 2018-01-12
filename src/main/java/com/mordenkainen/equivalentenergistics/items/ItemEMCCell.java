@@ -119,10 +119,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
         if (hasEMCTag(stack)) {
             stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
             if (isEmpty(stack)) {
-                stack.getTagCompound().removeTag(EMC_TAG);
-                if (stack.getTagCompound().hasNoTags()) {
-                    stack.setTagCompound(null);
-                }
+                removeEMCTag(stack);
             }
         }
 
@@ -138,4 +135,12 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     public double getStoredEmc(final ItemStack stack) {
         return getStoredCellEMC(stack);
     }
+    
+    private void removeEMCTag(final ItemStack stack) {
+        stack.getTagCompound().removeTag(EMC_TAG);
+        if (stack.getTagCompound().hasNoTags()) {
+            stack.setTagCompound(null);
+        }
+    }
+
 }

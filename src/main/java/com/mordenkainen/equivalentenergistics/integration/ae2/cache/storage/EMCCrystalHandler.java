@@ -35,7 +35,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
     @SuppressWarnings("rawtypes")
     @Override
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel<?> channel) {
-        if (channel == storageChannel) {
+        if (channel.equals(storageChannel)) {
             return new ArrayList<IMEInventoryHandler>(Arrays.asList(new IMEInventoryHandler[] {this}));
         }
 

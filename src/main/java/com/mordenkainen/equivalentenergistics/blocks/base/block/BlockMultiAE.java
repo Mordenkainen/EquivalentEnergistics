@@ -23,12 +23,8 @@ public abstract class BlockMultiAE extends BlockMultiTile {
 
     public BlockMultiAE(final Material material, final String name, final int count) {
         super(material, name, count);
-        setDefaultState(getDefaultState().withProperty(LIGHTS, NetworkLights.NONE));
-    }
-
-    @Override
-    protected BlockStateContainer createRealBlockState() {
-        return new BlockStateContainer(this, new IProperty[] {type, LIGHTS});
+        multiBlockState = new BlockStateContainer(this, new IProperty[] {type, LIGHTS});
+        setDefaultState(multiBlockState.getBaseState().withProperty(LIGHTS, NetworkLights.NONE));
     }
 
     @Override

@@ -41,9 +41,7 @@ public final class CommonUtils {
                 final NonNullList<ItemStack> drops = NonNullList.create();
                 state.getBlock().getDrops(drops, world, pos, state, 0);
                 for (final ItemStack stack : drops) {
-                    if (stack != ItemStack.EMPTY) {
-                        spawnEntItem(world, pos, stack);
-                    }
+                    spawnEntItem(world, pos, stack);
                 }
             }
             world.setBlockToAir(pos);
@@ -54,6 +52,9 @@ public final class CommonUtils {
     }
 
     public static void spawnEntItem(final World world, final BlockPos pos, final ItemStack item) {
+        if (item.isEmpty()) {
+            return;
+        }
         if (world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots && item != null && item.getCount() > 0) {
             final float rx = world.rand.nextFloat() * 0.8F + 0.1F;
             final float ry = world.rand.nextFloat() * 0.8F + 0.1F;
