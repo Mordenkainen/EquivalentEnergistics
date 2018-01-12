@@ -18,7 +18,6 @@ import com.mordenkainen.equivalentenergistics.util.CompItemStack;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import moze_intel.projecte.api.ProjectEAPI;
 import net.minecraft.client.resources.I18n;
@@ -165,14 +164,5 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
             }
         }
     }
-
-    @Override
-    public void onJoin(final IGridStorage arg0) {}
-
-    @Override
-    public void onSplit(final IGridStorage arg0) {}
-
-    @Override
-    public void populateGridStorage(final IGridStorage arg0) {}
 
 }

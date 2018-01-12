@@ -1,8 +1,5 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mordenkainen.equivalentenergistics.blocks.base.block.BlockMultiAE;
 import com.mordenkainen.equivalentenergistics.blocks.base.tile.TE;
 import com.mordenkainen.equivalentenergistics.blocks.base.tile.TEList;
@@ -13,15 +10,12 @@ import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafte
 import com.mordenkainen.equivalentenergistics.core.Names;
 import com.mordenkainen.equivalentenergistics.core.Reference;
 import com.mordenkainen.equivalentenergistics.integration.ae2.NetworkLights;
-import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
-import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -69,33 +63,6 @@ public class BlockEMCCrafter extends BlockMultiAE {
             return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
         }
         return tmpState;
-    }
-
-    @Override
-    public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-        final IAEProxyHost tile = CommonUtils.getTE(world, pos);
-
-        if (tile != null && placer instanceof EntityPlayer) {
-            tile.setOwner((EntityPlayer) placer);
-        }
-    }
-
-    @Override
-    public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
-        if (!world.isRemote) {
-            final IDropItems tile = CommonUtils.getTE(world, pos);
-
-            if (tile != null) {
-                final List<ItemStack> drops = new ArrayList<ItemStack>();
-                tile.getDrops(world, pos, drops);
-
-                for (final ItemStack drop : drops) {
-                    CommonUtils.spawnEntItem(world, pos, drop);
-                }
-            }
-        }
-
-        super.breakBlock(world, pos, state);
     }
 
     @Override

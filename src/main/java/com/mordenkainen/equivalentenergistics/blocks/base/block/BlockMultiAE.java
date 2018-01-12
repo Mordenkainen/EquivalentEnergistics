@@ -1,19 +1,29 @@
 package com.mordenkainen.equivalentenergistics.blocks.base.block;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.blocks.base.tile.TileAEBase;
 import com.mordenkainen.equivalentenergistics.integration.ae2.NetworkLights;
+import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
+import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -76,6 +86,33 @@ public abstract class BlockMultiAE extends BlockMultiTile {
             return state.withProperty(LIGHTS, tile.isPowered() ? NetworkLights.POWERED : NetworkLights.NONE);
         }
         return state;
+    }
+    
+    @Override
+    public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+        final IAEProxyHost tile = CommonUtils.getTE(world, pos);
+
+        if (tile != null && placer instanceof EntityPlayer) {
+            tile.setOwner((EntityPlayer) placer);
+        }
+    }
+
+    @Override
+    public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
+        if (!world.isRemote) {
+            final IDropItems tile = CommonUtils.getTE(world, pos);
+
+            if (tile != null) {
+                final List<ItemStack> drops = new ArrayList<ItemStack>();
+                tile.getDrops(world, pos, drops);
+
+                for (final ItemStack drop : drops) {
+                    CommonUtils.spawnEntItem(world, pos, drop);
+                }
+            }
+        }
+
+        super.breakBlock(world, pos, state);
     }
 
 }

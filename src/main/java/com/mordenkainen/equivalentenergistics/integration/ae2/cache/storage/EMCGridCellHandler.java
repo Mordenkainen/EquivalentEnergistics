@@ -36,7 +36,7 @@ public class EMCGridCellHandler {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
         float newEMC = 0;
         float newMax = 0;
