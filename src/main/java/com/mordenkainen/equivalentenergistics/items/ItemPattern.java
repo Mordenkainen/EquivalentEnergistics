@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.items;
 
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
+import com.mordenkainen.equivalentenergistics.items.base.ItemBase;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;

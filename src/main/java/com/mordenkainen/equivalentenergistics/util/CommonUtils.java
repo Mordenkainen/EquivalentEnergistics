@@ -20,21 +20,6 @@ public final class CommonUtils {
 
     private CommonUtils() {}
 
-    public static String formatEMC(final float emc) {
-        float displayValue = emc;
-
-        final String[] preFixes = { "K", "M", "B", "T", "P", "T", "P", "E", "Z", "Y" };
-        String level = "";
-        int offset = 0;
-        while (displayValue > 1000 && offset < preFixes.length) {
-            displayValue /= 1000;
-            level = preFixes[offset++];
-        }
-
-        final DecimalFormat formatter = new DecimalFormat("#.###");
-        return formatter.format(displayValue) + ' ' + level;
-    }
-
     public static boolean destroyAndDrop(final World world, final int x, final int y, final int z) {
         final Block block = world.getBlock(x, y, z);
         if (block != null && block.getBlockHardness(world, x, y, z) >= 0) {
@@ -72,9 +57,39 @@ public final class CommonUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getTE(final Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
+    public static <R extends TileEntity> R getTE(final IBlockAccess world, final int x, final int y, final int z) {
         final TileEntity tile = world.getTileEntity(x, y, z);
-        return type.isInstance(tile) ? (T) tile : null;
+        try {
+            return (R) tile;
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
+    
+    public static String formatEMC(final float emc) {
+        float displayValue = emc;
+
+        final String[] preFixes = { "K", "M", "B", "T", "P", "T", "P", "E", "Z", "Y" };
+        String level = "";
+        int offset = 0;
+        while (displayValue > 1000 && offset < preFixes.length) {
+            displayValue /= 1000;
+            level = preFixes[offset++];
+        }
+
+        final DecimalFormat formatter = new DecimalFormat("#.###");
+        return formatter.format(displayValue) + ' ' + level;
+    }
+    
+    public static ItemStack filterForEmpty(final ItemStack stack) {
+        return stack.stackSize <= 0 ? null : stack;
+    }
+    
+    public static boolean willItemsStack(final ItemStack dest, final ItemStack src) {
+        if(dest == null && src != null) {
+            return true;
+        }
+        return isSameItem(dest, src);
     }
 
     public static void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final String particle, final Random random) {
@@ -84,19 +99,19 @@ public final class CommonUtils {
 
         switch (dir) {
             case EAST:
-                d1 = x + 1 + 0.0625D;
+                d1 = x + 1.0625D;
                 break;
             case WEST:
                 d1 = x - 0.0625D;
                 break;
             case UP:
-                d2 = y + 1 + 0.0625D;
+                d2 = y + 1.0625D;
                 break;
             case DOWN:
                 d2 = y - 0.0625D;
                 break;
             case SOUTH:
-                d3 = z + 1 + 0.0625D;
+                d3 = z + 1.0625D;
                 break;
             case NORTH:
                 d3 = z - 0.0625D;
@@ -110,10 +125,6 @@ public final class CommonUtils {
 
     public static boolean isSameItem(final ItemStack stack1, final ItemStack stack2) {
         return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage() && ItemStack.areItemStackTagsEqual(stack1, stack2);
-    }
-
-    public static ItemStack filterForEmpty(final ItemStack stack) {
-        return stack.stackSize <= 0 ? null : stack;
     }
 
     public static void debugLog(final String message) {

@@ -1,7 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.blocks.common.BlockMultiContainerBase;
+import com.mordenkainen.equivalentenergistics.blocks.base.block.BlockMultiContainerBase;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterAdv;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
@@ -77,7 +77,7 @@ public class BlockEMCCrafter extends BlockMultiContainerBase implements IConfigu
 
     @Override
     public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
-        final TileEMCCrafterBase tileCrafter = CommonUtils.getTE(TileEMCCrafterBase.class, world, x, y, z);
+        final TileEMCCrafterBase tileCrafter = CommonUtils.getTE(world, x, y, z);
 
         if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
             return false;
@@ -87,7 +87,7 @@ public class BlockEMCCrafter extends BlockMultiContainerBase implements IConfigu
         if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
             tileCrafter.setCurrentTome(player.getHeldItem().copy());
             if (!player.capabilities.isCreativeMode) {
-                player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize == 0 ? null : player.inventory.mainInventory[player.inventory.currentItem];
+                player.inventory.mainInventory[player.inventory.currentItem] = null;
             }
             return true;
         } else if (existingTome != null) {

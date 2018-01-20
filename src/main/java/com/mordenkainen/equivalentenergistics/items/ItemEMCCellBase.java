@@ -1,5 +1,7 @@
 package com.mordenkainen.equivalentenergistics.items;
 
+import com.mordenkainen.equivalentenergistics.items.base.ItemMultiBase;
+
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventoryHandler;

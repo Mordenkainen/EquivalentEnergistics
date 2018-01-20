@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.blocks.common;
+package com.mordenkainen.equivalentenergistics.blocks.base.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.IIcon;

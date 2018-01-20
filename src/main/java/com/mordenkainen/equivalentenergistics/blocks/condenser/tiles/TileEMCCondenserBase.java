@@ -27,19 +27,6 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     protected CondenserState state = CondenserState.IDLE;
 
-    protected class CondenserInventory extends InternalInventory {
-
-        CondenserInventory() {
-            super("EMCCondenserInventory", 4, 64);
-        }
-
-        @Override
-        public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-            return Integration.emcHandler.isEMCStorage(itemStack) || Integration.emcHandler.hasEMC(itemStack) && Integration.emcHandler.getSingleEnergyValue(itemStack) <= getEMCPerTick();
-        }
-        
-    }
-
     public TileEMCCondenserBase(final ItemStack repItem) {
         super(repItem);
         internalInventory = new CondenserInventory();
@@ -214,5 +201,18 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
 
     protected ItemStack ejectItem(final ItemStack stack) {
         return GridUtils.injectItemsForPower(getProxy(), stack, mySource);
+    }
+    
+    protected class CondenserInventory extends InternalInventory {
+
+        CondenserInventory() {
+            super("EMCCondenserInventory", 4, 64);
+        }
+
+        @Override
+        public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
+            return Integration.emcHandler.isEMCStorage(itemStack) || Integration.emcHandler.hasEMC(itemStack) && Integration.emcHandler.getSingleEnergyValue(itemStack) <= getEMCPerTick();
+        }
+        
     }
 }

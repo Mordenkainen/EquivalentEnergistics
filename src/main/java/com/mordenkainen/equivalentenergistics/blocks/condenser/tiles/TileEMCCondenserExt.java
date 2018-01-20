@@ -57,8 +57,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         }
         
         if (isActive()) {
-            final boolean powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-            if (mode == RedstoneMode.DISABLE && powered || mode == RedstoneMode.ENABLE && !powered) {
+            if(worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
                 updateState(CondenserState.IDLE);
                 return TickRateModulation.IDLE;
             }
@@ -71,22 +70,16 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 
     protected void importItems() {
         int numItems = itemsToTransfer();
-
-        for (int slot = 0; slot < getInventory().getSizeInventory() && numItems > 0; slot++) {
-            final ItemStack slotContent = getInventory().getStackInSlot(slot);
-            if (slotContent == null || slotContent.stackSize < slotContent.getMaxStackSize()) {
-                for (final ForgeDirection side : sides.keySet()) {
-                    if (sides.get(side) != SideSetting.INPUT) {
-                        continue;
-                    }
-                    final IInventory sourceInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
-                    if (sourceInv != null) {
-                        numItems -= InvUtils.importFromAdjInv(side.getOpposite(), sourceInv, getInventory(), slot, numItems);
-                    }
-                    if (numItems <= 0) {
-                        break;
-                    }
-                }
+        for (final ForgeDirection side : sides.keySet()) {
+            if (sides.get(side) != SideSetting.INPUT) {
+                continue;
+            }
+            final IInventory sourceInv = CommonUtils.getTE(worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
+            if (sourceInv != null) {
+                numItems -= InvUtils.extractWithCount(side.getOpposite(), sourceInv, getInventory(), numItems);
+            }
+            if (numItems <= 0) {
+                break;
             }
         }
     }
@@ -104,7 +97,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             if (sides.get(side) != SideSetting.OUTPUT) {
                 continue;
             }
-            final IInventory destInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
+            final IInventory destInv = CommonUtils.getTE(worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
             if (destInv != null) {
                 final int ejected = InvUtils.ejectStack(stack, destInv, side.getOpposite(), numItems);
                 numItems -= ejected;

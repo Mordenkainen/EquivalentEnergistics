@@ -110,6 +110,14 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     public double cellIdleDrain(final ItemStack stack, final IMEInventory handler) {
         return DRAIN[stack.getItemDamage()];
     }
+    
+    public float getStoredCellEMC(final ItemStack stack) {
+        if (!isCell(stack) || !hasEMCTag(stack)) {
+            return 0;
+        }
+
+        return Math.max(stack.getTagCompound().getFloat(EMC_TAG), 0);
+    }
 
     @Override
     public double addEmc(final ItemStack stack, final double toAdd) {
@@ -145,14 +153,6 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
         return ConfigManager.useEE3 ? 0 : CAPACITIES[stack.getItemDamage()];
     }
 
-    public float getStoredCellEMC(final ItemStack stack) {
-        if (!isCell(stack) || !hasEMCTag(stack)) {
-            return 0;
-        }
-
-        return Math.max(stack.getTagCompound().getFloat(EMC_TAG), 0);
-    }
-
     public float extractCellEMC(final ItemStack stack, final float emc) {
         final float currentEMC = getStoredCellEMC(stack);
         final float toRemove = Math.min(emc, currentEMC);
@@ -160,14 +160,18 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
         if (hasEMCTag(stack)) {
             stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
             if (isEmpty(stack)) {
-                stack.getTagCompound().removeTag(EMC_TAG);
-                if (stack.getTagCompound().hasNoTags()) {
-                    stack.setTagCompound(null);
-                }
+                removeEMCTag(stack);
             }
         }
 
         return toRemove;
+    }
+    
+    private void removeEMCTag(final ItemStack stack) {
+        stack.getTagCompound().removeTag(EMC_TAG);
+        if (stack.getTagCompound().hasNoTags()) {
+            stack.setTagCompound(null);
+        }
     }
 
     private boolean hasEMCTag(final ItemStack stack) {

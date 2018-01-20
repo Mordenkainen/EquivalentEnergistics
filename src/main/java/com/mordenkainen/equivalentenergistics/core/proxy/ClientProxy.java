@@ -1,7 +1,7 @@
 package com.mordenkainen.equivalentenergistics.core.proxy;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
-import com.mordenkainen.equivalentenergistics.blocks.common.LayeredBlockRenderer;
+import com.mordenkainen.equivalentenergistics.blocks.base.block.LayeredBlockRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.render.BlockEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.render.TileEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;

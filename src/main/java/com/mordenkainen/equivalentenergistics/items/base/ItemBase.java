@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.items;
+package com.mordenkainen.equivalentenergistics.items.base;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;

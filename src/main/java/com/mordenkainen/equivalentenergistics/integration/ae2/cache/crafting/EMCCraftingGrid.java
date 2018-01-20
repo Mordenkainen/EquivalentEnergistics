@@ -50,7 +50,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ITransProvider) {
-            patternProviders.remove(machine);
+            patternProviders.remove((ITransProvider) machine);
             if (!((ITransProvider) machine).getTransmutations().isEmpty()) {
                 lastPatternVer = -1;
             }

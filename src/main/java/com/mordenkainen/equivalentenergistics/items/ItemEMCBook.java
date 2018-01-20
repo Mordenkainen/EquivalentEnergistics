@@ -3,6 +3,7 @@ package com.mordenkainen.equivalentenergistics.items;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
+import com.mordenkainen.equivalentenergistics.items.base.ItemBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,7 +53,7 @@ public class ItemEMCBook extends ItemBase {
             stackNBT.setString(UUID_TAG, playerUUID);
             player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("message.book.link")));
         }
-        return stack;
+        return super.onItemRightClick(stack, world, player);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

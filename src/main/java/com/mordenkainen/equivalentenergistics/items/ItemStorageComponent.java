@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.items;
 
 import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
+import com.mordenkainen.equivalentenergistics.items.base.ItemMultiBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

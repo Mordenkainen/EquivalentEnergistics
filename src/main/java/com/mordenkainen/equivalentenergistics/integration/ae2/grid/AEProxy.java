@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 import java.util.Collections;
 import java.util.EnumSet;
 
-import com.mordenkainen.equivalentenergistics.blocks.common.EqETileBase;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.EqETileBase;
 import com.mordenkainen.equivalentenergistics.core.TickHandler;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 

@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.items;
+package com.mordenkainen.equivalentenergistics.items.base;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public abstract class ItemMultiBase extends ItemBase {
 
     public int itemCount;
 
-    public ItemMultiBase(final int itemCount) {
+    public ItemMultiBase(final int count) {
         super();
-        this.itemCount = itemCount;
+        itemCount = count;
         setHasSubtypes(true);
     }
 

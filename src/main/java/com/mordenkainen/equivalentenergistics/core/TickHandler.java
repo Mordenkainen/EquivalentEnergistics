@@ -3,7 +3,7 @@ package com.mordenkainen.equivalentenergistics.core;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import com.mordenkainen.equivalentenergistics.blocks.common.EqETileBase;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.EqETileBase;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
 
 import cpw.mods.fml.common.FMLCommonHandler;

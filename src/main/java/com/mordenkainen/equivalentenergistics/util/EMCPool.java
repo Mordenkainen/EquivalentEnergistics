@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.util;
 
-public class EMCPool {
+public class EMCPool implements IEMCStorage {
 
     private float currentEMC;
     private float maxEMC;
@@ -25,10 +25,12 @@ public class EMCPool {
         this(currentEMC, maxEMC, true);
     }
 
+    @Override
     public float getCurrentEMC() {
         return currentEMC;
     }
 
+    @Override
     public void setCurrentEMC(final float currentEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
@@ -39,10 +41,12 @@ public class EMCPool {
         }
     }
 
+    @Override
     public float getMaxEMC() {
         return maxEMC;
     }
 
+    @Override
     public void setMaxEMC(final float maxEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
@@ -68,6 +72,7 @@ public class EMCPool {
         return 0;
     }
 
+    @Override
     public float getAvail() {
         if (currentEMC >= maxEMC) {
             return 0;
@@ -75,14 +80,17 @@ public class EMCPool {
         return maxEMC - currentEMC;
     }
 
+    @Override
     public boolean isFull() {
         return currentEMC >= maxEMC;
     }
 
+    @Override
     public boolean isEmpty() {
         return currentEMC == 0;
     }
 
+    @Override
     public float addEMC(final float emc) {
         float toAdd = emc;
         if (!overflow) {
@@ -92,6 +100,7 @@ public class EMCPool {
         return toAdd;
     }
 
+    @Override
     public float extractEMC(final float emc) {
         final float toExtract = Math.min(emc, currentEMC);
         currentEMC -= toExtract;

@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.blocks.common;
+package com.mordenkainen.equivalentenergistics.blocks.base.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;

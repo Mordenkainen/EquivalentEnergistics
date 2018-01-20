@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.tiles;
 
-import com.mordenkainen.equivalentenergistics.blocks.common.EqETileBase;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.EqETileBase;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.AEProxy;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;

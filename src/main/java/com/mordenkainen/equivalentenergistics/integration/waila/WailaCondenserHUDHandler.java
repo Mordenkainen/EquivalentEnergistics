@@ -3,9 +3,7 @@ package com.mordenkainen.equivalentenergistics.integration.waila;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
-import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
-import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserAdv.RedstoneMode;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -32,11 +30,6 @@ public class WailaCondenserHUDHandler extends WailaHUDBase {
 
         final CondenserState state = ((TileEMCCondenserBase) accessor.getTileEntity()).getState();
         currenttip.add(StatCollector.translateToLocal("tooltip.status.name") + " " + (state == CondenserState.ACTIVE || state == CondenserState.IDLE ? SpecialChars.GREEN : SpecialChars.RED) + state.getStateName() + SpecialChars.RESET);
-
-        if (accessor.getMetadata() > 0) {
-            final RedstoneMode mode = ((TileEMCCondenserAdv) accessor.getTileEntity()).getMode();
-            currenttip.add(StatCollector.translateToLocal("tooltip.mode.name") + " " + mode.description());
-        }
 
         return currenttip;
     }

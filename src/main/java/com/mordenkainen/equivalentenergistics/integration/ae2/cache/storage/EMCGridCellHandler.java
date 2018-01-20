@@ -62,7 +62,7 @@ public class EMCGridCellHandler {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof ICellProvider && driveBays.remove(machine)) {
+        if (machine instanceof ICellProvider && driveBays.remove((ICellProvider) machine)) {
             final EMCPool pool = hostGrid.getPool();
             float newEMC = pool.getCurrentEMC();
             float newMax = pool.getMaxEMC();

@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.blocks.common;
+package com.mordenkainen.equivalentenergistics.blocks.base.block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public abstract class BlockContainerBase extends BlockContainer {
     @Override
     public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int metaData) {
         if (!world.isRemote) {
-            final IDropItems tile = CommonUtils.getTE(IDropItems.class, world, x, y, z);
+            final IDropItems tile = CommonUtils.getTE(world, x, y, z);
 
             if (tile != null) {
                 final List<ItemStack> drops = new ArrayList<ItemStack>();
@@ -48,7 +48,7 @@ public abstract class BlockContainerBase extends BlockContainer {
 
     @Override
     public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack) {
-        final IAEProxyHost tile = CommonUtils.getTE(IAEProxyHost.class, world, x, y, z);
+        final IAEProxyHost tile = CommonUtils.getTE(world, x, y, z);
 
         if (tile != null && player instanceof EntityPlayer) {
             tile.setOwner((EntityPlayer) player);
