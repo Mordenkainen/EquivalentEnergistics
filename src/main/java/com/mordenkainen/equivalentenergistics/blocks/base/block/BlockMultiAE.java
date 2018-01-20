@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.blocks.base.tile.TileAEBase;
 import com.mordenkainen.equivalentenergistics.integration.ae2.NetworkLights;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
+import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
 

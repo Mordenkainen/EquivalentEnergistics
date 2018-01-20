@@ -43,7 +43,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
     @Override
     public EnumRarity getRarity(final ItemStack stack) {
-        return EnumRarity.values()[stack.getItemDamage() / 2];
+        return EnumRarity.values()[stack.getMetadata() / 2];
     }
 
     @Override
@@ -51,12 +51,16 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     public void addInformation(final ItemStack stack, final @Nullable World world, final List<String> tooltip, final ITooltipFlag flag) {
         tooltip.add(I18n.format("message.cell.capacity", new Object[0]) + " " + CommonUtils.formatEMC((float) getMaximumEmc(stack)));
     }
-
+    
     @Override
-    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> handler) {
-        return CELL_DRAINS[stack.getItemDamage()];
-    }
+    public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
+        if (player != null && isEmpty(player.getHeldItem(hand)) && player.isSneaking() && player.inventory.addItemStackToInventory(new ItemStack(ModItems.MISC, 1, 0))) {
+            return new ActionResult<ItemStack>(EnumActionResult.PASS, new ItemStack(ModItems.COMPONENT, 1, player.getHeldItem(hand).getItemDamage()));
+        }
 
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
+    }
+    
     @SuppressWarnings("unchecked")
     @Override
     public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
@@ -71,8 +75,10 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
         return handler instanceof HandlerEMCCellBase ? ((HandlerEMCCellBase) handler).getCellStatus() : 0;
     }
 
-    private boolean isEmpty(final ItemStack stack) {
-        return getStoredCellEMC(stack) == 0;
+    
+    @Override
+    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> handler) {
+        return CELL_DRAINS[stack.getItemDamage()];
     }
 
     public float getStoredCellEMC(final ItemStack stack) {
@@ -81,19 +87,6 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
         }
 
         return Math.max(stack.getTagCompound().getFloat(EMC_TAG), 0);
-    }
-
-    private boolean hasEMCTag(final ItemStack stack) {
-        return stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(EMC_TAG);
-    }
-
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
-        if (player != null && isEmpty(player.getHeldItem(hand)) && player.isSneaking() && player.inventory.addItemStackToInventory(new ItemStack(ModItems.MISC, 1, 0))) {
-            return new ActionResult<ItemStack>(EnumActionResult.PASS, new ItemStack(ModItems.COMPONENT, 1, player.getHeldItem(hand).getItemDamage()));
-        }
-
-        return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
     }
 
     @Override
@@ -127,20 +120,30 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     }
 
     @Override
-    public double getMaximumEmc(final ItemStack stack) {
-        return CELL_CAPACITIES[stack.getItemDamage()];
-    }
-
-    @Override
     public double getStoredEmc(final ItemStack stack) {
         return getStoredCellEMC(stack);
     }
     
+    @Override
+    public double getMaximumEmc(final ItemStack stack) {
+        return CELL_CAPACITIES[stack.getItemDamage()];
+    }
+
     private void removeEMCTag(final ItemStack stack) {
         stack.getTagCompound().removeTag(EMC_TAG);
         if (stack.getTagCompound().hasNoTags()) {
             stack.setTagCompound(null);
         }
     }
+    
+    private boolean hasEMCTag(final ItemStack stack) {
+        return stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(EMC_TAG);
+    }
+
+    
+    private boolean isEmpty(final ItemStack stack) {
+        return getStoredCellEMC(stack) == 0;
+    }
+
 
 }

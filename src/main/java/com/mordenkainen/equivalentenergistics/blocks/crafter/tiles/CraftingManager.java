@@ -1,6 +1,5 @@
-package com.mordenkainen.equivalentenergistics.blocks.crafter;
+package com.mordenkainen.equivalentenergistics.blocks.crafter.tiles;
 
-import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.ICraftingMonitor;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.AEProxy;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 

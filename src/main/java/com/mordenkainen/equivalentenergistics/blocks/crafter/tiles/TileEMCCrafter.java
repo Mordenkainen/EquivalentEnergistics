@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
-import com.mordenkainen.equivalentenergistics.blocks.base.tile.TileAEBase;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.CraftingManager;
 import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.ITransProvider;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
+import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEBase;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
@@ -43,13 +42,13 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     private static final String STACK_TAG = "Stack";
     private static final String ERROR_TAG = "Errored";
 
-    private NonNullList<ItemStack> displayStacks;
     private ItemStack transmutationItem = ItemStack.EMPTY;
-    private boolean doDrops = true;
     private float currentEMC;
+    private NonNullList<ItemStack> displayStacks;
     private final CraftingManager manager;
     private boolean crafting;
     private boolean errored;
+    private boolean doDrops = true;
 
 
     public TileEMCCrafter() {
@@ -92,80 +91,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 
         return TickRateModulation.SAME;
     }
-
-    public NonNullList<ItemStack> getDisplayStacks() {
-        return displayStacks;
-    }
-
-    public boolean canPlayerInteract(final EntityPlayer player) {
-        return checkPermissions(player) && !manager.isCrafting();
-    }
-
-    public ItemStack getCurrentTome() {
-        return transmutationItem;
-    }
-
-    public void setCurrentTome(final ItemStack heldItem) {
-        transmutationItem = heldItem;
-        GridUtils.updatePatterns(getProxy());
-        markForUpdate();
-    }
-
-    @Override
-    public void getDrops(final World world, final BlockPos pos, final List<ItemStack> drops) {
-        if (doDrops && !transmutationItem.isEmpty()) {
-            drops.add(transmutationItem);
-        }
-    }
-
-    @Override
-    public void disableDrops() {
-        doDrops = false;
-    }
-
-    @Override
-    public String getPlayerUUID() {
-        return transmutationItem.isEmpty() ? null : UUID.fromString(transmutationItem.getTagCompound().getString("OwnerUUID")).toString();
-    }
-
-    @Override
-    public List<ItemStack> getTransmutations() {
-        List<ItemStack> transmutations = new ArrayList<ItemStack>();
-        if (!transmutationItem.isEmpty()) {
-            transmutations = ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(UUID.fromString(transmutationItem.getTagCompound().getString("OwnerUUID"))).getKnowledge();
-
-            final Iterator<ItemStack> iter = transmutations.iterator();
-            while (iter.hasNext()) {
-                final ItemStack currentItem = iter.next();
-                if (currentItem.getItem() == ModItems.CRYSTAL) {
-                    iter.remove();
-                }
-            }
-        }
-        return transmutations;
-    }
-
-    @Override
-    public boolean isBusy() {
-        return manager.isBusy();
-    }
-
-    @Override
-    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting invCrafting) {
-        if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, EqEConfig.emcAssembler.powerPerEMC)) {
-            currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
-            displayStacks = manager.getCurrentJobs();
-            markForUpdate();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void provideCrafting(final ICraftingProviderHelper craftingProvider) {
-        GridUtils.addPatterns(getProxy(), this, craftingProvider);
-    }
-
+    
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
@@ -188,11 +114,58 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
         manager.writeToNBT(data);
         return data;
     }
+    
+    @Override
+    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting invCrafting) {
+        if (isActive() && patternDetails instanceof EMCCraftingPattern && manager.addJob(patternDetails.getOutputs()[0].createItemStack(), ((EMCCraftingPattern) patternDetails).outputEMC, EqEConfig.emcAssembler.powerPerEMC)) {
+            currentEMC += ((EMCCraftingPattern) patternDetails).inputEMC - ((EMCCraftingPattern) patternDetails).outputEMC;
+            displayStacks = manager.getCurrentJobs();
+            markForUpdate();
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean isBusy() {
+        return manager.isBusy();
+    }
 
+    @Override
+    public void provideCrafting(final ICraftingProviderHelper craftingProvider) {
+        GridUtils.addPatterns(getProxy(), this, craftingProvider);
+    }
+    
+    public ItemStack getCurrentTome() {
+        return transmutationItem;
+    }
+    
+    public void setCurrentTome(final ItemStack heldItem) {
+        transmutationItem = heldItem;
+        GridUtils.updatePatterns(getProxy());
+        markForUpdate();
+    }
+    
+    public boolean canPlayerInteract(final EntityPlayer player) {
+        return checkPermissions(player) && !manager.isCrafting();
+    }
+    
     private void injectEMC() {
         currentEMC -= GridUtils.injectEMC(getProxy(), currentEMC, Actionable.MODULATE);
     }
+    
+    @Override
+    public void getDrops(final World world, final BlockPos pos, final List<ItemStack> drops) {
+        if (doDrops && !transmutationItem.isEmpty()) {
+            drops.add(transmutationItem);
+        }
+    }
 
+    @Override
+    public void disableDrops() {
+        doDrops = false;
+    }
+    
     @Override
     protected void getPacketData(final NBTTagCompound nbttagcompound) {
         super.getPacketData(nbttagcompound);
@@ -234,6 +207,38 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 
         return super.readPacketData(nbttagcompound);
     }
+    
+    @Override
+    public String getPlayerUUID() {
+        return transmutationItem.isEmpty() ? null : UUID.fromString(transmutationItem.getTagCompound().getString("OwnerUUID")).toString();
+    }
+
+    @Override
+    public List<ItemStack> getTransmutations() {
+        List<ItemStack> transmutations = new ArrayList<ItemStack>();
+        if (!transmutationItem.isEmpty()) {
+            transmutations.addAll(ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(UUID.fromString(transmutationItem.getTagCompound().getString("OwnerUUID"))).getKnowledge());
+
+            final Iterator<ItemStack> iter = transmutations.iterator();
+            while (iter.hasNext()) {
+                final ItemStack currentItem = iter.next();
+                if (currentItem.getItem() == ModItems.CRYSTAL) {
+                    iter.remove();
+                }
+            }
+        }
+        return transmutations;
+    }
+    
+    @Override
+    public void craftingFinished(final ItemStack outputStack) {
+        displayStacks = manager.getCurrentJobs();
+        markForUpdate();
+    }
+
+    public NonNullList<ItemStack> getDisplayStacks() {
+        return displayStacks;
+    }
 
     public boolean isCrafting() {
         return crafting;
@@ -241,12 +246,6 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 
     public boolean isErrored() {
         return errored;
-    }
-
-    @Override
-    public void craftingFinished(final ItemStack outputStack) {
-        displayStacks = manager.getCurrentJobs();
-        markForUpdate();
     }
 
 }

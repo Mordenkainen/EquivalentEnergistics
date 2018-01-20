@@ -11,6 +11,18 @@ public final class InvUtils {
 
     private InvUtils() {}
 
+    public static List<ItemStack> getInvAsList(final IItemHandler inv) {
+        final List<ItemStack> output = new ArrayList<ItemStack>();
+        for (int slot = 0; slot < inv.getSlots(); slot++) {
+            final ItemStack item = inv.getStackInSlot(slot);
+
+            if (!item.isEmpty()) {
+                output.add(item);
+            }
+        }
+        return output;
+    }
+    
     public static boolean isFull(final IItemHandler itemHandler) {
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
             final ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
@@ -30,11 +42,7 @@ public final class InvUtils {
         }
         return true;
     }
-
-    public static ItemStack filterForEmpty(final ItemStack stack) {
-        return stack.getCount() <= 0 ? ItemStack.EMPTY : stack;
-    }
-
+    
     public static int extractWithCount(final IItemHandler dest, final IItemHandler src, final int count) {
         int leftToMove = count;
         for (int i = 0; i < dest.getSlots() && leftToMove > 0; i++) {
@@ -45,7 +53,7 @@ public final class InvUtils {
 
             for (int j = 0; j < src.getSlots() && leftToMove > 0; j++) {
                 final ItemStack srcStack = src.getStackInSlot(j);
-                if (!srcStack.isEmpty() && InvUtils.willStack(destStack, srcStack)) {
+                if (!srcStack.isEmpty() && CommonUtils.willItemsStack(destStack, srcStack)) {
                     final int toMove = Math.min(leftToMove, Math.min(srcStack.getCount(), destStack.getMaxStackSize() - destStack.getCount()));
                     dest.insertItem(i, ItemHandlerHelper.copyStackWithSize(srcStack, toMove), false);
                     src.extractItem(j, toMove, false);
@@ -55,32 +63,6 @@ public final class InvUtils {
         }
 
         return count - leftToMove;
-    }
-
-    public static boolean willStack(final ItemStack dest, final ItemStack src) {
-        if(dest.isEmpty() && !src.isEmpty()) {
-            return true;
-        }
-        if (dest.getItem() != src.getItem()) {
-            return false;
-        }
-        if (dest.getMetadata() != src.getMetadata()) {
-            return false;
-        }
-        
-        return ItemStack.areItemStackTagsEqual(dest, src);
-    }
-
-    public static List<ItemStack> getInvAsList(final IItemHandler inv) {
-        final List<ItemStack> output = new ArrayList<ItemStack>();
-        for (int slot = 0; slot < inv.getSlots(); slot++) {
-            final ItemStack item = inv.getStackInSlot(slot);
-
-            if (!item.isEmpty()) {
-                output.add(item);
-            }
-        }
-        return output;
     }
 
 }

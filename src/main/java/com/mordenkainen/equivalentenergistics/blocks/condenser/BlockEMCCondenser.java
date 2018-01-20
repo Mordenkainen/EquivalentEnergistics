@@ -62,6 +62,23 @@ public class BlockEMCCondenser extends BlockMultiAE {
             return new TileEMCCondenserUlt();
         }
     }
+    
+    @Override
+    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+        if (player == null) {
+            return false;
+        }
+
+        if (player.getHeldItem(hand) == ItemStack.EMPTY) {
+            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, pos);
+            if (tileCondenser != null && !world.isRemote) {
+                tileCondenser.toggleSide(facing);
+            }
+            return true;
+        }
+
+        return false;
+    }
 
     @Override
     public boolean hasComparatorInputOverride(final IBlockState state) {
@@ -95,23 +112,6 @@ public class BlockEMCCondenser extends BlockMultiAE {
     @Override
     public boolean canConnectRedstone(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
         return world.getBlockState(pos).getValue(type) > 0;
-    }
-
-    @Override
-    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-        if (player == null) {
-            return false;
-        }
-
-        if (player.getHeldItem(hand) == ItemStack.EMPTY) {
-            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, pos);
-            if (tileCondenser != null && !world.isRemote) {
-                tileCondenser.toggleSide(facing);
-            }
-            return true;
-        }
-
-        return false;
     }
 
 }

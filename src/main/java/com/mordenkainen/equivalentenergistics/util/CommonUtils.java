@@ -20,23 +20,10 @@ public final class CommonUtils {
 
     private CommonUtils() {}
 
-    public static void debugLog(final String message) {
-        if (EqEConfig.misc.debug) {
-            EquivalentEnergistics.logger.debug(message);
-        }
-    }
-
-    public static void debugLog(final String message, final Throwable t) {
-        if (EqEConfig.misc.debug) {
-            EquivalentEnergistics.logger.debug(message, t);
-        }
-    }
-
     public static boolean destroyAndDrop(final World world, final BlockPos pos) {
         final IBlockState state = world.getBlockState(pos);
         if (!(state.getBlock().isAir(state, world, pos))) {
             if (!world.isRemote) {
-
                 state.getBlock().breakBlock(world, pos, state);
                 final NonNullList<ItemStack> drops = NonNullList.create();
                 state.getBlock().getDrops(drops, world, pos, state, 0);
@@ -52,10 +39,7 @@ public final class CommonUtils {
     }
 
     public static void spawnEntItem(final World world, final BlockPos pos, final ItemStack item) {
-        if (item.isEmpty()) {
-            return;
-        }
-        if (world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots && item != null && item.getCount() > 0) {
+        if (world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots && !item.isEmpty()) {
             final float rx = world.rand.nextFloat() * 0.8F + 0.1F;
             final float ry = world.rand.nextFloat() * 0.8F + 0.1F;
             final float rz = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -96,6 +80,33 @@ public final class CommonUtils {
 
         final DecimalFormat formatter = new DecimalFormat("#.###");
         return formatter.format(displayValue) + ' ' + level;
+    }
+
+    public static ItemStack filterForEmpty(final ItemStack stack) {
+        return stack.getCount() <= 0 ? ItemStack.EMPTY : stack;
+    }
+
+    public static boolean willItemsStack(final ItemStack dest, final ItemStack src) {
+        if(dest.isEmpty() && !src.isEmpty()) {
+            return true;
+        }
+        return isSameItem(dest, src);
+    }
+    
+    public static boolean isSameItem(final ItemStack stack1, final ItemStack stack2) {
+        return stack1.getItem() == stack2.getItem() && stack1.getMetadata() == stack2.getMetadata() && ItemStack.areItemStackTagsEqual(stack1, stack2);
+    }
+
+    public static void debugLog(final String message) {
+        if (EqEConfig.misc.debug) {
+            EquivalentEnergistics.logger.debug(message);
+        }
+    }
+
+    public static void debugLog(final String message, final Throwable t) {
+        if (EqEConfig.misc.debug) {
+            EquivalentEnergistics.logger.debug(message, t);
+        }
     }
 
 }

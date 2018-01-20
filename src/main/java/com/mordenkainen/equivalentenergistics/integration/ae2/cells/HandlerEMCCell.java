@@ -5,6 +5,7 @@ import com.mordenkainen.equivalentenergistics.util.EMCPool;
 import appeng.api.storage.ISaveProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 public class HandlerEMCCell extends HandlerEMCCellBase {
 
@@ -70,18 +71,26 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 
     @Override
     public float addEMC(final float emc) {
+        int oldStatus = getCellStatus();
         final float added = pool.addEMC(emc);
         if (added > 0) {
             updateEMC();
+            if (oldStatus != getCellStatus()) {
+                updateProvider();
+            }
         }
         return added;
     }
 
     @Override
     public float extractEMC(final float emc) {
+        int oldStatus = getCellStatus();
         final float extracted = pool.extractEMC(emc);
         if (extracted > 0) {
             updateEMC();
+            if (oldStatus != getCellStatus()) {
+                updateProvider();
+            }
         }
         return extracted;
     }
@@ -91,6 +100,14 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
         if (saveProvider != null) {
             saveProvider.saveChanges(this);
         }
+    }
+    
+    private void updateProvider() {
+        if(saveProvider instanceof TileEntity) {
+            TileEntity tile = (TileEntity) saveProvider;
+            tile.getWorld().notifyBlockUpdate(tile.getPos(), tile.getWorld().getBlockState(tile.getPos()), tile.getWorld().getBlockState(tile.getPos()), 1);
+        }
+        
     }
 
 }

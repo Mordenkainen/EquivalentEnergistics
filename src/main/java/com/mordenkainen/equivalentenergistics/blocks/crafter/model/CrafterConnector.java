@@ -1,4 +1,4 @@
-package com.mordenkainen.equivalentenergistics.blocks.crafter.models;
+package com.mordenkainen.equivalentenergistics.blocks.crafter.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;

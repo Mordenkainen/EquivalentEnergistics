@@ -1,6 +1,6 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter.render;
 
-import com.mordenkainen.equivalentenergistics.blocks.crafter.models.CrafterConnector;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.model.CrafterConnector;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.core.Reference;
 

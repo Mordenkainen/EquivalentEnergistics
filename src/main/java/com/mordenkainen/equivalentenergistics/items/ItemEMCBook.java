@@ -27,16 +27,7 @@ public class ItemEMCBook extends ItemBase {
 
     public ItemEMCBook() {
         super(Names.BOOK);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(final ItemStack stack, final @Nullable World world, final List<String> tooltip, final ITooltipFlag flag) {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
-            tooltip.add(I18n.format("message.book.owner", new Object[0]) + " " + stack.getTagCompound().getString(OWNER_TAG));
-        } else {
-            tooltip.add(I18n.format("message.book.no_owner", new Object[0]));
-        }
+        setMaxStackSize(1);
     }
 
     @Override
@@ -63,6 +54,16 @@ public class ItemEMCBook extends ItemBase {
             player.sendStatusMessage(new TextComponentTranslation("message.book.link", new Object[0]), true);
         }
         return super.onItemRightClick(world, player, hand);
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(final ItemStack stack, final @Nullable World world, final List<String> tooltip, final ITooltipFlag flag) {
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(OWNER_TAG)) {
+            tooltip.add(I18n.format("message.book.owner", new Object[0]) + " " + stack.getTagCompound().getString(OWNER_TAG));
+        } else {
+            tooltip.add(I18n.format("message.book.no_owner", new Object[0]));
+        }
     }
 
 }

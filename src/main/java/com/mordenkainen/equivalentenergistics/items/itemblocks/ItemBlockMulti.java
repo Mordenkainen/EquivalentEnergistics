@@ -19,7 +19,7 @@ public class ItemBlockMulti extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(final ItemStack stack) {
-        return super.getUnlocalizedName(stack) + "_" + stack.getItemDamage();
+        return super.getUnlocalizedName(stack) + "_" + stack.getMetadata();
     }
 
 }

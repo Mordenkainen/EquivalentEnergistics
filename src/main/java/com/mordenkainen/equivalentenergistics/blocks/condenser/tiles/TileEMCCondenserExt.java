@@ -51,97 +51,46 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     }
 
     @Override
-    protected float getEMCPerTick() {
-        return EqEConfig.emcCondenser.emcPerTick * 100;
-    }
-
-    @Override
-    protected boolean isValidItem(final ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public boolean hasFastRenderer() {
-        return true;
-    }
-
-    @Override
     public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
         if (refreshNetworkState()) {
             markForUpdate();
         }
 
-        if (isActive() && getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
-            updateState(CondenserState.IDLE);
-            return TickRateModulation.IDLE;
-        }
+        if (isActive()) {
+            if(getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
+                updateState(CondenserState.IDLE);
+                return TickRateModulation.IDLE;
+            }
 
-        importItems();
+            importItems();
+        }
 
         return super.tickingRequest(node, ticksSinceLast);
 
     }
-
-    public void toggleSide(final EnumFacing side) {
-        sides.put(side, sides.get(side).getNext());
-        markForUpdate();
-    }
-
-    public SideSetting getSide(final EnumFacing side) {
-        return sides.get(side);
-    }
-
-    @Override
-    protected void getPacketData(final NBTTagCompound nbttagcompound) {
-        super.getPacketData(nbttagcompound);
-        final NBTTagCompound list = new NBTTagCompound();
+    
+    protected void importItems() {
+        int numItems = itemsToTransfer();
         for (final EnumFacing side : sides.keySet()) {
-            list.setInteger(side.name(), sides.get(side).ordinal());
-        }
-        nbttagcompound.setTag(SIDE_TAG, list);
-    }
-
-    @Override
-    protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
-        boolean flag = super.readPacketData(nbttagcompound);
-        final NBTTagCompound list = (NBTTagCompound) nbttagcompound.getTag(SIDE_TAG);
-        for (final EnumFacing side : sides.keySet()) {
-            final SideSetting newData = SideSetting.values()[list.getInteger(side.name())];
-            if (newData != sides.get(side)) {
-                sides.put(side, newData);
-                flag = true;
+            if (sides.get(side) != SideSetting.INPUT) {
+                continue;
             }
-
-        }
-        return flag;
-    }
-
-    @Override
-    public void readFromNBT(final NBTTagCompound data) {
-        super.readFromNBT(data);
-        final NBTTagCompound list = (NBTTagCompound) data.getTag(SIDE_TAG);
-        if (list != null) {
-            for (final EnumFacing side : sides.keySet()) {
-                sides.put(side, SideSetting.values()[list.getInteger(side.name())]);
+            final TileEntity tile = getWorld().getTileEntity(pos.offset(side));
+            if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) {
+                final IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+                numItems -= InvUtils.extractWithCount(inv, tileInv, numItems);
+            }
+            if (numItems <= 0) {
+                break;
             }
         }
     }
-
+    
     @Override
-    public NBTTagCompound writeToNBT(final NBTTagCompound data) {
-        super.writeToNBT(data);
-        final NBTTagCompound list = new NBTTagCompound();
-        for (final EnumFacing side : sides.keySet()) {
-            list.setInteger(side.name(), sides.get(side).ordinal());
-        }
-        data.setTag(SIDE_TAG, list);
-        return data;
+    protected float getEMCPerTick() {
+        return EqEConfig.emcCondenser.emcPerTick * 100;
     }
-
-    protected int itemsToTransfer() {
-        return 16;
-    }
-
+    
     @Override
     protected ItemStack ejectItem(final ItemStack stack) {
         if (stack.isEmpty()) {
@@ -172,23 +121,75 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
 
         return toStore.isEmpty() ? toStore : super.ejectItem(toStore);        
     }
-
-    protected void importItems() {
-        int numItems = itemsToTransfer();
+    
+    @Override
+    protected void getPacketData(final NBTTagCompound nbttagcompound) {
+        super.getPacketData(nbttagcompound);
+        final NBTTagCompound list = new NBTTagCompound();
         for (final EnumFacing side : sides.keySet()) {
-            if (sides.get(side) != SideSetting.INPUT) {
-                continue;
+            list.setInteger(side.name(), sides.get(side).ordinal());
+        }
+        nbttagcompound.setTag(SIDE_TAG, list);
+    }
+
+    @Override
+    protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
+        boolean flag = super.readPacketData(nbttagcompound);
+        final NBTTagCompound list = (NBTTagCompound) nbttagcompound.getTag(SIDE_TAG);
+        for (final EnumFacing side : sides.keySet()) {
+            final SideSetting newData = SideSetting.values()[list.getInteger(side.name())];
+            if (newData != sides.get(side)) {
+                sides.put(side, newData);
+                flag = true;
             }
-            final TileEntity tile = getWorld().getTileEntity(pos.offset(side));
-            if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) {
-                final IItemHandler tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
-                numItems -= InvUtils.extractWithCount(inv, tileInv, numItems);
-            }
-            if (numItems <= 0) {
-                break;
+
+        }
+        return flag;
+    }
+    
+    @Override
+    public void readFromNBT(final NBTTagCompound data) {
+        super.readFromNBT(data);
+        final NBTTagCompound list = (NBTTagCompound) data.getTag(SIDE_TAG);
+        if (list != null) {
+            for (final EnumFacing side : sides.keySet()) {
+                sides.put(side, SideSetting.values()[list.getInteger(side.name())]);
             }
         }
+    }
 
+    @Override
+    public NBTTagCompound writeToNBT(final NBTTagCompound data) {
+        super.writeToNBT(data);
+        final NBTTagCompound list = new NBTTagCompound();
+        for (final EnumFacing side : sides.keySet()) {
+            list.setInteger(side.name(), sides.get(side).ordinal());
+        }
+        data.setTag(SIDE_TAG, list);
+        return data;
+    }
+
+    public void toggleSide(final EnumFacing side) {
+        sides.put(side, sides.get(side).getNext());
+        markForUpdate();
+    }
+
+    public SideSetting getSide(final EnumFacing side) {
+        return sides.get(side);
+    }
+
+    protected int itemsToTransfer() {
+        return 16;
+    }
+
+    @Override
+    protected boolean isValidItem(final ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
     }
 
 }

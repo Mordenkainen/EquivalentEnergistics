@@ -5,12 +5,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
-import com.mordenkainen.equivalentenergistics.blocks.base.tile.TileAEBase;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
 import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
+import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEBase;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
@@ -106,9 +106,123 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
             drops.addAll(InvUtils.getInvAsList(inv));
         }
     }
+    
+    protected float getEMCPerTick() {
+        return EqEConfig.emcCondenser.emcPerTick;
+    }
 
     public CondenserState getState() {
         return state;
+    }
+    
+    protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
+        final double powerPerItem = emcValue * EqEConfig.emcCondenser.powerPerEMC;
+        final double powerRequired = stackSize * powerPerItem;
+        final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+        return (int) (powerAvail / powerPerItem);
+    }
+    
+    protected float processItems(final int slot, final float remainingEMC, final boolean usePower) {
+        final ItemStack stack = inv.getStackInSlot(slot);
+        final float itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
+        try {
+            final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
+            final float availEMC = emcGrid.getAvail();
+
+            if (itemEMC > availEMC) {
+                return -1;
+            }
+
+            if (itemEMC > remainingEMC) {
+                return remainingEMC;
+            }
+
+            int maxToDo = Math.min(stack.getCount(), Math.min((int) (availEMC / itemEMC), (int) (remainingEMC / itemEMC)));
+            if (usePower) {
+                maxToDo = Math.min(getMaxItemsForPower(maxToDo, itemEMC), maxToDo);
+            }
+
+            if (maxToDo <= 0) {
+                return -3;
+            }
+
+            final float toStore = itemEMC * maxToDo;
+            if (usePower) {
+                GridUtils.extractAEPower(getProxy(), toStore * EqEConfig.emcCondenser.powerPerEMC, Actionable.MODULATE, PowerMultiplier.CONFIG);
+            }
+            emcGrid.addEMC(toStore, Actionable.MODULATE);
+            stack.shrink(maxToDo);
+            inv.setStackInSlot(slot, CommonUtils.filterForEmpty(stack));
+
+            return remainingEMC - toStore;
+        } catch (GridAccessException e) {
+            CommonUtils.debugLog("processItems: Error accessing grid:", e);
+            return -1;
+        }
+    }
+    
+    protected float processStorage(final int slot, final float remainingEMC) {
+        final ItemStack stack = inv.getStackInSlot(slot);
+        final float itemEMC = (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+        float toStore = 0;
+
+        try {
+            if (itemEMC > 0) {
+                final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
+                toStore = Math.min(Math.min(remainingEMC, itemEMC), emcGrid.getAvail());
+                if (toStore <= 0) {
+                    return -1;
+                }
+
+                emcGrid.addEMC(toStore, Actionable.MODULATE);
+                ((IItemEmc) stack.getItem()).extractEmc(stack, toStore);
+                inv.setStackInSlot(slot, stack);
+            }
+
+            if (((IItemEmc) stack.getItem()).getStoredEmc(stack) <= 0) {
+                inv.setStackInSlot(slot, ejectItem(stack));
+                if (inv.getStackInSlot(slot) != ItemStack.EMPTY) {
+                    return -2;
+                }
+            }
+
+            return remainingEMC - toStore;
+        } catch (GridAccessException e) {
+            CommonUtils.debugLog("processStorage: Error accessing grid:", e);
+            return -1;
+        }
+    }
+    
+    protected CondenserState processInv() {
+        float remainingEMC = getEMCPerTick();
+        for (int slot = 0; slot < 4 && remainingEMC > 0; slot++) {
+            final ItemStack stack = inv.getStackInSlot(slot);
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            if (stack.getItem() instanceof IItemEmc) {
+                remainingEMC = processStorage(slot, remainingEMC);
+            } else if (ProjectEAPI.getEMCProxy().getValue(stack) > 0) {
+                remainingEMC = processItems(slot, remainingEMC, stack.getItem() != ModItems.CRYSTAL);
+            } else {
+                inv.setStackInSlot(slot, ejectItem(stack));
+                if (!inv.getStackInSlot(slot).isEmpty()) {
+                    remainingEMC = -2;
+                }
+            }
+        }
+
+        switch ((int) remainingEMC) {
+        case -1:
+            return CondenserState.NOEMCSTORAGE;
+        case -2:
+            return CondenserState.NOITEMSTORAGE;
+        case -3:
+            return CondenserState.NOPOWER;
+        default:
+            return CondenserState.ACTIVE;
+        }
     }
 
     protected boolean updateState(final CondenserState newState) {
@@ -118,6 +232,10 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
             return true;
         }
         return false;
+    }
+    
+    protected ItemStack ejectItem(final ItemStack stack) {
+        return GridUtils.injectItemsForPower(getProxy(), stack, mySource);
     }
 
     @Override
@@ -151,126 +269,8 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         return data;
     }
 
-    protected ItemStack ejectItem(final ItemStack stack) {
-        return GridUtils.injectItemsForPower(getProxy(), stack, mySource);
-    }
-
-    protected CondenserState processInv() {
-        float remainingEMC = getEMCPerTick();
-        for (int slot = 0; slot < 4 && remainingEMC > 0; slot++) {
-            final ItemStack stack = inv.getStackInSlot(slot);
-            if (stack == ItemStack.EMPTY) {
-                continue;
-            }
-
-            if (stack.getItem() instanceof IItemEmc) {
-                remainingEMC = processStorage(slot, remainingEMC);
-            } else if (ProjectEAPI.getEMCProxy().getValue(stack) > 0) {
-                remainingEMC = processItems(slot, remainingEMC, stack.getItem() != ModItems.CRYSTAL);
-            } else if (!inv.getStackInSlot(slot).isEmpty()) {
-                inv.setStackInSlot(slot, ejectItem(stack));
-                if (inv.getStackInSlot(slot) != ItemStack.EMPTY) {
-                    remainingEMC = -2;
-                }
-            }
-        }
-
-        switch ((int) remainingEMC) {
-        case -1:
-            return CondenserState.NOEMCSTORAGE;
-        case -2:
-            return CondenserState.NOITEMSTORAGE;
-        case -3:
-            return CondenserState.NOPOWER;
-        default:
-            return CondenserState.ACTIVE;
-        }
-    }
-
-    protected float processStorage(final int slot, final float remainingEMC) {
-        final ItemStack stack = inv.getStackInSlot(slot);
-        final float itemEMC = (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack);
-        float toStore = 0;
-
-        try {
-            if (itemEMC > 0) {
-                final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
-                toStore = Math.min(Math.min(remainingEMC, itemEMC), emcGrid.getAvail());
-                if (toStore <= 0) {
-                    return -1;
-                }
-
-                emcGrid.addEMC(toStore, Actionable.MODULATE);
-                ((IItemEmc) stack.getItem()).extractEmc(stack, toStore);
-                inv.setStackInSlot(slot, stack);
-            }
-
-            if (((IItemEmc) stack.getItem()).getStoredEmc(stack) <= 0) {
-                inv.setStackInSlot(slot, ejectItem(stack));
-                if (inv.getStackInSlot(slot) != ItemStack.EMPTY) {
-                    return -2;
-                }
-            }
-
-            return remainingEMC - toStore;
-        } catch (GridAccessException e) {
-            CommonUtils.debugLog("processStorage: Error accessing grid:", e);
-            return -1;
-        }
-    }
-
-    protected float processItems(final int slot, final float remainingEMC, final boolean usePower) {
-        final ItemStack stack = inv.getStackInSlot(slot);
-        final float itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
-        try {
-            final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
-            final float availEMC = emcGrid.getAvail();
-
-            if (itemEMC > availEMC) {
-                return -1;
-            }
-
-            if (itemEMC > remainingEMC) {
-                return remainingEMC;
-            }
-
-            int maxToDo = Math.min(stack.getCount(), Math.min((int) (availEMC / itemEMC), (int) (remainingEMC / itemEMC)));
-            if (usePower) {
-                maxToDo = Math.min(getMaxItemsForPower(maxToDo, itemEMC), maxToDo);
-            }
-
-            if (maxToDo <= 0) {
-                return -3;
-            }
-
-            final float toStore = itemEMC * maxToDo;
-            if (usePower) {
-                GridUtils.extractAEPower(getProxy(), toStore * EqEConfig.emcCondenser.powerPerEMC, Actionable.MODULATE, PowerMultiplier.CONFIG);
-            }
-            emcGrid.addEMC(toStore, Actionable.MODULATE);
-            stack.shrink(maxToDo);
-            inv.setStackInSlot(slot, InvUtils.filterForEmpty(stack));
-
-            return remainingEMC - toStore;
-        } catch (GridAccessException e) {
-            CommonUtils.debugLog("processItems: Error accessing grid:", e);
-            return -1;
-        }
-    }
-
-    protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
-        final double powerPerItem = emcValue * EqEConfig.emcCondenser.powerPerEMC;
-        final double powerRequired = stackSize * powerPerItem;
-        final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
-        return (int) (powerAvail / powerPerItem);
-    }
-
-    protected float getEMCPerTick() {
-        return EqEConfig.emcCondenser.emcPerTick;
-    }
-
     protected boolean isValidItem(final ItemStack stack) {
-        return stack.getItem() instanceof IItemEmc || ProjectEAPI.getEMCProxy().hasValue(stack) && ProjectEAPI.getEMCProxy().getValue(stack) <= getEMCPerTick();
+        return stack.getItem() instanceof IItemEmc || ProjectEAPI.getEMCProxy().getValue(stack) > 0 && ProjectEAPI.getEMCProxy().getValue(stack) <= getEMCPerTick();
     }
 
     protected static class CondenserInventoryHandler extends ItemStackHandler {

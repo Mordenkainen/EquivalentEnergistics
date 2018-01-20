@@ -24,11 +24,6 @@ public class ItemCellCreative extends ItemCellBase {
         return EnumRarity.EPIC;
     }
 
-    @Override
-    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> inv) {
-        return 0;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
@@ -42,5 +37,11 @@ public class ItemCellCreative extends ItemCellBase {
     public <T extends IAEStack<T>> int getStatusForCell(final ItemStack stack, final IMEInventory<T> inv) {
         return 1;
     }
+    
+    @Override
+    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> inv) {
+        return 0;
+    }
+
 
 }

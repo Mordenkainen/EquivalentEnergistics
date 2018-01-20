@@ -27,7 +27,7 @@ public abstract class ItemMultiBase extends ItemBase {
 
     @Override
     public String getUnlocalizedName(final ItemStack stack) {
-        return this.getUnlocalizedName() + "_" + stack.getItemDamage();
+        return this.getUnlocalizedName(stack) + "_" + stack.getItemDamage();
     }
 
     @Override
