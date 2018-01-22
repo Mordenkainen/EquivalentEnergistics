@@ -73,8 +73,8 @@ public class BlockEMCCondenser extends BlockMultiAE {
             final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, pos);
             if (tileCondenser != null && !world.isRemote) {
                 tileCondenser.toggleSide(facing);
+                return true;
             }
-            return true;
         }
 
         return false;

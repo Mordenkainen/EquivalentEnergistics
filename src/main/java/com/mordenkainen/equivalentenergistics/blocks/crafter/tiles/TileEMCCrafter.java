@@ -215,7 +215,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
 
     @Override
     public List<ItemStack> getTransmutations() {
-        List<ItemStack> transmutations = new ArrayList<ItemStack>();
+        final List<ItemStack> transmutations = new ArrayList<ItemStack>();
         if (!transmutationItem.isEmpty()) {
             transmutations.addAll(ProjectEAPI.getTransmutationProxy().getKnowledgeProviderFor(UUID.fromString(transmutationItem.getTagCompound().getString("OwnerUUID"))).getKnowledge());
 

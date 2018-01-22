@@ -8,20 +8,19 @@
     "RSR",
     "III"
   ],
-  "type": "minecraft:crafting_shaped",
+  "type": "forge:ore_shaped",
   "group": "tier8",
   "key": {
     "G": {
-      "item": "appliedenergistics2:quartz_glass",
-      "data": 0
+      "item": "appliedenergistics2:quartz_glass"
     },
     "R": {
-      "item": "minecraft:redstone",
-      "data": 0
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
     },
     "I": {
-      "item": "minecraft:iron_ingot",
-      "data": 0
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
     },
     "S": {
       "item": "equivalentenergistics:emc_storage_component",

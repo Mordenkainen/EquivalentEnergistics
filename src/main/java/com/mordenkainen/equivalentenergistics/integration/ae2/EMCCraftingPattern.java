@@ -30,27 +30,32 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
     public EMCCraftingPattern(final ItemStack craftingResult) {
         buildPattern(craftingResult);
     }
+    
+    @Override
+    public ItemStack getPattern() {
+        return ItemPattern.getItemForPattern(result[0].createItemStack());
+    }
 
     @Override
-    public boolean canSubstitute() {
+    public boolean isValidItemForSlot(final int slot, final ItemStack stack, final World world) {
         return false;
     }
-
+    
     @Override
-    public IAEItemStack[] getCondensedInputs() {
-        return getInputs();
-    }
-
-    @Override
-    public IAEItemStack[] getCondensedOutputs() {
-        return getOutputs();
+    public boolean isCraftable() {
+        return false;
     }
 
     @Override
     public IAEItemStack[] getInputs() {
         return ingredients.clone();
     }
-
+    
+    @Override
+    public IAEItemStack[] getCondensedInputs() {
+        return getInputs();
+    }
+    
     @Override
     public ItemStack getOutput(final InventoryCrafting crafting, final World world) {
         return null;
@@ -60,25 +65,20 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
     public IAEItemStack[] getOutputs() {
         return result.clone();
     }
+    
+    @Override
+    public IAEItemStack[] getCondensedOutputs() {
+        return getOutputs();
+    }
 
     @Override
-    public ItemStack getPattern() {
-        return ItemPattern.getItemForPattern(result[0].createItemStack());
+    public boolean canSubstitute() {
+        return false;
     }
 
     @Override
     public int getPriority() {
         return -1;
-    }
-
-    @Override
-    public boolean isCraftable() {
-        return false;
-    }
-
-    @Override
-    public boolean isValidItemForSlot(final int slot, final ItemStack stack, final World world) {
-        return false;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
         if (singleItemValue <= EqEConfig.emcAssembler.maxStackEMC) {
             stackSize = (int) Math.min(64, EqEConfig.emcAssembler.maxStackEMC / singleItemValue);
         }
-        result[0] =storageChannel.createStack(craftingResult).setStackSize(stackSize);
+        result[0] = storageChannel.createStack(craftingResult).setStackSize(stackSize);
         float remainingEMC = outputEMC = singleItemValue * stackSize;
         inputEMC = 0;
         valid = false;

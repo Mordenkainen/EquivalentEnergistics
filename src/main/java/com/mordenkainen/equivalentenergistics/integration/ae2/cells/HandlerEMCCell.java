@@ -71,7 +71,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
 
     @Override
     public float addEMC(final float emc) {
-        int oldStatus = getCellStatus();
+        final int oldStatus = getCellStatus();
         final float added = pool.addEMC(emc);
         if (added > 0) {
             updateEMC();
@@ -104,7 +104,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     
     private void updateProvider() {
         if(saveProvider instanceof TileEntity) {
-            TileEntity tile = (TileEntity) saveProvider;
+            final TileEntity tile = (TileEntity) saveProvider;
             tile.getWorld().notifyBlockUpdate(tile.getPos(), tile.getWorld().getBlockState(tile.getPos()), tile.getWorld().getBlockState(tile.getPos()), 1);
         }
         

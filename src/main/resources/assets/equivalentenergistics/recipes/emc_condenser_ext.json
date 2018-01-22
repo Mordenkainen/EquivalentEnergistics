@@ -8,14 +8,15 @@
     "DCD",
     "DDD"
   ],
-  "type": "minecraft:crafting_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "C": {
       "item": "equivalentenergistics:emc_condenser",
       "data": 1
     },
     "D": {
-      "item": "minecraft:emerald"
+      "type": "forge:ore_dict",
+      "ore": "gemEmerald"
     }
   }
 }

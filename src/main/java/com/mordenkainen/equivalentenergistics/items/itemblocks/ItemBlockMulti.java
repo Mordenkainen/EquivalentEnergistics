@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.items.itemblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -20,6 +21,11 @@ public class ItemBlockMulti extends ItemBlock {
     @Override
     public String getUnlocalizedName(final ItemStack stack) {
         return super.getUnlocalizedName(stack) + "_" + stack.getMetadata();
+    }
+    
+    @Override
+    public EnumRarity getRarity(final ItemStack stack) {
+        return EnumRarity.values()[stack.getMetadata()];
     }
 
 }

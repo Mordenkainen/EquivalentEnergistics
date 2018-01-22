@@ -31,12 +31,7 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
         cellHandler.cellUpdate(cellUpdate);
     }
-
-    @Override
-    public void addNode(final IGridNode gridNode, final IGridHost machine) {
-        cellHandler.addNode(gridNode, machine);
-    }
-
+    
     @Override
     public void onUpdateTick() {
         crystalHandler.updateDisplay();
@@ -45,6 +40,11 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         cellHandler.removeNode(gridNode, machine);
+    }
+
+    @Override
+    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+        cellHandler.addNode(gridNode, machine);
     }
 
     @Override
