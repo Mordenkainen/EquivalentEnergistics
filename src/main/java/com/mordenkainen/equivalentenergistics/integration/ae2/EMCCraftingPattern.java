@@ -123,7 +123,7 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
         }
 
         if (remainingEMC > 0) {
-            if (crystals.size() > 0 && crystals.get(crystals.size() - 1).getItemDamage() == 0) {
+            if (!crystals.isEmpty() && crystals.get(crystals.size() - 1).getItemDamage() == 0) {
                 crystals.get(crystals.size() - 1).setStackSize(crystals.get(crystals.size() - 1).getStackSize() + 1);
             } else {
                 crystals.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(0)));

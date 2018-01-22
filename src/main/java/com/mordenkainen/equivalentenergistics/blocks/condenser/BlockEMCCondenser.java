@@ -112,8 +112,8 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
             final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, x, y, z);
             if (tileCondenser != null && !world.isRemote) {
                 tileCondenser.toggleSide(side);
+                return true;
             }
-            return true;
         }
 
         return false;
@@ -125,7 +125,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     }
     
     @Override
-    public int getComparatorInputOverride(World world, int x, int y, int z, int meta) {
+    public int getComparatorInputOverride(final World world, final int x, final int y, final int z, final int meta) {
         if(meta == 0) {
             return 0;
         }

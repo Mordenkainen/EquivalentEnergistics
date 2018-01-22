@@ -4,9 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCellBase;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCellBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
-import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridHost;
@@ -45,47 +44,35 @@ public class EMCGridCellHandler {
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCellBase handler = getHandler(cell);
                 if (handler != null) {
-                    newEMC += handler.getEMC();
-                    newMax += handler.getCapacity();
+                    newEMC += handler.getCurrentEMC();
+                    newMax += handler.getMaxEMC();
                 }
             }
         }
 
-        final EMCPool pool = hostGrid.getPool();
-
-        if (newMax != pool.getMaxEMC() || newEMC != pool.getCurrentEMC()) {
-            pool.setMaxEMC(newMax);
-            pool.setCurrentEMC(newEMC);
-            hostGrid.markDirty();
-        }
+        updatePool(newMax, newEMC);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ICellProvider && driveBays.remove((ICellProvider) machine)) {
-            final EMCPool pool = hostGrid.getPool();
-            float newEMC = pool.getCurrentEMC();
-            float newMax = pool.getMaxEMC();
+            float newEMC = hostGrid.getCurrentEMC();
+            float newMax = hostGrid.getMaxEMC();
             final List<IMEInventoryHandler> cells = ((ICellProvider) machine).getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCellBase handler = getHandler(cell);
                 if (handler != null) {
-                    newEMC -= handler.getEMC();
-                    newMax -= handler.getCapacity();
+                    newEMC -= handler.getCurrentEMC();
+                    newMax -= handler.getMaxEMC();
                 }
             }
-            if (newMax != pool.getMaxEMC() || newEMC != pool.getCurrentEMC()) {
-                pool.setMaxEMC(newMax);
-                pool.setCurrentEMC(newEMC);
-                hostGrid.markDirty();
-            }
+            updatePool(newMax, newEMC);
         }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public float injectEMC(final float emc, final Actionable mode) {
-        final EMCPool pool = hostGrid.getPool();
-        final float toAdd = Math.min(emc, pool.getAvail());
+        final float toAdd = Math.min(emc, hostGrid.getAvail());
         if (mode != Actionable.MODULATE) {
             return toAdd;
         }
@@ -105,14 +92,13 @@ public class EMCGridCellHandler {
             }
         }
 
-        pool.addEMC(added);
+        hostGrid.addEMC(added);
         return added;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public float extractEMC(final float emc, final Actionable mode) {
-        final EMCPool pool = hostGrid.getPool();
-        final float toExtract = Math.min(emc, pool.getCurrentEMC());
+        final float toExtract = Math.min(emc, hostGrid.getCurrentEMC());
         if (mode != Actionable.MODULATE) {
             return toExtract;
         }
@@ -132,7 +118,7 @@ public class EMCGridCellHandler {
             }
         }
 
-        pool.extractEMC(extracted);
+        hostGrid.extractEMC(extracted);
         return extracted;
     }
 
@@ -164,6 +150,14 @@ public class EMCGridCellHandler {
         }
 
         return null;
+    }
+    
+    private void updatePool(final float newMax, final float newCurrent) {
+        if (newMax != hostGrid.getMaxEMC() || newCurrent != hostGrid.getCurrentEMC()) {
+            hostGrid.setMaxEMC(newMax);
+            hostGrid.setCurrentEMC(newCurrent);
+            hostGrid.markDirty();
+        }
     }
 
     private static boolean reflectFields() {

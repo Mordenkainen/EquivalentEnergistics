@@ -169,7 +169,7 @@ public final class GridUtils {
     public static float injectEMC(final AEProxy proxy, final float emc, final Actionable mode) {
         try {
             if (emc > 0) {
-                return getEMCStorage(proxy).injectEMC(emc, mode);
+                return getEMCStorage(proxy).addEMC(emc, mode);
             }
         } catch (final GridAccessException e) {
             CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);

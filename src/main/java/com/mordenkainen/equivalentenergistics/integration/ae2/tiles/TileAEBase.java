@@ -93,6 +93,7 @@ public abstract class TileAEBase extends EqETileBase implements IAEProxyHost {
         return true;
     }
     
+    @Override
     public boolean isActive() {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return active;
@@ -101,6 +102,7 @@ public abstract class TileAEBase extends EqETileBase implements IAEProxyHost {
         }
     }
     
+    @Override
     public boolean isPowered() {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return powered;
@@ -109,11 +111,13 @@ public abstract class TileAEBase extends EqETileBase implements IAEProxyHost {
         }
     }
 
+    @Override
     protected void getPacketData(final NBTTagCompound nbttagcompound) {
         nbttagcompound.setBoolean(POWERED_TAG, isPowered());
         nbttagcompound.setBoolean(ACTIVE_TAG, isActive());
     }
     
+    @Override
     protected boolean readPacketData(final NBTTagCompound nbttagcompound) {
         boolean flag = false;
         boolean newState = nbttagcompound.getBoolean(POWERED_TAG);

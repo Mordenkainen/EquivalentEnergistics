@@ -91,12 +91,12 @@ public class EqECoreTransformer implements IClassTransformer {
                         final AbstractInsnNode insn = insnNodes.next();
                         if (insn.getOpcode() == Opcodes.ALOAD && ((VarInsnNode) insn).var == 1) {
                             found = true;
-                            LabelNode label1 = new LabelNode();
+                            final LabelNode label1 = new LabelNode();
                             final InsnList endList = new InsnList();
                             endList.add(new VarInsnNode(Opcodes.ALOAD, 1));
                             endList.add(new JumpInsnNode(Opcodes.IFNULL, label1));
                             endList.add(new VarInsnNode(Opcodes.ALOAD, 1));
-                            endList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", EqECoreLoader.DEOBF ? "getItem" : "func_77973_b", "()Lnet/minecraft/item/Item;", false));
+                            endList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", EqECoreLoader.deobf ? "getItem" : "func_77973_b", "()Lnet/minecraft/item/Item;", false));
                             endList.add(new TypeInsnNode(Opcodes.INSTANCEOF, "moze_intel/projecte/api/item/IItemEmc"));
                             endList.add(new JumpInsnNode(Opcodes.IFEQ, label1));
                             endList.add(new InsnNode(Opcodes.ICONST_1));
@@ -137,11 +137,8 @@ public class EqECoreTransformer implements IClassTransformer {
         }
     }
     
-    public boolean testfunc(ItemStack stack) {
-        if (stack != null && stack.getItem() instanceof IItemEmc) {
-            return true;
-        }
-        return false;
+    public boolean testfunc(final ItemStack stack) {
+        return stack != null && stack.getItem() instanceof IItemEmc;
     }
 
 }

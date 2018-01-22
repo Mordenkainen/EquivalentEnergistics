@@ -1,4 +1,6 @@
-package com.mordenkainen.equivalentenergistics.integration.ae2;
+package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
+
+import com.mordenkainen.equivalentenergistics.util.IEMCStorage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -9,7 +11,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
-public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemStack> {
+public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemStack>, IEMCStorage {
 
     protected final ISaveProvider saveProvider;
 
@@ -67,16 +69,6 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
         return false;
     }
 
-    public abstract float addEMC(float amount);
-
-    public abstract float extractEMC(float amount);
-
     public abstract int getCellStatus();
-
-    public abstract float getCapacity();
-
-    public abstract float getEMC();
-
-    public abstract float getAvail();
 
 }

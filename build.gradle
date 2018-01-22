@@ -19,7 +19,7 @@ apply plugin: 'forge'
 
 version = "${mod_version}"
 group= "com.mordenkainen.equivalentenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "EquivalentEnergistics"
+archivesBaseName = "EquivalentEnergistics-${minecraft_version}"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

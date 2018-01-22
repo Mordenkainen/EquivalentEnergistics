@@ -115,7 +115,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
             if (usePower) {
                 GridUtils.extractAEPower(getProxy(), toStore * BlockEMCCondenser.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
-            emcGrid.injectEMC(toStore, Actionable.MODULATE);
+            emcGrid.addEMC(toStore, Actionable.MODULATE);
             stack.stackSize -= maxToDo;
             getInventory().setInventorySlotContents(slot, CommonUtils.filterForEmpty(stack));
 
@@ -139,7 +139,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
                     return -1;
                 }
 
-                emcGrid.injectEMC(toStore, Actionable.MODULATE);
+                emcGrid.addEMC(toStore, Actionable.MODULATE);
                 Integration.emcHandler.extractEMC(stack, toStore);
                 getInventory().setInventorySlotContents(slot, stack);
             }

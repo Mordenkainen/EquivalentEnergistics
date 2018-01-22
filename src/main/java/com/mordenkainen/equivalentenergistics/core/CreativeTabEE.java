@@ -19,7 +19,7 @@ public class CreativeTabEE extends CreativeTabs {
 
     @Override
     public ItemStack getIconItemStack() {
-        return ItemEnum.EMCCRYSTAL.getDamagedStack(2);
+        return ItemEnum.EMCCRYSTAL.getDamagedStack(4);
     }
 
 }

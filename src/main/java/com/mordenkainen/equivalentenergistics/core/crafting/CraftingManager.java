@@ -8,11 +8,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public final class CraftingManager {
 
     private static final int NUM_CELLS = 8;
-    private static Item aeMaterial;
+    public static Item aeMaterial;
     private static ItemStack base;
     private static Item aeGlass;
     private static ItemStack dust;
@@ -28,6 +30,10 @@ public final class CraftingManager {
         } else {
             dust = new ItemStack(GameRegistry.findItem("ProjectE", "item.pe_covalence_dust"), 1, 2);
         }
+        
+        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 0));
+        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 1));
+        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 10));
 
         if (BlockEnum.EMCCONDENSER.isEnabled()) {
             initCondenserRecipies();
@@ -51,7 +57,7 @@ public final class CraftingManager {
         }
 
         // Components
-        GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "DCD", "CLC", "DCD", 'D', dust, 'C', new ItemStack(aeMaterial, 1), 'L', new ItemStack(aeMaterial, 1, 22)); // NOPMD
+        GameRegistry.addRecipe(new ShapedOreRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "DCD", "CLC", "DCD", 'D', dust, 'C', "EqECertusQuartz", 'L', new ItemStack(aeMaterial, 1, 22))); // NOPMD
         for (int i = 1; i < 4; i++) {
             GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "DCD", "SGS", "DSD", 'D', dust, 'C', new ItemStack(aeMaterial, 1, 23), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
         }
@@ -64,21 +70,21 @@ public final class CraftingManager {
 
         // Cells
         for (int i = 0; i < NUM_CELLS; i++) {
-            GameRegistry.addShapedRecipe(ItemEnum.EMCCELL.getDamagedStack(i), "GRG", "RSR", "III", 'G', new ItemStack(aeGlass, 1), 'R', new ItemStack(Items.redstone), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i), 'I', new ItemStack(Items.iron_ingot));
+            GameRegistry.addRecipe(new ShapedOreRecipe(ItemEnum.EMCCELL.getDamagedStack(i), "GRG", "RSR", "III", 'G', new ItemStack(aeGlass, 1), 'R', "dustRedstone", 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i), 'I', "ingotIron"));
         }
     }
 
     private static void initCrafterRecipies() {
         GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), new Object[] { "CDC", "DFD", "CDC", 'C', base, 'D', dust, 'F', new ItemStack(aeMaterial, 1, 43) });
-        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 1), new Object[] { "GGG", "GRG", "GGG", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), 'G', Items.diamond });
-        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 2), new Object[] { "MMM", "MRM", "MMM", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 1), 'M', Items.emerald });
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 1), new Object[] { "GGG", "GRG", "GGG", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock()), 'G', "gemDiamond" }));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 2), new Object[] { "MMM", "MRM", "MMM", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 1), 'M', "gemEmerald" }));
         GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 3), new Object[] { "SSS", "SRS", "SSS", 'R', new ItemStack(BlockEnum.EMCCRAFTER.getBlock(), 1, 2), 'S', Items.nether_star });
     }
 
     private static void initCondenserRecipies() {
         GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), new Object[] { "BDB", "BAB", "BDB", 'B', base, 'D', dust, 'A', new ItemStack(aeMaterial, 1, 44) });
-        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1), new Object[] { "DDD", "DCD", "DDD", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), 'D', Items.diamond });
-        GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2), new Object[] { "EEE", "ECE", "EEE", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1), 'E', Items.emerald });
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1), new Object[] { "DDD", "DCD", "DDD", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock()), 'D', "gemDiamond" }));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2), new Object[] { "EEE", "ECE", "EEE", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 1), 'E', "gemEmerald" }));
         GameRegistry.addShapedRecipe(new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 3), new Object[] { "NNN", "NCN", "NNN", 'C', new ItemStack(BlockEnum.EMCCONDENSER.getBlock(), 1, 2), 'N', Items.nether_star });
     }
 

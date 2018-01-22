@@ -1,12 +1,12 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystalOld;
 import com.mordenkainen.equivalentenergistics.items.ItemEnum;
-import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -40,12 +40,10 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
             itemEMC = ItemEMCCrystalOld.CRYSTAL_VALUES[stack.getItemDamage()];
         }
 
-        final EMCPool pool = hostGrid.getPool();
-
         if (itemEMC > 0) {
-            final int toAdd = (int) Math.min(stack.getStackSize(), (pool.getAvail()) / itemEMC);
+            final int toAdd = (int) Math.min(stack.getStackSize(), hostGrid.getAvail() / itemEMC);
             if (toAdd > 0) {
-                hostGrid.injectEMC(toAdd * itemEMC, mode);
+                hostGrid.addEMC(toAdd * itemEMC, mode);
                 return toAdd == stack.getStackSize() ? null : stack.copy().setStackSize(stack.getStackSize() - toAdd);
             }
         }
@@ -65,7 +63,7 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
         }
 
         if (itemEMC > 0) {
-            final int toRemove = (int) Math.min(stack.getStackSize(), hostGrid.getPool().getCurrentEMC() / itemEMC);
+            final int toRemove = (int) Math.min(stack.getStackSize(), hostGrid.getCurrentEMC() / itemEMC);
             if (toRemove > 0) {
                 hostGrid.extractEMC(toRemove * itemEMC, mode);
                 return stack.copy().setStackSize(toRemove);
@@ -117,13 +115,11 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
     @SuppressWarnings("rawtypes")
     @Override
     public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
-        final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
-
         if (channel == StorageChannel.ITEMS) {
-            list.add(this);
+            return new ArrayList<IMEInventoryHandler>(Arrays.asList(new IMEInventoryHandler[] {this}));
         }
 
-        return list;
+        return new ArrayList<IMEInventoryHandler>();
     }
 
     @Override
@@ -141,15 +137,16 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
         }
 
         dirty = false;
+        final IStorageGrid storageGrid = (IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class);
+        
         for (final IAEItemStack stack : cachedList) {
             stack.setStackSize(-stack.getStackSize());
         }
-        ((IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
+        storageGrid.postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
 
-        final EMCPool pool = hostGrid.getPool();
         cachedList = AEApi.instance().storage().createItemList();
-        if (pool.getCurrentEMC() > 0) {
-            float remainingEMC = pool.getCurrentEMC();
+        if (hostGrid.getCurrentEMC() > 0) {
+            float remainingEMC = hostGrid.getCurrentEMC();
             for (int i = 4; i >= 0; i--) {
                 final float crystalEMC = Integration.emcHandler.getCrystalEMC(i);
                 final long crystalcount = (long) (remainingEMC / crystalEMC);
@@ -159,8 +156,9 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
                 }
             }
         }
-        cachedList.add(AEApi.instance().storage().createItemStack(ItemEnum.MISCITEM.getDamagedStack(1)).setStackSize((long) pool.getCurrentEMC()));
-        ((IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class)).postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
+        
+        cachedList.add(AEApi.instance().storage().createItemStack(ItemEnum.MISCITEM.getDamagedStack(1)).setStackSize((long) hostGrid.getCurrentEMC()));
+        storageGrid.postAlterationOfStoredItems(StorageChannel.ITEMS, cachedList, new BaseActionSource());
     }
 
 }
