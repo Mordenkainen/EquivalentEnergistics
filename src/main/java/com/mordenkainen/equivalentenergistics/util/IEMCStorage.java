@@ -2,22 +2,22 @@ package com.mordenkainen.equivalentenergistics.util;
 
 public interface IEMCStorage {
 
-    float getCurrentEMC();
+    double getCurrentEMC();
 
-    void setCurrentEMC(float currentEMC);
+    void setCurrentEMC(double currentEMC);
 
-    float getMaxEMC();
+    double getMaxEMC();
 
-    void setMaxEMC(float maxEMC);
+    void setMaxEMC(double maxEMC);
 
-    float getAvail();
+    double getAvail();
 
     boolean isFull();
 
     boolean isEmpty();
 
-    float addEMC(float emc);
+    double addEMC(double emc);
 
-    float extractEMC(float emc);
+    double extractEMC(double emc);
 
 }

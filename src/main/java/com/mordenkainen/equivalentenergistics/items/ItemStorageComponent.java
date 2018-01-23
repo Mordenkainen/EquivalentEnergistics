@@ -10,7 +10,6 @@ public class ItemStorageComponent extends ItemMultiBase {
 
     public ItemStorageComponent() {
         super(Names.COMPONENT, 8);
-        setMaxStackSize(1);
     }
 
     @Override

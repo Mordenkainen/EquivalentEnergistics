@@ -14,13 +14,13 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     private final NBTTagCompound cellData;
     private final EMCPool pool = new EMCPool();
 
-    public HandlerEMCCell(final ItemStack storageStack, final ISaveProvider saveProvider, final float capacity) {
+    public HandlerEMCCell(final ItemStack storageStack, final ISaveProvider saveProvider, final double cellCapacities) {
         super(saveProvider);
         if (!storageStack.hasTagCompound()) {
             storageStack.setTagCompound(new NBTTagCompound());
         }
 
-        pool.setMaxEMC(capacity);
+        pool.setMaxEMC(cellCapacities);
         cellData = storageStack.getTagCompound();
         if (cellData.hasKey(EMC_TAG)) {
             pool.setCurrentEMC(cellData.getLong(EMC_TAG));
@@ -39,23 +39,23 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     }
 
     @Override
-    public float getCurrentEMC() {
+    public double getCurrentEMC() {
         return pool.getCurrentEMC();
     }
 
     @Override
-    public void setCurrentEMC(final float currentEMC) {}
+    public void setCurrentEMC(final double currentEMC) {}
 
     @Override
-    public float getMaxEMC() {
+    public double getMaxEMC() {
         return pool.getMaxEMC();
     }
 
     @Override
-    public void setMaxEMC(final float maxEMC) {}
+    public void setMaxEMC(final double maxEMC) {}
 
     @Override
-    public float getAvail() {
+    public double getAvail() {
         return pool.getAvail();
     }
 
@@ -70,9 +70,9 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     }
 
     @Override
-    public float addEMC(final float emc) {
+    public double addEMC(final double emc) {
         final int oldStatus = getCellStatus();
-        final float added = pool.addEMC(emc);
+        final double added = pool.addEMC(emc);
         if (added > 0) {
             updateEMC();
             if (oldStatus != getCellStatus()) {
@@ -83,9 +83,9 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     }
 
     @Override
-    public float extractEMC(final float emc) {
-        int oldStatus = getCellStatus();
-        final float extracted = pool.extractEMC(emc);
+    public double extractEMC(final double emc) {
+        final int oldStatus = getCellStatus();
+        final double extracted = pool.extractEMC(emc);
         if (extracted > 0) {
             updateEMC();
             if (oldStatus != getCellStatus()) {
@@ -96,7 +96,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     }
 
     private void updateEMC() {
-        cellData.setFloat(EMC_TAG, pool.getCurrentEMC());
+        cellData.setDouble(EMC_TAG, pool.getCurrentEMC());
         if (saveProvider != null) {
             saveProvider.saveChanges(this);
         }

@@ -21,8 +21,8 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 
     private IAEItemStack[] ingredients;
     private final IAEItemStack[] result = new IAEItemStack[1];
-    public float outputEMC;
-    public float inputEMC;
+    public double outputEMC;
+    public double inputEMC;
     public boolean valid = true;
 
     private final IItemStorageChannel storageChannel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
@@ -105,21 +105,21 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 
     private void createItemPattern(final ItemStack craftingResult) {
         int stackSize = 1;
-        final float singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
+        final double singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
         if (singleItemValue <= EqEConfig.emcAssembler.maxStackEMC) {
             stackSize = (int) Math.min(64, EqEConfig.emcAssembler.maxStackEMC / singleItemValue);
         }
         result[0] = storageChannel.createStack(craftingResult).setStackSize(stackSize);
-        float remainingEMC = outputEMC = singleItemValue * stackSize;
+        double remainingEMC = outputEMC = singleItemValue * stackSize;
         inputEMC = 0;
         valid = false;
         final ArrayList<IAEItemStack> crystals = new ArrayList<IAEItemStack>();
         for (int x = 4; x >= 0 && remainingEMC > 0; x--) {
-            final float crystalEMC = ItemEMCCrystal.CRYSTAL_VALUES[x];
+            final double crystalEMC = ItemEMCCrystal.CRYSTAL_VALUES[x];
             int numCrystals = (int) (remainingEMC / crystalEMC);
             while (numCrystals > 0) {
                 crystals.add(storageChannel.createStack(new ItemStack(ModItems.CRYSTAL, 1, x)).setStackSize(numCrystals));
-                final float totalEMC = crystalEMC * numCrystals;
+                final double totalEMC = crystalEMC * numCrystals;
                 remainingEMC -= totalEMC;
                 inputEMC += totalEMC;
                 numCrystals = (int) (remainingEMC / crystalEMC);

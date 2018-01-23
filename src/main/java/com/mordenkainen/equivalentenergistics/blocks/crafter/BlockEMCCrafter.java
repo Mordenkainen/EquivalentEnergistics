@@ -59,8 +59,12 @@ public class BlockEMCCrafter extends BlockMultiAE {
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
         final IBlockState tmpState = super.getActualState(state, world, pos);
         final TileEMCCrafter tile = CommonUtils.getTE(world, pos);
-        if (tile != null && tile.isErrored()) {
-            return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
+        if (tile != null) {
+            if (tile.isErrored()) {
+                return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
+            } else if (!tile.isActive()) {
+                return tmpState.withProperty(LIGHTS, NetworkLights.NONE);
+            }
         }
         return tmpState;
     }

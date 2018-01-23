@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemEMCCrystal extends ItemMultiBase {
 
-    final public static float[] CRYSTAL_VALUES = { 1, 64, 4096, 262144, 16777216 };
+    final public static double[] CRYSTAL_VALUES = { 1, 64, 4096, 262144, 16777216 };
 
     public ItemEMCCrystal() {
         super(Names.CRYSTAL, 5);

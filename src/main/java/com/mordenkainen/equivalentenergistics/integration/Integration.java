@@ -15,6 +15,7 @@ import appeng.api.AEApi;
 import moze_intel.projecte.api.ProjectEAPI;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class Integration {
@@ -26,6 +27,7 @@ public final class Integration {
         AEApi.instance().registries().gridCache().registerGridCache(IEMCCraftingGrid.class, EMCCraftingGrid.class);
         AEApi.instance().registries().cell().addCellHandler(ModItems.CELL);
         AEApi.instance().registries().cell().addCellHandler(ModItems.CELL_CREATIVE);
+        FMLInterModComms.sendMessage("waila", "register", "com.mordenkainen.equivalentenergistics.integration.hwyla.Hwyla.register");
     }
 
     public static void postInit() {

@@ -67,8 +67,8 @@ public final class CommonUtils {
         }
     }
 
-    public static String formatEMC(final float emc) {
-        float displayValue = emc;
+    public static String formatEMC(final double emc) {
+        double displayValue = emc;
 
         final String[] preFixes = { "K", "M", "B", "T", "P", "T", "P", "E", "Z", "Y" };
         String level = "";

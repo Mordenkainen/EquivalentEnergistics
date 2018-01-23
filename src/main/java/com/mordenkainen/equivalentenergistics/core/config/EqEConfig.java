@@ -32,7 +32,7 @@ public final class EqEConfig {
 
         @Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
         @Config.Comment("The minimum amount of EMC the EMC Assembler will attempt to use. Any items that have an EMC value less than this will craft in stacks of up to this value.")
-        public float maxStackEMC = 131072;
+        public double maxStackEMC = 131072;
 
         @Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
         @Config.Comment("The amount of power the EMC Assembler will consume while sitting idle in AE.")
@@ -64,21 +64,21 @@ public final class EqEConfig {
 
         @Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
         @Config.Comment("The amount of EMC the basic EMC Condenser can convert per tick. This value is scaled by x10 for each tier of Condenser.")
-        public float emcPerTick = 8192;
+        public double emcPerTick = 8192;
 
     }
 
     public static class EMCCellCaps {
 
-        public float creativeCell = 16384000000F;
-        public float tier1Cell = 1000000F;
-        public float tier2Cell = 4000000F;
-        public float tier3Cell = 16000000F;
-        public float tier4Cell = 64000000F;
-        public float tier5Cell = 256000000F;
-        public float tier6Cell = 1024000000F;
-        public float tier7Cell = 4096000000F;
-        public float tier8Cell = 16384000000F;
+        public double creativeCell = 16384000000F;
+        public double tier1Cell = 1000000F;
+        public double tier2Cell = 4000000F;
+        public double tier3Cell = 16000000F;
+        public double tier4Cell = 64000000F;
+        public double tier5Cell = 256000000F;
+        public double tier6Cell = 1024000000F;
+        public double tier7Cell = 4096000000F;
+        public double tier8Cell = 16384000000F;
 
     }
 

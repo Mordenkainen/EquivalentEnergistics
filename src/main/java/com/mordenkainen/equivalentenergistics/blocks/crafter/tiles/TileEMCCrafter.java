@@ -11,6 +11,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.ITransProvider;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEBase;
+import com.mordenkainen.equivalentenergistics.integration.hwyla.IWailaNBTProvider;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.IDropItems;
 
@@ -33,9 +34,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropItems, ITransProvider, ICraftingProvider, ICraftingMonitor {
+public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropItems, ITransProvider, ICraftingProvider, ICraftingMonitor, IWailaNBTProvider {
 
     private static final String TOME_TAG = "Tome";
+    private static final String OWNER_TAG = "Owner";
     private static final String EMC_TAG = "CurrentEMC";
     private static final String CRAFTING_TAG = "Crafting";
     private static final String DISPLAY_TAG = "DisplayStacks";
@@ -43,7 +45,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     private static final String ERROR_TAG = "Errored";
 
     private ItemStack transmutationItem = ItemStack.EMPTY;
-    private float currentEMC;
+    private double currentEMC;
     private NonNullList<ItemStack> displayStacks;
     private final CraftingManager manager;
     private boolean crafting;
@@ -61,6 +63,17 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
         gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
         displayStacks = NonNullList.withSize(jobs, ItemStack.EMPTY);
         manager = new CraftingManager(time, jobs, this, getProxy(), mySource);
+    }
+    
+    @Override
+    public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
+        if (currentEMC > 0) {
+            tag.setDouble(EMC_TAG, currentEMC);
+        }
+        if (!transmutationItem.isEmpty()) {
+            tag.setString(OWNER_TAG, transmutationItem.getTagCompound().getString(OWNER_TAG));
+        }
+        return tag;
     }
 
     @Override
@@ -95,7 +108,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        currentEMC = data.getFloat(EMC_TAG);
+        currentEMC = data.getDouble(EMC_TAG);
         transmutationItem = data.hasKey(TOME_TAG) ? new ItemStack((NBTTagCompound) data.getTag(TOME_TAG)) : ItemStack.EMPTY;
         manager.readFromNBT(data);
         displayStacks = manager.getCurrentJobs();
@@ -106,7 +119,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     public NBTTagCompound writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         if (currentEMC > 0) {
-            data.setFloat(EMC_TAG, currentEMC);
+            data.setDouble(EMC_TAG, currentEMC);
         }
         if (transmutationItem != null) {
             data.setTag(TOME_TAG, transmutationItem.writeToNBT(new NBTTagCompound()));

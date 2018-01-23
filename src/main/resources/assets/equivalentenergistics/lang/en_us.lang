@@ -46,3 +46,18 @@ message.book.link=Tome linked!
 message.book.owner=Owner:
 message.book.no_owner=No owner set.
 message.cell.capacity=Capacity:
+message.condenser.statename.idle=Idle
+message.condenser.statename.active=Active
+message.condenser.statename.noemcstorage=No EMC Storage
+message.condenser.statename.noitemstorage=No Item Storage
+message.condenser.statename.nopower=Not enough power
+
+
+# Tooltips
+tooltip.emc.name=Stored EMC:
+tooltip.owner.name=Owner:
+tooltip.status.name=Status:
+tooltip.deviceonline=Device Online
+tooltip.deviceoffline=Device Offline
+tooltip.devicemissingchannel=Device Missing Channel
+

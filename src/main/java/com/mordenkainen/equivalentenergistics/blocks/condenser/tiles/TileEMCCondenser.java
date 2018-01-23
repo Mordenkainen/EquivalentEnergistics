@@ -107,7 +107,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         }
     }
     
-    protected float getEMCPerTick() {
+    protected double getEMCPerTick() {
         return EqEConfig.emcCondenser.emcPerTick;
     }
 
@@ -115,19 +115,19 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         return state;
     }
     
-    protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
+    protected int getMaxItemsForPower(final int stackSize, final double emcValue) {
         final double powerPerItem = emcValue * EqEConfig.emcCondenser.powerPerEMC;
         final double powerRequired = stackSize * powerPerItem;
         final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
         return (int) (powerAvail / powerPerItem);
     }
     
-    protected float processItems(final int slot, final float remainingEMC, final boolean usePower) {
+    protected double processItems(final int slot, final double remainingEMC, final boolean usePower) {
         final ItemStack stack = inv.getStackInSlot(slot);
-        final float itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
+        final double itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
         try {
             final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
-            final float availEMC = emcGrid.getAvail();
+            final double availEMC = emcGrid.getAvail();
 
             if (itemEMC > availEMC) {
                 return -1;
@@ -146,7 +146,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
                 return -3;
             }
 
-            final float toStore = itemEMC * maxToDo;
+            final double toStore = itemEMC * maxToDo;
             if (usePower) {
                 GridUtils.extractAEPower(getProxy(), toStore * EqEConfig.emcCondenser.powerPerEMC, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
@@ -161,10 +161,10 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         }
     }
     
-    protected float processStorage(final int slot, final float remainingEMC) {
+    protected double processStorage(final int slot, final double remainingEMC) {
         final ItemStack stack = inv.getStackInSlot(slot);
-        final float itemEMC = (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack);
-        float toStore = 0;
+        final double itemEMC = ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+        double toStore = 0;
 
         try {
             if (itemEMC > 0) {
@@ -194,7 +194,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
     
     protected CondenserState processInv() {
-        float remainingEMC = getEMCPerTick();
+        double remainingEMC = getEMCPerTick();
         for (int slot = 0; slot < 4 && remainingEMC > 0; slot++) {
             final ItemStack stack = inv.getStackInSlot(slot);
             if (stack.isEmpty()) {

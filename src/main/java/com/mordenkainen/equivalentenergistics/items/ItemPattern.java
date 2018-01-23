@@ -6,8 +6,10 @@ import com.mordenkainen.equivalentenergistics.items.base.ItemBase;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
 public class ItemPattern extends ItemBase implements ICraftingPatternItem {
@@ -15,7 +17,7 @@ public class ItemPattern extends ItemBase implements ICraftingPatternItem {
     public ItemPattern() {
         super(Names.EMC_PATTERN);
         setMaxStackSize(1);
-        setCreativeTab(null);
+        setCreativeTab(CreativeTabs.SEARCH);
     }
 
     @Override
@@ -29,5 +31,8 @@ public class ItemPattern extends ItemBase implements ICraftingPatternItem {
         target.writeToNBT(pattern.getTagCompound());
         return pattern;
     }
+    
+    @Override
+    public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> items) {}
 
 }

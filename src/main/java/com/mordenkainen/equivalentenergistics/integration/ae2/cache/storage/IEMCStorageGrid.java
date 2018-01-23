@@ -10,8 +10,8 @@ public interface IEMCStorageGrid extends ICacheBase, IEMCStorage {
 
     IGrid getGrid();
 
-    float addEMC(float emc, Actionable mode);
+    double addEMC(double emc, Actionable mode);
 
-    float extractEMC(float emc, Actionable mode);
+    double extractEMC(double emc, Actionable mode);
 
 }

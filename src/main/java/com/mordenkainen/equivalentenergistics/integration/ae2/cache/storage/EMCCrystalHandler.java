@@ -131,9 +131,9 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
 
         cachedList = storageChannel.createList();
         if (hostGrid.getCurrentEMC() > 0) {
-            float remainingEMC = hostGrid.getCurrentEMC();
+            double remainingEMC = hostGrid.getCurrentEMC();
             for (int i = 4; i >= 0; i--) {
-                final float crystalEMC = ItemEMCCrystal.CRYSTAL_VALUES[i];
+                final double crystalEMC = ItemEMCCrystal.CRYSTAL_VALUES[i];
                 final long crystalcount = (long) (remainingEMC / crystalEMC);
                 if (crystalcount > 0) {
                     cachedList.add(storageChannel.createStack(new ItemStack(ModItems.CRYSTAL, 1, i)).setStackSize(crystalcount));

@@ -37,14 +37,16 @@ repositories {
         name 'CB Repo'
         url "http://chickenbones.net/maven/"
     }
+    maven {url "http://tehnut.info/maven"}
 }
 
 
 dependencies {
-	//compile "codechicken:CodeChickenLib:${minecraft_version}-${ccl_version}:dev"
-	deobfCompile ("appeng:appliedenergistics2:${ae2_version}"){
+    //compile "codechicken:CodeChickenLib:${minecraft_version}-${ccl_version}:dev"
+    deobfCompile ("appeng:appliedenergistics2:${ae2_version}"){
         transitive = false
     }
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
