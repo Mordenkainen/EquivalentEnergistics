@@ -24,7 +24,7 @@ public class WailaAEBaseHUDHandler extends WailaHUDBase {
             
             if(isActive && isPowered) {
                 currenttip.add(I18n.translateToLocal("tooltip.deviceonline"));
-            } else if(!isPowered) {
+            } else if(!isPowered) { // NOPMD
                 currenttip.add(I18n.translateToLocal("tooltip.deviceoffline"));
             } else {
                 currenttip.add(I18n.translateToLocal("tooltip.devicemissingchannel"));

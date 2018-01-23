@@ -32,7 +32,7 @@ public abstract class WailaHUDBase implements IWailaDataProvider {
     }
 
     @Override
-    public NBTTagCompound getNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag, final World world, BlockPos pos) {
+    public NBTTagCompound getNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag, final World world, final BlockPos pos) {
         if (tile instanceof IWailaNBTProvider) {
             tag.setTag(TAG_NAME, ((IWailaNBTProvider) tile).getWailaTag(new NBTTagCompound()));
         }
