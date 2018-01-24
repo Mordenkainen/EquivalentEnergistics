@@ -21,6 +21,10 @@ import net.minecraftforge.oredict.OreDictionary;
 public final class Integration {
 
     private Integration() {}
+    
+    public static void preInit() {
+        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", "com.mordenkainen.equivalentenergistics.integration.theoneprobe.GetTheOneProbe");
+    }
 
     public static void init() {
         AEApi.instance().registries().gridCache().registerGridCache(IEMCStorageGrid.class, EMCStorageGrid.class);

@@ -33,6 +33,7 @@ public class EquivalentEnergistics {
     public void preInit(final FMLPreInitializationEvent event) {
         logger = event.getModLog();
         proxy.preInit();
+        Integration.preInit();
     }
 
     @EventHandler

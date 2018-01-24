@@ -73,6 +73,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
         if (!transmutationItem.isEmpty()) {
             tag.setString(OWNER_TAG, transmutationItem.getTagCompound().getString(OWNER_TAG));
         }
+        
         return tag;
     }
 
