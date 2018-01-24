@@ -19,8 +19,8 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
     private IAEItemStack[] ingredients;
     private final IAEItemStack[] result = new IAEItemStack[1];
-    public float outputEMC;
-    public float inputEMC;
+    public double outputEMC;
+    public double inputEMC;
     public boolean valid = true;
 
     public EMCCraftingPattern(final ItemStack craftingResult) {
@@ -101,21 +101,21 @@ public final class EMCCraftingPattern implements ICraftingPatternDetails {
 
     private void createItemPattern(final ItemStack craftingResult) {
         int stackSize = 1;
-        final float singleItemValue = Integration.emcHandler.getSingleEnergyValue(craftingResult);
+        final double singleItemValue = Integration.emcHandler.getSingleEnergyValue(craftingResult);
         if (singleItemValue <= ConfigManager.maxStackEMC) {
             stackSize = (int) Math.min(64, ConfigManager.maxStackEMC / singleItemValue);
         }
         result[0] = AEApi.instance().storage().createItemStack(craftingResult).setStackSize(stackSize);
-        float remainingEMC = outputEMC = singleItemValue * stackSize;
+        double remainingEMC = outputEMC = singleItemValue * stackSize;
         inputEMC = 0;
         valid = false;
         final ArrayList<IAEItemStack> crystals = new ArrayList<IAEItemStack>();
         for (int x = 4; x >= 0 && remainingEMC > 0; x--) {
-            final float crystalEMC = ItemEMCCrystal.CRYSTAL_VALUES[x];
+            final double crystalEMC = ItemEMCCrystal.CRYSTAL_VALUES[x];
             int numCrystals = (int) (remainingEMC / crystalEMC);
             while (numCrystals > 0) {
                 crystals.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(x)).setStackSize(numCrystals));
-                final float totalEMC = crystalEMC * numCrystals;
+                final double totalEMC = crystalEMC * numCrystals;
                 remainingEMC -= totalEMC;
                 inputEMC += totalEMC;
                 numCrystals = (int) (remainingEMC / crystalEMC);

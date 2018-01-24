@@ -35,7 +35,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     private static final String GROUP = "Storage Cells";
     private static final String EMC_TAG = "emc";
 
-    private static final float[] CAPACITIES = { 1000000, 4000000, 16000000, 64000000, 256000000, 1024000000, 4096000000f, 16384000000f };
+    private static final double[] CAPACITIES = { 1000000, 4000000, 16000000, 64000000, 256000000, 1024000000, 4096000000f, 16384000000f };
     private static final double[] DRAIN = { 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8 };
 
     public ItemEMCCell() {
@@ -57,7 +57,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean param4) {
-        final float curEMC = getStoredCellEMC(stack);
+        final double curEMC = getStoredCellEMC(stack);
         final String tooltip = StatCollector.translateToLocal("tooltip.emc.name") + " ";
         if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             list.add(tooltip + String.format("%.2f", curEMC) + " / " + String.format("%.2f", CAPACITIES[stack.getItemDamage()]));
@@ -79,7 +79,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
     public void loadConfig(final Configuration config) {
         for (int i = 0; i < itemCount; i++) {
             try {
-                CAPACITIES[i] = Float.valueOf(config.get(GROUP, "Tier" + i + "_Capacity", String.format("%.0f", CAPACITIES[i])).getString());
+                CAPACITIES[i] = Double.valueOf(config.get(GROUP, "Tier" + i + "_Capacity", String.format("%.0f", CAPACITIES[i])).getString());
             } catch (final NumberFormatException e) {
                 EquivalentEnergistics.logger.warn("Storage Cell Tier" + i + "_Capacity configured for invalid value! Default will be used!");
             }
@@ -111,12 +111,12 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
         return DRAIN[stack.getItemDamage()];
     }
     
-    public float getStoredCellEMC(final ItemStack stack) {
+    public double getStoredCellEMC(final ItemStack stack) {
         if (!isCell(stack) || !hasEMCTag(stack)) {
             return 0;
         }
 
-        return Math.max(stack.getTagCompound().getFloat(EMC_TAG), 0);
+        return Math.max(stack.getTagCompound().getDouble(EMC_TAG), 0);
     }
 
     @Override
@@ -125,14 +125,14 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
             return 0;
         }
 
-        final float currentEMC = getStoredCellEMC(stack);
-        final float amountToAdd = Math.min((float) toAdd, CAPACITIES[stack.getItemDamage()] - currentEMC);
+        final double currentEMC = getStoredCellEMC(stack);
+        final double amountToAdd = Math.min(toAdd, CAPACITIES[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
                 stack.setTagCompound(new NBTTagCompound());
             }
-            stack.getTagCompound().setFloat(EMC_TAG, currentEMC + amountToAdd);
+            stack.getTagCompound().setDouble(EMC_TAG, currentEMC + amountToAdd);
         }
 
         return amountToAdd;
@@ -140,7 +140,7 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
 
     @Override
     public double extractEmc(final ItemStack stack, final double toRemove) {
-        return ConfigManager.useEE3 ? 0 : extractCellEMC(stack, (float) toRemove);
+        return ConfigManager.useEE3 ? 0 : extractCellEMC(stack, toRemove);
     }
 
     @Override
@@ -153,12 +153,12 @@ public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItem
         return ConfigManager.useEE3 ? 0 : CAPACITIES[stack.getItemDamage()];
     }
 
-    public float extractCellEMC(final ItemStack stack, final float emc) {
-        final float currentEMC = getStoredCellEMC(stack);
-        final float toRemove = Math.min(emc, currentEMC);
+    public double extractCellEMC(final ItemStack stack, final double emc) {
+        final double currentEMC = getStoredCellEMC(stack);
+        final double toRemove = Math.min(emc, currentEMC);
 
         if (hasEMCTag(stack)) {
-            stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
+            stack.getTagCompound().setDouble(EMC_TAG, currentEMC - toRemove);
             if (isEmpty(stack)) {
                 removeEMCTag(stack);
             }

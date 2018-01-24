@@ -21,7 +21,7 @@ public class ItemEMCCellCreative extends ItemEMCCellBase implements IConfigurabl
 
     private static final String GROUP = "Storage Cells";
 
-    public static float capacity = 16384000000f;
+    public static double capacity = 16384000000f;
 
     public ItemEMCCellCreative() {
         super(1);
@@ -65,7 +65,7 @@ public class ItemEMCCellCreative extends ItemEMCCellBase implements IConfigurabl
     @Override
     public void loadConfig(final Configuration config) {
         try {
-            capacity = Float.valueOf(config.get(GROUP, "Creative_Capacity", String.format("%.0f", capacity)).getString());
+            capacity = Double.valueOf(config.get(GROUP, "Creative_Capacity", String.format("%.0f", capacity)).getString());
         } catch (final NumberFormatException e) {
             EquivalentEnergistics.logger.warn("Creative Storage Cell Creative_Capacity configured for invalid value! Default will be used!");
         }

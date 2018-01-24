@@ -31,7 +31,7 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
 
     @Override
     public IAEItemStack injectItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
-        float itemEMC = 0;
+        double itemEMC = 0;
 
         // TODO fix this?
         if (ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack())) {
@@ -53,7 +53,7 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
 
     @Override
     public IAEItemStack extractItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
-        float itemEMC = 0;
+        double itemEMC = 0;
 
         // TODO fix this?
         if (ItemEnum.EMCCRYSTAL.isSameItem(stack.getItemStack())) {
@@ -146,9 +146,9 @@ public class EMCGridCrystalHandler implements ICellProvider, IMEInventoryHandler
 
         cachedList = AEApi.instance().storage().createItemList();
         if (hostGrid.getCurrentEMC() > 0) {
-            float remainingEMC = hostGrid.getCurrentEMC();
+            double remainingEMC = hostGrid.getCurrentEMC();
             for (int i = 4; i >= 0; i--) {
-                final float crystalEMC = Integration.emcHandler.getCrystalEMC(i);
+                final double crystalEMC = Integration.emcHandler.getCrystalEMC(i);
                 final long crystalcount = (long) (remainingEMC / crystalEMC);
                 if (crystalcount > 0) {
                     cachedList.add(AEApi.instance().storage().createItemStack(ItemEnum.EMCCRYSTAL.getDamagedStack(i)).setStackSize(crystalcount));

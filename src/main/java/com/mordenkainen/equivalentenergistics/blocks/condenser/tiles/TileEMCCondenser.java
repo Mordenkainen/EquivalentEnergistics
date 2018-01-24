@@ -17,7 +17,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
 
     private final static String EMC_TAG = "CurrentEMC";
 
-    protected float currentEMC;
+    protected double currentEMC;
 
     public TileEMCCondenser() {
         super(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock())));
@@ -26,7 +26,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
     @Override
     public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
         if (currentEMC > 0) {
-            tag.setFloat(EMC_TAG, currentEMC);
+            tag.setDouble(EMC_TAG, currentEMC);
         }
         return tag;
     }
@@ -35,7 +35,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
         if (data.hasKey(EMC_TAG)) {
-            currentEMC = data.getFloat(EMC_TAG);
+            currentEMC = data.getDouble(EMC_TAG);
         }
     }
 
@@ -43,7 +43,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         if (currentEMC > 0) {
-            data.setFloat(EMC_TAG, currentEMC);
+            data.setDouble(EMC_TAG, currentEMC);
         }
     }
 
@@ -82,7 +82,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
     }
 
     @Override
-    protected float getEMCPerTick() {
+    protected double getEMCPerTick() {
         return BlockEMCCondenser.emcPerTick;
     }
 

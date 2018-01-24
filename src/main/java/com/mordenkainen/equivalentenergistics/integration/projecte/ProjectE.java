@@ -27,12 +27,12 @@ public class ProjectE implements IEMCHandler {
     }
 
     @Override
-    public float getEnergyValue(final ItemStack itemStack) {
+    public double getEnergyValue(final ItemStack itemStack) {
         return ProjectEAPI.getEMCProxy().getValue(itemStack);
     }
 
     @Override
-    public float getCrystalEMC(final int tier) {
+    public double getCrystalEMC(final int tier) {
         return ItemEMCCrystal.CRYSTAL_VALUES[tier];
     }
 
@@ -85,7 +85,7 @@ public class ProjectE implements IEMCHandler {
     }
 
     @Override
-    public float getSingleEnergyValue(final ItemStack stack) {
+    public double getSingleEnergyValue(final ItemStack stack) {
         final ItemStack singleStack = stack.copy();
         singleStack.stackSize = 1;
         return getEnergyValue(singleStack);
@@ -107,13 +107,13 @@ public class ProjectE implements IEMCHandler {
     }
 
     @Override
-    public float getStoredEMC(final ItemStack stack) {
-        return stack.getItem() instanceof IItemEmc ? (float) ((IItemEmc) stack.getItem()).getStoredEmc(stack) : 0;
+    public double getStoredEMC(final ItemStack stack) {
+        return stack.getItem() instanceof IItemEmc ? ((IItemEmc) stack.getItem()).getStoredEmc(stack) : 0;
     }
 
     @Override
-    public float extractEMC(final ItemStack stack, final float toStore) {
-        return stack.getItem() instanceof IItemEmc ? (float) ((IItemEmc) stack.getItem()).extractEmc(stack, toStore) : 0;
+    public double extractEMC(final ItemStack stack, final double toStore) {
+        return stack.getItem() instanceof IItemEmc ? ((IItemEmc) stack.getItem()).extractEmc(stack, toStore) : 0;
     }
 
 }

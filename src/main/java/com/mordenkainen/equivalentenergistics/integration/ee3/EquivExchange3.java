@@ -37,13 +37,13 @@ public class EquivExchange3 implements IEMCHandler {
     }
 
     @Override
-    public float getEnergyValue(final ItemStack itemStack) {
+    public double getEnergyValue(final ItemStack itemStack) {
         final EnergyValue val = EnergyValueRegistryProxy.getEnergyValue(itemStack);
         return val == null ? 0.0F : val.getValue();
     }
 
     @Override
-    public float getCrystalEMC(final int tier) {
+    public double getCrystalEMC(final int tier) {
         return ItemEMCCrystal.CRYSTAL_VALUES[tier];
     }
 
@@ -85,7 +85,7 @@ public class EquivExchange3 implements IEMCHandler {
     }
 
     @Override
-    public float getSingleEnergyValue(final ItemStack stack) {
+    public double getSingleEnergyValue(final ItemStack stack) {
         final ItemStack singleStack = stack.copy();
         singleStack.stackSize = 1;
         return getEnergyValue(singleStack);
@@ -107,12 +107,12 @@ public class EquivExchange3 implements IEMCHandler {
     }
 
     @Override
-    public float getStoredEMC(final ItemStack stack) {
+    public double getStoredEMC(final ItemStack stack) {
         return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).getStoredCellEMC(stack) : 0;
     }
 
     @Override
-    public float extractEMC(final ItemStack stack, final float toStore) {
+    public double extractEMC(final ItemStack stack, final double toStore) {
         return ItemEnum.EMCCELL.isSameItem(stack) ? ((ItemEMCCell) ItemEnum.EMCCELL.getItem()).extractCellEMC(stack, toStore) : 0;
     }
 

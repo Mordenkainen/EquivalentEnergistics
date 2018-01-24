@@ -24,7 +24,7 @@ public class WailaCondenserHUDHandler extends WailaHUDBase {
         if (tag.hasKey(TAG_NAME)) {
             final NBTTagCompound innerTag = tag.getCompoundTag(TAG_NAME);
             if (innerTag.hasKey(EMC_TAG)) {
-                currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + SpecialChars.RED + CommonUtils.formatEMC(innerTag.getFloat(EMC_TAG)) + SpecialChars.RESET);
+                currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + SpecialChars.RED + CommonUtils.formatEMC(innerTag.getDouble(EMC_TAG)) + SpecialChars.RESET);
             }
         }
 

@@ -31,7 +31,7 @@ public final class CraftingManager {
             dust = new ItemStack(GameRegistry.findItem("ProjectE", "item.pe_covalence_dust"), 1, 2);
         }
         
-        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 0));
+        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 0));  //NOPMD
         OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 1));
         OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 10));
 

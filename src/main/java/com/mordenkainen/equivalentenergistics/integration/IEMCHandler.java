@@ -11,9 +11,9 @@ public interface IEMCHandler {
 
     boolean hasEMC(ItemStack itemStack);
 
-    float getEnergyValue(ItemStack itemStack);
+    double getEnergyValue(ItemStack itemStack);
 
-    float getCrystalEMC(int tier);
+    double getCrystalEMC(int tier);
 
     List<ItemStack> getTransmutations(TileEMCCrafterBase tile);
 
@@ -25,12 +25,12 @@ public interface IEMCHandler {
 
     String getTomeOwner(ItemStack currentTome);
 
-    float getSingleEnergyValue(ItemStack stack);
+    double getSingleEnergyValue(ItemStack stack);
 
     boolean isEMCStorage(ItemStack stack);
 
-    float getStoredEMC(ItemStack stack);
+    double getStoredEMC(ItemStack stack);
 
-    float extractEMC(ItemStack stack, float toStore);
+    double extractEMC(ItemStack stack, double toStore);
 
 }

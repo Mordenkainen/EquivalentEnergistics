@@ -53,17 +53,17 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     }
     
     @Override
-    public float getCurrentEMC() {
+    public double getCurrentEMC() {
         return pool.getCurrentEMC();
     }
     
     @Override
-    public float getMaxEMC() {
+    public double getMaxEMC() {
         return pool.getMaxEMC();
     }
     
     @Override
-    public float getAvail() {
+    public double getAvail() {
         return pool.getAvail();
     }
 
@@ -78,32 +78,32 @@ public class EMCStorageGrid implements IEMCStorageGrid {
     }
     
     @Override
-    public void setCurrentEMC(final float currentEMC) {
+    public void setCurrentEMC(final double currentEMC) {
         pool.setCurrentEMC(currentEMC);
     }
 
     @Override
-    public void setMaxEMC(final float maxEMC) {
+    public void setMaxEMC(final double maxEMC) {
         pool.setMaxEMC(maxEMC);
     }
 
     @Override
-    public float addEMC(final float emc) {
+    public double addEMC(final double emc) {
         return pool.addEMC(emc);
     }
 
     @Override
-    public float addEMC(final float emc, final Actionable mode) {
+    public double addEMC(final double emc, final Actionable mode) {
         return cellHandler.injectEMC(emc, mode);
     }
     
     @Override
-    public float extractEMC(final float emc) {
+    public double extractEMC(final double emc) {
         return pool.extractEMC(emc);
     }
 
     @Override
-    public float extractEMC(final float emc, final Actionable mode) {
+    public double extractEMC(final double emc, final Actionable mode) {
         return cellHandler.extractEMC(emc, mode);
     }
 

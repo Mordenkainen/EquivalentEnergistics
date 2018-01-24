@@ -166,7 +166,7 @@ public final class GridUtils {
         }
     }
     
-    public static float injectEMC(final AEProxy proxy, final float emc, final Actionable mode) {
+    public static double injectEMC(final AEProxy proxy, final double emc, final Actionable mode) {
         try {
             if (emc > 0) {
                 return getEMCStorage(proxy).addEMC(emc, mode);

@@ -2,11 +2,11 @@ package com.mordenkainen.equivalentenergistics.util;
 
 public class EMCPool implements IEMCStorage {
 
-    private float currentEMC;
-    private float maxEMC;
+    private double currentEMC;
+    private double maxEMC;
     private boolean overflow;
 
-    public EMCPool(final float currentEMC, final float maxEMC, final boolean overflow) {
+    public EMCPool(final double currentEMC, final double maxEMC, final boolean overflow) {
         super();
         this.currentEMC = currentEMC;
         this.maxEMC = maxEMC;
@@ -17,21 +17,21 @@ public class EMCPool implements IEMCStorage {
         this(0, 0, false);
     }
 
-    public EMCPool(final float currentEMC) {
+    public EMCPool(final double currentEMC) {
         this(currentEMC, currentEMC, true);
     }
 
-    public EMCPool(final float currentEMC, final float maxEMC) {
+    public EMCPool(final double currentEMC, final double maxEMC) {
         this(currentEMC, maxEMC, true);
     }
 
     @Override
-    public float getCurrentEMC() {
+    public double getCurrentEMC() {
         return currentEMC;
     }
 
     @Override
-    public void setCurrentEMC(final float currentEMC) {
+    public void setCurrentEMC(final double currentEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
         } else if (currentEMC < 0) {
@@ -42,12 +42,12 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-    public float getMaxEMC() {
+    public double getMaxEMC() {
         return maxEMC;
     }
 
     @Override
-    public void setMaxEMC(final float maxEMC) {
+    public void setMaxEMC(final double maxEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
         }
@@ -65,7 +65,7 @@ public class EMCPool implements IEMCStorage {
         this.overflow = overflow;
     }
 
-    public float getExcess() {
+    public double getExcess() {
         if (overflow && currentEMC > maxEMC) {
             return currentEMC - maxEMC;
         }
@@ -73,7 +73,7 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-    public float getAvail() {
+    public double getAvail() {
         if (currentEMC >= maxEMC) {
             return 0;
         }
@@ -91,8 +91,8 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-    public float addEMC(final float emc) {
-        float toAdd = emc;
+    public double addEMC(final double emc) {
+        double toAdd = emc;
         if (!overflow) {
             toAdd = Math.min(toAdd, getAvail());
         }
@@ -101,8 +101,8 @@ public class EMCPool implements IEMCStorage {
     }
 
     @Override
-    public float extractEMC(final float emc) {
-        final float toExtract = Math.min(emc, currentEMC);
+    public double extractEMC(final double emc) {
+        final double toExtract = Math.min(emc, currentEMC);
         currentEMC -= toExtract;
         return toExtract;
     }

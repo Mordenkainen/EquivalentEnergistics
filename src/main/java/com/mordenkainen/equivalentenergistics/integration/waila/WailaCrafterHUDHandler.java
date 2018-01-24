@@ -20,7 +20,7 @@ public class WailaCrafterHUDHandler extends WailaHUDBase {
         if (accessor.getNBTData().hasKey(TAG_NAME)) {
             final NBTTagCompound tag = accessor.getNBTData().getCompoundTag(TAG_NAME);
             if (tag.hasKey(EMC_TAG)) {
-                currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(tag.getFloat(EMC_TAG)));
+                currenttip.add(StatCollector.translateToLocal("tooltip.emc.name") + " " + CommonUtils.formatEMC(tag.getDouble(EMC_TAG)));
             }
             if (tag.hasKey(OWNER_TAG)) {
                 currenttip.add(StatCollector.translateToLocal("tooltip.owner.name") + " " + tag.getString(OWNER_TAG));

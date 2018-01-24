@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 @IFMLLoadingPlugin.Name(Reference.MOD_NAME + " Core")
 public class EqECoreLoader implements IFMLLoadingPlugin {
 
-    public static boolean deobf = false;
+    public static boolean deobf;
     
     @Override
     public String[] getASMTransformerClass() {

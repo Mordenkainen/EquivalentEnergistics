@@ -85,7 +85,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     }
 
     @Override
-    protected float getEMCPerTick() {
+    protected double getEMCPerTick() {
         return BlockEMCCondenser.emcPerTick * 100;
     }
 

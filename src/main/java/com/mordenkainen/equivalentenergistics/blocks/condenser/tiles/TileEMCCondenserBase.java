@@ -74,25 +74,25 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
         return state.getTickRate();
     }
 
-    protected abstract float getEMCPerTick();
+    protected abstract double getEMCPerTick();
 
     public CondenserState getState() {
         return state;
     }
 
-    protected int getMaxItemsForPower(final int stackSize, final float emcValue) {
+    protected int getMaxItemsForPower(final int stackSize, final double emcValue) {
         final double powerPerItem = emcValue * BlockEMCCondenser.activePower;
         final double powerRequired = stackSize * powerPerItem;
         final double powerAvail = GridUtils.extractAEPower(getProxy(), powerRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
         return (int) (powerAvail / powerPerItem);
     }
 
-    protected float processItems(final int slot, final float remainingEMC, final boolean usePower) {
+    protected double processItems(final int slot, final double remainingEMC, final boolean usePower) {
         ItemStack stack = getInventory().getStackInSlot(slot);
-        final float itemEMC = Integration.emcHandler.getSingleEnergyValue(stack);
+        final double itemEMC = Integration.emcHandler.getSingleEnergyValue(stack);
         try {
             final IEMCStorageGrid emcGrid = GridUtils.getEMCStorage(getProxy());
-            final float availEMC = emcGrid.getAvail();
+            final double availEMC = emcGrid.getAvail();
 
             if (itemEMC > availEMC) {
                 return -1;
@@ -111,7 +111,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
                 return -3;
             }
 
-            final float toStore = itemEMC * maxToDo;
+            final double toStore = itemEMC * maxToDo;
             if (usePower) {
                 GridUtils.extractAEPower(getProxy(), toStore * BlockEMCCondenser.activePower, Actionable.MODULATE, PowerMultiplier.CONFIG);
             }
@@ -126,10 +126,10 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
         }
     }
 
-    protected float processStorage(final int slot, final float remainingEMC) {
+    protected double processStorage(final int slot, final double remainingEMC) {
         final ItemStack stack = getInventory().getStackInSlot(slot);
-        final float itemEMC = Integration.emcHandler.getStoredEMC(stack);
-        float toStore = 0;
+        final double itemEMC = Integration.emcHandler.getStoredEMC(stack);
+        double toStore = 0;
 
         try {
             if (itemEMC > 0) {
@@ -159,7 +159,7 @@ public abstract class TileEMCCondenserBase extends TileAEInv implements IGridTic
     }
 
     protected CondenserState processInv() {
-        float remainingEMC = getEMCPerTick();
+        double remainingEMC = getEMCPerTick();
         for (int slot = 0; slot < 4 && remainingEMC > 0; slot++) {
             final ItemStack stack = getInventory().getStackInSlot(slot);
             if (stack == null) {

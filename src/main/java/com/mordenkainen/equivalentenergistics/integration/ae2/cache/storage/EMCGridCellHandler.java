@@ -37,8 +37,8 @@ public class EMCGridCellHandler {
 
     @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
-        float newEMC = 0;
-        float newMax = 0;
+        double newEMC = 0;
+        double newMax = 0;
         for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
@@ -56,8 +56,8 @@ public class EMCGridCellHandler {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ICellProvider && driveBays.remove((ICellProvider) machine)) {
-            float newEMC = hostGrid.getCurrentEMC();
-            float newMax = hostGrid.getMaxEMC();
+            double newEMC = hostGrid.getCurrentEMC();
+            double newMax = hostGrid.getMaxEMC();
             final List<IMEInventoryHandler> cells = ((ICellProvider) machine).getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCellBase handler = getHandler(cell);
@@ -71,13 +71,13 @@ public class EMCGridCellHandler {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public float injectEMC(final float emc, final Actionable mode) {
-        final float toAdd = Math.min(emc, hostGrid.getAvail());
+    public double injectEMC(final double emc, final Actionable mode) {
+        final double toAdd = Math.min(emc, hostGrid.getAvail());
         if (mode != Actionable.MODULATE) {
             return toAdd;
         }
 
-        float added = 0;
+        double added = 0;
         for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
@@ -97,13 +97,13 @@ public class EMCGridCellHandler {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public float extractEMC(final float emc, final Actionable mode) {
-        final float toExtract = Math.min(emc, hostGrid.getCurrentEMC());
+    public double extractEMC(final double emc, final Actionable mode) {
+        final double toExtract = Math.min(emc, hostGrid.getCurrentEMC());
         if (mode != Actionable.MODULATE) {
             return toExtract;
         }
 
-        float extracted = 0;
+        double extracted = 0;
         for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
@@ -152,7 +152,7 @@ public class EMCGridCellHandler {
         return null;
     }
     
-    private void updatePool(final float newMax, final float newCurrent) {
+    private void updatePool(final double newMax, final double newCurrent) {
         if (newMax != hostGrid.getMaxEMC() || newCurrent != hostGrid.getCurrentEMC()) {
             hostGrid.setMaxEMC(newMax);
             hostGrid.setCurrentEMC(newCurrent);

@@ -32,7 +32,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfigurable, ILayeredBlock {
 
     private static final String GROUP = "Condenser";
-    public static float emcPerTick;
+    public static double emcPerTick;
     public static double idlePower;
     public static double activePower;
     
@@ -189,7 +189,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     public void loadConfig(final Configuration config) {
         idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
         activePower = config.get(GROUP, "PowerDrainPerEMCCondensed", 0.01).getDouble(0.01);
-        emcPerTick = (float) config.get(GROUP, "EMCProducedPerTick", 8192).getDouble(8192);
+        emcPerTick = config.get(GROUP, "EMCProducedPerTick", 8192).getDouble(8192);
 
         final ConfigCategory condenserCat = config.getCategory(GROUP.toLowerCase(Locale.US));
         condenserCat.remove("CrystalsProducedPerTick");

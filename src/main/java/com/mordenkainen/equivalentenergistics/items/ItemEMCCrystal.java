@@ -16,7 +16,7 @@ import net.minecraft.util.IIcon;
 @Optional.Interface(iface = "com.pahimar.ee3.api.exchange.IEnergyValueProvider", modid = "EE3")
 public class ItemEMCCrystal extends ItemMultiBase implements IEnergyValueProvider {
 
-    final public static float[] CRYSTAL_VALUES = { 1, 64, 4096, 262144, 16777216 };
+    final public static double[] CRYSTAL_VALUES = { 1, 64, 4096, 262144, 16777216 };
 
     public ItemEMCCrystal() {
         super(5);
