@@ -18,6 +18,7 @@ public final class CraftingManager {
     private static ItemStack base;
     private static Item aeGlass;
     private static ItemStack dust;
+    private static String quartzCrystals = "EqECertusQuartz";
 
     private CraftingManager() {}
 
@@ -31,9 +32,9 @@ public final class CraftingManager {
             dust = new ItemStack(GameRegistry.findItem("ProjectE", "item.pe_covalence_dust"), 1, 2);
         }
         
-        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 0));  //NOPMD
-        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 1));
-        OreDictionary.registerOre("EqECertusQuartz", new ItemStack(aeMaterial, 1, 10));
+        OreDictionary.registerOre(quartzCrystals, new ItemStack(aeMaterial, 1, 0));  //NOPMD
+        OreDictionary.registerOre(quartzCrystals, new ItemStack(aeMaterial, 1, 1));
+        OreDictionary.registerOre(quartzCrystals, new ItemStack(aeMaterial, 1, 10));
 
         if (BlockEnum.EMCCONDENSER.isEnabled()) {
             initCondenserRecipies();
@@ -57,7 +58,7 @@ public final class CraftingManager {
         }
 
         // Components
-        GameRegistry.addRecipe(new ShapedOreRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "DCD", "CLC", "DCD", 'D', dust, 'C', "EqECertusQuartz", 'L', new ItemStack(aeMaterial, 1, 22))); // NOPMD
+        GameRegistry.addRecipe(new ShapedOreRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(0), "DCD", "CLC", "DCD", 'D', dust, 'C', quartzCrystals, 'L', new ItemStack(aeMaterial, 1, 22))); // NOPMD
         for (int i = 1; i < 4; i++) {
             GameRegistry.addShapedRecipe(ItemEnum.CELLCOMPONENT.getDamagedStack(i), "DCD", "SGS", "DSD", 'D', dust, 'C', new ItemStack(aeMaterial, 1, 23), 'S', ItemEnum.CELLCOMPONENT.getDamagedStack(i - 1), 'G', new ItemStack(aeGlass, 1));
         }

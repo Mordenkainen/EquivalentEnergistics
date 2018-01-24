@@ -32,7 +32,7 @@ minecraft {
 repositories {
     maven {
         name 'Mobius Repo'
-        url "http://mobiusstrip.eu/maven"
+        url "http://default.mobiusstrip.eu/maven"
     }
     maven {
         name 'CB Repo'
