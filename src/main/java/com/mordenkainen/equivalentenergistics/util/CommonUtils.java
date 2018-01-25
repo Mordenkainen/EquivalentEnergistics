@@ -2,7 +2,6 @@ package com.mordenkainen.equivalentenergistics.util;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
@@ -14,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public final class CommonUtils {
 
@@ -90,37 +88,6 @@ public final class CommonUtils {
             return true;
         }
         return isSameItem(dest, src);
-    }
-
-    public static void spawnParticle(final World world, final int x, final int y, final int z, final ForgeDirection dir, final String particle, final Random random) {
-        double d1 = x + random.nextFloat();
-        double d2 = y + random.nextFloat();
-        double d3 = z + random.nextFloat();
-
-        switch (dir) {
-            case EAST:
-                d1 = x + 1.0625D;
-                break;
-            case WEST:
-                d1 = x - 0.0625D;
-                break;
-            case UP:
-                d2 = y + 1.0625D;
-                break;
-            case DOWN:
-                d2 = y - 0.0625D;
-                break;
-            case SOUTH:
-                d3 = z + 1.0625D;
-                break;
-            case NORTH:
-                d3 = z - 0.0625D;
-                break;
-            default:
-                break;
-        }
-
-        world.spawnParticle(particle, d1, d2, d3, 0.0D, 0.0D, 0.0D);
     }
 
     public static boolean isSameItem(final ItemStack stack1, final ItemStack stack2) {

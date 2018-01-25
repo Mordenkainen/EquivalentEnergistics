@@ -1,7 +1,6 @@
 package com.mordenkainen.equivalentenergistics.blocks.condenser;
 
 import java.util.Locale;
-import java.util.Random;
 
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 import com.mordenkainen.equivalentenergistics.blocks.base.block.BlockMultiContainerBase;
@@ -27,7 +26,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfigurable, ILayeredBlock {
 
@@ -80,26 +78,6 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     @Override
     public IIcon getIcon(final int side, final int meta) {
         return TextureEnum.EMCCONDENSER.getTexture(meta);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(final World world, final int x, final int y, final int z, final Random random) {
-        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(world, x, y, z);
-
-        if (tileCondenser == null) {
-            return;
-        }
-
-        if (tileCondenser.getState().isError()) {
-            for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-                if (world.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ).isOpaqueCube()) {
-                    continue;
-                }
-
-                CommonUtils.spawnParticle(world, x, y, z, dir, "reddust", random);
-            }
-        }
     }
 
     @Override
@@ -172,13 +150,17 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     public IIcon getLayer(final IBlockAccess world, final Block block, final int x, final int y, final int z, final int side, final int meta, final int layer) {
         final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(world, x, y, z);
         if (tileCondenser != null) {
-            if (layer == 1 && tileCondenser.isActive()) {
-                return TextureEnum.EMCCONDENSEROVL.getTexture(2);
-            } else if (tileCondenser instanceof TileEMCCondenserExt) {
-                if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.INPUT) {
-                    return TextureEnum.EMCCONDENSEROVL.getTexture();
-                } else if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.OUTPUT) {
-                    return TextureEnum.EMCCONDENSEROVL.getTexture(1);
+            if (layer == 1) {
+                if (tileCondenser.getState().isError()) {
+                    return TextureEnum.EMCCONDENSEROVL.getTexture(3);
+                } else if (tileCondenser.isActive()) {
+                    return TextureEnum.EMCCONDENSEROVL.getTexture(2);
+                } else if (tileCondenser instanceof TileEMCCondenserExt) {
+                    if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.INPUT) {
+                        return TextureEnum.EMCCONDENSEROVL.getTexture();
+                    } else if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.OUTPUT) {
+                        return TextureEnum.EMCCONDENSEROVL.getTexture(1);
+                    }
                 }
             }
         }
