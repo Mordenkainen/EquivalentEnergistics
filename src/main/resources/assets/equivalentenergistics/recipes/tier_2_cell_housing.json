@@ -9,7 +9,7 @@
     "DCD"
   ],
   "type": "minecraft:crafting_shapeless",
-  "group": "tier2",
+  "group": "equivalentenergistics:tier2",
   "ingredients": [
      {
        "item": "equivalentenergistics:emc_storage_component",

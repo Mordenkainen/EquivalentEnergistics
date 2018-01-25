@@ -9,7 +9,7 @@
     "III"
   ],
   "type": "forge:ore_shaped",
-  "group": "tier2",
+  "group": "equivalentenergistics:tier2",
   "key": {
     "G": {
       "item": "appliedenergistics2:quartz_glass"
