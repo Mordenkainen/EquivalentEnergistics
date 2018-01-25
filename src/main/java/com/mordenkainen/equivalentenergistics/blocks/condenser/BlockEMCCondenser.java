@@ -155,12 +155,12 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
                     return TextureEnum.EMCCONDENSEROVL.getTexture(3);
                 } else if (tileCondenser.isActive()) {
                     return TextureEnum.EMCCONDENSEROVL.getTexture(2);
-                } else if (tileCondenser instanceof TileEMCCondenserExt) {
-                    if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.INPUT) {
-                        return TextureEnum.EMCCONDENSEROVL.getTexture();
-                    } else if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.OUTPUT) {
-                        return TextureEnum.EMCCONDENSEROVL.getTexture(1);
-                    }
+                }
+            } else if (tileCondenser instanceof TileEMCCondenserExt) {
+                if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.INPUT) {
+                    return TextureEnum.EMCCONDENSEROVL.getTexture();
+                } else if (((TileEMCCondenserExt) tileCondenser).getSide(side) == SideSetting.OUTPUT) {
+                    return TextureEnum.EMCCONDENSEROVL.getTexture(1);
                 }
             }
         }
