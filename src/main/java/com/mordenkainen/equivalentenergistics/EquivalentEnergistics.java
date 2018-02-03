@@ -28,6 +28,8 @@ public class EquivalentEnergistics {
     public static CreativeTabs tabEE = new CreativeTabEE(CreativeTabs.getNextID(), Reference.MOD_ID);
 
     public static Logger logger;
+    
+    private int a = 0;
 
     @EventHandler
     public void preInit(final FMLPreInitializationEvent event) {
