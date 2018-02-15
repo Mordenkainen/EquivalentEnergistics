@@ -1,8 +1,9 @@
 package com.mordenkainen.equivalentenergistics.blocks.condenser;
 
 import appeng.api.networking.ticking.TickRateModulation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
+@SuppressWarnings("deprecation")
 public enum CondenserState {
     IDLE(TickRateModulation.IDLE, "message.condenser.statename.idle", false),
     ACTIVE(TickRateModulation.URGENT, "message.condenser.statename.active", false),
@@ -15,20 +16,20 @@ public enum CondenserState {
     private final boolean errorCondition;
 
     CondenserState(final TickRateModulation tickRate, final String stateName, final boolean errorCondition) {
-        this.stateName = StatCollector.translateToLocal(stateName);
+        this.stateName = I18n.translateToLocal(stateName);
         this.tickRate = tickRate;
         this.errorCondition = errorCondition;
     }
-    
+
     public String getStateName() {
         return stateName;
     }
 
-    
+
     public TickRateModulation getTickRate() {
         return tickRate;
     }
-    
+
     public boolean isError() {
         return errorCondition;
     }

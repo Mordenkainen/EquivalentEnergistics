@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_crafter",
+    "data": 0
+  },
+  "pattern": [
+    "BDB",
+    "DFD",
+    "BDB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "appliedenergistics2:smooth_sky_stone_block"
+    },
+    "D": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    },
+    "F": {
+      "item": "appliedenergistics2:material",
+      "data": 43
+    }
+
+  }
+}

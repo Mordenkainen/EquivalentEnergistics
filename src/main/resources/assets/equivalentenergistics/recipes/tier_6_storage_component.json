@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_storage_component",
+    "data": 5
+  },
+  "pattern": [
+    "DCD",
+    "SGS",
+    "DSD"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "appliedenergistics2:material",
+      "data": 24
+    },
+    "D": {
+      "item": "projecte:item.pe_covalence_dust",
+      "data": 2
+    },
+    "S": {
+      "item": "equivalentenergistics:emc_storage_component",
+      "data": 4
+    },
+    "G": {
+      "item": "appliedenergistics2:quartz_glass",
+      "data": 0
+    }
+  }
+}

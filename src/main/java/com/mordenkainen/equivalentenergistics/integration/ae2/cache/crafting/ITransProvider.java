@@ -9,5 +9,5 @@ public interface ITransProvider {
     List<ItemStack> getTransmutations();
 
     String getPlayerUUID();
-    
+
 }

@@ -5,22 +5,24 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.Random;
 
 import com.google.common.base.Equivalence;
 import com.google.common.base.Equivalence.Wrapper;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
-import com.mordenkainen.equivalentenergistics.items.ItemEnum;
+import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CompItemStack;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
-import cpw.mods.fml.common.FMLCommonHandler;
+import moze_intel.projecte.api.ProjectEAPI;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class EMCCraftingGrid implements IEMCCraftingGrid {
 
@@ -33,14 +35,22 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     private final Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
     private final Map<ITransProvider, String> patternProviders = new WeakHashMap<ITransProvider, String>();
     private int lastPatternVer = -1;
+    private int refreshcounter;
 
     public EMCCraftingGrid(final IGrid grid) {
         this.grid = grid;
         craftingGrids.put(this, true);
+        final Random rand = new Random();
+        refreshcounter = rand.nextInt(EqEConfig.emcAssembler.refreshTime * 20);
     }
 
     @Override
     public void onUpdateTick() {
+        refreshcounter++;
+        if (refreshcounter % (EqEConfig.emcAssembler.refreshTime * 20) == 0) {
+            refreshcounter = 0;
+            lastPatternVer = -1;
+        }
         if (lastPatternVer != patternVer) {
             updatePatterns();
             lastPatternVer = patternVer;
@@ -50,7 +60,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
         if (machine instanceof ITransProvider) {
-            patternProviders.remove(machine);
+            patternProviders.remove((ITransProvider) machine);
             if (!((ITransProvider) machine).getTransmutations().isEmpty()) {
                 lastPatternVer = -1;
             }
@@ -89,7 +99,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
 
     private void addCrystalPatterns() {
         for (int i = 0; i < 4; i++) {
-            final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(ItemEnum.EMCCRYSTAL.getStack(64, i));
+            final Equivalence.Wrapper<ItemStack> wrappedStack = eq.wrap(new ItemStack(ModItems.CRYSTAL, 64, i));
             if (!patternList.containsKey(wrappedStack)) {
                 patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
             }
@@ -112,11 +122,11 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
         final Iterator<Wrapper<ItemStack>> iter = patternList.keySet().iterator();
         while (iter.hasNext()) {
             final Wrapper<ItemStack> wrappedStack = iter.next();
-            if (Integration.emcHandler.hasEMC(wrappedStack.get())) {
+            if (ProjectEAPI.getEMCProxy().getValue(wrappedStack.get()) > 0) {
                 final EMCCraftingPattern pattern = patternList.get(wrappedStack);
                 pattern.rebuildPattern();
                 if (!pattern.valid) {
-                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
+                    EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + I18n.format(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name", new Object[0]) + " EMC: " + String.format("%f", pattern.outputEMC));
                     iter.remove();
                 }
             } else {
@@ -150,8 +160,9 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
             if (pattern.valid) {
                 patternList.put(wrappedStack, new EMCCraftingPattern(wrappedStack.get()));
             } else {
-                EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + StatCollector.translateToLocal(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name") + " EMC: " + String.format("%f", pattern.outputEMC));
+                EquivalentEnergistics.logger.warn("Invalid EMC pattern detected. Item: " + I18n.format(pattern.getOutputs()[0].getItem().getUnlocalizedName(pattern.getOutputs()[0].getItemStack()) + ".name", new Object[0])  + " EMC: " + String.format("%f", pattern.outputEMC));
             }
         }
     }
+
 }

@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 public final class GridUtils {
 
     private GridUtils() {}
-
+    
     private static <T extends IGridCache> T getCache(final Class<T> cacheType, final AEProxy proxy) throws GridAccessException {
         final IGrid grid = proxy.getGrid();
         if (grid == null) {
@@ -122,42 +122,30 @@ public final class GridUtils {
 
     public static ItemStack injectItemsForPower(final AEProxy proxy, final ItemStack stack, final MachineSource source) {
         final IAEItemStack toInject = AEApi.instance().storage().createItemStack(stack.copy());
+        final long orgSize = toInject.getStackSize();
+        IAEItemStack rejected;
+
         try {
             final IStorageGrid storageGrid = getStorage(proxy);
 
-            IAEItemStack rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.SIMULATE, source);
-
-            long stored = toInject.getStackSize();
-            if (rejected != null) {
-                stored -= rejected.getStackSize();
+            rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.SIMULATE, source);
+            if (rejected == null) {
+                rejected = AEApi.instance().storage().createItemStack(stack.copy()).setStackSize(0);
             }
 
-            final IEnergyGrid eGrid = getEnergy(proxy);
-            final double availablePower = eGrid.extractAEPower(stored, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            toInject.setStackSize(toInject.getStackSize() - rejected.getStackSize());
+            toInject.setStackSize((long) Math.min(extractAEPower(proxy, toInject.getStackSize(), Actionable.SIMULATE, PowerMultiplier.CONFIG) + 0.9, toInject.getStackSize()));
 
-            final long itemToAdd = Math.min((long) (availablePower + 0.9), stored);
-            if (itemToAdd <= 0) {
-                return stack;
+            if (toInject.getStackSize() > 0) {
+                rejected.add(storageGrid.getItemInventory().injectItems(toInject, Actionable.MODULATE, source));
+                extractAEPower(proxy, orgSize - rejected.getStackSize(), Actionable.MODULATE, PowerMultiplier.CONFIG);
+                return rejected.getStackSize() == 0 ? null : rejected.getItemStack();
             }
-            eGrid.extractAEPower(stored, Actionable.MODULATE, PowerMultiplier.CONFIG);
-
-            if (itemToAdd < toInject.getStackSize()) {
-                final IAEItemStack split = toInject.copy();
-                split.decStackSize(itemToAdd);
-                toInject.setStackSize(itemToAdd);
-                split.add(storageGrid.getItemInventory().injectItems(toInject, Actionable.MODULATE, source));
-
-                return split.getItemStack();
-            }
-
-            rejected = storageGrid.getItemInventory().injectItems(toInject, Actionable.MODULATE, source);
-
-            return rejected == null ? null : rejected.getItemStack();
         } catch (final GridAccessException e) {
             CommonUtils.debugLog("GridUtils:injectItemsForPower: Error accessing grid:", e);
         }
 
-        return stack;
+        return stack;  
     }
 
     public static ItemStack injectItems(final AEProxy proxy, final ItemStack stack, final Actionable mode, final MachineSource source) {
@@ -177,18 +165,18 @@ public final class GridUtils {
             CommonUtils.debugLog("GridUtils:alertDevice: Error accessing grid:", e);
         }
     }
-    
-    public static float injectEMC(final AEProxy proxy, final float emc, final Actionable mode) {
+
+    public static double injectEMC(final AEProxy proxy, final double emc, final Actionable mode) {
         try {
             if (emc > 0) {
-                return getEMCStorage(proxy).injectEMC(emc, mode);
+                return getEMCStorage(proxy).addEMC(emc, mode);
             }
         } catch (final GridAccessException e) {
             CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);
         }
         return 0;
     }
-    
+
     public static void addPatterns(final AEProxy proxy, final ICraftingMedium medium, final ICraftingProviderHelper tracker) {
         try {
             for (final EMCCraftingPattern pattern : getEMCCrafting(proxy).getPatterns()) {
@@ -198,7 +186,7 @@ public final class GridUtils {
             CommonUtils.debugLog("GridUtils:addPatterns: Error accessing grid:", e);
         }
     }
-    
+
     public static void updatePatterns(final AEProxy proxy) {
         try {
             GridUtils.getEMCCrafting(proxy).updatePatterns();

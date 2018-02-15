@@ -1,13 +1,12 @@
 package com.mordenkainen.equivalentenergistics.util;
 
-public class EMCPool {
+public class EMCPool implements IEMCStorage {
 
-    private float currentEMC;
-    private float maxEMC;
+    private double currentEMC;
+    private double maxEMC;
     private boolean overflow;
 
-    public EMCPool(final float currentEMC, final float maxEMC, final boolean overflow) {
-        super();
+    public EMCPool(final double currentEMC, final double maxEMC, final boolean overflow) {
         this.currentEMC = currentEMC;
         this.maxEMC = maxEMC;
         this.overflow = overflow;
@@ -17,19 +16,21 @@ public class EMCPool {
         this(0, 0, false);
     }
 
-    public EMCPool(final float currentEMC) {
+    public EMCPool(final double currentEMC) {
         this(currentEMC, currentEMC, true);
     }
 
-    public EMCPool(final float currentEMC, final float maxEMC) {
+    public EMCPool(final double currentEMC, final double maxEMC) {
         this(currentEMC, maxEMC, true);
     }
 
-    public float getCurrentEMC() {
+    @Override
+    public double getCurrentEMC() {
         return currentEMC;
     }
 
-    public void setCurrentEMC(final float currentEMC) {
+    @Override
+    public void setCurrentEMC(final double currentEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
         } else if (currentEMC < 0) {
@@ -39,11 +40,13 @@ public class EMCPool {
         }
     }
 
-    public float getMaxEMC() {
+    @Override
+    public double getMaxEMC() {
         return maxEMC;
     }
 
-    public void setMaxEMC(final float maxEMC) {
+    @Override
+    public void setMaxEMC(final double maxEMC) {
         if (!overflow && currentEMC > maxEMC) {
             this.currentEMC = maxEMC;
         }
@@ -61,30 +64,34 @@ public class EMCPool {
         this.overflow = overflow;
     }
 
-    public float getExcess() {
+    public double getExcess() {
         if (overflow && currentEMC > maxEMC) {
             return currentEMC - maxEMC;
         }
         return 0;
     }
 
-    public float getAvail() {
+    @Override
+    public double getAvail() {
         if (currentEMC >= maxEMC) {
             return 0;
         }
         return maxEMC - currentEMC;
     }
 
+    @Override
     public boolean isFull() {
         return currentEMC >= maxEMC;
     }
 
+    @Override
     public boolean isEmpty() {
         return currentEMC == 0;
     }
 
-    public float addEMC(final float emc) {
-        float toAdd = emc;
+    @Override
+    public double addEMC(final double emc) {
+        double toAdd = emc;
         if (!overflow) {
             toAdd = Math.min(toAdd, getAvail());
         }
@@ -92,8 +99,9 @@ public class EMCPool {
         return toAdd;
     }
 
-    public float extractEMC(final float emc) {
-        final float toExtract = Math.min(emc, currentEMC);
+    @Override
+    public double extractEMC(final double emc) {
+        final double toExtract = Math.min(emc, currentEMC);
         currentEMC -= toExtract;
         return toExtract;
     }

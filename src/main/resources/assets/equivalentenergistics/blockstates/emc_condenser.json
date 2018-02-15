@@ -1,0 +1,46 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"lights": "equivalentenergistics:blocks/emcnone"
+        	},
+		"model": "equivalentenergistics:emc_condenser"
+      },
+      "variants": {
+		"lights": {
+			"none": {},
+			"error": {
+				"textures": {
+					"lights": "equivalentenergistics:blocks/emc_condenser_error"
+        			}
+			},
+			"powered": {
+				"textures": {
+					"lights": "equivalentenergistics:blocks/emc_condenser_lights"
+        			}
+			}
+		},
+		"type": {
+			0: {
+				"textures": {
+          				"all": "equivalentenergistics:blocks/emc_condenser_0"
+        			}
+			},
+			1: {
+				"textures": {
+          				"all": "equivalentenergistics:blocks/emc_condenser_1"
+        			}
+			},
+			2: {
+				"textures": {
+          				"all": "equivalentenergistics:blocks/emc_condenser_2"
+        			}
+			},
+			3: {
+				"textures": {
+          				"all": "equivalentenergistics:blocks/emc_condenser_3"
+        			}
+			}
+		}
+	}
+}

@@ -2,178 +2,144 @@ package com.mordenkainen.equivalentenergistics.items;
 
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.core.config.ConfigManager;
-import com.mordenkainen.equivalentenergistics.core.config.IConfigurable;
-import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
-import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCell;
-import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCellBase;
+import com.mordenkainen.equivalentenergistics.core.Names;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCell;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCellBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IItemEmc;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Optional.Interface(iface = "moze_intel.projecte.api.item.IItemEmc", modid = "ProjectE")
-public class ItemEMCCell extends ItemEMCCellBase implements IConfigurable, IItemEmc {
+public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
-    private static final String GROUP = "Storage Cells";
     private static final String EMC_TAG = "emc";
-
-    private static final float[] CAPACITIES = { 1000000, 4000000, 16000000, 64000000, 256000000, 1024000000, 4096000000f, 16384000000f };
-    private static final double[] DRAIN = { 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8 };
+    private static final double CELL_CAPACITIES[] = {EqEConfig.cellCapacities.tier1Cell, EqEConfig.cellCapacities.tier2Cell, EqEConfig.cellCapacities.tier3Cell, EqEConfig.cellCapacities.tier4Cell, EqEConfig.cellCapacities.tier5Cell, EqEConfig.cellCapacities.tier6Cell, EqEConfig.cellCapacities.tier7Cell, EqEConfig.cellCapacities.tier8Cell};
+    private static final double CELL_DRAINS[] = {EqEConfig.cellPowerDrain.tier1Cell, EqEConfig.cellPowerDrain.tier2Cell, EqEConfig.cellPowerDrain.tier3Cell, EqEConfig.cellPowerDrain.tier4Cell, EqEConfig.cellPowerDrain.tier5Cell, EqEConfig.cellPowerDrain.tier6Cell, EqEConfig.cellPowerDrain.tier7Cell, EqEConfig.cellPowerDrain.tier8Cell};
 
     public ItemEMCCell() {
-        super(8);
+        super(Names.CELL, 8);
     }
 
     @Override
     public EnumRarity getRarity(final ItemStack stack) {
-        return EnumRarity.values()[stack.getItemDamage() / 2];
+        return EnumRarity.values()[stack.getMetadata() / 2];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(final int damage) {
-        return TextureEnum.EMCCELL.getTexture(damage);
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List<String> tooltip, final boolean flag) {
+        tooltip.add(I18n.format("message.cell.capacity", new Object[0]) + " " + CommonUtils.formatEMC(getMaximumEmc(stack)));
     }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" }) // NOPMD
+    
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean param4) {
-        final float curEMC = getStoredCellEMC(stack);
-        final String tooltip = StatCollector.translateToLocal("tooltip.emc.name") + " ";
-        if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            list.add(tooltip + String.format("%.2f", curEMC) + " / " + String.format("%.2f", CAPACITIES[stack.getItemDamage()]));
-        } else {
-            list.add(tooltip + CommonUtils.formatEMC(curEMC) + " / " + CommonUtils.formatEMC(CAPACITIES[stack.getItemDamage()]));
-        }
-    }
-
-    @Override
-    public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
-        if (isEmpty(stack) && player != null && player.isSneaking() && player.inventory.addItemStackToInventory(ItemEnum.MISCITEM.getDamagedStack(0))) {
-            return ItemEnum.CELLCOMPONENT.getDamagedStack(stack.getItemDamage());
+    public ActionResult<ItemStack> onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player, final EnumHand hand) {
+        if (player != null && isEmpty(player.getHeldItem(hand)) && player.isSneaking() && player.inventory.addItemStackToInventory(new ItemStack(ModItems.MISC, 1, 0))) {
+            return new ActionResult<ItemStack>(EnumActionResult.PASS, new ItemStack(ModItems.COMPONENT, 1, player.getHeldItem(hand).getItemDamage()));
         }
 
-        return stack;
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
     }
-
-    @Override
-    public void loadConfig(final Configuration config) {
-        for (int i = 0; i < itemCount; i++) {
-            try {
-                CAPACITIES[i] = Float.valueOf(config.get(GROUP, "Tier" + i + "_Capacity", String.format("%.0f", CAPACITIES[i])).getString());
-            } catch (final NumberFormatException e) {
-                EquivalentEnergistics.logger.warn("Storage Cell Tier" + i + "_Capacity configured for invalid value! Default will be used!");
-            }
-            DRAIN[i] = config.get(GROUP, "Tier_" + i + "_PowerDrain", DRAIN[i]).getDouble(DRAIN[i]);
-        }
-    }
-
-    @Optional.Method(modid = "appliedenergistics2")
-    @SuppressWarnings("rawtypes") // NOPMD
+    
+    @SuppressWarnings({ "rawtypes" })
     @Override
     public IMEInventoryHandler getCellInventory(final ItemStack stack, final ISaveProvider host, final StorageChannel channel) {
         if (channel == StorageChannel.ITEMS && isCell(stack)) {
-            return new HandlerEMCCell(stack, host, CAPACITIES[stack.getItemDamage()]);
+            return new HandlerEMCCell(stack, host, CELL_CAPACITIES[stack.getItemDamage()]);
         }
         return null;
     }
 
-    @Optional.Method(modid = "appliedenergistics2")
     @SuppressWarnings("rawtypes")
     @Override
     public int getStatusForCell(final ItemStack stack, final IMEInventory handler) {
         return handler instanceof HandlerEMCCellBase ? ((HandlerEMCCellBase) handler).getCellStatus() : 0;
     }
 
-    @Optional.Method(modid = "appliedenergistics2")
+    
     @SuppressWarnings("rawtypes")
     @Override
     public double cellIdleDrain(final ItemStack stack, final IMEInventory handler) {
-        return DRAIN[stack.getItemDamage()];
+        return CELL_DRAINS[stack.getItemDamage()];
+    }
+
+    public double getStoredCellEMC(final ItemStack stack) {
+        if (!isCell(stack) || !hasEMCTag(stack)) {
+            return 0;
+        }
+
+        return Math.max(stack.getTagCompound().getDouble(EMC_TAG), 0);
     }
 
     @Override
     public double addEmc(final ItemStack stack, final double toAdd) {
-        if (ConfigManager.useEE3) {
-            return 0;
-        }
-
-        final float currentEMC = getStoredCellEMC(stack);
-        final float amountToAdd = Math.min((float) toAdd, CAPACITIES[stack.getItemDamage()] - currentEMC);
+        final double currentEMC = getStoredCellEMC(stack);
+        final double amountToAdd = Math.min(toAdd, CELL_CAPACITIES[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
                 stack.setTagCompound(new NBTTagCompound());
             }
-            stack.getTagCompound().setFloat(EMC_TAG, currentEMC + amountToAdd);
+            stack.getTagCompound().setDouble(EMC_TAG, currentEMC + amountToAdd);
         }
 
         return amountToAdd;
     }
 
     @Override
-    public double extractEmc(final ItemStack stack, final double toRemove) {
-        return ConfigManager.useEE3 ? 0 : extractCellEMC(stack, (float) toRemove);
-    }
+    public double extractEmc(final ItemStack stack, final double emc) {
+        final double currentEMC = getStoredCellEMC(stack);
+        final double toRemove = Math.min(emc, currentEMC);
 
-    @Override
-    public double getStoredEmc(final ItemStack stack) {
-        return ConfigManager.useEE3 ? 0 : getStoredCellEMC(stack);
-    }
-
-    @Override
-    public double getMaximumEmc(final ItemStack stack) {
-        return ConfigManager.useEE3 ? 0 : CAPACITIES[stack.getItemDamage()];
-    }
-
-    public float getStoredCellEMC(final ItemStack stack) {
-        if (!isCell(stack) || !hasEMCTag(stack)) {
-            return 0;
-        }
-
-        return Math.max(stack.getTagCompound().getFloat(EMC_TAG), 0);
-    }
-
-    public float extractCellEMC(final ItemStack stack, final float emc) {
-        final float currentEMC = getStoredCellEMC(stack);
-        final float toRemove = Math.min(emc, currentEMC);
-
-        stack.getTagCompound().setFloat(EMC_TAG, currentEMC - toRemove);
-        if (isEmpty(stack)) {
-            stack.getTagCompound().removeTag(EMC_TAG);
-            if (stack.getTagCompound().hasNoTags()) {
-                stack.setTagCompound(null);
+        if (hasEMCTag(stack)) {
+            stack.getTagCompound().setDouble(EMC_TAG, currentEMC - toRemove);
+            if (isEmpty(stack)) {
+                removeEMCTag(stack);
             }
         }
 
         return toRemove;
     }
 
+    @Override
+    public double getStoredEmc(final ItemStack stack) {
+        return getStoredCellEMC(stack);
+    }
+    
+    @Override
+    public double getMaximumEmc(final ItemStack stack) {
+        return CELL_CAPACITIES[stack.getItemDamage()];
+    }
+
+    private void removeEMCTag(final ItemStack stack) {
+        stack.getTagCompound().removeTag(EMC_TAG);
+        if (stack.getTagCompound().hasNoTags()) {
+            stack.setTagCompound(null);
+        }
+    }
+    
     private boolean hasEMCTag(final ItemStack stack) {
         return stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(EMC_TAG);
     }
 
+    
     private boolean isEmpty(final ItemStack stack) {
         return getStoredCellEMC(stack) == 0;
     }
+
 
 }

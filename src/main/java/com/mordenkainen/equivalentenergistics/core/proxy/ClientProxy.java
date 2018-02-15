@@ -1,26 +1,37 @@
 package com.mordenkainen.equivalentenergistics.core.proxy;
 
-import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
-import com.mordenkainen.equivalentenergistics.blocks.common.LayeredBlockRenderer;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.render.BlockEMCCrafterRenderer;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.render.TileEMCCrafterRenderer;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
-import com.mordenkainen.equivalentenergistics.core.exceptions.ClientUnmetDependencyException;
-import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.render.CondenserRenderer;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserExt;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.render.CrafterRenderer;
+import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
+import com.mordenkainen.equivalentenergistics.core.Reference;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
 
+    public TextureAtlasSprite condenserInput;
+    public TextureAtlasSprite condenserOutput;
+
     @Override
     public void preInit() {
-        super.preInit();
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCondenserExt.class, new CondenserRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafter.class, new CrafterRenderer());
     }
 
     @Override
@@ -34,25 +45,20 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void initRenderers() {
-        if (BlockEnum.EMCCRAFTER.isEnabled()) {
-            ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafterBase.class, new TileEMCCrafterRenderer());
-            crafterRenderer = RenderingRegistry.getNextAvailableRenderId();
-            RenderingRegistry.registerBlockHandler(new BlockEMCCrafterRenderer());
-            layeredRenderer = RenderingRegistry.getNextAvailableRenderId();
-            RenderingRegistry.registerBlockHandler(new LayeredBlockRenderer());
-        }
+    public void registerItemRenderer(final Item item, final int meta, final String name) {
+        registerItemRenderer(item, meta, name, "inventory");
     }
 
     @Override
-    public void unmetDependency() {
-        throw new ClientUnmetDependencyException();
+    public void registerItemRenderer(final Item item, final int meta, final String name, final String variant) {
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Reference.MOD_ID + ":" + name, variant));
     }
 
     @SubscribeEvent
     public void registerTextures(final TextureStitchEvent.Pre event) {
-        final TextureMap map = event.map;
-        TextureEnum.registerTextures(map);
+        final TextureMap map = event.getMap();
+        condenserInput = map.registerSprite(new ResourceLocation(Reference.MOD_ID, "blocks/emc_condenser_input"));
+        condenserOutput = map.registerSprite(new ResourceLocation(Reference.MOD_ID, "blocks/emc_condenser_output"));
     }
 
 }

@@ -1,112 +1,105 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter;
 
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.blocks.common.BlockMultiContainerBase;
+import javax.annotation.Nullable;
+
+import com.mordenkainen.equivalentenergistics.blocks.base.block.BlockMultiAE;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.TE;
+import com.mordenkainen.equivalentenergistics.blocks.base.tile.TEList;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafter;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterAdv;
-import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterExt;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterUlt;
-import com.mordenkainen.equivalentenergistics.core.config.IConfigurable;
-import com.mordenkainen.equivalentenergistics.core.textures.TextureEnum;
-import com.mordenkainen.equivalentenergistics.integration.Integration;
+import com.mordenkainen.equivalentenergistics.core.Names;
+import com.mordenkainen.equivalentenergistics.core.Reference;
+import com.mordenkainen.equivalentenergistics.integration.ae2.NetworkLights;
+import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.config.Configuration;
-
-public class BlockEMCCrafter extends BlockMultiContainerBase implements IConfigurable {
-
-    private static final String GROUP = "Crafter";
-
-    public static double idlePower;
-    public static double powerPerEMC;
-    public static double craftingTime;
+@TEList({
+    @TE(tileEntityClass = TileEMCCrafter.class, registryName = Reference.MOD_ID + ".emc_crafter"),
+    @TE(tileEntityClass = TileEMCCrafterAdv.class, registryName = Reference.MOD_ID + ".emc_crafter_adv"),
+    @TE(tileEntityClass = TileEMCCrafterExt.class, registryName = Reference.MOD_ID + ".emc_crafter_ext"),
+    @TE(tileEntityClass = TileEMCCrafterUlt.class, registryName = Reference.MOD_ID + ".emc_crafter_ult")
+})
+public class BlockEMCCrafter extends BlockMultiAE {
 
     public BlockEMCCrafter() {
-        super(Material.rock, 4);
+        super(Material.ROCK, Names.CRAFTER, 4);
         setHardness(1.5f);
-        setStepSound(Block.soundTypeStone);
+        blockSoundType = SoundType.STONE;
         setLightOpacity(1);
     }
 
     @Override
     public TileEntity createNewTileEntity(final World world, final int meta) {
         switch (meta) {
-            case 0:
-                return new TileEMCCrafter();
-            case 1:
-                return new TileEMCCrafterAdv();
-            case 2:
-                return new TileEMCCrafterExt();
-            default:
-                return new TileEMCCrafterUlt();
+        case 0:
+            return new TileEMCCrafter();
+        case 1:
+            return new TileEMCCrafterAdv();
+        case 2:
+            return new TileEMCCrafterExt();
+        default:
+            return new TileEMCCrafterUlt();
         }
     }
 
+    @Deprecated
     @Override
-    public boolean isOpaqueCube() {
-        return false;
+    public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+        final IBlockState tmpState = super.getActualState(state, world, pos);
+        final TileEMCCrafter tile = CommonUtils.getTE(world, pos);
+        if (tile != null) {
+            if (tile.isErrored()) {
+                return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
+            } else if (!tile.isActive()) {
+                return tmpState.withProperty(LIGHTS, NetworkLights.NONE);
+            }
+        }
+        return tmpState;
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
+    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+        final TileEMCCrafter tileCrafter = CommonUtils.getTE(world, pos);
 
-    @Override
-    public int getRenderType() {
-        return EquivalentEnergistics.proxy.crafterRenderer;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIcon(final int side, final int meta) {
-        return TextureEnum.EMCCONDENSER.getTexture();
-    }
-
-    @Override
-    public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
-        final TileEMCCrafterBase tileCrafter = CommonUtils.getTE(TileEMCCrafterBase.class, world, x, y, z);
-
-        if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
+        if (tileCrafter == null || !tileCrafter.canPlayerInteract(player) || hand.equals(EnumHand.OFF_HAND)) {
             return false;
         }
 
+        ItemStack actualItem = player.getHeldItem(hand);
         final ItemStack existingTome = tileCrafter.getCurrentTome();
-        if (Integration.emcHandler.isValidTome(player.getHeldItem()) && existingTome == null) {
-            tileCrafter.setCurrentTome(player.getHeldItem().copy());
+        if (isValidTome(actualItem) && existingTome == null) {
+            tileCrafter.setCurrentTome(actualItem.copy());
             if (!player.capabilities.isCreativeMode) {
-                player.inventory.mainInventory[player.inventory.currentItem] = --player.inventory.mainInventory[player.inventory.currentItem].stackSize == 0 ? null : player.inventory.mainInventory[player.inventory.currentItem];
+                player.setHeldItem(hand, null);
             }
             return true;
-        } else if (existingTome != null) {
+        } else if (actualItem == null && existingTome != null) {
             tileCrafter.setCurrentTome(null);
             if (!world.isRemote) {
-                CommonUtils.spawnEntItem(world, x, y, z, existingTome);
+                CommonUtils.spawnEntItem(world, pos, existingTome);
             }
             return true;
         }
 
         return false;
-
     }
 
-    @Override
-    public void loadConfig(final Configuration config) {
-        idlePower = config.get(GROUP, "IdlePowerDrain", 0.0).getDouble(0.0);
-        powerPerEMC = config.get(GROUP, "PowerDrainPerEMC", 0.01).getDouble(0.01);
-        craftingTime = config.get(GROUP, "TicksPerCrafting", 20).getInt(20);
+    private boolean isValidTome(final ItemStack itemStack) {
+        return itemStack != null && itemStack.getItem() == ModItems.EMC_BOOK && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("OwnerUUID");
     }
 
 }

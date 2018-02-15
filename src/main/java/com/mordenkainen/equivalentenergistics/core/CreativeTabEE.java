@@ -1,10 +1,9 @@
 package com.mordenkainen.equivalentenergistics.core;
 
-import com.mordenkainen.equivalentenergistics.items.ItemEnum;
+import com.mordenkainen.equivalentenergistics.items.ModItems;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 public class CreativeTabEE extends CreativeTabs {
 
@@ -14,12 +13,14 @@ public class CreativeTabEE extends CreativeTabs {
 
     @Override
     public Item getTabIconItem() {
-        return null;
+        return ModItems.CRYSTAL;
     }
 
     @Override
-    public ItemStack getIconItemStack() {
-        return ItemEnum.EMCCRYSTAL.getDamagedStack(2);
+    public int getIconItemDamage() {
+        return 4;
     }
+    
+    
 
 }

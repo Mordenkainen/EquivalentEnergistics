@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.AEProxy;
-import com.mordenkainen.equivalentenergistics.items.ItemEnum;
+import com.mordenkainen.equivalentenergistics.items.ModItems;
 
 import appeng.api.networking.security.MachineSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class CraftingManager {
 
     private static final String TICK_TAG = "RemainingTicks";
     private static final String POWER_TAG = "PowerPerTick";
     private static final String JOB_TAG = "Job";
-    
+
     private final double craftingTime;
     private final int maxJobs;
     private final ICraftingMonitor monitor;
@@ -55,7 +56,7 @@ public class CraftingManager {
         if (!isBusy()) {
             for (int i = 0; i < maxJobs; i++) {
                 if (jobs[i] == null) {
-                    jobs[i] = new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : craftingTime, outputStack, (emc / craftingTime) * powerPerEMC, proxy, source);
+                    jobs[i] = new CraftingJob(outputStack.getItem() == ModItems.CRYSTAL ? 0 : craftingTime, outputStack, (emc / craftingTime) * powerPerEMC, proxy, source);
                     return true;
                 }
             }
@@ -81,11 +82,12 @@ public class CraftingManager {
 
     public List<ItemStack> getCurrentJobs() {
         final List<ItemStack> result = new ArrayList<ItemStack>();
-        for (final CraftingJob job : jobs) {
+        for (int i = 0; i < jobs.length; i++) {
             ItemStack outputStack = null;
-            if (job != null) {
-                outputStack = job.getOutput().copy();
-                outputStack.stackSize = 1;
+            if (jobs[i] == null) {
+                outputStack = null;
+            } else {
+                outputStack = ItemHandlerHelper.copyStackWithSize(jobs[i].getOutput().copy(), 1);
             }
             result.add(outputStack);
         }
@@ -109,7 +111,7 @@ public class CraftingManager {
         for (int i = 0; i < maxJobs; i++) {
             if (tag.hasKey(JOB_TAG + i)) {
                 final ItemStack outputStack = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.getTag(JOB_TAG + i));
-                jobs[i] = new CraftingJob(ItemEnum.isCrystal(outputStack) ? 0 : tag.getDouble(TICK_TAG), outputStack, tag.getDouble(POWER_TAG), proxy, source);
+                jobs[i] = new CraftingJob(outputStack.getItem() == ModItems.CRYSTAL ? 0 : tag.getDouble(TICK_TAG), outputStack, tag.getDouble(POWER_TAG), proxy, source);
             } else {
                 jobs[i] = null;
             }

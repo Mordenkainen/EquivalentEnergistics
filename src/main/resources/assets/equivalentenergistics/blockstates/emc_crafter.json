@@ -1,0 +1,50 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"lights": "equivalentenergistics:blocks/emcnone"
+        	},
+		"model": "equivalentenergistics:emc_crafter"
+      },
+      "variants": {
+		"lights": {
+			"none": {},
+			"error": {
+				"textures": {
+					"lights": "equivalentenergistics:blocks/emc_crafter_error"
+        			}
+			},
+			"powered": {
+				"textures": {
+					"lights": "equivalentenergistics:blocks/emc_crafter_lights"
+        			}
+			}
+		},
+		"type": {
+			0: {
+				"textures": {
+          				"outside": "equivalentenergistics:blocks/emc_crafter_0",
+          				"particle": "equivalentenergistics:blocks/emc_crafter_0"
+        			}
+			},
+			1: {
+				"textures": {
+          				"outside": "equivalentenergistics:blocks/emc_crafter_1",
+          				"particle": "equivalentenergistics:blocks/emc_crafter_1"
+        			}
+			},
+			2: {
+				"textures": {
+          				"outside": "equivalentenergistics:blocks/emc_crafter_2",
+          				"particle": "equivalentenergistics:blocks/emc_crafter_2"
+        			}
+			},
+			3: {
+				"textures": {
+          				"outside": "equivalentenergistics:blocks/emc_crafter_3",
+          				"particle": "equivalentenergistics:blocks/emc_crafter_3"
+        			}
+			}
+		}
+	}
+}

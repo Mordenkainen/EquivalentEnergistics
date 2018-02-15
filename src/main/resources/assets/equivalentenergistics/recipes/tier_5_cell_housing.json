@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "equivalentenergistics:emc_cell",
+    "data": 4
+  },
+  "pattern": [
+    "DCD",
+    "CLC",
+    "DCD"
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "group": "equivalentenergistics:tier5",
+  "ingredients": [
+     {
+       "item": "equivalentenergistics:emc_storage_component",
+       "data": 4
+     },
+     {
+       "item": "equivalentenergistics:item_misc",
+       "data": 0
+     }
+    ]
+  }
+}

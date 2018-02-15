@@ -31,7 +31,7 @@ public class CompItemStack extends Equivalence<ItemStack> {
             return !stack2.hasTagCompound();
         }
 
-        return stack1.stackTagCompound.equals(stack2.stackTagCompound);
+        return stack1.getTagCompound().equals(stack2.getTagCompound());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CompItemStack extends Equivalence<ItemStack> {
         int result = 1;
         result = PRIME * result + Item.getIdFromItem(stack.getItem());
         result = PRIME * result + stack.getItemDamage();
-        result = PRIME * result + (stack.hasTagCompound() ? stack.stackTagCompound.hashCode() : 0);
+        result = PRIME * result + (stack.hasTagCompound() ? stack.getTagCompound().hashCode() : 0);
         return result;
     }
 

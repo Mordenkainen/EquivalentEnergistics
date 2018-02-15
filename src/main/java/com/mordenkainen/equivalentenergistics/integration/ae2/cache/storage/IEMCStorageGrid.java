@@ -1,23 +1,17 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage;
 
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.ICacheBase;
+import com.mordenkainen.equivalentenergistics.util.IEMCStorage;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
 
-public interface IEMCStorageGrid extends ICacheBase {
+public interface IEMCStorageGrid extends ICacheBase, IEMCStorage {
 
-    float injectEMC(float emc, Actionable mode);
+    IGrid getGrid();
 
-    float extractEMC(float emc, Actionable mode);
+    double addEMC(double emc, Actionable mode);
 
-    float getCurrentEMC();
-
-    float getMaxEMC();
-
-    float getAvail();
-
-    boolean isFull();
-
-    boolean isEmpty();
+    double extractEMC(double emc, Actionable mode);
 
 }

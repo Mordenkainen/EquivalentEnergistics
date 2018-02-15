@@ -4,9 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.HandlerEMCCellBase;
+import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCellBase;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
-import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridHost;
@@ -23,9 +22,8 @@ public class EMCGridCellHandler {
     private static Field extHandler;
 
     private final EMCStorageGrid hostGrid;
-
     private final List<ICellProvider> driveBays = new ArrayList<ICellProvider>();
-
+    
     public EMCGridCellHandler(final EMCStorageGrid hostGrid) {
         this.hostGrid = hostGrid;
     }
@@ -38,59 +36,47 @@ public class EMCGridCellHandler {
 
     @SuppressWarnings({ "rawtypes", "unchecked" }) // NOPMD
     public void cellUpdate(final MENetworkCellArrayUpdate cellUpdate) {
-        float newEMC = 0;
-        float newMax = 0;
+        double newEMC = 0;
+        double newMax = 0;
         for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCellBase handler = getHandler(cell);
                 if (handler != null) {
-                    newEMC += handler.getEMC();
-                    newMax += handler.getCapacity();
+                    newEMC += handler.getCurrentEMC();
+                    newMax += handler.getMaxEMC();
                 }
             }
         }
 
-        final EMCPool pool = hostGrid.getPool();
-
-        if (newMax != pool.getMaxEMC() || newEMC != pool.getCurrentEMC()) {
-            pool.setMaxEMC(newMax);
-            pool.setCurrentEMC(newEMC);
-            hostGrid.markDirty();
-        }
+        updatePool(newMax, newEMC);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof ICellProvider && driveBays.remove(machine)) {
-            final EMCPool pool = hostGrid.getPool();
-            float newEMC = pool.getCurrentEMC();
-            float newMax = pool.getMaxEMC();
+        if (machine instanceof ICellProvider && driveBays.remove((ICellProvider) machine)) {
+            double newEMC = hostGrid.getCurrentEMC();
+            double newMax = hostGrid.getMaxEMC();
             final List<IMEInventoryHandler> cells = ((ICellProvider) machine).getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
                 final HandlerEMCCellBase handler = getHandler(cell);
                 if (handler != null) {
-                    newEMC -= handler.getEMC();
-                    newMax -= handler.getCapacity();
+                    newEMC -= handler.getCurrentEMC();
+                    newMax -= handler.getMaxEMC();
                 }
             }
-            if (newMax != pool.getMaxEMC() || newEMC != pool.getCurrentEMC()) {
-                pool.setMaxEMC(newMax);
-                pool.setCurrentEMC(newEMC);
-                hostGrid.markDirty();
-            }
+            updatePool(newMax, newEMC);
         }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public float injectEMC(final float emc, final Actionable mode) {
-        final EMCPool pool = hostGrid.getPool();
-        final float toAdd = Math.min(emc, pool.getAvail());
+    public double injectEMC(final double emc, final Actionable mode) {
+        final double toAdd = Math.min(emc, hostGrid.getAvail());
         if (mode != Actionable.MODULATE) {
             return toAdd;
         }
 
-        float added = 0;
+        double added = 0;
         for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
@@ -105,19 +91,18 @@ public class EMCGridCellHandler {
             }
         }
 
-        pool.addEMC(added);
+        hostGrid.addEMC(added);
         return added;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public float extractEMC(final float emc, final Actionable mode) {
-        final EMCPool pool = hostGrid.getPool();
-        final float toExtract = Math.min(emc, pool.getCurrentEMC());
+    public double extractEMC(final double emc, final Actionable mode) {
+        final double toExtract = Math.min(emc, hostGrid.getCurrentEMC());
         if (mode != Actionable.MODULATE) {
             return toExtract;
         }
 
-        float extracted = 0;
+        double extracted = 0;
         for (final ICellProvider provider : driveBays) {
             final List<IMEInventoryHandler> cells = provider.getCellArray(StorageChannel.ITEMS);
             for (final IMEInventoryHandler cell : cells) {
@@ -132,7 +117,7 @@ public class EMCGridCellHandler {
             }
         }
 
-        pool.extractEMC(extracted);
+        hostGrid.extractEMC(extracted);
         return extracted;
     }
 
@@ -166,13 +151,21 @@ public class EMCGridCellHandler {
         return null;
     }
 
+    private void updatePool(final double newMax, final double newCurrent) {
+        if (newMax != hostGrid.getMaxEMC() || newCurrent != hostGrid.getCurrentEMC()) {
+            hostGrid.setMaxEMC(newMax);
+            hostGrid.setCurrentEMC(newCurrent);
+            hostGrid.markDirty();
+        }
+    }
+
     private static boolean reflectFields() {
         try {
             Class<?> clazz;
             clazz = Class.forName("appeng.me.storage.MEInventoryHandler");
             intHandler = clazz.getDeclaredField("internal");
             intHandler.setAccessible(true);
-            clazz = Class.forName("appeng.api.storage.MEMonitorHandler");
+            clazz = Class.forName("appeng.me.helpers.MEMonitorHandler");
             extHandler = clazz.getDeclaredField("internalHandler");
             extHandler.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException e) {

@@ -1,18 +1,31 @@
 package com.mordenkainen.equivalentenergistics.items.itemblocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlockWithMetadata;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockMulti extends ItemBlockWithMetadata {
+public class ItemBlockMulti extends ItemBlock {
 
     public ItemBlockMulti(final Block block) {
-        super(block, block);
+        super(block);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
+    }
+
+    @Override
+    public int getMetadata(final int damage) {
+        return damage;
     }
 
     @Override
     public String getUnlocalizedName(final ItemStack stack) {
-        return this.getUnlocalizedName() + "." + stack.getItemDamage();
+        return super.getUnlocalizedName(stack) + "_" + stack.getMetadata();
+    }
+    
+    @Override
+    public EnumRarity getRarity(final ItemStack stack) {
+        return EnumRarity.values()[stack.getMetadata()];
     }
 
 }

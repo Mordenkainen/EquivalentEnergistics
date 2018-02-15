@@ -1,11 +1,15 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter.tiles;
 
-import com.mordenkainen.equivalentenergistics.blocks.crafter.BlockEMCCrafter;
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 
-public class TileEMCCrafterAdv extends TileEMCCrafterBase {
+public class TileEMCCrafterAdv extends TileEMCCrafter {
 
     public TileEMCCrafterAdv() {
-        super(4, BlockEMCCrafter.craftingTime, 1);
+        this(4, EqEConfig.emcAssembler.craftingTime, 1);
+    }
+
+    public TileEMCCrafterAdv(final int jobs, final double time, final int meta) {
+        super(jobs, time, meta);
     }
 
 }
