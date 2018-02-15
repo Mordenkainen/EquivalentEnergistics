@@ -82,8 +82,9 @@ public final class InvUtils {
         return count - leftToMove;
     }
 
-    public static int ejectStack(final ItemStack sourceStack, final IInventory destInv, final ForgeDirection side, final int maxItems) {
+    public static int ejectStack(final ItemStack stack, final IInventory destInv, final ForgeDirection side, final int maxItems) {
         int remainingItems = maxItems;
+        final ItemStack sourceStack = stack.copy();
         final ISidedInventory inv = InventoryAdapter.getAdapter(destInv);
         for (final int slot : inv.getAccessibleSlotsFromSide(side.ordinal())) {
             if (inv.canInsertItem(slot, sourceStack, side.ordinal())) {
