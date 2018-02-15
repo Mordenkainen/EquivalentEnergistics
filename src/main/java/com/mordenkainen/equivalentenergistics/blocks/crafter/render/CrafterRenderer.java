@@ -41,13 +41,13 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<TileEMCCrafter> {
         }
         GlStateManager.popMatrix();
 
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        final List<ItemStack> stacks = new ArrayList<ItemStack>();
         if(te.isCrafting()) {
             stacks.addAll(te.getDisplayStacks());
         } else if (te.getCurrentTome() != null) {
             stacks.add(te.getCurrentTome());
         }
-        if (stacks.size() > 0) {
+        if (!stacks.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);
             final float time = Minecraft.getMinecraft().getRenderViewEntity().ticksExisted + partialTicks;

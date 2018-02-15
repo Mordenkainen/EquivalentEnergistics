@@ -19,7 +19,7 @@ public abstract class ItemMultiBase extends ItemBase {
     }
 
     @Override
-    public void getSubItems(Item item, final CreativeTabs tab, final List<ItemStack> items) {
+    public void getSubItems(final Item item, final CreativeTabs tab, final List<ItemStack> items) {
         for (int i = 0; i < itemCount; i++) {
                 items.add(new ItemStack(item, 1, i));
         }

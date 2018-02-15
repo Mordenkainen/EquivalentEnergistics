@@ -79,15 +79,14 @@ public class BlockEMCCrafter extends BlockMultiAE {
             return false;
         }
 
-        ItemStack actualItem = player.getHeldItem(hand);
         final ItemStack existingTome = tileCrafter.getCurrentTome();
-        if (isValidTome(actualItem) && existingTome == null) {
-            tileCrafter.setCurrentTome(actualItem.copy());
+        if (isValidTome(heldItem) && existingTome == null) {
+            tileCrafter.setCurrentTome(heldItem.copy());
             if (!player.capabilities.isCreativeMode) {
                 player.setHeldItem(hand, null);
             }
             return true;
-        } else if (actualItem == null && existingTome != null) {
+        } else if (heldItem == null && existingTome != null) {
             tileCrafter.setCurrentTome(null);
             if (!world.isRemote) {
                 CommonUtils.spawnEntItem(world, pos, existingTome);
