@@ -5,7 +5,7 @@ Equivalent Energistics is a mod focused around integrating ProjectE transmutatio
 Equivalent Energistics requires the following mod to function:  
 [Applied Energistics](https://minecraft.curseforge.com/projects/applied-energistics-2)  
 
-As well as at least one of the following:
+As well as at least one of the following:  
 [ProjectE](https://minecraft.curseforge.com/projects/projecte)  
 [Equivalent Exchange 3](https://minecraft.curseforge.com/projects/ee3)
 
