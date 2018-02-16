@@ -18,6 +18,9 @@ CI builds by TravisCI:
 Progress tracking by Waffle:  
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/Mordenkainen/EquivalentEnergistics.svg?columns=all)](https://waffle.io/Mordenkainen/EquivalentEnergistics)
 
+Chat by Discord:  
+[![Discord](https://img.shields.io/discord/220895975579975680.svg)](https://discord.gg/TaaPBCj)
+
 Hosted on CurseForge:  
 [![Downloads](http://cf.way2muchnoise.eu/equivalent-energistics.svg)](https://minecraft.curseforge.com/projects/equivalent-energistics)  
 [![](http://cf.way2muchnoise.eu/versions/equivalent-energistics.svg)](https://minecraft.curseforge.com/projects/equivalent-energistics)
