@@ -2,9 +2,12 @@
 
 Equivalent Energistics is a mod focused around integrating ProjectE transmutations with Applied Energistics auto-crafting. With a properly set up system, your ME network will be able to store EMC and use that EMC for autocrafting items.
 
-Equivalent Energistics requires the following mods to function:  
+Equivalent Energistics requires the following mod to function:  
 [Applied Energistics](https://minecraft.curseforge.com/projects/applied-energistics-2)  
+
+As well as at least one of the following:
 [ProjectE](https://minecraft.curseforge.com/projects/projecte)
+[Equivalent Exchange 3](https://minecraft.curseforge.com/projects/ee3)
 
  Static code analysis by Codacy:  
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a44c1cdc1db24eafb8efecb3789a2acd??branch=V0.8)](https://www.codacy.com/app/Mordenkainen/EquivalentEnergistics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mordenkainen/EquivalentEnergistics&amp;utm_campaign=Badge_Grade)
