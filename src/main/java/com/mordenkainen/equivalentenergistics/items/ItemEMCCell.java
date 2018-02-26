@@ -8,6 +8,7 @@ import com.mordenkainen.equivalentenergistics.core.Names;
 import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCell;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cells.HandlerEMCCellBase;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
@@ -15,7 +16,6 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import moze_intel.projecte.api.item.IItemEmc;
 import net.minecraft.client.resources.I18n;
@@ -64,12 +64,12 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
-        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && isCell(stack)) {
+        if (channel == AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class) && isCell(stack)) {
             return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, CELL_CAPACITIES[stack.getItemDamage()]);
         }
         return null;
     }
-
+    
     @Override
     public <T extends IAEStack<T>> int getStatusForCell(final ItemStack stack, final IMEInventory<T> handler) {
         return handler instanceof HandlerEMCCellBase ? ((HandlerEMCCellBase) handler).getCellStatus() : 0;

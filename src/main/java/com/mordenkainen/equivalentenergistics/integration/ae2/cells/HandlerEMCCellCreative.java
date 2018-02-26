@@ -1,8 +1,18 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
 
-import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
+import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.EMCStackType;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
+
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.data.IItemList;
 
 public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
@@ -16,44 +26,28 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
     }
 
     @Override
-    public double getCurrentEMC() {
-        return EqEConfig.cellCapacities.creativeCell / 2;
+    public IAEEMCStack extractItems(final IAEEMCStack request, final Actionable mode, final IActionSource src) {
+        if (request == null) {
+            return null;
+        }
+        return request;
     }
 
     @Override
-    public void setCurrentEMC(final double currentEMC) {}
-
-    @Override
-    public double getMaxEMC() {
-        return EqEConfig.cellCapacities.creativeCell;
+    public IItemList<IAEEMCStack> getAvailableItems(final IItemList<IAEEMCStack> stacks) {
+        IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(EqEConfig.cellCapacities.creativeCell / 2);
+        stacks.add(current);
+        
+        Pair<Double, EMCStackType> cellInfo = new ImmutablePair<Double, EMCStackType>(EqEConfig.cellCapacities.creativeCell, EMCStackType.CAPACITY);
+        IAEEMCStack max = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(cellInfo);
+        stacks.add(max);
+        
+        return stacks;
     }
 
     @Override
-    public void setMaxEMC(final double maxEMC) {}
-
-    @Override
-    public double getAvail() {
-        return EqEConfig.cellCapacities.creativeCell / 2;
-    }
-
-    @Override
-    public boolean isFull() {
-        return false;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public double addEMC(final double emc) {
-        return emc;
-    }
-
-    @Override
-    public double extractEMC(final double emc) {
-        return emc;
+    public IAEEMCStack injectItems(final IAEEMCStack input, final Actionable mode, final IActionSource src) {
+        return null;
     }
 
 }

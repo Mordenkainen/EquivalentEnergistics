@@ -90,7 +90,7 @@ public abstract class BlockMultiAE extends BlockMultiTile {
     
     @Override
     public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
-        final IAEProxyHost tile = CommonUtils.getTE(world, pos);
+        final IAEProxyHost tile = CommonUtils.getTE(IAEProxyHost.class, world, pos);
 
         if (tile != null && placer instanceof EntityPlayer) {
             tile.setOwner((EntityPlayer) placer);
@@ -100,7 +100,7 @@ public abstract class BlockMultiAE extends BlockMultiTile {
     @Override
     public void breakBlock(final World world, final BlockPos pos, final IBlockState state) {
         if (!world.isRemote) {
-            final IDropItems tile = CommonUtils.getTE(world, pos);
+            final IDropItems tile = CommonUtils.getTE(IDropItems.class, world, pos);
 
             if (tile != null) {
                 final List<ItemStack> drops = new ArrayList<ItemStack>();

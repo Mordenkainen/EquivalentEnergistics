@@ -3,6 +3,8 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.IEMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
@@ -22,6 +24,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.me.helpers.BaseActionSource;
 import net.minecraft.item.ItemStack;
 
 public final class GridUtils {
@@ -170,12 +173,15 @@ public final class GridUtils {
     }
 
     public static double injectEMC(final AEProxy proxy, final double emc, final Actionable mode) {
-        try {
-            if (emc > 0) {
-                return getEMCStorage(proxy).addEMC(emc, mode);
+        if (emc > 0) {
+            try {
+                final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
+                final IStorageGrid storageGrid = (IStorageGrid) proxy.getGrid().getCache(IStorageGrid.class);
+                IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(emc), mode, new BaseActionSource());
+                return rejected == null ? emc : emc - rejected.getEMCValue();
+            } catch (final GridAccessException e) {
+                CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);
             }
-        } catch (final GridAccessException e) {
-            CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);
         }
         return 0;
     }

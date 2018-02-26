@@ -42,7 +42,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
     @Override
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
         final IBlockState tmpState = super.getActualState(state, world, pos);
-        final TileEMCCondenser tile = CommonUtils.getTE(world, pos);
+        final TileEMCCondenser tile = CommonUtils.getTE(TileEMCCondenser.class, world, pos);
         if (tile != null) {
             if (tile.getState().isError()) {
                 return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
@@ -74,7 +74,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
         }
 
         if (player.getHeldItem(hand) == ItemStack.EMPTY) {
-            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, pos);
+            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, pos);
             if (tileCondenser != null && !world.isRemote) {
                 tileCondenser.toggleSide(facing);
                 return true;
@@ -95,7 +95,7 @@ public class BlockEMCCondenser extends BlockMultiAE {
             return 0;
         }
 
-        final TileEMCCondenserAdv tile = CommonUtils.getTE(world, pos);
+        final TileEMCCondenserAdv tile = CommonUtils.getTE(TileEMCCondenserAdv.class, world, pos);
         
         switch (tile.getState()) {
         case ACTIVE:
