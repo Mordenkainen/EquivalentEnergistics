@@ -36,10 +36,7 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEEMCSt
 
     @Override
     public boolean canAccept(final IAEEMCStack input) {
-        if (input != null && input.getType().equals(EMCStackType.VALUE)) {
-            return true;
-        }
-        return false;
+        return input != null && input.getType().equals(EMCStackType.VALUE);
     }
 
     @Override

@@ -177,7 +177,7 @@ public final class GridUtils {
             try {
                 final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
                 final IStorageGrid storageGrid = (IStorageGrid) proxy.getGrid().getCache(IStorageGrid.class);
-                IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(emc), mode, new BaseActionSource());
+                final IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(emc), mode, new BaseActionSource());
                 return rejected == null ? emc : emc - rejected.getEMCValue();
             } catch (final GridAccessException e) {
                 CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);

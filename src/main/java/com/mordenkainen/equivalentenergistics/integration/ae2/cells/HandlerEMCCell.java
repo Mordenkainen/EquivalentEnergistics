@@ -60,14 +60,14 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
             return null;
         }
         
-        double toExtract = Math.min(pool.getCurrentEMC(), request.getEMCValue());
+        final double toExtract = Math.min(pool.getCurrentEMC(), request.getEMCValue());
         if (mode == Actionable.MODULATE) {
             pool.extractEMC(toExtract);
             updateEMC();
         }
         
         if (toExtract > 0) {
-            IAEEMCStack extracted = request.copy();
+            final IAEEMCStack extracted = request.copy();
             extracted.setStackSize((long) (toExtract * 1000));
             return extracted;
         }
@@ -78,11 +78,11 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     @Override
     public IItemList<IAEEMCStack> getAvailableItems(final IItemList<IAEEMCStack> stacks) {
         if(pool.getCurrentEMC() > 0) {
-            IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(pool.getCurrentEMC());
+            final IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(pool.getCurrentEMC());
             stacks.add(current);
         }
-        Pair<Double, EMCStackType> cellInfo = new ImmutablePair<Double, EMCStackType>(pool.getMaxEMC(), EMCStackType.CAPACITY);
-        IAEEMCStack max = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(cellInfo);
+        final Pair<Double, EMCStackType> cellInfo = new ImmutablePair<Double, EMCStackType>(pool.getMaxEMC(), EMCStackType.CAPACITY);
+        final IAEEMCStack max = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(cellInfo);
         stacks.add(max);
         
         return stacks;
@@ -94,7 +94,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
             return null;
         }
         
-        double toStore = Math.min(input.getEMCValue(), pool.getAvail());
+        final double toStore = Math.min(input.getEMCValue(), pool.getAvail());
         if (mode == Actionable.MODULATE) {
             pool.addEMC(toStore);
             updateEMC();
@@ -104,7 +104,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
             return null;
         }
         
-        IAEEMCStack remainder = input.copy();
+        final IAEEMCStack remainder = input.copy();
         remainder.setStackSize(input.getStackSize() - (long) (toStore * 1000));
         
         return remainder;

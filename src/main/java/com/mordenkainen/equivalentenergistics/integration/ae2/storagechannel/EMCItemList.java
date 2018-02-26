@@ -12,20 +12,20 @@ import appeng.api.storage.data.IItemList;
 
 public class EMCItemList implements IItemList<IAEEMCStack> {
 
-    List<IAEEMCStack> items = new ArrayList<IAEEMCStack>();
+    private List<IAEEMCStack> items = new ArrayList<IAEEMCStack>();
 
     @Override
-    public void add(IAEEMCStack toAdd) {
+    public void add(final IAEEMCStack toAdd) {
         addStorage(toAdd);
     }
 
     @Override
-    public Collection<IAEEMCStack> findFuzzy(IAEEMCStack find, FuzzyMode mode) {
+    public Collection<IAEEMCStack> findFuzzy(final IAEEMCStack find, final FuzzyMode mode) {
         if(find == null) {
             return Collections.emptyList();
         }
         
-        for (IAEEMCStack stack : this) {
+        for (final IAEEMCStack stack : this) {
             if (stack.getType() == find.getType()) {
                 return Arrays.asList(stack);
             }
@@ -35,7 +35,7 @@ public class EMCItemList implements IItemList<IAEEMCStack> {
     }
 
     @Override
-    public IAEEMCStack findPrecise(IAEEMCStack find) {
+    public IAEEMCStack findPrecise(final IAEEMCStack find) {
         if (find == null) {
             return null;
         }
@@ -54,13 +54,13 @@ public class EMCItemList implements IItemList<IAEEMCStack> {
     }
 
     @Override
-    public void addCrafting(IAEEMCStack arg0) {}
+    public void addCrafting(final IAEEMCStack arg0) {}
 
     @Override
-    public void addRequestable(IAEEMCStack arg0) {}
+    public void addRequestable(final IAEEMCStack arg0) {}
 
     @Override
-    public void addStorage(IAEEMCStack toAdd) {
+    public void addStorage(final IAEEMCStack toAdd) {
         if (toAdd == null) {
             return;
         }

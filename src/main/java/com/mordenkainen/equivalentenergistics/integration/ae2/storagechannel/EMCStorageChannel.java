@@ -21,7 +21,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
     }
 
     @Override
-    public IAEEMCStack createStack(Object input) {
+    public IAEEMCStack createStack(final Object input) {
         Preconditions.checkNotNull(input);
         
         if (input instanceof Number) {
@@ -30,7 +30,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
         
         if (input instanceof Pair && ((Pair<?,?>) input).getLeft() instanceof Double && ((Pair<?,?>) input).getRight() instanceof EMCStackType) {
             @SuppressWarnings("unchecked")
-            Pair<Double, EMCStackType> pair = (Pair<Double, EMCStackType>) input;
+            final Pair<Double, EMCStackType> pair = (Pair<Double, EMCStackType>) input;
 
             return new AEEMCStack(pair.getLeft(), pair.getRight());
         }
@@ -39,7 +39,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
     }
 
     @Override
-    public IAEEMCStack poweredExtraction(IEnergySource energy, IMEInventory<IAEEMCStack> cell, IAEEMCStack request, IActionSource src) {
+    public IAEEMCStack poweredExtraction(final IEnergySource energy, final IMEInventory<IAEEMCStack> cell, final IAEEMCStack request, final IActionSource src) {
         //TODO: FIX!!!!!!
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
@@ -68,7 +68,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
     }
 
     @Override
-    public IAEEMCStack poweredInsert(IEnergySource energy, IMEInventory<IAEEMCStack> cell, IAEEMCStack input, IActionSource src) {
+    public IAEEMCStack poweredInsert(final IEnergySource energy, final IMEInventory<IAEEMCStack> cell, final IAEEMCStack input, final IActionSource src) {
         //TODO: FIX!!!!
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
@@ -106,7 +106,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
     }
 
     @Override
-    public IAEEMCStack readFromPacket(ByteBuf input) throws IOException {
+    public IAEEMCStack readFromPacket(final ByteBuf input) throws IOException {
         Preconditions.checkNotNull(input);
         
         return AEEMCStack.fromPacket(input);

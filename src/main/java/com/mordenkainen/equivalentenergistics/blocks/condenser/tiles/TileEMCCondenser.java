@@ -139,13 +139,13 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
             
             final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
             final IStorageGrid storageGrid = (IStorageGrid) getProxy().getGrid().getCache(IStorageGrid.class);
-            IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(emcToStore), Actionable.SIMULATE, mySource);
+            final IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(emcToStore), Actionable.SIMULATE, mySource);
             
             if (rejected != null && rejected.getEMCValue() == emcToStore) {
                 return -1;
             }
             
-            double amountStored = rejected == null ? emcToStore : emcToStore - rejected.getEMCValue();
+            final double amountStored = rejected == null ? emcToStore : emcToStore - rejected.getEMCValue();
             numToStore = (int) (amountStored / itemEMC);
             if (usePower) {
                 numToStore = Math.min(getMaxItemsForPower(numToStore, itemEMC), numToStore);
@@ -179,11 +179,11 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
 
         try {
             if (itemEMC > 0) {
-                double toStore = Math.min(remainingEMC, itemEMC);
+                final double toStore = Math.min(remainingEMC, itemEMC);
                 
                 final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
                 final IStorageGrid storageGrid = (IStorageGrid) getProxy().getGrid().getCache(IStorageGrid.class);
-                IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(toStore), Actionable.MODULATE, mySource);
+                final IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(toStore), Actionable.MODULATE, mySource);
                 
                 if (rejected != null && rejected.getEMCValue() == toStore) {
                     return -1;

@@ -39,8 +39,8 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
         if(stack.getItem() == ModItems.CRYSTAL) {
             final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
             final IStorageGrid storageGrid = (IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class);
-            IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(stack.getStackSize() * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]), Actionable.SIMULATE, src);
-            double emcAdded = stack.getStackSize() * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()] - (rejected == null ? 0 : rejected.getEMCValue());
+            final IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(stack.getStackSize() * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]), Actionable.SIMULATE, src);
+            final double emcAdded = stack.getStackSize() * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()] - (rejected == null ? 0 : rejected.getEMCValue());
             if (emcAdded < ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]) {
                 return stack;
             }
@@ -60,7 +60,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
         if(stack.getItem() == ModItems.CRYSTAL) {
             final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
             final IStorageGrid storageGrid = (IStorageGrid) hostGrid.getGrid().getCache(IStorageGrid.class);
-            IAEEMCStack extracted = storageGrid.getInventory(emcChannel).extractItems(emcChannel.createStack(stack.getStackSize() * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]), Actionable.SIMULATE, src);
+            final IAEEMCStack extracted = storageGrid.getInventory(emcChannel).extractItems(emcChannel.createStack(stack.getStackSize() * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]), Actionable.SIMULATE, src);
             if (extracted == null || extracted.getEMCValue() < ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]) {
                 return null;
             }
