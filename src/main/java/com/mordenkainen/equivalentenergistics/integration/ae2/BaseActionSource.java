@@ -2,18 +2,11 @@ package com.mordenkainen.equivalentenergistics.integration.ae2;
 
 import java.util.Optional;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class MachineSource implements IActionSource {
-
-    private final IActionHost via;
-
-    public MachineSource(final IActionHost v) {
-        this.via = v;
-    }
+public class BaseActionSource implements IActionSource {
 
     @Override
     public Optional<EntityPlayer> player() {
@@ -22,12 +15,12 @@ public class MachineSource implements IActionSource {
 
     @Override
     public Optional<IActionHost> machine() {
-        return Optional.of( this.via );
-    }
-
-    @Override
-    public <T> Optional<T> context(final Class<T> key) {
         return Optional.empty();
     }
 
+    @Override
+    public <T> Optional<T> context(Class<T> key) {
+        return Optional.empty();
+    }
+    
 }

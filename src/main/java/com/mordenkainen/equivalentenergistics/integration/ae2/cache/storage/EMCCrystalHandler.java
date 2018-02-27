@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mordenkainen.equivalentenergistics.integration.ae2.BaseActionSource;
 import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
 import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 import com.mordenkainen.equivalentenergistics.items.ItemEMCCrystal;
@@ -20,7 +21,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.me.helpers.BaseActionSource;
 import net.minecraft.item.ItemStack;
 
 public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAEItemStack> {

@@ -102,13 +102,5 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
         
         return remainder;
     }
-    
-    /*private void updateProvider() {
-        if(saveProvider instanceof TileEntity) {
-            final TileEntity tile = (TileEntity) saveProvider;
-            tile.getWorld().notifyBlockUpdate(tile.getPos(), tile.getWorld().getBlockState(tile.getPos()), tile.getWorld().getBlockState(tile.getPos()), 1);
-        }
-        
-    }*/
 
 }

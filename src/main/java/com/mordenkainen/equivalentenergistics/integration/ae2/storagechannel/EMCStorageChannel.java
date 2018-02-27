@@ -31,7 +31,6 @@ public class EMCStorageChannel implements IEMCStorageChannel {
 
     @Override
     public IAEEMCStack poweredExtraction(final IEnergySource energy, final IMEInventory<IAEEMCStack> cell, final IAEEMCStack request, final IActionSource src) {
-        //TODO: FIX!!!!!!
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
         Preconditions.checkNotNull(request);
@@ -60,7 +59,6 @@ public class EMCStorageChannel implements IEMCStorageChannel {
 
     @Override
     public IAEEMCStack poweredInsert(final IEnergySource energy, final IMEInventory<IAEEMCStack> cell, final IAEEMCStack input, final IActionSource src) {
-        //TODO: FIX!!!!
         Preconditions.checkNotNull(energy);
         Preconditions.checkNotNull(cell);
         Preconditions.checkNotNull(input);

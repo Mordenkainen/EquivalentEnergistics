@@ -165,7 +165,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     }
     
     private void injectEMC() {
-        currentEMC -= GridUtils.injectEMC(getProxy(), currentEMC, Actionable.MODULATE);
+        currentEMC -= GridUtils.injectEMC(getProxy(), currentEMC, Actionable.MODULATE, mySource);
     }
     
     @Override
