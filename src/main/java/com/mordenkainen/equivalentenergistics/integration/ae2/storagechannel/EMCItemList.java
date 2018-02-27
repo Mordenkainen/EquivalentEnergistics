@@ -81,7 +81,7 @@ public class EMCItemList implements IItemList<IAEEMCStack> {
 
     @Override
     public void resetStatus() {
-        for (IAEEMCStack stack : this) {
+        for (final IAEEMCStack stack : this) {
             stack.reset();
         }
     }

@@ -155,17 +155,14 @@ public class AEEMCStack implements IAEEMCStack {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof AEEMCStack)) {
-            return false;
-        }
-        return true;
+        return obj instanceof AEEMCStack;
     }
     
 }
