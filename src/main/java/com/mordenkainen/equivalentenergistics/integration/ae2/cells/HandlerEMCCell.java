@@ -1,11 +1,16 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
 
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 import com.mordenkainen.equivalentenergistics.util.EMCPool;
 
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.data.IItemList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 public class HandlerEMCCell extends HandlerEMCCellBase {
 
@@ -38,76 +43,64 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
         return 1;
     }
 
-    @Override
-    public double getCurrentEMC() {
-        return pool.getCurrentEMC();
-    }
-
-    @Override
-    public void setCurrentEMC(final double currentEMC) {}
-
-    @Override
-    public double getMaxEMC() {
-        return pool.getMaxEMC();
-    }
-
-    @Override
-    public void setMaxEMC(final double maxEMC) {}
-
-    @Override
-    public double getAvail() {
-        return pool.getAvail();
-    }
-
-    @Override
-    public boolean isFull() {
-        return pool.isFull();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return pool.isEmpty();
-    }
-
-    @Override
-    public double addEMC(final double emc) {
-        final int oldStatus = getCellStatus();
-        final double added = pool.addEMC(emc);
-        if (added > 0) {
-            updateEMC();
-            if (oldStatus != getCellStatus()) {
-                updateProvider();
-            }
-        }
-        return added;
-    }
-
-    @Override
-    public double extractEMC(final double emc) {
-        final int oldStatus = getCellStatus();
-        final double extracted = pool.extractEMC(emc);
-        if (extracted > 0) {
-            updateEMC();
-            if (oldStatus != getCellStatus()) {
-                updateProvider();
-            }
-        }
-        return extracted;
-    }
-
     private void updateEMC() {
         cellData.setDouble(EMC_TAG, pool.getCurrentEMC());
         if (saveProvider != null) {
             saveProvider.saveChanges(this);
         }
     }
-    
-    private void updateProvider() {
-        if(saveProvider instanceof TileEntity) {
-            final TileEntity tile = (TileEntity) saveProvider;
-            tile.getWorld().notifyBlockUpdate(tile.getPos(), tile.getWorld().getBlockState(tile.getPos()), tile.getWorld().getBlockState(tile.getPos()), 1);
+
+    @Override
+    public IAEEMCStack extractItems(final IAEEMCStack request, final Actionable mode, final IActionSource src) {
+        if (request == null) {
+            return null;
         }
         
+        final double toExtract = Math.min(pool.getCurrentEMC(), request.getEMCValue());
+        if (mode == Actionable.MODULATE) {
+            pool.extractEMC(toExtract);
+            updateEMC();
+        }
+        
+        if (toExtract > 0) {
+            final IAEEMCStack extracted = request.copy();
+            extracted.setStackSize((long) (toExtract * 1000));
+            return extracted;
+        }
+        
+        return null;
+    }
+
+    @Override
+    public IItemList<IAEEMCStack> getAvailableItems(final IItemList<IAEEMCStack> stacks) {
+        if(pool.getCurrentEMC() > 0) {
+            final IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(pool.getCurrentEMC());
+            stacks.add(current);
+        }
+        
+        return stacks;
+    }
+
+    @Override
+    public IAEEMCStack injectItems(final IAEEMCStack input, final Actionable mode, final IActionSource src) {
+        if (input == null || input.getStackSize() == 0) {
+            return null;
+        }
+        
+        final double toStore = Math.min(input.getEMCValue(), pool.getAvail());
+        if (mode == Actionable.MODULATE) {
+            pool.addEMC(toStore);
+            updateEMC();
+        }
+        
+        if (toStore >= input.getEMCValue()) {
+            return null;
+        }
+        
+        final IAEEMCStack remainder = input.copy();
+        remainder.setStackSize(input.getStackSize() - (long) (toStore * 1000));
+        
+        return remainder;
     }
 
 }

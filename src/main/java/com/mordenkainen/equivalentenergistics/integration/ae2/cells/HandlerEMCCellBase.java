@@ -1,19 +1,15 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
 
-import com.mordenkainen.equivalentenergistics.util.IEMCStorage;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 
-public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemStack>, IEMCStorage {
+public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEEMCStack> {
 
     protected final ISaveProvider saveProvider;
 
@@ -21,25 +17,10 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
         this.saveProvider = saveProvider;
     }
 
-    @Override
-    public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
-        return input;
-    }
-
-    @Override
-    public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final IActionSource src) {
-        return null;
-    }
-
-    @Override
-    public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> stacks) {
-        return stacks;
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public IStorageChannel getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
     }
 
     @Override
@@ -48,13 +29,13 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
     }
 
     @Override
-    public boolean isPrioritized(final IAEItemStack input) {
+    public boolean isPrioritized(final IAEEMCStack input) {
         return false;
     }
 
     @Override
-    public boolean canAccept(final IAEItemStack input) {
-        return false;
+    public boolean canAccept(final IAEEMCStack input) {
+        return input != null;
     }
 
     @Override
@@ -69,7 +50,7 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEItemS
 
     @Override
     public boolean validForPass(final int pass) {
-        return false;
+        return true;
     }
 
     public abstract int getCellStatus();

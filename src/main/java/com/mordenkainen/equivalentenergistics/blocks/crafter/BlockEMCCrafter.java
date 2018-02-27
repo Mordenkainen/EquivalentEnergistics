@@ -58,7 +58,7 @@ public class BlockEMCCrafter extends BlockMultiAE {
     @Override
     public IBlockState getActualState(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
         final IBlockState tmpState = super.getActualState(state, world, pos);
-        final TileEMCCrafter tile = CommonUtils.getTE(world, pos);
+        final TileEMCCrafter tile = CommonUtils.getTE(TileEMCCrafter.class, world, pos);
         if (tile != null) {
             if (tile.isErrored()) {
                 return tmpState.withProperty(LIGHTS, NetworkLights.ERROR);
@@ -71,7 +71,7 @@ public class BlockEMCCrafter extends BlockMultiAE {
 
     @Override
     public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-        final TileEMCCrafter tileCrafter = CommonUtils.getTE(world, pos);
+        final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, pos);
 
         if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
             return false;

@@ -3,6 +3,8 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.grid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.IEMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.storage.IEMCStorageGrid;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
+import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
@@ -169,13 +171,16 @@ public final class GridUtils {
         }
     }
 
-    public static double injectEMC(final AEProxy proxy, final double emc, final Actionable mode) {
-        try {
-            if (emc > 0) {
-                return getEMCStorage(proxy).addEMC(emc, mode);
+    public static double injectEMC(final AEProxy proxy, final double emc, final Actionable mode, final IActionSource src) {
+        if (emc > 0) {
+            try {
+                final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);
+                final IStorageGrid storageGrid = (IStorageGrid) proxy.getGrid().getCache(IStorageGrid.class);
+                final IAEEMCStack rejected = storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(emc), mode, src);
+                return rejected == null ? emc : emc - rejected.getEMCValue();
+            } catch (final GridAccessException e) {
+                CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);
             }
-        } catch (final GridAccessException e) {
-            CommonUtils.debugLog("GridUtils:injectEMC: Error accessing grid:", e);
         }
         return 0;
     }
