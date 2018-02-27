@@ -55,15 +55,11 @@ public final class CommonUtils {
             world.spawnEntityInWorld(entityItem);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
-    public static <R extends TileEntity> R getTE(final IBlockAccess world, final BlockPos pos) {
+    public static <T> T getTE(final Class<T> type, final IBlockAccess world, final BlockPos pos) {
         final TileEntity tile = world instanceof ChunkCache ? ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
-        try {
-            return (R) tile;
-        } catch (ClassCastException e) {
-            return null;
-        }
+        return type.isInstance(tile) ? (T) tile : null;
     }
 
     public static String formatEMC(final double emc) {
