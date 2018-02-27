@@ -15,21 +15,14 @@ import net.minecraft.nbt.NBTTagCompound;
 public class AEEMCStack implements IAEEMCStack {
 
     private long emcValue;
-    private EMCStackType type;
     
     public AEEMCStack(final double emcValue) {
-        this(emcValue, EMCStackType.VALUE);
-    }
-    
-    public AEEMCStack(final double emcValue, final EMCStackType type) {
         this.emcValue = (long) (emcValue * 1000);
-        this.type = type;
     }
     
     public AEEMCStack(final IAEEMCStack input) {
         Preconditions.checkNotNull(input);
         emcValue = input.getStackSize();
-        type = input.getType();
     }
     
     @Override
@@ -141,13 +134,16 @@ public class AEEMCStack implements IAEEMCStack {
 
     @Override
     public void writeToPacket(final ByteBuf buff) throws IOException {
-        buff.writeByte(type.ordinal());
         buff.writeLong(emcValue);
     }
 
     @Override
-    public EMCStackType getType() {
-        return type;
+    public double getEMCValue() {
+        return emcValue / 1000D;
+    }
+    
+    public static AEEMCStack fromPacket(final ByteBuf data) {
+        return new AEEMCStack(data.readLong());
     }
 
     @Override
@@ -155,12 +151,11 @@ public class AEEMCStack implements IAEEMCStack {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (emcValue ^ (emcValue >>> 32));
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -170,18 +165,7 @@ public class AEEMCStack implements IAEEMCStack {
         if (!(obj instanceof AEEMCStack)) {
             return false;
         }
-        final AEEMCStack other = (AEEMCStack) obj;
-        return emcValue == other.emcValue && type.equals(other.type);
-    }    
-
-    @Override
-    public double getEMCValue() {
-        return emcValue / 1000D;
-    }
-    
-    public static AEEMCStack fromPacket(final ByteBuf data) {
-        final int type = data.readByte();
-        return new AEEMCStack(data.readLong(), EMCStackType.values()[type]);
+        return true;
     }
     
 }

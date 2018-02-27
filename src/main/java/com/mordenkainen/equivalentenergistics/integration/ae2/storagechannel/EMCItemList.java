@@ -12,7 +12,7 @@ import appeng.api.storage.data.IItemList;
 
 public class EMCItemList implements IItemList<IAEEMCStack> {
 
-    private List<IAEEMCStack> items = new ArrayList<IAEEMCStack>();
+    final private List<IAEEMCStack> items = new ArrayList<IAEEMCStack>();
 
     @Override
     public void add(final IAEEMCStack toAdd) {
@@ -25,13 +25,11 @@ public class EMCItemList implements IItemList<IAEEMCStack> {
             return Collections.emptyList();
         }
         
-        for (final IAEEMCStack stack : this) {
-            if (stack.getType() == find.getType()) {
-                return Arrays.asList(stack);
-            }
+        if (isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(getFirstItem());
         }
-        
-        return Collections.emptyList();
     }
 
     @Override
@@ -40,12 +38,11 @@ public class EMCItemList implements IItemList<IAEEMCStack> {
             return null;
         }
         
-        for (IAEEMCStack stack : this) {
-            if (stack.getType() == find.getType()) {
-                return stack;
-            }
+        if (isEmpty()) {
+            return null;
+        } else {
+            return getFirstItem();
         }
-        return null;
     }
 
     @Override
@@ -65,14 +62,11 @@ public class EMCItemList implements IItemList<IAEEMCStack> {
             return;
         }
         
-        for (IAEEMCStack stack : this) {
-            if (stack.getType() == toAdd.getType()) {
-                stack.incStackSize(toAdd.getStackSize());
-                return;
-            }
+        if (isEmpty()) {
+            items.add(toAdd);
+        } else {
+            getFirstItem().incStackSize(toAdd.getStackSize());
         }
-        
-        items.add(toAdd);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
 
-import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.EMCStackType;
 import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
 import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 
@@ -36,7 +35,7 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEEMCSt
 
     @Override
     public boolean canAccept(final IAEEMCStack input) {
-        return input != null && input.getType().equals(EMCStackType.VALUE);
+        return input != null;
     }
 
     @Override

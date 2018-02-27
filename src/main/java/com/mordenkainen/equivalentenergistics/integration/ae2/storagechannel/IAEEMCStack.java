@@ -4,8 +4,6 @@ import appeng.api.storage.data.IAEStack;
 
 public interface IAEEMCStack extends IAEStack<IAEEMCStack> {
 
-    EMCStackType getType();
-    
     double getEMCValue();
     
 }

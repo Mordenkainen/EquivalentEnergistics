@@ -2,8 +2,6 @@ package com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.common.base.Preconditions;
 
 import appeng.api.config.Actionable;
@@ -26,13 +24,6 @@ public class EMCStorageChannel implements IEMCStorageChannel {
         
         if (input instanceof Number) {
             return new AEEMCStack(((Number) input).doubleValue());
-        }
-        
-        if (input instanceof Pair && ((Pair<?,?>) input).getLeft() instanceof Double && ((Pair<?,?>) input).getRight() instanceof EMCStackType) {
-            @SuppressWarnings("unchecked")
-            final Pair<Double, EMCStackType> pair = (Pair<Double, EMCStackType>) input;
-
-            return new AEEMCStack(pair.getLeft(), pair.getRight());
         }
         
         return null;

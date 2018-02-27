@@ -1,10 +1,6 @@
 package com.mordenkainen.equivalentenergistics.integration.ae2.cells;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
-import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.EMCStackType;
 import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IAEEMCStack;
 import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEMCStorageChannel;
 
@@ -37,10 +33,6 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
     public IItemList<IAEEMCStack> getAvailableItems(final IItemList<IAEEMCStack> stacks) {
         final IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(EqEConfig.cellCapacities.creativeCell / 2);
         stacks.add(current);
-        
-        final Pair<Double, EMCStackType> cellInfo = new ImmutablePair<Double, EMCStackType>(EqEConfig.cellCapacities.creativeCell, EMCStackType.CAPACITY);
-        final IAEEMCStack max = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(cellInfo);
-        stacks.add(max);
         
         return stacks;
     }

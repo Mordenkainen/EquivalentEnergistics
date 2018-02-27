@@ -46,7 +46,7 @@ public class EMCCrystalHandler implements ICellProvider, IMEInventoryHandler<IAE
             }
             final long toAdd = (long) (emcAdded / ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]);
             if (mode == Actionable.MODULATE) {
-                storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(toAdd * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]), Actionable.SIMULATE, src);
+                storageGrid.getInventory(emcChannel).injectItems(emcChannel.createStack(toAdd * ItemEMCCrystal.CRYSTAL_VALUES[stack.getItemDamage()]), Actionable.MODULATE, src);
             }
             
             return toAdd == stack.getStackSize() ? null : stack.copy().setStackSize(stack.getStackSize() - toAdd);
