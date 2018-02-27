@@ -38,6 +38,11 @@ repositories {
         name 'CB Repo'
         url "http://chickenbones.net/maven/"
     }
+    ivy {
+        name 'ProjectE'
+        ivyPattern "https://maven.tterrag.com/[module]-[revision].[ext]"
+        artifactPattern "http://media.forgecdn.net/files/${pe_cf}/[module]-[revision].[ext]"
+    }
 }
 
 jar {
@@ -57,7 +62,7 @@ dependencies {
     compile ("appeng:appliedenergistics2:${ae2_version}:api"){
         transitive = false
     }
-
+    compile name: 'ProjectE', version: "${pe_version}", ext: 'jar'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
@@ -71,14 +76,6 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-}
-
-sourceSets {
-    api {
-        java {
-            srcDir 'src/api'
-        }
-    }
 }
 
 processResources
