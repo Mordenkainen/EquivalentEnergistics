@@ -42,6 +42,11 @@ repositories {
         url "http://maven.tterrag.com/"
     }
     maven {url "http://tehnut.info/maven"}
+    ivy {
+        name 'ProjectE'
+        ivyPattern "https://maven.tterrag.com/[module]-[revision].[ext]"
+        artifactPattern "http://media.forgecdn.net/files/${pe_cf}/[module]-[revision].[ext]"
+    }
 }
 
 dependencies {
@@ -53,6 +58,7 @@ dependencies {
     deobfCompile ("mcjty.theoneprobe:TheOneProbe:${top_version}"){
         transitive = false
     }
+    deobfCompile name: 'ProjectE', version: "${pe_version}", ext: 'jar'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

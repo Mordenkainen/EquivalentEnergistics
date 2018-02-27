@@ -7,7 +7,7 @@ Equivalent Energistics requires the following mods to function:
 [ProjectE](https://minecraft.curseforge.com/projects/projecte)
 
  Static code analysis by Codacy:  
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a44c1cdc1db24eafb8efecb3789a2acd??branch=1.10.2)](https://www.codacy.com/app/Mordenkainen/EquivalentEnergistics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mordenkainen/EquivalentEnergistics&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a44c1cdc1db24eafb8efecb3789a2acd??branch=1.10.2)](https://www.codacy.com/app/Mordenkainen/EquivalentEnergistics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mordenkainen/EquivalentEnergistics&amp;utm_campaign=Badge_Grade;bid=6561235)
 
 CI builds by TravisCI:  
 [![Build Status](https://travis-ci.org/Mordenkainen/EquivalentEnergistics.svg?branch=1.10.2)](https://travis-ci.org/Mordenkainen/EquivalentEnergistics)
