@@ -59,7 +59,7 @@ dependencies {
     deobfCompile ("mcjty.theoneprobe:TheOneProbe-1.12:${top_version}"){
         transitive = false
     }
-    deobfCompile name: 'ProjectE', version: $[pe_version}, ext: 'jar'
+    deobfCompile name: 'ProjectE', version: ${pe_version}, ext: 'jar'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
