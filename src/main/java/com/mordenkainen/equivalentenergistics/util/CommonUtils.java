@@ -55,13 +55,9 @@ public final class CommonUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <R extends TileEntity> R getTE(final IBlockAccess world, final int x, final int y, final int z) {
+    public static <T> T getTE(final Class<T> type, final IBlockAccess world, final int x, final int y, final int z) {
         final TileEntity tile = world.getTileEntity(x, y, z);
-        try {
-            return (R) tile;
-        } catch (ClassCastException e) {
-            return null;
-        }
+        return type.isInstance(tile) ? (T) tile : null;
     }
     
     public static String formatEMC(final double emc) {

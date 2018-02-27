@@ -87,7 +87,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
         }
 
         if (player.getHeldItem() == null) {
-            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(world, x, y, z);
+            final TileEMCCondenserExt tileCondenser = CommonUtils.getTE(TileEMCCondenserExt.class, world, x, y, z);
             if (tileCondenser != null && !world.isRemote) {
                 tileCondenser.toggleSide(side);
                 return true;
@@ -108,7 +108,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
             return 0;
         }
         
-        final TileEMCCondenserAdv tile = CommonUtils.getTE(world, x, y, z);
+        final TileEMCCondenserAdv tile = CommonUtils.getTE(TileEMCCondenserAdv.class, world, x, y, z);
         
         switch (tile.getState()) {
         case ACTIVE:
@@ -148,7 +148,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
 
     @Override
     public IIcon getLayer(final IBlockAccess world, final Block block, final int x, final int y, final int z, final int side, final int meta, final int layer) {
-        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(world, x, y, z);
+        final TileEMCCondenserBase tileCondenser = CommonUtils.getTE(TileEMCCondenserBase.class, world, x, y, z);
         if (tileCondenser != null) {
             if (layer == 1) {
                 if (tileCondenser.getState().isError()) {

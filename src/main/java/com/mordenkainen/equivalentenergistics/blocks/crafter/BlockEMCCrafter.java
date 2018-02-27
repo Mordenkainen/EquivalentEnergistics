@@ -77,7 +77,7 @@ public class BlockEMCCrafter extends BlockMultiContainerBase implements IConfigu
 
     @Override
     public final boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
-        final TileEMCCrafterBase tileCrafter = CommonUtils.getTE(world, x, y, z);
+        final TileEMCCrafterBase tileCrafter = CommonUtils.getTE(TileEMCCrafterBase.class, world, x, y, z);
 
         if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
             return false;

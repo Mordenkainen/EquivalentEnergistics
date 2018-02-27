@@ -74,7 +74,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             if (sides.get(side) != SideSetting.INPUT) {
                 continue;
             }
-            final IInventory sourceInv = CommonUtils.getTE(worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
+            final IInventory sourceInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
             if (sourceInv != null) {
                 numItems -= InvUtils.extractWithCount(side.getOpposite(), sourceInv, getInventory(), numItems);
             }
@@ -97,7 +97,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
             if (sides.get(side) != SideSetting.OUTPUT) {
                 continue;
             }
-            final IInventory destInv = CommonUtils.getTE(worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
+            final IInventory destInv = CommonUtils.getTE(IInventory.class, worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
             if (destInv != null) {
                 final int ejected = InvUtils.ejectStack(stack, destInv, side.getOpposite(), numItems);
                 numItems -= ejected;
