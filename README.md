@@ -10,7 +10,7 @@ As well as at least one of the following:
 [Equivalent Exchange 3](https://minecraft.curseforge.com/projects/ee3)
 
  Static code analysis by Codacy:  
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a44c1cdc1db24eafb8efecb3789a2acd??branch=1.7.10)](https://www.codacy.com/app/Mordenkainen/EquivalentEnergistics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mordenkainen/EquivalentEnergistics&amp;utm_campaign=Badge_Grade;bid=6049894)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a44c1cdc1db24eafb8efecb3789a2acd??branch=1.7.10)](https://www.codacy.com/app/Mordenkainen/EquivalentEnergistics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mordenkainen/EquivalentEnergistics&amp;utm_campaign=Badge_Grade;bid=6696681)
 
 CI builds by TravisCI:  
 [![Build Status](https://travis-ci.org/Mordenkainen/EquivalentEnergistics.svg?branch=1.7.10)](https://travis-ci.org/Mordenkainen/EquivalentEnergistics)
