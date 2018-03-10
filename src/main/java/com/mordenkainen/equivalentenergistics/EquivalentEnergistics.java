@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mordenkainen.equivalentenergistics.core.CreativeTabEE;
 import com.mordenkainen.equivalentenergistics.core.Reference;
+import com.mordenkainen.equivalentenergistics.core.crafting.CraftingManager;
 import com.mordenkainen.equivalentenergistics.core.proxy.CommonProxy;
 import com.mordenkainen.equivalentenergistics.integration.Integration;
 
@@ -40,6 +41,7 @@ public class EquivalentEnergistics {
     public void init(final FMLInitializationEvent event) {
         proxy.init();
         Integration.init();
+        CraftingManager.initRecipes();
     }
 
     @EventHandler
