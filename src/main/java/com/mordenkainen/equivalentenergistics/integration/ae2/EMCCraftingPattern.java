@@ -104,13 +104,8 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
     }
 
     private void createItemPattern(final ItemStack craftingResult) {
-        int stackSize = 1;
-        final double singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
-        if (singleItemValue <= EqEConfig.emcAssembler.maxStackEMC) {
-            stackSize = (int) Math.min(64, EqEConfig.emcAssembler.maxStackEMC / singleItemValue);
-        }
-        result[0] = storageChannel.createStack(craftingResult).setStackSize(stackSize);
-        double remainingEMC = outputEMC = singleItemValue * stackSize;
+        double remainingEMC = outputEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
+        result[0] = storageChannel.createStack(craftingResult).setStackSize(1);
         inputEMC = 0;
         valid = false;
         final ArrayList<IAEItemStack> crystals = new ArrayList<IAEItemStack>();
