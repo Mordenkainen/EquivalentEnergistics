@@ -32,6 +32,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     private final IGrid grid;
     private final Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
     private final Map<ITransProvider, String> patternProviders = new WeakHashMap<ITransProvider, String>();
+    private final Map<IEMCCrafter, Boolean> crafters = new WeakHashMap<IEMCCrafter, Boolean>();
     private int lastPatternVer = -1;
 
     public EMCCraftingGrid(final IGrid grid) {
@@ -55,6 +56,9 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
                 lastPatternVer = -1;
             }
         }
+        if (machine instanceof IEMCCrafter) {
+            crafters.remove((IEMCCrafter) machine);
+        }
     }
 
     @Override
@@ -64,6 +68,9 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
             if (!((ITransProvider) machine).getTransmutations().isEmpty()) {
                 lastPatternVer = -1;
             }
+        }
+        if (machine instanceof IEMCCrafter) {
+            crafters.put((IEMCCrafter) machine, true);
         }
     }
 
@@ -106,6 +113,29 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     @Override
     public EMCCraftingPattern[] getPatterns() {
         return patterns.isEmpty() ? new EMCCraftingPattern[0] : patterns.values().toArray(new EMCCraftingPattern[0]);
+    }
+    
+    @Override
+    public boolean allCraftersBusy() {
+        for (IEMCCrafter crafter : crafters.keySet()) {
+            if (!crafter.isBusy()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean addJob(ItemStack stack, double inputCost, double outputCost) {
+        for (IEMCCrafter crafter : crafters.keySet()) {
+            if (!crafter.isBusy()) {
+                if(crafter.addJob(stack, inputCost, outputCost)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     public static void energyEvent() {
@@ -154,4 +184,5 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
             }
         }
     }
+    
 }
