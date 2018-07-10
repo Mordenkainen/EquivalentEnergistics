@@ -6,6 +6,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridAccessException;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.ae2.tiles.TileAEInv;
+import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.inventory.InternalInventory;
 
 import appeng.api.networking.IGridNode;
@@ -55,12 +56,14 @@ public class TileEMCPatternProvider extends TileAEInv implements IGridTickable, 
     }
 
     @Override
-    public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
+    public boolean pushPattern(final ICraftingPatternDetails patternDetails, final InventoryCrafting table) {
         if(patternDetails instanceof EMCCraftingPattern) {
-            EMCCraftingPattern pattern = (EMCCraftingPattern) patternDetails;
+            final EMCCraftingPattern pattern = (EMCCraftingPattern) patternDetails;
             try {
                 return GridUtils.getEMCCrafting(getProxy()).addJob(pattern.getOutputs()[0].getItemStack(), pattern.inputEMC, pattern.outputEMC);
-            } catch (GridAccessException e) {}
+            } catch (GridAccessException e) {
+                CommonUtils.debugLog("pushPattern: Error accessing grid:", e);
+            }
         }
         return false;
     }
@@ -96,7 +99,7 @@ public class TileEMCPatternProvider extends TileAEInv implements IGridTickable, 
         
     }
 
-    public boolean addTome(ItemStack copy) {
+    public boolean addTome(final ItemStack copy) {
         for(int i = 0; i < internalInventory.getSizeInventory(); i++) {
             if(internalInventory.getStackInSlot(i) == null) {
                 internalInventory.setInventorySlotContents(i, copy);

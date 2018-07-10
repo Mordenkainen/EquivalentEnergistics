@@ -41,7 +41,7 @@ public class TileEMCProviderRenderer extends HollowTileRenderer {
     }
     
     private void renderContent(final TileEMCPatternProvider tile, final double x, final double y, final double z, final float partialTicks) {
-        InternalInventory inv = tile.getInventory();
+        final InternalInventory inv = tile.getInventory();
         if (!inv.isEmpty()) {
             final float time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
             final float anglePer = 360F / inv.getSizeInventory();

@@ -11,9 +11,9 @@ import net.minecraft.world.IBlockAccess;
 
 public class BlockWithTileRenderer implements ISimpleBlockRenderingHandler {
     
-    int renderID;
+    private int renderID;
     
-    public BlockWithTileRenderer(int renderID) {
+    public BlockWithTileRenderer(final int renderID) {
         super();
         this.renderID = renderID;
     }

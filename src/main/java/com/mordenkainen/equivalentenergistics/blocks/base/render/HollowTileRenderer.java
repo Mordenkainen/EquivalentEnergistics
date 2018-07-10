@@ -24,10 +24,6 @@ public abstract class HollowTileRenderer extends TileEntitySpecialRenderer {
 
     protected static final ModelHollowCube MODEL = new ModelHollowCube();
     
-    public HollowTileRenderer() {
-        super();
-    }
-    
     protected void renderFrame(final ResourceLocation tex, final double x, final double y, final double z, final int metaData) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x, (float) y, (float) z);

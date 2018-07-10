@@ -117,7 +117,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     
     @Override
     public boolean allCraftersBusy() {
-        for (IEMCCrafter crafter : crafters.keySet()) {
+        for (final IEMCCrafter crafter : crafters.keySet()) {
             if (!crafter.isBusy()) {
                 return false;
             }
@@ -126,12 +126,10 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     }
     
     @Override
-    public boolean addJob(ItemStack stack, double inputCost, double outputCost) {
+    public boolean addJob(final ItemStack stack, final double inputCost, final double outputCost) {
         for (IEMCCrafter crafter : crafters.keySet()) {
-            if (!crafter.isBusy()) {
-                if(crafter.addJob(stack, inputCost, outputCost)) {
-                    return true;
-                }
+            if (!crafter.isBusy() && crafter.addJob(stack, inputCost, outputCost)) {
+                return true;
             }
         }
         

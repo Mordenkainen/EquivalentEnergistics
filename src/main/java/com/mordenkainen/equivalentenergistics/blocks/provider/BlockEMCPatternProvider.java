@@ -47,7 +47,7 @@ public class BlockEMCPatternProvider extends BlockContainerBase {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+    public TileEntity createNewTileEntity(final World world, final int meta) {
         return new TileEMCPatternProvider();
     }
 
@@ -59,13 +59,11 @@ public class BlockEMCPatternProvider extends BlockContainerBase {
             return false;
         }
 
-        if (Integration.emcHandler.isValidTome(player.getHeldItem())) {
-            if(tileProvider.addTome(player.getHeldItem().copy())) {
-                if (!player.capabilities.isCreativeMode) {
-                    player.inventory.mainInventory[player.inventory.currentItem] = null;
-                }
-                return true;
+        if (Integration.emcHandler.isValidTome(player.getHeldItem()) && tileProvider.addTome(player.getHeldItem().copy())) {
+            if (!player.capabilities.isCreativeMode) {
+                player.inventory.mainInventory[player.inventory.currentItem] = null;
             }
+            return true;
         } 
 
         return false;
