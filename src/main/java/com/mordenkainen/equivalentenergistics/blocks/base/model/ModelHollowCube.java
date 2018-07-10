@@ -1,17 +1,17 @@
-package com.mordenkainen.equivalentenergistics.blocks.crafter.model;
+package com.mordenkainen.equivalentenergistics.blocks.base.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public final class ModelEMCCrafter extends ModelBase {
+public final class ModelHollowCube extends ModelBase {
 
     private final ModelRenderer frame;
     private final ModelRenderer corner;
     private final ModelRenderer connector;
     private final ModelRenderer glass;
     
-    public ModelEMCCrafter() {
+    public ModelHollowCube() {
         super();
         textureWidth = 64;
         textureHeight = 32;

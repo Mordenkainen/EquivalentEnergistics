@@ -25,6 +25,7 @@ public class CommonProxy {
 
     public int crafterRenderer;
     public int layeredRenderer;
+    public int providerRenderer;
 
     public void preInit() {
         Integration.preInit();

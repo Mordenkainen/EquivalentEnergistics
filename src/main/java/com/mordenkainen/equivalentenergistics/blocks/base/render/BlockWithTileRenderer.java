@@ -1,8 +1,6 @@
-package com.mordenkainen.equivalentenergistics.blocks.crafter.render;
+package com.mordenkainen.equivalentenergistics.blocks.base.render;
 
 import org.lwjgl.opengl.GL11;
-
-import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.block.Block;
@@ -11,7 +9,14 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-public class BlockEMCCrafterRenderer implements ISimpleBlockRenderingHandler {
+public class BlockWithTileRenderer implements ISimpleBlockRenderingHandler {
+    
+    int renderID;
+    
+    public BlockWithTileRenderer(int renderID) {
+        super();
+        this.renderID = renderID;
+    }
     
     @Override
     public void renderInventoryBlock(final Block block, final int metadata, final int modelId, final RenderBlocks renderer) {
@@ -35,7 +40,7 @@ public class BlockEMCCrafterRenderer implements ISimpleBlockRenderingHandler {
 
     @Override
     public int getRenderId() {
-        return EquivalentEnergistics.proxy.crafterRenderer;
+        return renderID;
     }
 
 }
