@@ -20,8 +20,6 @@ import org.objectweb.asm.Type;
 
 import com.mordenkainen.equivalentenergistics.integration.ee3.EquivExchange3;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class EqECoreTransformer implements IClassTransformer {
@@ -135,10 +133,6 @@ public class EqECoreTransformer implements IClassTransformer {
                 }
             }
         }
-    }
-    
-    public boolean testfunc(final ItemStack stack) {
-        return stack != null && stack.getItem() instanceof IItemEmc;
     }
 
 }

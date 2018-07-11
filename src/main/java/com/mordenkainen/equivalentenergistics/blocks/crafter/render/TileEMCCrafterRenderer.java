@@ -1,8 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks.crafter.render;
 
+import java.util.Arrays;
 import java.util.List;
-
-import org.lwjgl.opengl.GL11;
 
 import com.mordenkainen.equivalentenergistics.blocks.base.render.HollowTileRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
@@ -51,30 +50,12 @@ public class TileEMCCrafterRenderer extends HollowTileRenderer {
     private void renderContent(final TileEMCCrafterBase tile, final double x, final double y, final double z, final float partialTicks) {
         final List<ItemStack> stacks = tile.getDisplayStacks();
         final float time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
-        if(tile.isCrafting() && tile.maxJobs > 1){
-            final float anglePer = 360F / tile.maxJobs;
-            
-            for(int i = 0; i < stacks.size(); i++) {
-                final ItemStack stack = stacks.get(i);
-                if (stack == null) {
-                    continue;
-                }
-                GL11.glPushMatrix();
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.45F, (float) z + 0.5F);
-                GL11.glScalef(0.5F, 0.5F, 0.5F);
-                GL11.glRotatef(anglePer * i + time, 0F, 1F, 0F);
-                GL11.glTranslatef(0.2F, 0F, 0.25F);
-                renderItem(tile.getWorldObj(), stack, time);
-                GL11.glPopMatrix();
-            }
-            
+        if(tile.isCrafting()) {
+            renderRing(tile, stacks, 0.45F, x, y, z, time, false, false);
         } else {
-            final ItemStack stack = tile.isCrafting() ? stacks.get(0) : tile.getCurrentTome();
-            if(stack != null) {
-                GL11.glPushMatrix();
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.3F, (float) z + 0.5F);
-                renderItem(tile.getWorldObj(), stack, time);
-                GL11.glPopMatrix();
+            final ItemStack tome = tile.getCurrentTome();
+            if(tome != null) {
+                renderRing(tile, Arrays.asList(tome), 0.45F, x, y, z, time, false, false);
             }
         }
     }

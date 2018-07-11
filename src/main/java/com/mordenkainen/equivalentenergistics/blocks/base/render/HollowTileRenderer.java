@@ -1,5 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks.base.render;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mordenkainen.equivalentenergistics.blocks.base.model.ModelHollowCube;
@@ -87,10 +89,35 @@ public abstract class HollowTileRenderer extends TileEntitySpecialRenderer {
         Tessellator.instance.draw();
         GL11.glPopMatrix();
     }
+    
+    protected void renderRing(final TileEntity tile, final List<ItemStack> stacks, final float height, final double x, final double y, final double z, final float time, final boolean clockwise, final boolean doSingleScale) {
+        if (stacks.size() == 1) {
+            GL11.glPushMatrix();
+            GL11.glTranslatef((float) x + 0.5F, (float) y + height, (float) z + 0.5F);
+            if (doSingleScale) {
+                GL11.glScalef(0.5F, 0.5F, 0.5F);
+            }
+            renderItem(tile.getWorldObj(), stacks.get(0), time, clockwise);
+            GL11.glPopMatrix();
+        } else {
+            final float anglePer = 360F / stacks.size();
+            for(int i = 0; i < stacks.size(); i++) { 
+                if(stacks.get(i) != null) {
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef((float) x + 0.5F, (float) y + height, (float) z + 0.5F);
+                    GL11.glScalef(0.5F, 0.5F, 0.5F);
+                    GL11.glRotatef((anglePer * i + time) * (clockwise ? -1 : 1), 0F, 1F, 0F);
+                    GL11.glTranslatef(0.2F, 0F, 0.25F);
+                    renderItem(tile.getWorldObj(), stacks.get(i), time, clockwise);
+                    GL11.glPopMatrix();
+                }
+            }
+        }
+    }
 
-    protected void renderItem(final World world, final ItemStack itemStack, final float time) {
+    protected void renderItem(final World world, final ItemStack itemStack, final float time, final boolean clockWise) {
         final EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, itemStack);
-        GL11.glRotatef((float) time % 360.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(((float) time % 360.0F) * (clockWise ? -1 : 1), 0.0F, 1.0F, 0.0F);
         entityitem.hoverStart = 0.0F;
         RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
     }

@@ -1,6 +1,7 @@
 package com.mordenkainen.equivalentenergistics.blocks.provider.render;
 
-import org.lwjgl.opengl.GL11;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mordenkainen.equivalentenergistics.blocks.base.render.HollowTileRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.provider.tile.TileEMCPatternProvider;
@@ -44,22 +45,27 @@ public class TileEMCProviderRenderer extends HollowTileRenderer {
         final InternalInventory inv = tile.getInventory();
         if (!inv.isEmpty()) {
             final float time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
-            final float anglePer = 360F / inv.getSizeInventory();
+            final List<List<ItemStack>> stacks = new ArrayList<List<ItemStack>>();
+            
+            List<ItemStack> tmpList = new ArrayList<ItemStack>();
             for(int i = 0; i < inv.getSizeInventory(); i++) {
-                final ItemStack stack = inv.getStackInSlot(i);
-                if (stack == null) {
-                    continue;
+                if(inv.getStackInSlot(i) != null) {
+                    if (tmpList.size() == 8) {
+                        stacks.add(tmpList);
+                        tmpList = new ArrayList<ItemStack>();
+                    }
+                    tmpList.add(inv.getStackInSlot(i));
                 }
-                
-                GL11.glPushMatrix();
-                GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.5F);
-                GL11.glScalef(0.5F, 0.5F, 0.5F);
-                GL11.glRotatef(anglePer * i + time, 0F, 1F, 0F);
-                GL11.glTranslatef(0.2F, 0F, 0.25F);
-                renderItem(tile.getWorldObj(), stack, time);
-                GL11.glPopMatrix();
-                
             }
+            stacks.add(tmpList);
+            
+            if (stacks.size() == 1) {
+                renderRing(tile, stacks.get(0), 0.35F, x, y, z, time, false, false);
+                return;
+            }
+            
+            renderRing(tile, stacks.get(0), 0.2F, x, y, z, time, false, false);
+            renderRing(tile, stacks.get(1), 0.6F, x, y, z, time, true, true);
         }
     }
 

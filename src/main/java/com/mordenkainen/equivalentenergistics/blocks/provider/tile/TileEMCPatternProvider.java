@@ -89,7 +89,7 @@ public class TileEMCPatternProvider extends TileAEInv implements IGridTickable, 
     protected class ProviderInventory extends InternalInventory {
 
         ProviderInventory() {
-            super("EMCProviderInventory", 8, 1);
+            super("EMCProviderInventory", 16, 1);
         }
 
         @Override

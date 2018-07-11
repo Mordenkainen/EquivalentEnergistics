@@ -127,7 +127,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     
     @Override
     public boolean addJob(final ItemStack stack, final double inputCost, final double outputCost) {
-        for (IEMCCrafter crafter : crafters.keySet()) {
+        for (final IEMCCrafter crafter : crafters.keySet()) {
             if (!crafter.isBusy() && crafter.addJob(stack, inputCost, outputCost)) {
                 return true;
             }
