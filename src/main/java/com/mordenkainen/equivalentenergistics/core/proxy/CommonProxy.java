@@ -24,7 +24,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class CommonProxy {
 
     public int crafterRenderer;
-    public int layeredRenderer;
+    public int condenserRenderer;
     public int providerRenderer;
 
     public void preInit() {

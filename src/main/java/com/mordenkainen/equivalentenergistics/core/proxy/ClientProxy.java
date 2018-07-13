@@ -1,8 +1,9 @@
 package com.mordenkainen.equivalentenergistics.core.proxy;
 
 import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
-import com.mordenkainen.equivalentenergistics.blocks.base.block.LayeredBlockRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.base.render.BlockWithTileRenderer;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.renderer.TileEMCCondenserRenderer;
+import com.mordenkainen.equivalentenergistics.blocks.condenser.tiles.TileEMCCondenserBase;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.render.TileEMCCrafterRenderer;
 import com.mordenkainen.equivalentenergistics.blocks.crafter.tiles.TileEMCCrafterBase;
 import com.mordenkainen.equivalentenergistics.blocks.provider.render.TileEMCProviderRenderer;
@@ -41,8 +42,9 @@ public class ClientProxy extends CommonProxy {
             ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCrafterBase.class, new TileEMCCrafterRenderer());
             crafterRenderer = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(new BlockWithTileRenderer(crafterRenderer));
-            layeredRenderer = RenderingRegistry.getNextAvailableRenderId();
-            RenderingRegistry.registerBlockHandler(new LayeredBlockRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEMCCondenserBase.class, new TileEMCCondenserRenderer());
+            condenserRenderer = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(new BlockWithTileRenderer(condenserRenderer));
         }
         if (BlockEnum.EMCPROVIDER.isEnabled()) {
             ClientRegistry.bindTileEntitySpecialRenderer(TileEMCPatternProvider.class, new TileEMCProviderRenderer());
