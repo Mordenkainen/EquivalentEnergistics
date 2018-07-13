@@ -4,12 +4,13 @@ import com.mordenkainen.equivalentenergistics.blocks.BlockEnum;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.BlockEMCCondenser;
 import com.mordenkainen.equivalentenergistics.blocks.condenser.CondenserState;
 
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class TileEMCCondenserAdv extends TileEMCCondenserBase {
+
+    protected int updateCounter ;
 
     public TileEMCCondenserAdv() {
         this(new ItemStack(Item.getItemFromBlock(BlockEnum.EMCCONDENSER.getBlock()), 1, 1));
@@ -25,19 +26,15 @@ public class TileEMCCondenserAdv extends TileEMCCondenserBase {
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        if (refreshNetworkState()) {
-            markForUpdate();
-        }
-        
+    protected TickRateModulation tickingRequest() {
         if (isActive() && worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
             updateState(CondenserState.IDLE);
             return TickRateModulation.IDLE;
         }
-
-        return super.tickingRequest(node, ticksSinceLast);
+        
+        return null;
     }
-
+    
     @Override
     protected boolean updateState(final CondenserState newState) {
         if (state != newState) {

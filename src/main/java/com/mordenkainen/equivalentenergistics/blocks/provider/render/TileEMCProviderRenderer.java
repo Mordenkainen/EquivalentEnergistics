@@ -43,30 +43,31 @@ public class TileEMCProviderRenderer extends HollowTileRenderer {
     
     private void renderContent(final TileEMCPatternProvider tile, final double x, final double y, final double z, final float partialTicks) {
         final InternalInventory inv = tile.getInventory();
-        if (!inv.isEmpty()) {
-            final float time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
-            final List<List<ItemStack>> stacks = new ArrayList<List<ItemStack>>();
-            
-            List<ItemStack> tmpList = new ArrayList<ItemStack>();
-            for(int i = 0; i < inv.getSizeInventory(); i++) {
-                if(inv.getStackInSlot(i) != null) {
-                    if (tmpList.size() == 8) {
-                        stacks.add(tmpList);
-                        tmpList = new ArrayList<ItemStack>();
-                    }
-                    tmpList.add(inv.getStackInSlot(i));
-                }
-            }
-            stacks.add(tmpList);
-            
-            if (stacks.size() == 1) {
-                renderRing(tile, stacks.get(0), 0.35F, x, y, z, time, false, false);
-                return;
-            }
-            
-            renderRing(tile, stacks.get(0), 0.2F, x, y, z, time, false, false);
-            renderRing(tile, stacks.get(1), 0.6F, x, y, z, time, true, true);
+        if (inv.isEmpty()) {
+            return;
         }
+        final float time = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
+        final List<List<ItemStack>> stacks = new ArrayList<List<ItemStack>>();
+        
+        List<ItemStack> tmpList = new ArrayList<ItemStack>();
+        for(int i = 0; i < inv.getSizeInventory(); i++) {
+            if(inv.getStackInSlot(i) != null) {
+                if (tmpList.size() == 8) {
+                    stacks.add(tmpList);
+                    tmpList = new ArrayList<ItemStack>();
+                }
+                tmpList.add(inv.getStackInSlot(i));
+            }
+        }
+        stacks.add(tmpList);
+        
+        if (stacks.size() == 1) {
+            renderRing(tile, stacks.get(0), 0.35F, x, y, z, time, false, false);
+            return;
+        }
+        
+        renderRing(tile, stacks.get(0), 0.2F, x, y, z, time, false, false);
+        renderRing(tile, stacks.get(1), 0.6F, x, y, z, time, true, true);
     }
 
 }

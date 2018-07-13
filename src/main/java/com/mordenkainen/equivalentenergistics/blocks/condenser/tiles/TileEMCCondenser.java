@@ -7,7 +7,6 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.grid.GridUtils;
 import com.mordenkainen.equivalentenergistics.integration.waila.IWailaNBTProvider;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,7 +29,7 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
         }
         return tag;
     }
-
+    
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
@@ -46,34 +45,18 @@ public class TileEMCCondenser extends TileEMCCondenserBase implements IWailaNBTP
             data.setDouble(EMC_TAG, currentEMC);
         }
     }
-
+    
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        if (refreshNetworkState()) {
-            markForUpdate();
+    protected TickRateModulation tickingRequest() {
+        if (isActive() && currentEMC > 0) {
+            CondenserState newState = state;
+            newState = injectExcessEMC();
+            if (updateState(newState)) {
+                return TickRateModulation.IDLE;
+            }
         }
         
-        if (isActive()) {   
-            CondenserState newState = state;
-    
-            if (currentEMC > 0) {
-                newState = injectExcessEMC();
-                if (updateState(newState)) {
-                    return TickRateModulation.IDLE;
-                }
-            }
-            
-            if (getInventory().isEmpty()) {
-                updateState(CondenserState.IDLE);
-            } else {
-                newState = processInv();
-                updateState(newState);
-            }
-        } else {
-            updateState(CondenserState.IDLE);
-        }
-
-        return state.getTickRate();
+        return null;
     }
 
     private CondenserState injectExcessEMC() {

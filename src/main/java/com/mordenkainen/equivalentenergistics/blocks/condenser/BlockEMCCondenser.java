@@ -70,7 +70,7 @@ public class BlockEMCCondenser extends BlockMultiContainerBase implements IConfi
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(final int side, final int meta) {
-        return TextureEnum.EMCCONDENSER.getTexture(meta);
+        return TextureEnum.EMCCONDENSER.getTexture();
     }
 
     @Override

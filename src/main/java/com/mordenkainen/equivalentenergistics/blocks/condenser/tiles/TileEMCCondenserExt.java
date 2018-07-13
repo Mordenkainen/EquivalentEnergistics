@@ -10,7 +10,6 @@ import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 import com.mordenkainen.equivalentenergistics.util.inventory.InternalInventory;
 import com.mordenkainen.equivalentenergistics.util.inventory.InvUtils;
 
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -51,11 +50,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     }
 
     @Override
-    public TickRateModulation tickingRequest(final IGridNode node, final int ticksSinceLast) {
-        if (refreshNetworkState()) {
-            markForUpdate();
-        }
-        
+    protected TickRateModulation tickingRequest() {
         if (isActive()) {
             if(worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
                 updateState(CondenserState.IDLE);
@@ -64,8 +59,8 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
     
             importItems();
         }
-
-        return super.tickingRequest(node, ticksSinceLast);
+        
+        return null;
     }
 
     protected void importItems() {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mordenkainen.equivalentenergistics.blocks.base.model.ModelConnector;
 import com.mordenkainen.equivalentenergistics.blocks.base.model.ModelHollowCube;
 
 import appeng.api.implementations.parts.IPartCable;
@@ -24,14 +25,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class HollowTileRenderer extends TileEntitySpecialRenderer {
 
-    protected static final ModelHollowCube MODEL = new ModelHollowCube();
+    protected static final ModelHollowCube CUBE = new ModelHollowCube();
+    protected static final ModelConnector CABLECONNECTOR = new ModelConnector(0, 14);
     
     protected void renderFrame(final ResourceLocation tex, final double x, final double y, final double z, final int metaData) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x, (float) y, (float) z);
         GL11.glScalef(-1F, -1F, 1F);
         bindTexture(tex);
-        MODEL.render();
+        CUBE.render();
         GL11.glPopMatrix();
     }
 
@@ -42,7 +44,7 @@ public abstract class HollowTileRenderer extends TileEntitySpecialRenderer {
         bindTexture(tex);
         for (final ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
             if (isCableConnected(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, side)) {
-                MODEL.renderConnector(side);
+                CABLECONNECTOR.render(side);
             }
         }
         GL11.glPopMatrix();
