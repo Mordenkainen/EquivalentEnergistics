@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class InvUtils {
 
@@ -55,9 +54,11 @@ public final class InvUtils {
                 final ItemStack srcStack = src.getStackInSlot(j);
                 if (srcStack != null && CommonUtils.willItemsStack(destStack, srcStack)) {
                     final int toMove = Math.min(leftToMove, Math.min(srcStack.stackSize, destStack.getMaxStackSize() - destStack.stackSize));
-                    dest.insertItem(i, ItemHandlerHelper.copyStackWithSize(srcStack, toMove), false);
-                    src.extractItem(j, toMove, false);
-                    leftToMove -= toMove;
+                    final ItemStack result = src.extractItem(j, toMove, false);
+                    if (result != null) {
+                        dest.insertItem(i, result, false);
+                        leftToMove -= result.stackSize;
+                    }
                 }
             }
         }

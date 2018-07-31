@@ -75,18 +75,18 @@ public class BlockEMCCrafter extends BlockMultiAE {
     public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
         final TileEMCCrafter tileCrafter = CommonUtils.getTE(TileEMCCrafter.class, world, pos);
 
-        if (tileCrafter == null || !tileCrafter.canPlayerInteract(player) || hand.equals(EnumHand.OFF_HAND)) {
+        if (tileCrafter == null || !tileCrafter.canPlayerInteract(player)) {
             return false;
         }
 
         final ItemStack existingTome = tileCrafter.getCurrentTome();
-        if (isValidTome(heldItem) && existingTome == null) {
-            tileCrafter.setCurrentTome(heldItem.copy());
+        if (isValidTome(player.getHeldItem(hand)) && existingTome == null) {
+            tileCrafter.setCurrentTome(player.getHeldItem(hand).copy());
             if (!player.capabilities.isCreativeMode) {
                 player.setHeldItem(hand, null);
             }
             return true;
-        } else if (heldItem == null && existingTome != null) {
+        } else if (existingTome != null) {
             tileCrafter.setCurrentTome(null);
             if (!world.isRemote) {
                 CommonUtils.spawnEntItem(world, pos, existingTome);
