@@ -49,9 +49,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
         if( itemToExtract > 0 )
         {
             possible.setStackSize( itemToExtract );
-            final IAEEMCStack ret = cell.extractItems( possible, Actionable.MODULATE, src );
-
-            return ret;
+            return cell.extractItems( possible, Actionable.MODULATE, src );
         }
         
         return null;
@@ -86,9 +84,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
                 return split;
             }
 
-            final IAEEMCStack ret = cell.injectItems( input, Actionable.MODULATE, src );
-
-            return ret;
+            return cell.injectItems( input, Actionable.MODULATE, src );
         }
 
         return input;

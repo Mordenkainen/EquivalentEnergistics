@@ -26,10 +26,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 @TEList({
-    @TE(tileEntityClass = TileEMCCrafter.class, registryName = Reference.MOD_ID + ".emc_crafter"),
-    @TE(tileEntityClass = TileEMCCrafterAdv.class, registryName = Reference.MOD_ID + ".emc_crafter_adv"),
-    @TE(tileEntityClass = TileEMCCrafterExt.class, registryName = Reference.MOD_ID + ".emc_crafter_ext"),
-    @TE(tileEntityClass = TileEMCCrafterUlt.class, registryName = Reference.MOD_ID + ".emc_crafter_ult")
+    @TE(tileEntityClass = TileEMCCrafter.class, registryName = Reference.MOD_ID + ":emc_crafter"),
+    @TE(tileEntityClass = TileEMCCrafterAdv.class, registryName = Reference.MOD_ID + ":emc_crafter_adv"),
+    @TE(tileEntityClass = TileEMCCrafterExt.class, registryName = Reference.MOD_ID + ":emc_crafter_ext"),
+    @TE(tileEntityClass = TileEMCCrafterUlt.class, registryName = Reference.MOD_ID + ":emc_crafter_ult")
 })
 public class BlockEMCCrafter extends BlockMultiAE {
 

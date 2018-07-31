@@ -1,10 +1,22 @@
 package com.mordenkainen.equivalentenergistics.core.proxy;
 
+import com.mordenkainen.equivalentenergistics.core.FixTE;
+import com.mordenkainen.equivalentenergistics.core.Reference;
+
 import net.minecraft.item.Item;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.common.util.ModFixs;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommonProxy {
 
-    public void preInit() {}
+    public void preInit() {
+        final FixTE tileFixable = new FixTE();
+        final CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+        final ModFixs modFixs = fixer.init(Reference.MOD_ID, tileFixable.getFixVersion());    //is there a current save format version?
+        modFixs.registerFix(FixTypes.BLOCK_ENTITY, tileFixable);
+    }
 
     public void init() {
         initRenderers();

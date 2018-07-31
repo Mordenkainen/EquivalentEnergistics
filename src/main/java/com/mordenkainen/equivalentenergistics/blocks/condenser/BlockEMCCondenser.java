@@ -25,10 +25,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 @TEList({
-    @TE(tileEntityClass = TileEMCCondenser.class, registryName = Reference.MOD_ID + ".emc_condenser"),
-    @TE(tileEntityClass = TileEMCCondenserAdv.class, registryName = Reference.MOD_ID + ".emc_condenser_adv"),
-    @TE(tileEntityClass = TileEMCCondenserExt.class, registryName = Reference.MOD_ID + ".emc_condenser_ext"),
-    @TE(tileEntityClass = TileEMCCondenserUlt.class, registryName = Reference.MOD_ID + ".emc_condenser_ult")
+    @TE(tileEntityClass = TileEMCCondenser.class, registryName = Reference.MOD_ID + ":emc_condenser"),
+    @TE(tileEntityClass = TileEMCCondenserAdv.class, registryName = Reference.MOD_ID + ":emc_condenser_adv"),
+    @TE(tileEntityClass = TileEMCCondenserExt.class, registryName = Reference.MOD_ID + ":emc_condenser_ext"),
+    @TE(tileEntityClass = TileEMCCondenserUlt.class, registryName = Reference.MOD_ID + ":emc_condenser_ult")
 })
 public class BlockEMCCondenser extends BlockMultiAE {
 

@@ -16,7 +16,7 @@ public abstract class BlockBase extends Block {
         super(material);
         this.name = name;
         setUnlocalizedName(Reference.MOD_ID + ":" + name);
-        setRegistryName(name);
+        setRegistryName(Reference.MOD_ID + ":" + name);
         setCreativeTab(EquivalentEnergistics.tabEE);
     }
 
