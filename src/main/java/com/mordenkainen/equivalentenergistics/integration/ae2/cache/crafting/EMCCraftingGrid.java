@@ -5,12 +5,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.Random;
 
 import com.google.common.base.Equivalence;
 import com.google.common.base.Equivalence.Wrapper;
 import com.mordenkainen.equivalentenergistics.EquivalentEnergistics;
-import com.mordenkainen.equivalentenergistics.core.config.EqEConfig;
 import com.mordenkainen.equivalentenergistics.integration.ae2.EMCCraftingPattern;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
 import com.mordenkainen.equivalentenergistics.util.CompItemStack;
@@ -35,22 +33,14 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
     private final Map<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern> patterns = new HashMap<Equivalence.Wrapper<ItemStack>, EMCCraftingPattern>();
     private final Map<ITransProvider, String> patternProviders = new WeakHashMap<ITransProvider, String>();
     private int lastPatternVer = -1;
-    private int refreshcounter;
 
     public EMCCraftingGrid(final IGrid grid) {
         this.grid = grid;
         craftingGrids.put(this, true);
-        final Random rand = new Random();
-        refreshcounter = rand.nextInt(EqEConfig.emcAssembler.refreshTime * 20);
     }
 
     @Override
     public void onUpdateTick() {
-        refreshcounter++;
-        if (refreshcounter % (EqEConfig.emcAssembler.refreshTime * 20) == 0) {
-            refreshcounter = 0;
-            lastPatternVer = -1;
-        }
         if (lastPatternVer != patternVer) {
             updatePatterns();
             lastPatternVer = patternVer;
@@ -82,6 +72,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
         patterns.clear();
         addCrystalPatterns();
         for (final ITransProvider provider : patternProviders.keySet()) {
+            patternProviders.put(provider, provider.getPlayerUUID());
             for (final ItemStack stack : provider.getTransmutations()) {
                 addPattern(stack);
             }

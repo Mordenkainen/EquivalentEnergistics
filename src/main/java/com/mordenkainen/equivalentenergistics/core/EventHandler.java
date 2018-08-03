@@ -76,12 +76,12 @@ public final class EventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
+    public static void onPlayerKnowledgeChange(final PlayerKnowledgeChangeEvent event) {
         EMCCraftingGrid.knowledgeEvent(event.getPlayerUUID());
     }
 
     @SubscribeEvent
-    public void onEnergyValueChange(final EMCRemapEvent event) {
+    public static void onEnergyValueChange(final EMCRemapEvent event) {
         EMCCraftingGrid.energyEvent();
     }
 

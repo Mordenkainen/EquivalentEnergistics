@@ -46,10 +46,6 @@ public final class EqEConfig {
         @Config.Comment("Number of ticks it takes the basic EMC Assembler to craft an item.")
         public int craftingTime = 20;
 
-        @Config.RangeInt(min = 0, max = Integer.MAX_VALUE)
-        @Config.Comment("Number of seconds in between checks to see if any new transmutaions have been added to the network. Low values may consume a large amount of CPU and cause TPS issues.")
-        public int refreshTime = 10;
-
     }
 
     public static class EMCCondenser {
