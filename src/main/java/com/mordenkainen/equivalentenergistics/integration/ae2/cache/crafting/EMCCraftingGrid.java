@@ -72,6 +72,7 @@ public class EMCCraftingGrid implements IEMCCraftingGrid {
         patterns.clear();
         addCrystalPatterns();
         for (final ITransProvider provider : patternProviders.keySet()) {
+            patternProviders.put(provider, provider.getPlayerUUID());
             for (final ItemStack stack : provider.getTransmutations()) {
                 addPattern(stack);
             }
