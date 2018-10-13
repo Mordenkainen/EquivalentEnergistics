@@ -122,13 +122,13 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     
     protected double processItems(final int slot, final double remainingEMC, final boolean usePower) {
         final ItemStack stack = inv.getStackInSlot(slot);
-        final double itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
+        final long itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
         if (itemEMC > remainingEMC) {
             return remainingEMC;
         }
         
         int numToStore = (int) Math.min(stack.getCount(), remainingEMC / itemEMC);
-        double emcToStore = itemEMC * numToStore;
+        long emcToStore = itemEMC * numToStore;
         
         final double amountStored = GridUtils.injectEMC(getProxy(), emcToStore, Actionable.SIMULATE, mySource);
         if (amountStored == 0) {

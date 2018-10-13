@@ -105,7 +105,7 @@ public class EMCCraftingPattern implements ICraftingPatternDetails {
 
     private void createItemPattern(final ItemStack craftingResult) {
         int stackSize = 1;
-        final double singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
+        final long singleItemValue = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(craftingResult, 1));
         if (singleItemValue <= EqEConfig.emcAssembler.maxStackEMC) {
             stackSize = (int) Math.min(64, EqEConfig.emcAssembler.maxStackEMC / singleItemValue);
         }
