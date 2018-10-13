@@ -5,11 +5,13 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEM
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.config.IncludeExclude;
+import appeng.api.storage.ICellInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 
-public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEEMCStack> {
+public abstract class HandlerEMCCellBase implements ICellInventoryHandler<IAEEMCStack> {
 
     protected final ISaveProvider saveProvider;
 
@@ -51,6 +53,26 @@ public abstract class HandlerEMCCellBase implements IMEInventoryHandler<IAEEMCSt
     @Override
     public boolean validForPass(final int pass) {
         return true;
+    }
+    
+    @Override
+    public ICellInventory<IAEEMCStack> getCellInv() {
+        return null;
+    }
+
+    @Override
+    public IncludeExclude getIncludeExcludeMode() {
+        return IncludeExclude.BLACKLIST;
+    }
+
+    @Override
+    public boolean isFuzzy() {
+        return false;
+    }
+
+    @Override
+    public boolean isPreformatted() {
+        return false;
     }
 
     public abstract int getCellStatus();

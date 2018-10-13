@@ -12,8 +12,7 @@ import com.mordenkainen.equivalentenergistics.integration.ae2.storagechannel.IEM
 import com.mordenkainen.equivalentenergistics.util.CommonUtils;
 
 import appeng.api.AEApi;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -63,21 +62,21 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
+    public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(final ItemStack stack, final ISaveProvider host, final IStorageChannel<T> channel) {
         if (channel == AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class) && isCell(stack)) {
-            return (IMEInventoryHandler<T>) new HandlerEMCCell(stack, host, CELL_CAPACITIES[stack.getItemDamage()]);
+            return (ICellInventoryHandler<T>) new HandlerEMCCell(stack, host, CELL_CAPACITIES[stack.getItemDamage()]);
         }
         return null;
     }
     
     @Override
-    public <T extends IAEStack<T>> int getStatusForCell(final ItemStack stack, final IMEInventory<T> handler) {
+    public <T extends IAEStack<T>> int getStatusForCell(final ItemStack stack, final ICellInventoryHandler<T> handler) {
         return handler instanceof HandlerEMCCellBase ? ((HandlerEMCCellBase) handler).getCellStatus() : 0;
     }
 
     
     @Override
-    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final IMEInventory<T> handler) {
+    public <T extends IAEStack<T>> double cellIdleDrain(final ItemStack stack, final ICellInventoryHandler<T> handler) {
         return CELL_DRAINS[stack.getItemDamage()];
     }
 

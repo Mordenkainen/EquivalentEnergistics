@@ -46,7 +46,7 @@ public class HandlerEMCCell extends HandlerEMCCellBase {
     private void updateEMC() {
         cellData.setDouble(EMC_TAG, pool.getCurrentEMC());
         if (saveProvider != null) {
-            saveProvider.saveChanges(this);
+            saveProvider.saveChanges(null);
         }
     }
 

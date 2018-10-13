@@ -60,7 +60,7 @@ public class AEEMCStack implements IAEEMCStack {
     }
     
     @Override
-    public boolean fuzzyComparison(final Object arg0, final FuzzyMode arg1) {
+    public boolean fuzzyComparison(final IAEEMCStack arg0, final FuzzyMode arg1) {
         return false;
     }
 
@@ -130,7 +130,9 @@ public class AEEMCStack implements IAEEMCStack {
     }
 
     @Override
-    public void writeToNBT(final NBTTagCompound arg0) {}
+    public void writeToNBT(final NBTTagCompound arg0) {
+        arg0.setLong("size", emcValue);
+    }
 
     @Override
     public void writeToPacket(final ByteBuf buff) throws IOException {
@@ -144,6 +146,10 @@ public class AEEMCStack implements IAEEMCStack {
     
     public static AEEMCStack fromPacket(final ByteBuf data) {
         return new AEEMCStack(data.readLong());
+    }
+    
+    public static AEEMCStack fromNBT(final NBTTagCompound arg0) {
+        return new AEEMCStack(arg0.getLong("size"));
     }
 
     @Override
