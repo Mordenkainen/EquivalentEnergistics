@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import com.mordenkainen.equivalentenergistics.blocks.ModBlocks;
 import com.mordenkainen.equivalentenergistics.blocks.base.tile.EqETileBase;
+import com.mordenkainen.equivalentenergistics.integration.Integration;
 import com.mordenkainen.equivalentenergistics.integration.ae2.cache.crafting.EMCCraftingGrid;
 import com.mordenkainen.equivalentenergistics.integration.ae2.grid.IAEProxyHost;
 import com.mordenkainen.equivalentenergistics.items.ModItems;
@@ -16,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -73,6 +75,11 @@ public final class EventHandler {
                 }
             }
         }
+    }
+    
+    @SubscribeEvent
+    public static void onWorldLoad(final WorldEvent.Load event) {
+        Integration.worldLoad();
     }
 
     @SubscribeEvent

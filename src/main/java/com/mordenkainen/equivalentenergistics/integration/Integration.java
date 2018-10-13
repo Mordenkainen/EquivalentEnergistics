@@ -43,7 +43,9 @@ public final class Integration {
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 2), (int) ItemEMCCrystal.CRYSTAL_VALUES[2]);
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 3), (int) ItemEMCCrystal.CRYSTAL_VALUES[3]);
         ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 4), (int) ItemEMCCrystal.CRYSTAL_VALUES[4]);
-
+    }
+    
+    public static void worldLoad() {
         try {
             Class<?> cellInv;
             cellInv = Class.forName("appeng.me.storage.CellInventory");
