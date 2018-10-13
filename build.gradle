@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "${mod_version}"
 group= "com.mordenkainen.equivalentenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "EquivalentEnergistics-${minecraft_version}"
+archivesBaseName = "EquivalentEnergistics-${minecraft_version}-${pe_rawversion}-${ae2_api}"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
