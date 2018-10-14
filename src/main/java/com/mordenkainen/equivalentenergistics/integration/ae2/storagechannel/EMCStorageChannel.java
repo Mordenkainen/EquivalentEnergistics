@@ -34,7 +34,7 @@ public class EMCStorageChannel implements IEMCStorageChannel {
     }
 
     @Override
-    public IAEEMCStack createFromNBT(NBTTagCompound arg0) {
+    public IAEEMCStack createFromNBT(final NBTTagCompound arg0) {
         Preconditions.checkNotNull(arg0);
         
         return AEEMCStack.fromNBT(arg0);
