@@ -47,6 +47,11 @@ repositories {
         ivyPattern "https://maven.tterrag.com/[module]-[revision].[ext]"
         artifactPattern "http://media.forgecdn.net/files/${pe_cf}/[module]-[revision].[ext]"
     }
+    ivy {
+        name 'ProjectE'
+        ivyPattern "https://maven.tterrag.com/[module]-[revision].[ext]"
+        artifactPattern "http://media.forgecdn.net/files/${ae2_cf}/[module]-[revision].[ext]"
+    }
 }
 
 dependencies {
