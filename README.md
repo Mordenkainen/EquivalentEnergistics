@@ -10,7 +10,7 @@ Equivalent Energistics requires the following mods to function:
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a44c1cdc1db24eafb8efecb3789a2acd??branch=1.12.2_PE_1.3.1B_AE2_RV6)](https://www.codacy.com/app/Mordenkainen/EquivalentEnergistics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mordenkainen/EquivalentEnergistics&amp;utm_campaign=Badge_Grade;bid=9209562)
 
 CI builds by TravisCI:  
-[![Build Status](https://travis-ci.org/Mordenkainen/EquivalentEnergistics.svg?branch=1.12.2_PE_1.3.1B_AE2_RV6](https://travis-ci.org/Mordenkainen/EquivalentEnergistics)
+[![Build Status](https://travis-ci.org/Mordenkainen/EquivalentEnergistics.svg?branch=1.12.2_PE_1.3.1B_AE2_RV6)](https://travis-ci.org/Mordenkainen/EquivalentEnergistics)
 
 Progress tracking by Waffle:  
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/Mordenkainen/EquivalentEnergistics.svg?columns=all)](https://waffle.io/Mordenkainen/EquivalentEnergistics)
