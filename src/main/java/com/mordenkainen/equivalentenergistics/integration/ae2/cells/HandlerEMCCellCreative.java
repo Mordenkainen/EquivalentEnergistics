@@ -31,7 +31,7 @@ public class HandlerEMCCellCreative extends HandlerEMCCellBase {
 
     @Override
     public IItemList<IAEEMCStack> getAvailableItems(final IItemList<IAEEMCStack> stacks) {
-        final IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(EqEConfig.cellCapacities.creativeCell / 2);
+        final IAEEMCStack current = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class).createStack(((long)EqEConfig.cellCapacities.creativeCell) / 2);
         stacks.add(current);
         
         return stacks;

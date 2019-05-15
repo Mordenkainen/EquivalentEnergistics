@@ -33,7 +33,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
     private static final String EMC_TAG = "emc";
-    private static final long CELL_CAPACITIES[] = {EqEConfig.cellCapacities.tier1Cell, EqEConfig.cellCapacities.tier2Cell, EqEConfig.cellCapacities.tier3Cell, EqEConfig.cellCapacities.tier4Cell, EqEConfig.cellCapacities.tier5Cell, EqEConfig.cellCapacities.tier6Cell, EqEConfig.cellCapacities.tier7Cell, EqEConfig.cellCapacities.tier8Cell};
+    private static final long CELL_CAPACITIES[] = {
+        (long) EqEConfig.cellCapacities.tier1Cell,
+        (long) EqEConfig.cellCapacities.tier2Cell,
+        (long) EqEConfig.cellCapacities.tier3Cell,
+        (long) EqEConfig.cellCapacities.tier4Cell,
+        (long) EqEConfig.cellCapacities.tier5Cell,
+        (long) EqEConfig.cellCapacities.tier6Cell,
+        (long) EqEConfig.cellCapacities.tier7Cell,
+        (long) EqEConfig.cellCapacities.tier8Cell
+    };
     private static final double CELL_DRAINS[] = {EqEConfig.cellPowerDrain.tier1Cell, EqEConfig.cellPowerDrain.tier2Cell, EqEConfig.cellPowerDrain.tier3Cell, EqEConfig.cellPowerDrain.tier4Cell, EqEConfig.cellPowerDrain.tier5Cell, EqEConfig.cellPowerDrain.tier6Cell, EqEConfig.cellPowerDrain.tier7Cell, EqEConfig.cellPowerDrain.tier8Cell};
 
     public ItemEMCCell() {
