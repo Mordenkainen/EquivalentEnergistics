@@ -140,8 +140,8 @@ public class AEEMCStack implements IAEEMCStack {
     }
 
     @Override
-    public double getEMCValue() {
-        return emcValue / 1000D;
+    public long getEMCValue() {
+        return emcValue / 1000;
     }
     
     public static AEEMCStack fromPacket(final ByteBuf data) {

@@ -105,7 +105,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         }
     }
     
-    protected double getEMCPerTick() {
+    protected long getEMCPerTick() {
         return EqEConfig.emcCondenser.emcPerTick;
     }
 
@@ -120,7 +120,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         return (int) (powerAvail / powerPerItem);
     }
     
-    protected double processItems(final int slot, final double remainingEMC, final boolean usePower) {
+    protected long processItems(final int slot, final long remainingEMC, final boolean usePower) {
         final ItemStack stack = inv.getStackInSlot(slot);
         final long itemEMC = ProjectEAPI.getEMCProxy().getValue(ItemHandlerHelper.copyStackWithSize(stack, 1));
         if (itemEMC > remainingEMC) {
@@ -130,7 +130,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         int numToStore = (int) Math.min(stack.getCount(), remainingEMC / itemEMC);
         long emcToStore = itemEMC * numToStore;
         
-        final double amountStored = GridUtils.injectEMC(getProxy(), emcToStore, Actionable.SIMULATE, mySource);
+        final long amountStored = GridUtils.injectEMC(getProxy(), emcToStore, Actionable.SIMULATE, mySource);
         if (amountStored == 0) {
             return -1;
         }
@@ -157,13 +157,13 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
         return remainingEMC - numToStore;
     }
     
-    protected double processStorage(final int slot, final double remainingEMC) {
+    protected long processStorage(final int slot, final long remainingEMC) {
         final ItemStack stack = inv.getStackInSlot(slot);
-        final double itemEMC = ((IItemEmc) stack.getItem()).getStoredEmc(stack);
-        double stored = 0;
+        final long itemEMC = ((IItemEmc) stack.getItem()).getStoredEmc(stack);
+        long stored = 0;
 
         if (itemEMC > 0) {
-            final double toStore = Math.min(remainingEMC, itemEMC);
+            final long toStore = Math.min(remainingEMC, itemEMC);
             
             stored = GridUtils.injectEMC(getProxy(), toStore, Actionable.MODULATE, mySource);
             if (stored == 0) {
@@ -185,7 +185,7 @@ public class TileEMCCondenser extends TileAEBase implements IGridTickable, IDrop
     }
     
     protected CondenserState processInv() {
-        double remainingEMC = getEMCPerTick();
+        long remainingEMC = getEMCPerTick();
         for (int slot = 0; slot < 4 && remainingEMC > 0; slot++) {
             final ItemStack stack = inv.getStackInSlot(slot);
             if (stack.isEmpty()) {

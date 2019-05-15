@@ -38,11 +38,11 @@ public final class Integration {
     }
 
     public static void postInit() {
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 0), (int) ItemEMCCrystal.CRYSTAL_VALUES[0]);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 1), (int) ItemEMCCrystal.CRYSTAL_VALUES[1]);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 2), (int) ItemEMCCrystal.CRYSTAL_VALUES[2]);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 3), (int) ItemEMCCrystal.CRYSTAL_VALUES[3]);
-        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 4), (int) ItemEMCCrystal.CRYSTAL_VALUES[4]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 0), ItemEMCCrystal.CRYSTAL_VALUES[0]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 1), ItemEMCCrystal.CRYSTAL_VALUES[1]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 2), ItemEMCCrystal.CRYSTAL_VALUES[2]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 3), ItemEMCCrystal.CRYSTAL_VALUES[3]);
+        ProjectEAPI.getEMCProxy().registerCustomEMC(new ItemStack(ModItems.CRYSTAL, 1, 4), ItemEMCCrystal.CRYSTAL_VALUES[4]);
     }
     
     public static void worldLoad() {

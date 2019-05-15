@@ -12,8 +12,8 @@ public class TileEMCCondenserUlt extends TileEMCCondenserExt {
     }
 
     @Override
-    protected double getEMCPerTick() {
-        return Float.MAX_VALUE;
+    protected long getEMCPerTick() {
+        return Long.MAX_VALUE;
     }
     
     @Override

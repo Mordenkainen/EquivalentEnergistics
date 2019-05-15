@@ -45,7 +45,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     private static final String ERROR_TAG = "Errored";
 
     private ItemStack transmutationItem = ItemStack.EMPTY;
-    private double currentEMC;
+    private long currentEMC;
     private NonNullList<ItemStack> displayStacks;
     private final CraftingManager manager;
     private boolean crafting;
@@ -68,7 +68,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     @Override
     public NBTTagCompound getWailaTag(final NBTTagCompound tag) {
         if (currentEMC > 0) {
-            tag.setDouble(EMC_TAG, currentEMC);
+            tag.setLong(EMC_TAG, currentEMC);
         }
         if (!transmutationItem.isEmpty()) {
             tag.setString(OWNER_TAG, transmutationItem.getTagCompound().getString(OWNER_TAG));
@@ -109,7 +109,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     @Override
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
-        currentEMC = data.getDouble(EMC_TAG);
+        currentEMC = data.getLong(EMC_TAG);
         transmutationItem = data.hasKey(TOME_TAG) ? new ItemStack((NBTTagCompound) data.getTag(TOME_TAG)) : ItemStack.EMPTY;
         manager.readFromNBT(data);
         displayStacks = manager.getCurrentJobs();
@@ -120,7 +120,7 @@ public class TileEMCCrafter extends TileAEBase implements IGridTickable, IDropIt
     public NBTTagCompound writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         if (currentEMC > 0) {
-            data.setDouble(EMC_TAG, currentEMC);
+            data.setLong(EMC_TAG, currentEMC);
         }
         if (transmutationItem != null) {
             data.setTag(TOME_TAG, transmutationItem.writeToNBT(new NBTTagCompound()));

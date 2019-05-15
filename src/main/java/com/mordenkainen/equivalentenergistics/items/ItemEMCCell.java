@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
     private static final String EMC_TAG = "emc";
-    private static final double CELL_CAPACITIES[] = {EqEConfig.cellCapacities.tier1Cell, EqEConfig.cellCapacities.tier2Cell, EqEConfig.cellCapacities.tier3Cell, EqEConfig.cellCapacities.tier4Cell, EqEConfig.cellCapacities.tier5Cell, EqEConfig.cellCapacities.tier6Cell, EqEConfig.cellCapacities.tier7Cell, EqEConfig.cellCapacities.tier8Cell};
+    private static final long CELL_CAPACITIES[] = {EqEConfig.cellCapacities.tier1Cell, EqEConfig.cellCapacities.tier2Cell, EqEConfig.cellCapacities.tier3Cell, EqEConfig.cellCapacities.tier4Cell, EqEConfig.cellCapacities.tier5Cell, EqEConfig.cellCapacities.tier6Cell, EqEConfig.cellCapacities.tier7Cell, EqEConfig.cellCapacities.tier8Cell};
     private static final double CELL_DRAINS[] = {EqEConfig.cellPowerDrain.tier1Cell, EqEConfig.cellPowerDrain.tier2Cell, EqEConfig.cellPowerDrain.tier3Cell, EqEConfig.cellPowerDrain.tier4Cell, EqEConfig.cellPowerDrain.tier5Cell, EqEConfig.cellPowerDrain.tier6Cell, EqEConfig.cellPowerDrain.tier7Cell, EqEConfig.cellPowerDrain.tier8Cell};
 
     public ItemEMCCell() {
@@ -80,36 +80,36 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
         return CELL_DRAINS[stack.getItemDamage()];
     }
 
-    public double getStoredCellEMC(final ItemStack stack) {
+    public long getStoredCellEMC(final ItemStack stack) {
         if (!isCell(stack) || !hasEMCTag(stack)) {
             return 0;
         }
 
-        return Math.max(stack.getTagCompound().getDouble(EMC_TAG), 0);
+        return Math.max(stack.getTagCompound().getLong(EMC_TAG), 0);
     }
 
     @Override
-    public double addEmc(final ItemStack stack, final double toAdd) {
-        final double currentEMC = getStoredCellEMC(stack);
-        final double amountToAdd = Math.min(toAdd, CELL_CAPACITIES[stack.getItemDamage()] - currentEMC);
+    public long addEmc(final ItemStack stack, final long toAdd) {
+        final long currentEMC = getStoredCellEMC(stack);
+        final long amountToAdd = Math.min(toAdd, CELL_CAPACITIES[stack.getItemDamage()] - currentEMC);
 
         if (amountToAdd > 0) {
             if (!stack.hasTagCompound()) {
                 stack.setTagCompound(new NBTTagCompound());
             }
-            stack.getTagCompound().setDouble(EMC_TAG, currentEMC + amountToAdd);
+            stack.getTagCompound().setLong(EMC_TAG, currentEMC + amountToAdd);
         }
 
         return amountToAdd;
     }
 
     @Override
-    public double extractEmc(final ItemStack stack, final double emc) {
-        final double currentEMC = getStoredCellEMC(stack);
-        final double toRemove = Math.min(emc, currentEMC);
+    public long extractEmc(final ItemStack stack, final long emc) {
+        final long currentEMC = getStoredCellEMC(stack);
+        final long toRemove = Math.min(emc, currentEMC);
 
         if (hasEMCTag(stack)) {
-            stack.getTagCompound().setDouble(EMC_TAG, currentEMC - toRemove);
+            stack.getTagCompound().setLong(EMC_TAG, currentEMC - toRemove);
             if (isEmpty(stack)) {
                 removeEMCTag(stack);
             }
@@ -119,12 +119,12 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
     }
 
     @Override
-    public double getStoredEmc(final ItemStack stack) {
+    public long getStoredEmc(final ItemStack stack) {
         return getStoredCellEMC(stack);
     }
     
     @Override
-    public double getMaximumEmc(final ItemStack stack) {
+    public long getMaximumEmc(final ItemStack stack) {
         return CELL_CAPACITIES[stack.getItemDamage()];
     }
 

@@ -171,7 +171,7 @@ public final class GridUtils {
         }
     }
 
-    public static double injectEMC(final AEProxy proxy, final double emc, final Actionable mode, final IActionSource src) {
+    public static long injectEMC(final AEProxy proxy, final long emc, final Actionable mode, final IActionSource src) {
         if (emc > 0) {
             try {
                 final IEMCStorageChannel emcChannel = AEApi.instance().storage().getStorageChannel(IEMCStorageChannel.class);

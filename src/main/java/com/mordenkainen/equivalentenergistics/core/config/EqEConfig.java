@@ -58,23 +58,23 @@ public final class EqEConfig {
         @Config.Comment("The amount of power the EMC Condenser will consume per EMC condensed in AE.")
         public double powerPerEMC = 0.01;
 
-        @Config.RangeDouble(min = 0, max = Integer.MAX_VALUE)
+        @Config.RangeInt(min = 0, max = Integer.MAX_VALUE)
         @Config.Comment("The amount of EMC the basic EMC Condenser can convert per tick. This value is scaled by x10 for each tier of Condenser.")
-        public double emcPerTick = 8192;
+        public long emcPerTick = 8192;
 
     }
 
     public static class EMCCellCaps {
 
-        public double creativeCell = 16384000000F;
-        public double tier1Cell = 1000000F;
-        public double tier2Cell = 4000000F;
-        public double tier3Cell = 16000000F;
-        public double tier4Cell = 64000000F;
-        public double tier5Cell = 256000000F;
-        public double tier6Cell = 1024000000F;
-        public double tier7Cell = 4096000000F;
-        public double tier8Cell = 16384000000F;
+        public long creativeCell = 16384000000L;
+        public long tier1Cell = 1000000L;
+        public long tier2Cell = 4000000L;
+        public long tier3Cell = 16000000L;
+        public long tier4Cell = 64000000L;
+        public long tier5Cell = 256000000L;
+        public long tier6Cell = 1024000000L;
+        public long tier7Cell = 4096000000L;
+        public long tier8Cell = 16384000000L;
 
     }
 
