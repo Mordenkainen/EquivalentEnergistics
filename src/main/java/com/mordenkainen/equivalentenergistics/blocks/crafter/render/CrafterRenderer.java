@@ -76,7 +76,7 @@ public class CrafterRenderer extends TileEntitySpecialRenderer<TileEMCCrafter> {
     }
 
     private boolean isCableConnected(final World world, final BlockPos pos, final EnumFacing face) {
-        final int tileYPos = pos.getY() + face.getFrontOffsetY();
+        final int tileYPos = pos.getY() + face.getYOffset();
         if (tileYPos < 0 || tileYPos > 256) {
             return false;
         }

@@ -12,7 +12,7 @@ public abstract class ItemBase extends Item {
     public ItemBase(final String name) {
         super();
         this.name = name;
-        setUnlocalizedName(Reference.MOD_ID + ":" + name);
+        setTranslationKey(Reference.MOD_ID + ":" + name);
         setCreativeTab(EquivalentEnergistics.tabEE);
         setRegistryName(name);
     }

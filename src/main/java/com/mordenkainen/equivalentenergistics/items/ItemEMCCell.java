@@ -139,7 +139,7 @@ public class ItemEMCCell extends ItemCellBase implements IItemEmc {
 
     private void removeEMCTag(final ItemStack stack) {
         stack.getTagCompound().removeTag(EMC_TAG);
-        if (stack.getTagCompound().hasNoTags()) {
+        if (stack.getTagCompound().isEmpty()) {
             stack.setTagCompound(null);
         }
     }

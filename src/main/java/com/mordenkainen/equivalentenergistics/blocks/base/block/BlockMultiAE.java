@@ -68,7 +68,7 @@ public abstract class BlockMultiAE extends BlockMultiTile {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public BlockRenderLayer getBlockLayer() {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 

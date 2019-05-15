@@ -57,7 +57,7 @@ public class TileEMCCondenserExt extends TileEMCCondenserAdv {
         }
 
         if (isActive()) {
-            if(getWorld().isBlockIndirectlyGettingPowered(pos) > 0) {
+            if(getWorld().getRedstonePowerFromNeighbors(pos) > 0) {
                 updateState(CondenserState.IDLE);
                 return TickRateModulation.IDLE;
             }

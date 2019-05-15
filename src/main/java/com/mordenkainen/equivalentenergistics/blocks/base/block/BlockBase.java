@@ -15,7 +15,7 @@ public abstract class BlockBase extends Block {
     public BlockBase(final Material material, final String name) {
         super(material);
         this.name = name;
-        setUnlocalizedName(Reference.MOD_ID + ":" + name);
+        setTranslationKey(Reference.MOD_ID + ":" + name);
         setRegistryName(Reference.MOD_ID + ":" + name);
         setCreativeTab(EquivalentEnergistics.tabEE);
     }
