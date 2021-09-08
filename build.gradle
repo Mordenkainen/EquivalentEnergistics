@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "${mod_version}"
 group= "com.mordenkainen.equivalentenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "EquivalentEnergistics-${minecraft_version}-${pe_rawversion}-${ae2_api}"
+archivesBaseName = "EquivalentEnergistics-${minecraft_version}-${pe_rawversion}"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -41,25 +41,27 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
-    maven {url "http://tehnut.info/maven"}
-
+    maven {
+        name 'tehnut maven'
+        url "http://maven.tehnut.info/"
+    }
     maven {
         name 'CurseForge'
-        url "https://minecraft.curseforge.com/api/maven/"
+        url "https://cursemaven.com"
     }
 }
 
 
 dependencies {
     //compile "codechicken:CodeChickenLib:${minecraft_version}-${ccl_version}:dev"
-    deobfCompile ("appeng:appliedenergistics2:${ae2_version}"){
+    deobfCompile ("curse.maven:applied-energistics-2-223794:2747063"){
         transitive = false
     }
     deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
     deobfCompile ("mcjty.theoneprobe:TheOneProbe-1.12:${top_version}"){
         transitive = false
     }
-    deobfCompile "projecte:ProjectE:1.12.2:${pe_version}"
+    deobfCompile "curse.maven:projecte-226410:2702991"
 
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
